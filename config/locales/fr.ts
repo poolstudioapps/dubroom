@@ -253,6 +253,12 @@ export const fr = {
       'Elle rejoindra l’onglet Communauté après le rendu, avec son découpage et ses personnages. Vos enregistrements, eux, ne sont jamais conservés.',
   },
 
+  theme: {
+    label: 'Apparence',
+    retro: 'Rétro',
+    modern: 'Moderne',
+  },
+
   legal: {
     mentions: 'Mentions légales',
     privacy: 'Confidentialité',
@@ -345,6 +351,9 @@ export const fr = {
     title: 'Nouvelle scène',
     tabUpload: 'Importer un fichier',
     tabYoutube: 'Coller un lien YouTube',
+    tabPack: 'Partir d’un pack',
+    packHelp:
+      'Rien à préparer : la scène est déjà découpée, vous choisissez les rôles et vous enregistrez. Le catalogue complet est dans l’onglet Communauté.',
     titleLabel: 'Titre de la scène',
     titlePlaceholder: 'Le duel du pont',
     dropzone: 'Dépose ton MP4 ici, ou clique pour le choisir',
@@ -388,6 +397,8 @@ export const fr = {
       'La détection automatique se trompe souvent de personnage. C’est le moment de corriger : après l’ouverture du lobby, ce n’est plus modifiable.',
     charactersHeading: 'Personnages détectés',
     linesHeading: 'Répliques',
+    linesOf: (name: string) => `Répliques de ${name}`,
+    showAllLines: 'Tout revoir',
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
     speakTime: 'Temps de parole',
     playLongest: 'Écouter l’extrait le plus long',

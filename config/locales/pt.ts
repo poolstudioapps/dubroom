@@ -233,6 +233,12 @@ export const pt = {
       'Ela vai para a aba Comunidade depois da renderização, com o corte e os personagens. As gravações de vocês nunca são guardadas.',
   },
 
+  theme: {
+    label: 'Visual',
+    retro: 'Retrô',
+    modern: 'Moderno',
+  },
+
   legal: {
     mentions: 'Aviso legal',
     privacy: 'Privacidade',
@@ -325,6 +331,9 @@ export const pt = {
     title: 'Nova cena',
     tabUpload: 'Importar um arquivo',
     tabYoutube: 'Colar um link do YouTube',
+    tabPack: 'Partir de um pack',
+    packHelp:
+      'Nada para preparar: a cena já está cortada, vocês escolhem os papéis e gravam. O catálogo completo está na aba Comunidade.',
     titleLabel: 'Título da cena',
     titlePlaceholder: 'O duelo na ponte',
     dropzone: 'Solte seu MP4 aqui, ou clique para escolher',
@@ -368,6 +377,8 @@ export const pt = {
       'A detecção automática erra de personagem com frequência. É a hora de corrigir: depois que o lobby abrir, não dá mais para mudar.',
     charactersHeading: 'Personagens detectados',
     linesHeading: 'Falas',
+    linesOf: (name: string) => `Falas de ${name}`,
+    showAllLines: 'Ver tudo',
     lineCount: (n: number) => (n === 1 ? '1 fala' : `${n} falas`),
     speakTime: 'Tempo de fala',
     playLongest: 'Ouvir o trecho mais longo',

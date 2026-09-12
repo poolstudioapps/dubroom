@@ -235,6 +235,12 @@ export const en = {
       'It will join the Community tab after the render, with its cut and its characters. Your recordings are never kept.',
   },
 
+  theme: {
+    label: 'Look',
+    retro: 'Retro',
+    modern: 'Modern',
+  },
+
   legal: {
     mentions: 'Legal notice',
     privacy: 'Privacy',
@@ -327,6 +333,9 @@ export const en = {
     title: 'New scene',
     tabUpload: 'Import a file',
     tabYoutube: 'Paste a YouTube link',
+    tabPack: 'Start from a pack',
+    packHelp:
+      'Nothing to prepare: the scene is already cut, you pick the roles and record. The full catalogue is in the Community tab.',
     titleLabel: 'Scene title',
     titlePlaceholder: 'The duel on the bridge',
     dropzone: 'Drop your MP4 here, or click to pick one',
@@ -370,6 +379,8 @@ export const en = {
       'Automatic detection often gets the character wrong. Now is the time to fix it: once the lobby opens, none of this can change.',
     charactersHeading: 'Detected characters',
     linesHeading: 'Lines',
+    linesOf: (name: string) => `Lines of ${name}`,
+    showAllLines: 'Show everything',
     lineCount: (n: number) => (n === 1 ? '1 line' : `${n} lines`),
     speakTime: 'Speaking time',
     playLongest: 'Play the longest extract',

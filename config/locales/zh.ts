@@ -228,6 +228,12 @@ export const zh = {
       '出片之后它会进入社区页，带着切分和角色。你们的录音则从来不保留。',
   },
 
+  theme: {
+    label: '外观',
+    retro: '复古',
+    modern: '现代',
+  },
+
   legal: {
     mentions: '法律信息',
     privacy: '隐私',
@@ -315,6 +321,9 @@ export const zh = {
     title: '新片段',
     tabUpload: '导入文件',
     tabYoutube: '粘贴 YouTube 链接',
+    tabPack: '从现成的包开始',
+    packHelp:
+      '不用准备：片段已经切好，挑好角色就能录。完整目录在社区页。',
     titleLabel: '片段标题',
     titlePlaceholder: '桥上的决斗',
     dropzone: '把 MP4 拖到这里，或者点一下来选',
@@ -358,6 +367,8 @@ export const zh = {
       '自动识别经常认错人。现在是改的时候：大厅一开就动不了了。',
     charactersHeading: '识别出的角色',
     linesHeading: '台词',
+    linesOf: (name: string) => `${name} 的台词`,
+    showAllLines: '查看全部',
     lineCount: (n: number) => `${n} 句台词`,
     speakTime: '说话时长',
     playLongest: '听最长的一段',

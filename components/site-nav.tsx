@@ -67,10 +67,10 @@ export function SiteNav({ signedIn }: { signedIn?: boolean }) {
             href={tab.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'inline-flex items-center gap-2 rounded-t-lg border-2 border-b-0 px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm',
+              'tab inline-flex items-center gap-2 rounded-t-lg border-2 border-b-0 px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm',
               active
-                ? 'border-bezel-dark bg-screen text-text'
-                : 'border-transparent bg-bezel-dark/50 text-[oklch(0.85_0.05_260)] hover:bg-bezel-dark',
+                ? 'tab-on border-bezel-dark bg-screen text-text'
+                : 'tab-off border-transparent bg-bezel-dark/50 text-[oklch(0.85_0.05_260)] hover:bg-bezel-dark',
             )}
           >
             <Icon className="h-4 w-4" aria-hidden />

@@ -233,6 +233,12 @@ export const it = {
       'Andrà nella scheda Community dopo il montaggio, con il suo taglio e i suoi personaggi. Le vostre registrazioni non vengono mai conservate.',
   },
 
+  theme: {
+    label: 'Aspetto',
+    retro: 'Retrò',
+    modern: 'Moderno',
+  },
+
   legal: {
     mentions: 'Note legali',
     privacy: 'Privacy',
@@ -325,6 +331,9 @@ export const it = {
     title: 'Nuova scena',
     tabUpload: 'Importa un file',
     tabYoutube: 'Incolla un link YouTube',
+    tabPack: 'Partire da un pack',
+    packHelp:
+      'Niente da preparare: la scena è già tagliata, scegliete le parti e registrate. Il catalogo completo è nella scheda Community.',
     titleLabel: 'Titolo della scena',
     titlePlaceholder: 'Il duello sul ponte',
     dropzone: 'Trascina qui il tuo MP4, o clicca per sceglierlo',
@@ -368,6 +377,8 @@ export const it = {
       'Il riconoscimento automatico sbaglia spesso personaggio. È il momento di correggere: dopo l’apertura della lobby non si cambia più.',
     charactersHeading: 'Personaggi rilevati',
     linesHeading: 'Battute',
+    linesOf: (name: string) => `Battute di ${name}`,
+    showAllLines: 'Rivedere tutto',
     lineCount: (n: number) => (n === 1 ? '1 battuta' : `${n} battute`),
     speakTime: 'Tempo di parola',
     playLongest: 'Ascolta l’estratto più lungo',

@@ -189,7 +189,7 @@ const badgeVariants = cva(
         ok: 'border-ok/50 bg-ok/20 text-[oklch(0.4_0.13_150)]',
         warn: 'border-warn/50 bg-warn/25 text-[oklch(0.42_0.12_75)]',
         danger: 'border-danger/50 bg-danger/20 text-[oklch(0.42_0.18_25)]',
-        accent: 'border-accent-ink/40 bg-accent/35 text-accent-ink',
+        accent: 'border-badge-accent-ink/35 bg-accent/30 text-badge-accent-ink',
       },
     },
     defaultVariants: { tone: 'neutral' },

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 
 import { LocalePicker } from '@/components/locale-picker';
+import { ThemePicker } from '@/components/theme-picker';
 import { APP_NAME } from '@/config/strings';
 import { useT } from '@/lib/i18n';
 
@@ -61,8 +62,11 @@ export function Footer() {
           Glisse entre les liens legaux, il se lisait comme l'un d'eux et
           personne ne le voyait.
         */}
-        <div className="flex justify-center pt-1">
+        {/* Les deux reglages de confort au meme endroit : la langue et
+            l'apparence se cherchent au meme moment, en bas de page. */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
           <LocalePicker />
+          <ThemePicker />
         </div>
       </div>
     </footer>

@@ -34,7 +34,7 @@ export function TvSet({
     <div className={['flex flex-col', fill ? 'min-h-0 flex-1' : ''].join(' ')}>
       <div
         className={[
-          'flex gap-3 rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel',
+          'tv-frame flex gap-3 rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel',
           'shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)]',
           slim ? 'p-3' : 'p-4 sm:p-6',
           fill ? 'min-h-0 flex-1' : '',
@@ -43,7 +43,7 @@ export function TvSet({
         {/* L'ecran. Le contenu de l'application vit ici. */}
         <div
           className={[
-            'relative min-w-0 flex-1 overflow-hidden rounded-[1.25rem] bg-screen',
+            'tv-screen relative min-w-0 flex-1 overflow-hidden rounded-[1.25rem] bg-screen',
             'shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)]',
             slim ? 'p-4' : 'p-5 sm:p-8',
             fill ? 'flex min-h-0 flex-col' : '',
@@ -51,7 +51,7 @@ export function TvSet({
         >
           {/* Reflet diagonal, tres discret : il donne le verre. */}
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-transparent"
+            className="tv-gloss pointer-events-none absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-transparent"
             aria-hidden
           />
           <div className={['relative', fill ? 'flex min-h-0 flex-1 flex-col' : ''].join(' ')}>
@@ -62,7 +62,7 @@ export function TvSet({
         {/* Colonne de droite : haut-parleur et boutons, decor pur. */}
         {!slim ? (
           <div
-            className="hidden w-14 shrink-0 flex-col items-center gap-4 py-2 lg:flex"
+            className="tv-speaker hidden w-14 shrink-0 flex-col items-center gap-4 py-2 lg:flex"
             aria-hidden
           >
             <div className="grille h-28 w-10 rounded-md bg-bezel-dark/60" />
@@ -76,7 +76,7 @@ export function TvSet({
       {/* La console, sous le poste. Decor egalement. */}
       {!slim ? (
         <div
-          className="mx-auto -mt-1 flex w-[85%] items-center justify-between gap-4 rounded-b-2xl border-x-[3px] border-b-[3px] border-console-dark bg-console px-4 py-3 shadow-[0_12px_24px_-8px_rgb(0_0_0/0.6)]"
+          className="tv-console mx-auto -mt-1 flex w-[85%] items-center justify-between gap-4 rounded-b-2xl border-x-[3px] border-b-[3px] border-console-dark bg-console px-4 py-3 shadow-[0_12px_24px_-8px_rgb(0_0_0/0.6)]"
           aria-hidden
         >
           <div className="flex gap-2">

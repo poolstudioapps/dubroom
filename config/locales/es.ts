@@ -233,6 +233,12 @@ export const es = {
       'Pasará a la pestaña Comunidad después del montaje, con su corte y sus personajes. Vuestras grabaciones no se guardan nunca.',
   },
 
+  theme: {
+    label: 'Aspecto',
+    retro: 'Retro',
+    modern: 'Moderno',
+  },
+
   legal: {
     mentions: 'Aviso legal',
     privacy: 'Privacidad',
@@ -325,6 +331,9 @@ export const es = {
     title: 'Nueva escena',
     tabUpload: 'Importar un archivo',
     tabYoutube: 'Pegar un enlace de YouTube',
+    tabPack: 'Partir de un pack',
+    packHelp:
+      'Nada que preparar: la escena ya está cortada, elegís los papeles y grabáis. El catálogo completo está en la pestaña Comunidad.',
     titleLabel: 'Título de la escena',
     titlePlaceholder: 'El duelo del puente',
     dropzone: 'Suelta aquí tu MP4, o haz clic para elegirlo',
@@ -368,6 +377,8 @@ export const es = {
       'La detección automática se equivoca de personaje a menudo. Es el momento de corregir: cuando se abra la sala, ya no se podrá cambiar.',
     charactersHeading: 'Personajes detectados',
     linesHeading: 'Frases',
+    linesOf: (name: string) => `Frases de ${name}`,
+    showAllLines: 'Ver todo',
     lineCount: (n: number) => (n === 1 ? '1 frase' : `${n} frases`),
     speakTime: 'Tiempo de habla',
     playLongest: 'Escuchar el fragmento más largo',

@@ -18,16 +18,27 @@
  *    d'un titre et d'un paragraphe qui disent exactement la meme chose.
  *    La decrire une seconde fois ferait repeter la page a voix haute.
  *
- * Poids total : 86 ko en WebP pour les quatre. L'optimiseur d'images de
- * Next est coupe dans ce projet, d'ou la balise `img` nue et les
- * dimensions ecrites en clair, qui evitent le saut de mise en page.
+ * Poids : environ 90 ko en WebP par serie, et il y en a une par peau.
+ * L'optimiseur d'images de Next est coupe dans ce projet, d'ou la balise
+ * `img` nue et les dimensions ecrites en clair, qui evitent le saut de
+ * mise en page.
  */
 
+'use client';
+
+import { useTheme } from '@/lib/theme';
+
 function Art({ nom, eager }: { nom: string; eager?: boolean }) {
+  // Chaque peau a sa serie : la premiere est violette et matierée, la
+  // seconde bleu nuit et plate. Servir l'une dans l'autre jurerait plus
+  // que de ne rien mettre.
+  const theme = useTheme();
+  const dossier = theme === 'modern' ? '/illustrations/modern' : '/illustrations';
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/illustrations/${nom}.webp`}
+      src={`${dossier}/${nom}.webp`}
       alt=""
       width={1000}
       height={563}

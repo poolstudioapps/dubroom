@@ -3,10 +3,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { FileVideo, Link2, Upload } from 'lucide-react';
+import { FileVideo, Library, Link2, Upload } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { PackSourcePicker } from '@/components/pack-source-picker';
 import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
 import { MAX_UPLOAD_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
@@ -40,7 +41,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const [mode, setMode] = useState<Mode>('upload');
+  const [mode, setMode] = useState<Mode | 'pack'>('upload');
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -54,7 +55,10 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
       setFile(null);
       return;
     }
-    if (!picked.type.startsWith('video/') && !picked.name.match(/\.(mp4|mkv|mov|webm|avi)$/i)) {
+    if (
+      !picked.type.startsWith('video/') &&
+      !picked.name.match(/\.(mp4|mkv|mov|webm|avi)$/i)
+    ) {
       setError(t.create.wrongType);
       return;
     }
@@ -76,7 +80,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
       setError(null);
       const session = await createSession({
         title: title.trim() || 'Scène sans titre',
-        sourceType: mode,
+        sourceType: mode === 'youtube' ? 'youtube' : 'upload',
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
         keepAsPack,
@@ -121,112 +125,131 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
           <Link2 className="h-4 w-4" aria-hidden />
           {t.create.tabYoutube}
         </Button>
+        {/*
+          La troisieme source, et de loin la plus rapide : une scene deja
+          preparee par quelqu'un d'autre. Elle vivait dans un autre
+          onglet, donc personne qui cliquait « Nouvelle scene » ne la
+          trouvait.
+        */}
+        <Button
+          variant={mode === 'pack' ? 'primary' : 'secondary'}
+          onClick={() => setMode('pack')}
+        >
+          <Library className="h-4 w-4" aria-hidden />
+          {t.create.tabPack}
+        </Button>
       </div>
 
-      <Card className="space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="title">{t.create.titleLabel}</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={t.create.titlePlaceholder}
-          />
-        </div>
-
-        {mode === 'upload' ? (
-          <div className="space-y-2">
-            <input
-              ref={fileInput}
-              type="file"
-              accept="video/*,.mkv"
-              className="hidden"
-              onChange={(e) => void pickFile(e.target.files?.[0] ?? null)}
+      {mode === 'pack' ? (
+        <PackSourcePicker displayName={displayName} />
+      ) : (
+        <Card className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="title">{t.create.titleLabel}</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t.create.titlePlaceholder}
             />
-            <button
-              type="button"
-              onClick={() => fileInput.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                void pickFile(e.dataTransfer.files?.[0] ?? null);
-              }}
-              className={cn(
-                'flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-strong text-sm text-text-muted transition-colors',
-                'hover:border-select hover:bg-select/5 hover:text-text',
-                file && 'border-select bg-select/10 text-text',
-              )}
-            >
-              {file ? (
-                <>
-                  <FileVideo className="h-7 w-7 text-select" aria-hidden />
-                  <span className="font-bold">{file.name}</span>
-                  <span className="text-xs text-text-faint">{formatBytes(file.size)}</span>
-                </>
-              ) : (
-                <>
-                  <Upload className="h-7 w-7 text-text-faint" aria-hidden />
-                  <span>{t.create.dropzone}</span>
-                </>
-              )}
-            </button>
-            {/* Une precision, pas un avertissement : le cadre en tiretes
-                la faisait lire comme un probleme a regler. */}
-            <p className="text-xs leading-relaxed text-text-faint">
-              {t.create.multiTrackWarning}
-            </p>
           </div>
-        ) : (
-          <div className="space-y-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="yt">{t.create.youtubeLabel}</Label>
-              <Input
-                id="yt"
-                type="url"
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-                placeholder={t.create.youtubePlaceholder}
+
+          {mode === 'upload' ? (
+            <div className="space-y-2">
+              <input
+                ref={fileInput}
+                type="file"
+                accept="video/*,.mkv"
+                className="hidden"
+                onChange={(e) => void pickFile(e.target.files?.[0] ?? null)}
               />
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  void pickFile(e.dataTransfer.files?.[0] ?? null);
+                }}
+                className={cn(
+                  'flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-strong text-sm text-text-muted transition-colors',
+                  'hover:border-select hover:bg-select/5 hover:text-text',
+                  file && 'border-select bg-select/10 text-text',
+                )}
+              >
+                {file ? (
+                  <>
+                    <FileVideo className="h-7 w-7 text-select" aria-hidden />
+                    <span className="font-bold">{file.name}</span>
+                    <span className="text-xs text-text-faint">
+                      {formatBytes(file.size)}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-7 w-7 text-text-faint" aria-hidden />
+                    <span>{t.create.dropzone}</span>
+                  </>
+                )}
+              </button>
+              {/* Une precision, pas un avertissement : le cadre en tiretes
+                la faisait lire comme un probleme a regler. */}
+              <p className="text-xs leading-relaxed text-text-faint">
+                {t.create.multiTrackWarning}
+              </p>
             </div>
-            <Alert tone="warn">{t.create.youtubeWarning}</Alert>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="yt">{t.create.youtubeLabel}</Label>
+                <Input
+                  id="yt"
+                  type="url"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder={t.create.youtubePlaceholder}
+                />
+              </div>
+              <Alert tone="warn">{t.create.youtubeWarning}</Alert>
+            </div>
+          )}
 
-        {/* L'intention de partager se pose souvent des le depart : on
+          {/* L'intention de partager se pose souvent des le depart : on
             prepare une scene pour le groupe, pas pour une seule soiree. */}
-        <div className="panel flex items-start gap-3 p-3">
-          <Toggle
-            checked={keepAsPack}
-            onChange={setKeepAsPack}
-            label={t.create.keepLabel}
-          />
-          <div className="space-y-0.5">
-            <p className="text-sm font-bold">{t.create.keepLabel}</p>
-            <p className="text-xs text-text-faint">
-              {mode === 'youtube' ? t.create.keepHelpUrl : t.create.keepHelpUpload}
-            </p>
+          <div className="panel flex items-start gap-3 p-3">
+            <Toggle
+              checked={keepAsPack}
+              onChange={setKeepAsPack}
+              label={t.create.keepLabel}
+            />
+            <div className="space-y-0.5">
+              <p className="text-sm font-bold">{t.create.keepLabel}</p>
+              <p className="text-xs text-text-faint">
+                {mode === 'youtube' ? t.create.keepHelpUrl : t.create.keepHelpUpload}
+              </p>
+            </div>
           </div>
-        </div>
 
-        {progress !== null ? (
-          <div className="space-y-1">
-            <Progress value={progress} indeterminate={progress === 0} />
-            <p className="text-xs text-text-faint">{t.create.uploading}</p>
-          </div>
-        ) : null}
+          {progress !== null ? (
+            <div className="space-y-1">
+              <Progress value={progress} indeterminate={progress === 0} />
+              <p className="text-xs text-text-faint">{t.create.uploading}</p>
+            </div>
+          ) : null}
 
-        {error ? <Alert tone="danger">{error}</Alert> : null}
+          {error ? <Alert tone="danger">{error}</Alert> : null}
 
-        <Button
-          variant="primary"
-          className="w-full"
-          disabled={!canSubmit}
-          loading={submit.isPending}
-          onClick={() => submit.mutate()}
-        >
-          {mode === 'upload' ? t.create.submitUpload : t.create.submitYoutube}
-        </Button>
-      </Card>
+          <Button
+            variant="primary"
+            className="w-full"
+            disabled={!canSubmit}
+            loading={submit.isPending}
+            onClick={() => submit.mutate()}
+          >
+            {mode === 'upload' ? t.create.submitUpload : t.create.submitYoutube}
+          </Button>
+        </Card>
+      )}
     </AppShell>
   );
 }

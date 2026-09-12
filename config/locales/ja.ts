@@ -229,6 +229,12 @@ export const ja = {
       '書き出しのあと、区切りと登場人物ごとコミュニティのタブに入ります。録音のほうは決して保存されません。',
   },
 
+  theme: {
+    label: '見た目',
+    retro: 'レトロ',
+    modern: 'モダン',
+  },
+
   legal: {
     mentions: '運営者情報',
     privacy: 'プライバシー',
@@ -318,6 +324,9 @@ export const ja = {
     title: '新しいシーン',
     tabUpload: 'ファイルを取り込む',
     tabYoutube: 'YouTube のリンクを貼る',
+    tabPack: 'パックから始める',
+    packHelp:
+      '下準備は不要です。シーンはすでに区切られているので、役を選んで録音するだけ。全部の一覧はコミュニティのタブにあります。',
     titleLabel: 'シーンの題名',
     titlePlaceholder: '橋の上の決闘',
     dropzone: 'MP4 をここにドロップ、またはクリックして選択',
@@ -361,6 +370,8 @@ export const ja = {
       '自動判定は話者をよく取り違えます。直すのは今です。ロビーを開いたあとは変更できません。',
     charactersHeading: '検出された登場人物',
     linesHeading: 'せりふ',
+    linesOf: (name: string) => `${name} のせりふ`,
+    showAllLines: 'すべて見る',
     lineCount: (n: number) => `せりふ ${n} 件`,
     speakTime: '発話時間',
     playLongest: 'いちばん長い部分を聞く',

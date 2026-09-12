@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { Combine, Pause, Play, RotateCcw, Scissors, Trash2, Users } from 'lucide-react';
+import { Combine, Pause, Play, RotateCcw, Scissors, Trash2, Users, X } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
@@ -39,6 +39,16 @@ export function PrepareScreen() {
   const [splitOpen, setSplitOpen] = useState(false);
   const [splitName, setSplitName] = useState('');
   const [confirmLobby, setConfirmLobby] = useState(false);
+  /**
+   * Ne montrer que les repliques d'un personnage.
+   *
+   * C'est ce qui rend le travail en lot simple. Le cas frequent n'est
+   * pas « ces sept repliques au hasard » mais « tout ce que la detection
+   * a mis sur Tom appartient en fait a Slugorne ». Sans filtre, il
+   * fallait les retrouver une a une dans quarante lignes ; avec, on
+   * clique le personnage, on prend tout, on reassigne.
+   */
+  const [filtreChar, setFiltreChar] = useState<string | null>(null);
 
   const stats = useMemo(
     () => statsByCharacter(characters, lines, clips),
@@ -70,6 +80,10 @@ export function PrepareScreen() {
     else next.add(id);
     return next;
   }
+
+  const lignesVisibles = filtreChar
+    ? lines.filter((l) => l.character_id === filtreChar)
+    : lines;
 
   const selectedLineIds = [...selectedLines];
   const selectedCharIds = [...selectedChars];
@@ -165,10 +179,26 @@ export function PrepareScreen() {
                 </div>
 
                 <div className="flex items-center justify-between pl-6 text-xs text-text-faint">
-                  <span>
+                  {/* Le compteur est le filtre : c'est le mot sur lequel
+                      on a envie de cliquer quand on veut voir ce que ce
+                      personnage dit. */}
+                  <button
+                    type="button"
+                    aria-pressed={filtreChar === character.id}
+                    onClick={() => {
+                      setSelectedLines(new Set());
+                      setFiltreChar(
+                        filtreChar === character.id ? null : character.id,
+                      );
+                    }}
+                    className={cn(
+                      'min-h-8 rounded-md px-1.5 text-left transition-colors hover:bg-surface hover:text-text',
+                      filtreChar === character.id && 'bg-select/15 font-bold text-select',
+                    )}
+                  >
                     {t.prepare.lineCount(stat?.lineCount ?? 0)} ·{' '}
                     {formatDuration(stat?.speakMs ?? 0)}
-                  </span>
+                  </button>
                   {stat?.longestLine ? (
                     <Button
                       size="sm"
@@ -216,20 +246,37 @@ export function PrepareScreen() {
         {/* ── Colonne droite : repliques ─────────────────────────────── */}
         <section className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold">{t.prepare.linesHeading}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-sm font-bold">
+                {filtreChar
+                  ? t.prepare.linesOf(charById.get(filtreChar)?.name ?? '')
+                  : t.prepare.linesHeading}
+              </h2>
+              {filtreChar ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setFiltreChar(null);
+                    setSelectedLines(new Set());
+                  }}
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden />
+                  {t.prepare.showAllLines}
+                </Button>
+              ) : null}
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() =>
                   setSelectedLines((current) =>
-                    current.size === lines.length
+                    current.size === lignesVisibles.length
                       ? new Set()
-                      : new Set(lines.map((l) => l.id)),
+                      : new Set(lignesVisibles.map((l) => l.id)),
                   )
                 }
               >
-                {selectedLines.size === lines.length && lines.length > 0
+                {selectedLines.size === lignesVisibles.length && lignesVisibles.length > 0
                   ? t.prepare.selectNone
                   : t.prepare.selectAll}
               </Button>
@@ -277,7 +324,7 @@ export function PrepareScreen() {
           <p className="text-xs text-text-faint">{t.prepare.textIsAGuide}</p>
 
           <div className="space-y-1">
-            {lines.map((line) => {
+            {lignesVisibles.map((line) => {
               const character = charById.get(line.character_id);
               const checked = selectedLines.has(line.id);
               return (

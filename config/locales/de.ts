@@ -233,6 +233,12 @@ export const de = {
       'Sie kommt nach der Ausgabe in den Reiter Community, mit Schnitt und Figuren. Eure Aufnahmen werden nie aufbewahrt.',
   },
 
+  theme: {
+    label: 'Aussehen',
+    retro: 'Retro',
+    modern: 'Modern',
+  },
+
   legal: {
     mentions: 'Impressum',
     privacy: 'Datenschutz',
@@ -325,6 +331,9 @@ export const de = {
     title: 'Neue Szene',
     tabUpload: 'Datei importieren',
     tabYoutube: 'YouTube-Link einfügen',
+    tabPack: 'Mit einem Pack starten',
+    packHelp:
+      'Nichts vorzubereiten: die Szene ist schon geschnitten, ihr wählt die Rollen und nehmt auf. Der ganze Katalog steht im Reiter Community.',
     titleLabel: 'Titel der Szene',
     titlePlaceholder: 'Das Duell auf der Brücke',
     dropzone: 'Zieh deine MP4 hierher, oder klicke, um sie zu wählen',
@@ -368,6 +377,8 @@ export const de = {
       'Die automatische Erkennung verwechselt oft die Figur. Jetzt ist der Moment zu korrigieren: sobald die Lobby offen ist, geht nichts mehr.',
     charactersHeading: 'Erkannte Figuren',
     linesHeading: 'Sätze',
+    linesOf: (name: string) => `Sätze von ${name}`,
+    showAllLines: 'Alles zeigen',
     lineCount: (n: number) => (n === 1 ? '1 Satz' : `${n} Sätze`),
     speakTime: 'Sprechzeit',
     playLongest: 'Längsten Ausschnitt anhören',

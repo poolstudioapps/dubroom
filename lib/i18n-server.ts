@@ -3,6 +3,8 @@ import { cookies, headers } from 'next/headers';
 import { fr } from '@/config/locales/fr';
 import type { Dictionary, Locale } from '@/config/i18n';
 import { LOCALE_COOKIE, resolveLocale } from '@/config/i18n';
+import type { Theme } from '@/config/theme';
+import { THEME_COOKIE, resolveTheme } from '@/config/theme';
 
 /**
  * Le dictionnaire, cote serveur.
@@ -42,4 +44,10 @@ export async function getDictionary(locale?: Locale): Promise<Dictionary> {
     // Une langue absente ou cassee ne doit pas rendre le site blanc.
     return fr;
   }
+}
+
+/** La peau demandee par cette requete. */
+export async function currentTheme(): Promise<Theme> {
+  const jar = await cookies();
+  return resolveTheme(jar.get(THEME_COOKIE)?.value);
 }

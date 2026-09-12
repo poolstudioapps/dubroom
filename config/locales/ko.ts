@@ -229,6 +229,12 @@ export const ko = {
       '렌더링이 끝나면 구간과 등장인물째로 커뮤니티 탭에 들어갑니다. 녹음 쪽은 절대 보관되지 않습니다.',
   },
 
+  theme: {
+    label: '디자인',
+    retro: '레트로',
+    modern: '모던',
+  },
+
   legal: {
     mentions: '운영자 정보',
     privacy: '개인정보',
@@ -317,6 +323,9 @@ export const ko = {
     title: '새 장면',
     tabUpload: '파일 가져오기',
     tabYoutube: 'YouTube 링크 붙여넣기',
+    tabPack: '팩에서 시작하기',
+    packHelp:
+      '준비할 게 없습니다. 장면은 이미 나뉘어 있으니 배역만 고르고 녹음하면 됩니다. 전체 목록은 커뮤니티 탭에 있습니다.',
     titleLabel: '장면 제목',
     titlePlaceholder: '다리 위의 결투',
     dropzone: 'MP4를 여기에 놓거나, 눌러서 고르세요',
@@ -360,6 +369,8 @@ export const ko = {
       '자동 판별은 화자를 자주 틀립니다. 지금이 고칠 때입니다. 로비를 열면 바꿀 수 없습니다.',
     charactersHeading: '찾아낸 등장인물',
     linesHeading: '대사',
+    linesOf: (name: string) => `${name}의 대사`,
+    showAllLines: '전부 보기',
     lineCount: (n: number) => `대사 ${n}개`,
     speakTime: '발화 시간',
     playLongest: '가장 긴 부분 듣기',

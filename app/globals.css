@@ -59,6 +59,13 @@
   --color-accent: oklch(0.78 0.2 143);
   --color-accent-hover: oklch(0.72 0.2 143);
   --color-accent-ink: oklch(0.22 0.06 143);
+  /* L'encre d'une pastille d'accent n'est pas celle d'un bouton
+     d'accent. Sur un bouton, le fond est l'accent plein et l'encre
+     tranche dessus ; sur une pastille, le fond est l'accent tres dilue,
+     donc presque blanc, et il faut au contraire une encre sombre. Le
+     meme jeton pour les deux rendait la pastille illisible des que
+     l'encre du bouton passait au blanc. */
+  --color-badge-accent-ink: oklch(0.28 0.08 143);
 
   /* Le vert accent est fait pour des aplats de boutons. Le texte et les
      selections ont besoin d un ton qui tienne sur metal clair. */
@@ -365,5 +372,211 @@
       oklch(0 0 0 / 0.22) 0 2px,
       transparent 2px 6px
     );
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PEAU MODERNE
+
+   Le produit s'adresse a deux publics. La peau d'origine parle a qui a
+   grandi avec les jeux televises du samedi soir : un poste, des plaques
+   vissees, des boutons qui s'enfoncent. Celle-ci vise l'autre bout, les
+   jeux de soiree en ligne d'aujourd'hui.
+
+   Ce qui change tient en une phrase : plus aucune imitation de matiere.
+   Des aplats francs, de grands rayons, des ombres douces et portees
+   loin, une couleur d'accent qui fait tout le travail. Ce qui ne change
+   pas : la structure, les jetons, les composants. Une seule interface,
+   deux dessins.
+
+   Tout passe par la redefinition des memes variables : aucun ecran n'est
+   double, sinon les deux peaux divergeraient des la premiere retouche.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme='modern'] {
+  /* ── Le decor ────────────────────────────────────────────────────
+     Un bleu nuit profond plutot qu'un violet de velours : c'est la
+     couleur de fond des jeux de soiree en ligne, et elle laisse
+     respirer les cartes claires posees dessus. */
+  --color-room: oklch(0.3 0.11 268);
+  --color-room-deep: oklch(0.22 0.09 268);
+  --color-bezel: oklch(0.38 0.13 268);
+  --color-bezel-dark: oklch(0.3 0.11 268);
+  --color-console: oklch(0.62 0.14 255);
+  --color-console-dark: oklch(0.5 0.13 255);
+
+  /* ── Les surfaces ────────────────────────────────────────────────
+     Blanc franc, et des gris a peine teintes. La peau d'origine
+     jouait le metal creme ; celle-ci joue le papier. */
+  --color-screen: oklch(1 0 0);
+  --color-surface: oklch(0.97 0.004 268);
+  --color-surface-raised: oklch(1 0 0);
+  --color-surface-sunken: oklch(0.94 0.006 268);
+  --color-border: oklch(0.9 0.008 268);
+  --color-border-strong: oklch(0.82 0.012 268);
+
+  --color-text: oklch(0.24 0.02 268);
+  --color-text-muted: oklch(0.45 0.015 268);
+  --color-text-faint: oklch(0.56 0.012 268);
+
+  /* ── L'accent ────────────────────────────────────────────────────
+     Le vert du poste devient un bleu vif, la couleur d'action des
+     jeux en ligne. L'encre passe en blanc : un bouton plein se lit en
+     blanc, pas en vert sombre. */
+  /* 0.58 donnait 4.4 pour du texte blanc pose dessus, juste sous la
+     barre. Le bleu s'assombrit d'un cran, ce qui ne se voit pas et
+     passe a 5.1. */
+  --color-accent: oklch(0.54 0.2 258);
+  --color-accent-hover: oklch(0.48 0.2 258);
+  --color-accent-ink: oklch(1 0 0);
+  --color-link: oklch(0.5 0.2 258);
+  --color-select: oklch(0.54 0.2 258);
+  --color-badge-accent-ink: oklch(0.36 0.16 258);
+
+  --color-ok: oklch(0.64 0.17 152);
+  --color-warn: oklch(0.75 0.16 78);
+  --color-danger: oklch(0.6 0.22 22);
+
+  --radius-card: 1rem;
+}
+
+/* La peau moderne n'a pas de texte secondaire plus clair que la barre :
+   son fond etant du blanc franc, 0.56 y donne 4.9. */
+
+@layer base {
+  [data-theme='modern'] body {
+    /* Un seul degre de degrade, et pas de grain : la matiere, c'est
+       justement ce dont cette peau se passe. */
+    background-color: var(--color-room-deep);
+    background-image: linear-gradient(
+      170deg,
+      var(--color-room) 0%,
+      var(--color-room-deep) 60%
+    );
+  }
+
+  /* Les titres perdent la condensee d'enseigne. */
+  [data-theme='modern'] h1 {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  /* ── Le bouton ───────────────────────────────────────────────────
+     Il ne s'enfonce plus sur une levre : il se souleve legerement et
+     retombe. Meme geste, autre langage. */
+  [data-theme='modern'] .btn-3d {
+    border-radius: 0.875rem;
+    box-shadow:
+      0 2px 0 0 color-mix(in oklch, var(--btn-lip, oklch(0.4 0.02 268)) 35%, transparent),
+      0 8px 18px -6px oklch(0 0 0 / 0.35);
+    transition:
+      transform 120ms cubic-bezier(0.2, 0, 0, 1),
+      box-shadow 120ms ease-out,
+      background-color 120ms ease-out;
+  }
+
+  [data-theme='modern'] .btn-3d:active:not(:disabled) {
+    transform: translateY(2px) scale(0.985);
+    box-shadow: 0 2px 6px 0 oklch(0 0 0 / 0.25);
+  }
+
+  [data-theme='modern'] .btn-3d:disabled {
+    box-shadow: none;
+  }
+
+  /* ── La plaque ───────────────────────────────────────────────────
+     Les quatre vis disparaissent, le metal aussi. Reste une carte. */
+  [data-theme='modern'] .plate,
+  [data-theme='modern'] .panel {
+    background-color: var(--color-surface-raised);
+    background-image: none;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.04), 0 8px 24px -12px oklch(0 0 0 / 0.12);
+  }
+
+  /* ── L'enseigne ──────────────────────────────────────────────────
+     Plus d'ombre portee dure ni de capitales : un titre epais, serre,
+     dans la police de texte. */
+  [data-theme='modern'] .signage {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    text-transform: none;
+    letter-spacing: -0.025em;
+    text-shadow: none;
+  }
+
+  /* ── Le poste de television ──────────────────────────────────────
+     Le meuble devient une carte. Le cadre epais se reduit a un filet,
+     l'ecran occupe toute la place, et les deux morceaux de decor — le
+     haut-parleur et la console — disparaissent. */
+  [data-theme='modern'] .tv-frame {
+    border-width: 1px !important;
+    border-color: oklch(1 0 0 / 0.14);
+    background-color: oklch(1 0 0 / 0.06);
+    border-radius: 1.75rem;
+    box-shadow: 0 24px 70px -24px oklch(0 0 0 / 0.55);
+    padding: 0.75rem;
+  }
+
+  [data-theme='modern'] .tv-screen {
+    border-radius: 1.25rem;
+    box-shadow: none !important;
+  }
+
+  /* Ces trois-la portent des utilitaires d'affichage (`hidden lg:flex`,
+     `flex`) : sans `!important`, la regle conditionnelle de Tailwind
+     reprend la main au-dela de 1024 px. */
+  [data-theme='modern'] .tv-gloss,
+  [data-theme='modern'] .tv-speaker,
+  [data-theme='modern'] .tv-console {
+    display: none !important;
+  }
+
+  /* ── Les onglets ─────────────────────────────────────────────────
+     Ils ne sont plus des languettes collees au poste mais des pilules
+     posees a cote, comme dans une barre de navigation d'application. */
+  [data-theme='modern'] .tab {
+    border-radius: 9999px;
+    border-width: 0;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  [data-theme='modern'] .tab {
+    border-width: 0 !important;
+  }
+
+  [data-theme='modern'] .tab-on {
+    background-color: oklch(1 0 0 / 0.95);
+    color: var(--color-text);
+    box-shadow: 0 4px 12px -4px oklch(0 0 0 / 0.4);
+  }
+
+  [data-theme='modern'] .tab-off {
+    background-color: oklch(1 0 0 / 0.08);
+  }
+
+  [data-theme='modern'] .tab-off:hover {
+    background-color: oklch(1 0 0 / 0.16);
+  }
+
+  /* ── Le ruban adhesif et la diode ────────────────────────────────
+     Deux clins d'oeil au materiel qui n'ont pas de sens ici. */
+  [data-theme='modern'] .taped::before,
+  [data-theme='modern'] .taped::after {
+    display: none;
+  }
+
+  [data-theme='modern'] .led {
+    background: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent) 25%, transparent);
+  }
+
+  [data-theme='modern'] .grille {
+    background-image: none;
   }
 }

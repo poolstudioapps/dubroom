@@ -4,7 +4,7 @@ import { Anton, Nunito } from 'next/font/google';
 import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
 import { APP_NAME } from '@/config/strings';
-import { currentLocale, getDictionary } from '@/lib/i18n-server';
+import { currentLocale, currentTheme, getDictionary } from '@/lib/i18n-server';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -109,12 +109,18 @@ export default async function RootLayout({
   // La langue est choisie ici, une fois par requete, puis descendue a
   // tout l'arbre. Le `lang` de la page suit : c'est lui qui fait la
   // cesure et la synthese vocale correctes.
-  const locale = await currentLocale();
+  const [locale, theme] = await Promise.all([currentLocale(), currentTheme()]);
 
   return (
-    <html lang={locale} className={`${display.variable} ${body.variable}`}>
+    <html
+      lang={locale}
+      // La peau est posee des le rendu serveur : sans cela, on verrait la
+      // peau par defaut le temps que le client se reveille.
+      data-theme={theme}
+      className={`${display.variable} ${body.variable}`}
+    >
       <body className="min-h-dvh antialiased">
-        <Providers locale={locale}>
+        <Providers locale={locale} theme={theme}>
           {children}
         </Providers>
       </body>
