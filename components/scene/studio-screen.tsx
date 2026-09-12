@@ -9,6 +9,7 @@ import {
   useState,
 } from 'react';
 import {
+  Check,
   ChevronLeft,
   ChevronRight,
   Circle,
@@ -16,6 +17,7 @@ import {
   Square,
 } from 'lucide-react';
 
+import { FinishedPanel } from '@/components/scene/finished-panel';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
@@ -60,6 +62,7 @@ export function StudioScreen() {
   const [takeUrl, setTakeUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [micReady, setMicReady] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
 
   const myClips = useMemo(
     () => (me ? clipsForParticipant(me.id, characters, clips) : []),
@@ -73,6 +76,10 @@ export function StudioScreen() {
     () => selectedTakeByClip(takesQuery.data ?? []),
     [takesQuery.data],
   );
+
+  const doneCount = myClips.filter((c) => selectedTakes.has(c.id)).length;
+  const allDone = myClips.length > 0 && doneCount === myClips.length;
+  const isLastClip = index >= myClips.length - 1;
 
   const clip = myClips[index];
   const character = characters.find((c) => c.id === clip?.character_id) ?? null;
@@ -327,6 +334,26 @@ export function StudioScreen() {
 
   const recording = mode === 'recording';
 
+  if (acknowledged && allDone) {
+    return (
+      <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
+        <FinishedPanel
+          sessionId={session.id}
+          myParticipantId={me.id}
+          onBack={() => setAcknowledged(false)}
+        />
+        <StudioSidebar
+          backing={backing}
+          onBacking={setBacking}
+          micOffset={micOffset}
+          onMicOffset={setMicOffset}
+          done={doneCount}
+          total={myClips.length}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
       <div className="space-y-3">
@@ -406,6 +433,15 @@ export function StudioScreen() {
         {analysis?.truncated ? (
           <Alert tone="warn">{t.studio.overflowWarning}</Alert>
         ) : null}
+        {allDone ? (
+          <Alert tone="ok">
+            <span className="font-bold">{t.studio.finishedTitle}</span>{' '}
+            {t.studio.allTakesSaved}
+          </Alert>
+        ) : currentTake && !upload.isPending ? (
+          <Alert tone="ok">{t.studio.takeSaved}</Alert>
+        ) : null}
+
         {upload.isPending ? (
           <p className="flex items-center gap-2 text-xs text-text-faint">
             <Spinner />
@@ -456,14 +492,28 @@ export function StudioScreen() {
               <ChevronLeft className="h-4 w-4" aria-hidden />
               {t.studio.previous}
             </Button>
-            <Button
-              variant={currentTake ? 'primary' : 'secondary'}
-              disabled={index >= myClips.length - 1 || recording}
-              onClick={() => setIndex((i) => Math.min(myClips.length - 1, i + 1))}
-            >
-              {currentTake ? t.studio.validate : t.studio.next}
-              <ChevronRight className="h-4 w-4" aria-hidden />
-            </Button>
+            {isLastClip ? (
+              // Sur le dernier clip, « suivant » n'a nulle part ou aller :
+              // le bouton restait grise et donnait a croire qu'on ne
+              // pouvait pas valider, alors que la prise etait deja envoyee.
+              <Button
+                variant={currentTake ? 'primary' : 'secondary'}
+                disabled={!currentTake || recording}
+                onClick={() => setAcknowledged(true)}
+              >
+                <Check className="h-4 w-4" aria-hidden />
+                {t.studio.finish}
+              </Button>
+            ) : (
+              <Button
+                variant={currentTake ? 'primary' : 'secondary'}
+                disabled={recording}
+                onClick={() => setIndex((i) => Math.min(myClips.length - 1, i + 1))}
+              >
+                {currentTake ? t.studio.validate : t.studio.next}
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -481,7 +531,7 @@ export function StudioScreen() {
         onBacking={setBacking}
         micOffset={micOffset}
         onMicOffset={setMicOffset}
-        done={myClips.filter((c) => selectedTakes.has(c.id)).length}
+        done={doneCount}
         total={myClips.length}
       />
     </div>

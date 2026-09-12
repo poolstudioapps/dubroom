@@ -185,7 +185,12 @@ export const t = {
     stop: 'Arrêter',
     playTake: 'Ma prise',
     redo: 'Refaire',
-    validate: 'Valider',
+    validate: 'Valider et suivant',
+    finish: 'J’ai terminé',
+    takeSaved: 'Prise enregistrée.',
+    backToClips: 'Revenir à mes clips',
+    allTakesSaved:
+      'Toutes tes prises sont enregistrées. Tu peux fermer la page : l’hôte lancera le rendu quand tout le monde aura fini. Tu peux aussi en refaire une tant que le rendu n’est pas lancé.',
     validated: 'Validé',
     previous: 'Précédent',
     next: 'Suivant',
