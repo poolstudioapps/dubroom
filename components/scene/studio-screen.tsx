@@ -1,21 +1,8 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Circle,
-  Play,
-  Square,
-} from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Check, ChevronLeft, ChevronRight, Circle, Play, Square } from 'lucide-react';
 
 import { FinishedPanel } from '@/components/scene/finished-panel';
 import { RythmoBand } from '@/components/scene/rythmo-band';
@@ -42,10 +29,12 @@ import { humanizeError } from '@/lib/errors';
 import { clipsForParticipant, selectedTakeByClip } from '@/lib/scene-stats';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import { useShortViewport } from '@/lib/viewport';
 
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
 export function StudioScreen() {
+  const compact = useShortViewport();
   const { session, characters, clips, lines, me, refetch } = useSceneCtx();
   const media = useMediaUrls(session);
 
@@ -320,7 +309,7 @@ export function StudioScreen() {
 
   if (myClips.length === 0) {
     return (
-      <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_22rem]">
         <Card className="space-y-2">
           <h1 className="text-lg font-semibold">{t.studio.title}</h1>
           <p className="text-sm text-text-muted">
@@ -345,7 +334,7 @@ export function StudioScreen() {
 
   if (acknowledged && allDone) {
     return (
-      <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
+      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_22rem]">
         <FinishedPanel
           sessionId={session.id}
           myParticipantId={me.id}
@@ -364,9 +353,15 @@ export function StudioScreen() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
-      <div className="space-y-2">
-        <header className="flex flex-wrap items-center justify-between gap-2">
+    <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[1fr_22rem]">
+      {/*
+        Colonne principale : tout y est de hauteur fixe sauf l'image, qui
+        absorbe ce qui reste. C'est ce qui permet a l'ecran de tenir dans
+        la fenetre quelle qu'elle soit, au lieu de pousser les commandes
+        sous la ligne de flottaison pendant qu'on enregistre.
+      */}
+      <div className="flex min-h-0 flex-col gap-2">
+        <header className="flex shrink-0 flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span
               className="h-3 w-3 rounded-full"
@@ -398,154 +393,158 @@ export function StudioScreen() {
           </div>
         </header>
 
-        {/* Hauteur bornee : pendant une prise il faut voir l'image ET la
-            bande rythmo ET les commandes. Une video pleine hauteur
-            repoussait tout le reste sous la ligne de flottaison. */}
-        <div className="flex max-h-[42vh] items-center justify-center overflow-hidden rounded-card border-2 border-bezel-dark bg-black">
+        {/*
+          L'image occupe le reste, jamais plus. `min-h-0` est ce qui
+          autorise un enfant de flexbox a retrecir sous sa taille
+          naturelle : sans lui, la video impose sa hauteur et fait
+          deborder toute la colonne.
+        */}
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-card border-2 border-bezel-dark bg-black">
           {media.data?.video ? (
             <video
               ref={videoRef}
               src={media.data.video}
               playsInline
               preload="auto"
-              className="max-h-[42vh] w-full object-contain"
+              className="h-full w-full object-contain"
             />
           ) : (
-            <div className="flex aspect-video w-full items-center justify-center">
-              <Spinner />
-            </div>
+            <Spinner />
           )}
         </div>
 
-        <SpeakCue
-          character={character}
-          clip={clip}
-          videoRef={videoRef}
-          active={mode !== 'idle'}
-        />
+        <div className="shrink-0 space-y-2">
+          <SpeakCue
+            character={character}
+            clip={clip}
+            videoRef={videoRef}
+            active={mode !== 'idle'}
+          />
 
-        <RythmoBand
-          videoRef={videoRef}
-          lines={lines}
-          characters={characters}
-          activeCharacterId={character.id}
-          clip={clip}
-        />
+          <RythmoBand
+            videoRef={videoRef}
+            lines={lines}
+            characters={characters}
+            activeCharacterId={character.id}
+            clip={clip}
+            height={compact ? 104 : 132}
+          />
 
-        <WaveformView
-          analysis={analysis}
-          clip={clip}
-          videoRef={videoRef}
-          voicePeaks={session.voice_peaks}
-          voicePeaksHz={session.voice_peaks_hz}
-          characterColor={character.color}
-        />
-        <p className="text-xs text-text-faint">{t.studio.originalTrace}</p>
+          <WaveformView
+            analysis={analysis}
+            clip={clip}
+            videoRef={videoRef}
+            voicePeaks={session.voice_peaks}
+            voicePeaksHz={session.voice_peaks_hz}
+            characterColor={character.color}
+            height={compact ? 68 : 96}
+          />
+        </div>
 
-        {analysis?.truncated ? (
-          <Alert tone="warn">{t.studio.overflowWarning}</Alert>
-        ) : null}
-        {allDone ? (
-          <Alert tone="ok">
-            <span className="font-bold">{t.studio.finishedTitle}</span>{' '}
-            {t.studio.allTakesSaved}
-          </Alert>
-        ) : currentTake && !upload.isPending ? (
-          <Alert tone="ok">{t.studio.takeSaved}</Alert>
-        ) : null}
-
-        {upload.isPending ? (
-          <p className="flex items-center gap-2 text-xs text-text-faint">
-            <Spinner />
-            {t.studio.uploading}
-          </p>
-        ) : null}
-        {error ? <Alert tone="danger">{error}</Alert> : null}
-
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={() => void playOriginal()} disabled={recording}>
-            <Play className="h-4 w-4" aria-hidden />
-            {t.studio.playOriginal}
-          </Button>
-
-          {recording ? (
-            <Button variant="record" onClick={() => void finishRecording()}>
-              <Square className="h-4 w-4" aria-hidden />
-              {t.studio.stop}
-            </Button>
-          ) : (
-            <Button variant="record" onClick={() => void startRecording()}>
-              <Circle className="h-4 w-4 fill-current" aria-hidden />
-              {currentTake ? t.studio.redo : t.studio.record}
-            </Button>
-          )}
-
-          <Button
-            onClick={() => void playTake()}
-            disabled={recording || !takeUrl}
-          >
-            <Play className="h-4 w-4" aria-hidden />
-            {t.studio.playTake}
-          </Button>
-
-          {mode !== 'idle' && !recording ? (
-            <Button variant="ghost" onClick={stopAll}>
-              <Square className="h-4 w-4" aria-hidden />
-              {t.studio.stop}
-            </Button>
+        <div className="shrink-0 space-y-2">
+          {analysis?.truncated ? (
+            <Alert tone="warn">{t.studio.overflowWarning}</Alert>
+          ) : null}
+          {allDone ? (
+            <Alert tone="ok">
+              <span className="font-bold">{t.studio.finishedTitle}</span>{' '}
+              {t.studio.allTakesSaved}
+            </Alert>
+          ) : currentTake && !upload.isPending ? (
+            <Alert tone="ok">{t.studio.takeSaved}</Alert>
           ) : null}
 
-          <div className="ml-auto flex gap-2">
-            <Button
-              variant="ghost"
-              disabled={index === 0 || recording}
-              onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden />
-              {t.studio.previous}
+          {upload.isPending ? (
+            <p className="flex items-center gap-2 text-xs text-text-faint">
+              <Spinner />
+              {t.studio.uploading}
+            </p>
+          ) : null}
+          {error ? <Alert tone="danger">{error}</Alert> : null}
+
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => void playOriginal()} disabled={recording}>
+              <Play className="h-4 w-4" aria-hidden />
+              {t.studio.playOriginal}
             </Button>
-            {isLastClip ? (
-              // Sur le dernier clip, « suivant » n'a nulle part ou aller :
-              // le bouton restait grise et donnait a croire qu'on ne
-              // pouvait pas valider, alors que la prise etait deja envoyee.
-              <Button
-                variant={currentTake ? 'primary' : 'secondary'}
-                disabled={!currentTake || recording}
-                onClick={() => setAcknowledged(true)}
-              >
-                <Check className="h-4 w-4" aria-hidden />
-                {t.studio.finish}
+
+            {recording ? (
+              <Button variant="record" onClick={() => void finishRecording()}>
+                <Square className="h-4 w-4" aria-hidden />
+                {t.studio.stop}
               </Button>
             ) : (
-              <Button
-                variant={currentTake ? 'primary' : 'secondary'}
-                disabled={recording}
-                onClick={() => setIndex((i) => Math.min(myClips.length - 1, i + 1))}
-              >
-                {currentTake ? t.studio.validate : t.studio.next}
-                <ChevronRight className="h-4 w-4" aria-hidden />
+              <Button variant="record" onClick={() => void startRecording()}>
+                <Circle className="h-4 w-4 fill-current" aria-hidden />
+                {currentTake ? t.studio.redo : t.studio.record}
               </Button>
             )}
-          </div>
-        </div>
 
-        {!micReady ? (
-          <Alert>{t.studio.headphonesRequired}</Alert>
-        ) : null}
+            <Button onClick={() => void playTake()} disabled={recording || !takeUrl}>
+              <Play className="h-4 w-4" aria-hidden />
+              {t.studio.playTake}
+            </Button>
+
+            {mode !== 'idle' && !recording ? (
+              <Button variant="ghost" onClick={stopAll}>
+                <Square className="h-4 w-4" aria-hidden />
+                {t.studio.stop}
+              </Button>
+            ) : null}
+
+            <div className="ml-auto flex gap-2">
+              <Button
+                variant="ghost"
+                disabled={index === 0 || recording}
+                onClick={() => setIndex((i) => Math.max(0, i - 1))}
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                {t.studio.previous}
+              </Button>
+              {isLastClip ? (
+                // Sur le dernier clip, « suivant » n'a nulle part ou aller :
+                // le bouton restait grise et donnait a croire qu'on ne
+                // pouvait pas valider, alors que la prise etait deja envoyee.
+                <Button
+                  variant={currentTake ? 'primary' : 'secondary'}
+                  disabled={!currentTake || recording}
+                  onClick={() => setAcknowledged(true)}
+                >
+                  <Check className="h-4 w-4" aria-hidden />
+                  {t.studio.finish}
+                </Button>
+              ) : (
+                <Button
+                  variant={currentTake ? 'primary' : 'secondary'}
+                  disabled={recording}
+                  onClick={() => setIndex((i) => Math.min(myClips.length - 1, i + 1))}
+                >
+                  {currentTake ? t.studio.validate : t.studio.next}
+                  <ChevronRight className="h-4 w-4" aria-hidden />
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {!micReady ? <Alert>{t.studio.headphonesRequired}</Alert> : null}
+        </div>
 
         {/* Stem de fond : la seule sortie audible pendant une prise. */}
         <audio ref={musicRef} src={media.data?.music ?? undefined} preload="auto" />
         <audio ref={takeRef} src={takeUrl ?? undefined} preload="auto" />
       </div>
 
-      <StudioSidebar
-        backing={backing}
-        onBacking={setBacking}
-        micOffset={micOffset}
-        onMicOffset={setMicOffset}
-        done={doneCount}
-        total={myClips.length}
-      />
+      {/* La colonne de reglages defile pour elle seule : la page, non. */}
+      <div className="min-h-0 overflow-y-auto lg:pr-1">
+        <StudioSidebar
+          backing={backing}
+          onBacking={setBacking}
+          micOffset={micOffset}
+          onMicOffset={setMicOffset}
+          done={doneCount}
+          total={myClips.length}
+        />
+      </div>
     </div>
   );
 }

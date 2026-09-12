@@ -1,0 +1,131 @@
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { LogOut, Package, Settings, User } from 'lucide-react';
+
+import { Avatar } from '@/components/avatar';
+import { t } from '@/config/strings';
+import { useMyPackCount, useMyProfile } from '@/lib/profile';
+import { supabaseBrowser } from '@/lib/supabase/client';
+
+/**
+ * Le bouton de compte, en haut a droite.
+ *
+ * C'est la place attendue, et elle libere la barre d'onglets : « se
+ * deconnecter » y occupait un bouton permanent pour une action qu'on
+ * fait une fois par mois, pendant que le pseudo et la photo n'etaient
+ * visibles nulle part.
+ */
+export function AccountMenu() {
+  const router = useRouter();
+  const profile = useMyProfile();
+  const packs = useMyPackCount();
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  // Fermeture au clic dehors et a la touche d'echappement : un menu qui
+  // ne se ferme que par son propre bouton est un piege.
+  useEffect(() => {
+    if (!open) return;
+    function onPointer(event: PointerEvent) {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const name = profile.data?.display_name ?? '';
+
+  async function signOut() {
+    await supabaseBrowser().auth.signOut();
+    router.push('/login');
+    router.refresh();
+  }
+
+  return (
+    <div ref={root} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={t.account.menuLabel}
+        onClick={() => setOpen((value) => !value)}
+        className="btn-3d flex h-11 items-center gap-2 bg-surface-raised pl-1.5 pr-3 [--btn-lip:var(--color-border-strong)]"
+      >
+        <Avatar name={name} path={profile.data?.avatar_path} size="sm" />
+        <span className="hidden max-w-32 truncate text-sm font-bold sm:inline">
+          {name || '…'}
+        </span>
+      </button>
+
+      {open ? (
+        <div
+          role="menu"
+          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-card border-2 border-bezel-dark bg-surface-raised shadow-[0_16px_32px_-8px_rgb(0_0_0/0.6)]"
+        >
+          <div className="border-b-2 border-border px-3 py-2">
+            <p className="truncate text-sm font-bold">{name}</p>
+            <p className="text-xs text-text-faint">{t.account.menuHint}</p>
+          </div>
+
+          <MenuItem href="/compte" onSelect={() => setOpen(false)}>
+            <User className="h-4 w-4" aria-hidden />
+            {t.account.title}
+          </MenuItem>
+
+          {(packs.data ?? 0) > 0 ? (
+            <MenuItem href="/mes-packs" onSelect={() => setOpen(false)}>
+              <Package className="h-4 w-4" aria-hidden />
+              {t.nav.myPacks}
+            </MenuItem>
+          ) : null}
+
+          <MenuItem href="/sessions" onSelect={() => setOpen(false)}>
+            <Settings className="h-4 w-4" aria-hidden />
+            {t.nav.sessions}
+          </MenuItem>
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={signOut}
+            className="flex w-full items-center gap-2 border-t-2 border-border px-3 py-2.5 text-left text-sm font-bold text-danger hover:bg-surface"
+          >
+            <LogOut className="h-4 w-4" aria-hidden />
+            {t.auth.signOut}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function MenuItem({
+  href,
+  onSelect,
+  children,
+}: {
+  href: string;
+  onSelect: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      role="menuitem"
+      onClick={onSelect}
+      className="flex items-center gap-2 px-3 py-2.5 text-sm font-bold hover:bg-surface"
+    >
+      {children}
+    </Link>
+  );
+}

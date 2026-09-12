@@ -93,6 +93,18 @@
      etre lisible tout de suite, pas attendu. */
   --animate-fade-in: fade-in 260ms ease-out;
 
+  /* La replique passe sous la tete de lecture, comme en studio. */
+  --animate-rythmo-slide: rythmo-slide 3200ms linear;
+
+  @keyframes rythmo-slide {
+    from {
+      transform: translateX(9%);
+    }
+    to {
+      transform: translateX(-9%);
+    }
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;

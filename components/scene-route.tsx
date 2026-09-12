@@ -13,11 +13,13 @@ export async function SceneRoute({
   code,
   expect,
   wide,
+  fill,
   children,
 }: {
   code: string;
   expect: SceneScreen;
   wide?: boolean;
+  fill?: boolean;
   children: React.ReactNode;
 }) {
   const user = await currentUser();
@@ -30,6 +32,7 @@ export async function SceneRoute({
       defaultName={displayNameFromEmail(user.email)}
       expect={expect}
       wide={wide}
+      fill={fill}
     >
       {children}
     </ScenePage>

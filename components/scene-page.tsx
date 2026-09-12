@@ -40,6 +40,7 @@ export function ScenePage({
   defaultName,
   expect,
   wide,
+  fill,
   children,
 }: {
   code: string;
@@ -47,6 +48,7 @@ export function ScenePage({
   defaultName: string;
   expect: SceneScreen;
   wide?: boolean;
+  fill?: boolean;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -123,7 +125,9 @@ export function ScenePage({
 
   return (
     <SceneContext.Provider value={value}>
-      <AppShell wide={wide}>{children}</AppShell>
+      <AppShell wide={wide} fill={fill}>
+        {children}
+      </AppShell>
     </SceneContext.Provider>
   );
 }

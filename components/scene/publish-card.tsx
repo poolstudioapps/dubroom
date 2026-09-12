@@ -45,7 +45,7 @@ export function PublishCard() {
         </p>
         <Link
           href="/communaute"
-          className="text-sm font-bold text-link underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-sm font-bold text-link underline underline-offset-4"
         >
           {t.community.seeInCommunity}
         </Link>

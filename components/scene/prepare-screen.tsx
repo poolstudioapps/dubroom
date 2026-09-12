@@ -2,26 +2,11 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import {
-  Combine,
-  Pause,
-  Play,
-  RotateCcw,
-  Scissors,
-  Trash2,
-  Users,
-} from 'lucide-react';
+import { Combine, Pause, Play, RotateCcw, Scissors, Trash2, Users } from 'lucide-react';
 
 import { useSceneCtx } from '@/components/scene-page';
-import {
-  Alert,
-  Badge,
-  Button,
-  Card,
-  Dialog,
-  Input,
-  Spinner,
-} from '@/components/ui';
+import { CharacterPicker } from '@/components/scene/character-picker';
+import { Alert, Badge, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatDuration, formatTimecode, t } from '@/config/strings';
 import {
@@ -93,9 +78,7 @@ export function PrepareScreen() {
           <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
             {t.prepare.title}
           </h1>
-          <p className="max-w-2xl text-sm text-text-faint">
-            {t.prepare.subtitle}
-          </p>
+          <p className="max-w-2xl text-sm text-text-faint">{t.prepare.subtitle}</p>
         </div>
         <Button
           variant="primary"
@@ -106,6 +89,16 @@ export function PrepareScreen() {
           {t.prepare.openLobby}
         </Button>
       </header>
+
+      {/*
+        Cet ecran arrive juste apres la transcription, et rien n'y disait
+        ce qu'on y fait. Une phrase suffit, a condition qu'elle nomme le
+        geste : cliquer le nom porte par la replique.
+      */}
+      <Card className="space-y-1">
+        <h2 className="text-sm font-bold">{t.prepare.howTitle}</h2>
+        <p className="text-sm leading-relaxed text-text-muted">{t.prepare.howBody}</p>
+      </Card>
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
       {act.isPending ? (
@@ -119,7 +112,7 @@ export function PrepareScreen() {
         {/* ── Colonne gauche : personnages ───────────────────────────── */}
         <aside className="space-y-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-medium">{t.prepare.charactersHeading}</h2>
+            <h2 className="text-sm font-bold">{t.prepare.charactersHeading}</h2>
             <Badge>{characters.length}</Badge>
           </div>
 
@@ -138,15 +131,15 @@ export function PrepareScreen() {
                   <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() =>
-                      setSelectedChars((s) => toggle(s, character.id))
-                    }
+                    onChange={() => setSelectedChars((s) => toggle(s, character.id))}
                     aria-label={`Sélectionner ${character.name}`}
                     className="h-4 w-4 accent-[var(--color-accent)]"
                   />
                   <span
                     className="h-3 w-3 shrink-0 rounded-full"
-                    style={{ backgroundColor: characterColorVar(character.color) }}
+                    style={{
+                      backgroundColor: characterColorVar(character.color),
+                    }}
                     aria-hidden
                   />
                   <Input
@@ -208,9 +201,7 @@ export function PrepareScreen() {
               }}
             >
               <Combine className="h-4 w-4" aria-hidden />
-              {t.prepare.mergeInto(
-                charById.get(selectedCharIds[0] ?? '')?.name ?? '',
-              )}
+              {t.prepare.mergeInto(charById.get(selectedCharIds[0] ?? '')?.name ?? '')}
             </Button>
           ) : (
             <p className="text-xs text-text-faint">{t.prepare.mergeHint}</p>
@@ -220,27 +211,37 @@ export function PrepareScreen() {
         {/* ── Colonne droite : repliques ─────────────────────────────── */}
         <section className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-sm font-medium">{t.prepare.linesHeading}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold">{t.prepare.linesHeading}</h2>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() =>
+                  setSelectedLines((current) =>
+                    current.size === lines.length
+                      ? new Set()
+                      : new Set(lines.map((l) => l.id)),
+                  )
+                }
+              >
+                {selectedLines.size === lines.length && lines.length > 0
+                  ? t.prepare.selectNone
+                  : t.prepare.selectAll}
+              </Button>
+            </div>
 
             {selectedLineIds.length > 0 ? (
               <div className="flex flex-wrap items-center gap-2">
-                <select
-                  className="h-8 rounded-lg border border-border bg-surface-sunken px-2 text-xs"
-                  defaultValue=""
-                  aria-label={t.prepare.reassign}
-                  onChange={(e) => {
-                    const target = e.target.value;
-                    e.currentTarget.value = '';
-                    if (target) run(() => reassignLines(selectedLineIds, target));
-                  }}
-                >
-                  <option value="">{t.prepare.reassign}</option>
-                  {characters.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <span className="text-xs font-bold text-select">
+                  {t.prepare.selectedCount(selectedLineIds.length)}
+                </span>
+
+                <CharacterPicker
+                  value={undefined}
+                  choices={characters}
+                  placeholder={t.prepare.reassign}
+                  onPick={(target) => run(() => reassignLines(selectedLineIds, target))}
+                />
 
                 <Button size="sm" onClick={() => setSplitOpen(true)}>
                   <Scissors className="h-3.5 w-3.5" aria-hidden />
@@ -299,9 +300,7 @@ export function PrepareScreen() {
                     variant="ghost"
                     className="h-7 w-7 shrink-0"
                     aria-label="Écouter"
-                    onClick={() =>
-                      excerpt.play(line.id, line.start_ms, line.end_ms)
-                    }
+                    onClick={() => excerpt.play(line.id, line.start_ms, line.end_ms)}
                   >
                     {excerpt.playingId === line.id ? (
                       <Pause className="h-3.5 w-3.5" />
@@ -310,14 +309,13 @@ export function PrepareScreen() {
                     )}
                   </Button>
 
-                  <span
-                    className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{
-                      backgroundColor: characterColorVar(character?.color ?? ''),
-                    }}
-                    title={character?.name}
-                    aria-hidden
-                  />
+                  <span className="mt-0.5">
+                    <CharacterPicker
+                      value={character}
+                      choices={characters}
+                      onPick={(target) => run(() => reassignLines([line.id], target))}
+                    />
+                  </span>
 
                   <span className="mt-1 w-14 shrink-0 font-mono text-xs text-text-faint">
                     {formatTimecode(line.start_ms)}
@@ -362,11 +360,7 @@ export function PrepareScreen() {
                 setSplitOpen(false);
                 setSplitName('');
                 run(() =>
-                  splitLinesToNewCharacter(
-                    selectedLineIds,
-                    name,
-                    characters.length,
-                  ),
+                  splitLinesToNewCharacter(selectedLineIds, name, characters.length),
                 );
               }}
             >

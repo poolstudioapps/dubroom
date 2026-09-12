@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Library, Clapperboard } from 'lucide-react';
+import { Home, Library, Clapperboard, Package } from 'lucide-react';
 
 import { t } from '@/config/strings';
+import { useMyPackCount } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 
 /**
@@ -17,20 +18,42 @@ const TABS = [
   { href: '/communaute', label: t.nav.community, short: t.nav.communityShort, icon: Library, exact: false },
 ] as const;
 
+/** Le dernier onglet, qui n'apparait que si on a quelque chose dedans. */
+const MY_PACKS = {
+  href: '/mes-packs',
+  label: t.nav.myPacks,
+  short: t.nav.myPacksShort,
+  icon: Package,
+  exact: false,
+} as const;
+
 /**
  * Onglets du site.
  *
- * Trois destinations, et pas une de plus : au-dela, une navigation
- * devient un menu qu'on lit au lieu d'un chemin qu'on suit. Les ecrans
- * d'une scene n'y figurent pas — on y entre par une scene, jamais par la
- * barre.
+ * Quatre destinations au plus, et la quatrieme n'est la que si elle a du
+ * contenu : « Mes packs » ouvrirait sinon sur une page vide, ce qui donne
+ * l'impression d'avoir perdu quelque chose. Tant qu'elle n'a rien, c'est
+ * l'accueil qui propose d'en creer un.
+ *
+ * Les ecrans d'une scene n'y figurent pas — on y entre par une scene,
+ * jamais par la barre.
+ *
+ * Les onglets passent a la ligne plutot que de pousser la page hors de
+ * l'ecran : le quatrieme ne rentrait pas en largeur telephone, et faisait
+ * deborder tout le site de soixante-quinze pixels.
  */
-export function SiteNav() {
+export function SiteNav({ signedIn }: { signedIn?: boolean }) {
   const pathname = usePathname();
+  const packs = useMyPackCount(!!signedIn);
+
+  const tabs = [
+    ...TABS,
+    ...((packs.data ?? 0) > 0 ? [MY_PACKS] : []),
+  ];
 
   return (
-    <nav className="flex gap-1" aria-label="Navigation principale">
-      {TABS.map((tab) => {
+    <nav className="flex flex-wrap gap-1" aria-label="Navigation principale">
+      {tabs.map((tab) => {
         const active = tab.exact
           ? pathname === tab.href
           : pathname.startsWith(tab.href);

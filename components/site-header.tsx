@@ -14,9 +14,11 @@ import { APP_NAME } from '@/config/strings';
  */
 export function SiteHeader({
   right,
+  signedIn,
   className,
 }: {
   right?: React.ReactNode;
+  signedIn?: boolean;
   className?: string;
 }) {
   return (
@@ -38,7 +40,7 @@ export function SiteHeader({
         {APP_NAME}
       </Link>
       <div className="order-3 w-full sm:order-2 sm:w-auto">
-        <SiteNav />
+        <SiteNav signedIn={signedIn} />
       </div>
       <div className="order-2 ml-auto sm:order-3">{right}</div>
     </header>

@@ -12,6 +12,7 @@ import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration, t } from '@/config/strings';
 import { deletePack, listPacks, startFromPack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
+import { useMyProfile } from '@/lib/profile';
 
 /**
  * Le catalogue des scenes preparees.
@@ -21,9 +22,17 @@ import { humanizeError } from '@/lib/errors';
  * l'exercice tenable (PRD §14). Il n'y a donc ni recherche publique, ni
  * partage vers l'exterieur, ni indexation.
  */
-export function CommunityClient({ displayName }: { displayName: string }) {
+export function CommunityClient({
+  displayName,
+  scope = 'all',
+}: {
+  displayName: string;
+  /** 'mine' : la meme page, restreinte a ce que j'ai publie. */
+  scope?: 'all' | 'mine';
+}) {
   const router = useRouter();
   const qc = useQueryClient();
+  const profile = useMyProfile();
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Pack | null>(null);
   /**
@@ -38,7 +47,8 @@ export function CommunityClient({ displayName }: { displayName: string }) {
   const packs = useQuery({ queryKey: ['packs'], queryFn: listPacks });
 
   const start = useMutation({
-    mutationFn: (pack: Pack) => startFromPack(pack.id, displayName),
+    mutationFn: (pack: Pack) =>
+      startFromPack(pack.id, profile.data?.display_name ?? displayName),
     onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
     onError: (e) => {
       setStartingId(null);
@@ -55,20 +65,24 @@ export function CommunityClient({ displayName }: { displayName: string }) {
     onError: (e) => setError(humanizeError(e)),
   });
 
-  const count = packs.data?.length ?? 0;
+  const visible = (packs.data ?? []).filter(
+    (pack) => scope === 'all' || pack.is_mine,
+  );
+  const count = visible.length;
+  const strings = scope === 'mine' ? t.myPacks : t.community;
 
   return (
     <AppShell className="space-y-6">
       <header className="space-y-1">
         <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
-          {t.community.title}
+          {strings.title}
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-text-muted">
-          {t.community.subtitle}
+          {strings.subtitle}
         </p>
         {count > 0 ? (
           <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
-            {t.community.sceneCount(count)}
+            {strings.sceneCount(count)}
           </p>
         ) : null}
       </header>
@@ -84,15 +98,15 @@ export function CommunityClient({ displayName }: { displayName: string }) {
 
       {packs.isSuccess && count === 0 ? (
         <Card className="space-y-2">
-          <h2 className="text-sm font-bold">{t.community.emptyTitle}</h2>
+          <h2 className="text-sm font-bold">{strings.emptyTitle}</h2>
           <p className="text-sm leading-relaxed text-text-muted">
-            {t.community.emptyBody}
+            {strings.emptyBody}
           </p>
         </Card>
       ) : null}
 
       <ul className="grid gap-4 md:grid-cols-2">
-        {packs.data?.map((pack) => (
+        {visible.map((pack) => (
           <li key={pack.id} className="flex">
             <Card className="flex w-full flex-col gap-3">
               {pack.kind === 'url' && pack.source_url ? (
@@ -108,7 +122,7 @@ export function CommunityClient({ displayName }: { displayName: string }) {
                         ? t.community.kindRecipe
                         : t.community.kindMedia}
                     </Badge>
-                    {pack.is_mine ? (
+                    {pack.is_mine && scope === 'all' ? (
                       <Badge tone="accent">{t.community.mine}</Badge>
                     ) : null}
                   </div>

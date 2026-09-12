@@ -4,24 +4,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { KeyRound, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
-import { GuestListCard } from '@/components/guest-list-card';
-import { PasswordCard } from '@/components/password-card';
 import { StatusBadge } from '@/components/status-badge';
-import {
-  Alert,
-  Button,
-  Card,
-  Dialog,
-  Disclosure,
-  Input,
-  Progress,
-  Spinner,
-} from '@/components/ui';
+import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES, STORAGE_WARN_RATIO } from '@/config/constants';
 import { formatBytes, formatDuration, t } from '@/config/strings';
+import { useMyProfile } from '@/lib/profile';
 import { deleteSession, joinSession } from '@/lib/actions';
 import { queryKeys, useMySessions, useStorageUsage } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
@@ -29,12 +19,11 @@ import type { SessionRow } from '@/lib/supabase/database.types';
 import { normalizeSessionCode } from '@/lib/utils';
 
 /**
- * L'ecran d'accueil de l'application connectee.
+ * Mes scenes.
  *
- * L'ordre a ete revu : ce qu'on vient chercher ici, ce sont ses scenes.
- * Elles etaient sous trois panneaux de reglages — mot de passe, liste
- * d'invites, jauge de stockage — qu'on ouvre trois fois par an. Ces
- * reglages sont desormais dans un tiroir, ferme par defaut.
+ * La page ne fait plus qu'une chose : lister ses scenes et en rejoindre
+ * une. Le mot de passe, la liste d'invites et la jauge de stockage ont
+ * rejoint « Mon compte », ou on va les chercher quand on les cherche.
  */
 export function SessionsClient({
   userId,
@@ -46,6 +35,7 @@ export function SessionsClient({
   const router = useRouter();
   const qc = useQueryClient();
   const sessions = useMySessions();
+  const profile = useMyProfile();
   const usage = useStorageUsage();
 
   const [code, setCode] = useState('');
@@ -53,7 +43,11 @@ export function SessionsClient({
   const [pendingDelete, setPendingDelete] = useState<SessionRow | null>(null);
 
   const join = useMutation({
-    mutationFn: () => joinSession(normalizeSessionCode(code), displayName),
+    mutationFn: () =>
+      joinSession(
+        normalizeSessionCode(code),
+        profile.data?.display_name ?? displayName,
+      ),
     onSuccess: (session) => router.push(`/s/${session.code}`),
     onError: (e) => setError(humanizeError(e)),
   });
@@ -68,9 +62,7 @@ export function SessionsClient({
     onError: (e) => setError(humanizeError(e)),
   });
 
-  const used = usage.data ?? 0;
-  const ratio = used / STORAGE_QUOTA_BYTES;
-  const crowded = ratio >= STORAGE_WARN_RATIO;
+  const crowded = (usage.data ?? 0) / STORAGE_QUOTA_BYTES >= STORAGE_WARN_RATIO;
 
   return (
     <AppShell className="space-y-6">
@@ -175,37 +167,6 @@ export function SessionsClient({
           </form>
         </div>
       </Card>
-
-      {/* Les reglages, dans un tiroir. Ouvert d'office si le disque se remplit. */}
-      <div className="space-y-3">
-        <Disclosure
-          title={t.auth.passwordSectionTitle}
-          icon={<KeyRound className="h-4 w-4" aria-hidden />}
-        >
-          <PasswordCard bare />
-        </Disclosure>
-
-        <Disclosure
-          title={t.guests.title}
-          icon={<UserPlus className="h-4 w-4" aria-hidden />}
-        >
-          <GuestListCard bare />
-        </Disclosure>
-
-        <Disclosure
-          title={t.sessions.storageTitle}
-          hint={t.sessions.storageUsed(
-            formatBytes(used),
-            formatBytes(STORAGE_QUOTA_BYTES),
-          )}
-          defaultOpen={crowded}
-        >
-          <Progress value={Math.round(ratio * 100)} />
-          <p className="text-xs leading-relaxed text-text-faint">
-            {t.sessions.storageHelp}
-          </p>
-        </Disclosure>
-      </div>
 
       <Dialog
         open={!!pendingDelete}

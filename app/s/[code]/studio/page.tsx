@@ -8,7 +8,7 @@ export default async function Page({
 }) {
   const { code } = await params;
   return (
-    <SceneRoute code={code} expect="studio" wide>
+    <SceneRoute code={code} expect="studio" wide fill>
       <StudioScreen />
     </SceneRoute>
   );

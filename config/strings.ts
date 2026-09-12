@@ -16,16 +16,108 @@ export const t = {
     sessionsShort: 'Scènes',
     community: 'Communauté',
     communityShort: 'Communauté',
+    myPacks: 'Mes packs',
+    myPacksShort: 'Mes packs',
+  },
+
+  account: {
+    title: 'Mon compte',
+    subtitle:
+      'Ton pseudo et ta photo te suivent dans toutes les scènes. Les autres joueurs voient les deux.',
+    menuLabel: 'Mon compte et déconnexion',
+    menuHint: 'Pseudo, photo, accès',
+    photo: 'Photo de profil',
+    photoAdd: 'Ajouter une photo',
+    photoChange: 'Changer la photo',
+    photoRemove: 'Retirer',
+    photoHelp: 'PNG, JPEG ou WebP, 2 Mo maximum. Elle est visible des autres invités.',
+    displayName: 'Pseudo',
+    displayNameHelp:
+      'C’est le nom que les autres lisent dans le lobby et sur le générique du rendu.',
+    saved: 'C’est enregistré.',
+    accessTitle: 'Mon accès',
+    email: 'Adresse e-mail',
+    method: 'Connexion par',
+    methodEmail: 'Lien e-mail',
+    since: 'Membre depuis',
+    emailLocked:
+      'L’adresse ne se change pas ici : c’est elle qui figure sur la liste des invités. Écris à l’éditeur pour la faire modifier.',
+  },
+
+  myPacks: {
+    title: 'Mes packs',
+    subtitle:
+      'Les scènes que tu as publiées. Tout le monde peut les rejouer, et toi seul peux les retirer.',
+    sceneCount: (n: number) => (n === 1 ? '1 scène publiée' : `${n} scènes publiées`),
+    emptyTitle: 'Tu n’as encore rien publié',
+    emptyBody:
+      'À la fin d’une scène importée par lien, tu peux la publier : le lien et le découpage rejoignent la communauté, sans la vidéo.',
   },
 
   home: {
     heroTitle: 'Redoublez vos scènes préférées',
     heroBody:
       'Vous choisissez une scène, chacun prend un personnage, et vous l’enregistrez chacun de votre côté. La musique et l’ambiance d’origine restent en place : seules les voix changent. Le résultat se découvre à la fin, tous ensemble.',
+    kicker: 'Le studio de doublage entre amis',
     cta: 'Entrer dans le studio',
     ctaSessions: 'Voir mes scènes',
     ctaCommunity: 'Parcourir les scènes prêtes',
     howTitle: 'Comment ça marche',
+    reassure1: 'Sans installation',
+    reassure2: 'Chacun enregistre quand il veut',
+    reassure3: 'Rien n’est publié',
+
+    valueTitle: 'Ce que ça donne',
+    value1: {
+      title: 'Ta voix à la place de la leur',
+      body:
+        'Tu enregistres au micro de ton casque, chez toi. La musique et les bruitages d’origine restent intacts : on ne remplace que les voix.',
+    },
+    value2: {
+      title: 'Personne n’entend rien avant la fin',
+      body:
+        'Tes prises sont inaudibles des autres tant que le rendu n’a pas été produit. La découverte à la fin, tous ensemble, c’est tout le jeu.',
+    },
+    value3: {
+      title: 'Un MP4 qui se garde',
+      body:
+        'À la fin, un fichier qui se lit partout, sans sous-titres incrustés. La scène source, elle, est effacée.',
+    },
+
+    midCta: 'Choisis une scène, distribue les rôles, et vois ce que ça donne.',
+
+    packsCtaTitle: 'Tu n’as encore publié aucun pack',
+    packsCtaBody:
+      'Une scène importée par lien peut être partagée à la communauté : le lien et le découpage suffisent, la vidéo n’est pas hébergée. Les autres n’ont plus qu’à choisir leurs rôles.',
+    packsCtaAction: 'Préparer une scène',
+
+    faqTitle: 'Les questions qu’on nous pose',
+    faq: [
+      {
+        q: 'Il me faut quoi, exactement ?',
+        a: 'Un casque avec un micro, et un navigateur. Le casque n’est pas un détail : sans lui, ton micro réenregistre la bande-son et le mixage devient inutilisable.',
+      },
+      {
+        q: 'On doit être tous là en même temps ?',
+        a: 'Non. Chacun enregistre ses répliques quand il veut. Le rendu se lance quand tout le monde a fini.',
+      },
+      {
+        q: 'Il faut savoir doubler ?',
+        a: 'Non. Le texte défile sous une tête de lecture, comme dans un vrai studio : tu lis, et tu tombes juste. Une prise ratée se refait à l’identique.',
+      },
+      {
+        q: 'Combien de temps ça prend ?',
+        a: 'Compte quelques minutes de préparation automatique après l’import, puis autant que de répliques à dire. Une scène de deux minutes se double en une demi-heure à trois.',
+      },
+      {
+        q: 'Mes enregistrements sont conservés ?',
+        a: 'Non. Ils sont effacés en même temps que la vidéo source, dès que le rendu final est produit.',
+      },
+      {
+        q: 'Je peux inviter qui je veux ?',
+        a: 'Seules les adresses ajoutées à la liste des invités peuvent entrer. Tu ajoutes toi-même une adresse depuis ton compte.',
+      },
+    ] as const,
     privateTitle: 'Un salon privé, pas un réseau',
     privateBody:
       'DubRoom est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
@@ -216,7 +308,7 @@ export const t = {
   prepare: {
     title: 'Préparer les personnages',
     subtitle:
-      'La détection automatique se trompe parfois. Renomme, fusionne, réassigne, puis ouvre le lobby.',
+      'La détection automatique se trompe souvent de personnage. C’est le moment de corriger : après l’ouverture du lobby, ce n’est plus modifiable.',
     charactersHeading: 'Personnages détectés',
     linesHeading: 'Répliques',
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
@@ -230,6 +322,15 @@ export const t = {
       `Toutes les répliques de ${from} passeront sur ${to}. ${from} sera supprimé.`,
     splitToNew: 'Déplacer vers un nouveau personnage',
     reassign: 'Réassigner à…',
+    assignedTo: 'Attribuée à',
+    changeCharacter: 'Changer de personnage',
+    selectedCount: (n: number) =>
+      n === 1 ? '1 réplique sélectionnée →' : `${n} répliques sélectionnées →`,
+    howTitle: 'Vérifie qui dit quoi',
+    howBody:
+      'Chaque réplique porte le nom du personnage à qui elle est attribuée. Clique ce nom pour la donner à un autre. À gauche, renomme un personnage ou fusionne deux voix que la détection a séparées à tort.',
+    selectAll: 'Tout sélectionner',
+    selectNone: 'Tout désélectionner',
     deleteLine: 'Supprimer la réplique',
     deleteLineHint: 'La VO d’origine sera conservée à cet endroit.',
     textIsAGuide:

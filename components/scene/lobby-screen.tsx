@@ -1,38 +1,32 @@
-"use client";
+'use client';
 
-import { useMutation } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { Check, Copy, Play } from "lucide-react";
+import { useMutation } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import { Check, Copy, Play } from 'lucide-react';
 
-import { useSceneCtx } from "@/components/scene-page";
-import { Alert, Badge, Button, Card, Spinner } from "@/components/ui";
-import { characterColorVar } from "@/config/constants";
-import { formatDuration, t } from "@/config/strings";
+import { Avatar } from '@/components/avatar';
+import { useSceneCtx } from '@/components/scene-page';
+import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
+import { characterColorVar } from '@/config/constants';
+import { formatDuration, t } from '@/config/strings';
 import {
   assignCharacter,
   setCharacterReleased,
   setReady,
   startRecording,
   unassignCharacter,
-} from "@/lib/actions";
-import { useMediaUrls } from "@/lib/data";
-import { humanizeError } from "@/lib/errors";
-import { statsByCharacter } from "@/lib/scene-stats";
+} from '@/lib/actions';
+import { useMediaUrls } from '@/lib/data';
+import { humanizeError } from '@/lib/errors';
+import { useProfilesOf } from '@/lib/profile';
+import { statsByCharacter } from '@/lib/scene-stats';
 
 export function LobbyScreen() {
-  const {
-    session,
-    characters,
-    lines,
-    clips,
-    participants,
-    me,
-    isHost,
-    refetch,
-  } = useSceneCtx();
+  const { session, characters, lines, clips, participants, me, isHost, refetch } =
+    useSceneCtx();
   const media = useMediaUrls(session);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState<"link" | "code" | null>(null);
+  const [copied, setCopied] = useState<'link' | 'code' | null>(null);
 
   const stats = useMemo(
     () => statsByCharacter(characters, lines, clips),
@@ -50,17 +44,16 @@ export function LobbyScreen() {
     act.mutate(fn);
   };
 
-  async function copy(kind: "link" | "code") {
+  async function copy(kind: 'link' | 'code') {
     const value =
-      kind === "code"
-        ? session.code
-        : `${window.location.origin}/s/${session.code}`;
+      kind === 'code' ? session.code : `${window.location.origin}/s/${session.code}`;
     await navigator.clipboard.writeText(value);
     setCopied(kind);
     window.setTimeout(() => setCopied(null), 1500);
   }
 
   const activePlayers = participants.filter((p) => !p.is_kicked);
+  const profiles = useProfilesOf(activePlayers.map((p) => p.user_id));
   const unassigned = characters.filter((c) => !c.assigned_to && !c.is_released);
   const notReady = activePlayers.filter((p) => !p.is_ready);
   const canStart = unassigned.length === 0 && notReady.length === 0;
@@ -101,9 +94,7 @@ export function LobbyScreen() {
             <h2 className="text-sm font-medium">{t.lobby.characters}</h2>
             {characters.map((character) => {
               const stat = stats.get(character.id);
-              const owner = participants.find(
-                (p) => p.id === character.assigned_to,
-              );
+              const owner = participants.find((p) => p.id === character.assigned_to);
               const isMine = character.assigned_to === me?.id;
 
               return (
@@ -122,7 +113,7 @@ export function LobbyScreen() {
                     <div className="min-w-0">
                       <p className="truncate font-medium">{character.name}</p>
                       <p className="text-xs text-text-faint">
-                        {t.lobby.clipCount(stat?.clipCount ?? 0)} ·{" "}
+                        {t.lobby.clipCount(stat?.clipCount ?? 0)} ·{' '}
                         {formatDuration(stat?.speakMs ?? 0)} de parole
                       </p>
                     </div>
@@ -132,7 +123,7 @@ export function LobbyScreen() {
                     {character.is_released ? (
                       <Badge tone="neutral">{t.lobby.releasedBadge}</Badge>
                     ) : owner ? (
-                      <Badge tone={isMine ? "accent" : "neutral"}>
+                      <Badge tone={isMine ? 'accent' : 'neutral'}>
                         {t.lobby.takenBy(owner.display_name)}
                       </Badge>
                     ) : (
@@ -142,9 +133,7 @@ export function LobbyScreen() {
                     {isMine ? (
                       <Button
                         size="sm"
-                        onClick={() =>
-                          run(() => unassignCharacter(character.id))
-                        }
+                        onClick={() => run(() => unassignCharacter(character.id))}
                       >
                         {t.lobby.dropCharacter}
                       </Button>
@@ -164,10 +153,7 @@ export function LobbyScreen() {
                         variant="secondary"
                         onClick={() =>
                           run(() =>
-                            setCharacterReleased(
-                              character.id,
-                              !character.is_released,
-                            ),
+                            setCharacterReleased(character.id, !character.is_released),
                           )
                         }
                       >
@@ -195,9 +181,9 @@ export function LobbyScreen() {
                   size="icon"
                   variant="ghost"
                   aria-label={t.common.copy}
-                  onClick={() => void copy("code")}
+                  onClick={() => void copy('code')}
                 >
-                  {copied === "code" ? (
+                  {copied === 'code' ? (
                     <Check className="h-4 w-4 text-ok" />
                   ) : (
                     <Copy className="h-4 w-4" />
@@ -209,9 +195,9 @@ export function LobbyScreen() {
             <Button
               variant="secondary"
               className="w-full"
-              onClick={() => void copy("link")}
+              onClick={() => void copy('link')}
             >
-              {copied === "link" ? (
+              {copied === 'link' ? (
                 <Check className="h-4 w-4 text-ok" aria-hidden />
               ) : (
                 <Copy className="h-4 w-4" aria-hidden />
@@ -226,27 +212,30 @@ export function LobbyScreen() {
               {activePlayers.map((player) => (
                 <li
                   key={player.id}
-                  className="flex items-center justify-between text-sm"
+                  className="flex items-center justify-between gap-2 text-sm"
                 >
-                  <span className="truncate">
-                    {player.display_name}
-                    {player.is_host ? (
-                      <span className="ml-1 text-xs text-text-faint">
-                        (hôte)
-                      </span>
-                    ) : null}
+                  <span className="flex min-w-0 items-center gap-2">
+                    <Avatar
+                      name={player.display_name}
+                      path={profiles.data?.get(player.user_id)?.avatar_path}
+                      size="sm"
+                    />
+                    <span className="truncate">
+                      {player.display_name}
+                      {player.is_host ? (
+                        <span className="ml-1 text-xs text-text-faint">(hôte)</span>
+                      ) : null}
+                    </span>
                   </span>
-                  <Badge tone={player.is_ready ? "ok" : "neutral"}>
-                    {player.is_ready
-                      ? t.lobby.readyBadge
-                      : t.lobby.waitingBadge}
+                  <Badge tone={player.is_ready ? 'ok' : 'neutral'}>
+                    {player.is_ready ? t.lobby.readyBadge : t.lobby.waitingBadge}
                   </Badge>
                 </li>
               ))}
             </ul>
 
             <Button
-              variant={me?.is_ready ? "secondary" : "primary"}
+              variant={me?.is_ready ? 'secondary' : 'primary'}
               className="w-full"
               onClick={() => run(() => setReady(session.id, !me?.is_ready))}
             >
@@ -279,17 +268,17 @@ export function LobbyScreen() {
                   <ul className="mt-1 list-disc space-y-0.5 pl-5 font-medium">
                     {unassigned.length > 0 ? (
                       <li>
-                        {t.lobby.startBlockedCharacters}{" "}
+                        {t.lobby.startBlockedCharacters}{' '}
                         <span className="font-bold">
-                          {unassigned.map((c) => c.name).join(", ")}
+                          {unassigned.map((c) => c.name).join(', ')}
                         </span>
                       </li>
                     ) : null}
                     {notReady.length > 0 ? (
                       <li>
-                        {t.lobby.startBlockedReady}{" "}
+                        {t.lobby.startBlockedReady}{' '}
                         <span className="font-bold">
-                          {notReady.map((p) => p.display_name).join(", ")}
+                          {notReady.map((p) => p.display_name).join(', ')}
                         </span>
                       </li>
                     ) : null}
