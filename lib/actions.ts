@@ -41,6 +41,7 @@ export async function createSession(input: {
   sourceType: 'upload' | 'youtube';
   sourceRef?: string;
   displayName: string;
+  keepAsPack?: boolean;
 }): Promise<SessionRow> {
   // Le code est tire cote client depuis l'alphabet de constants.ts ;
   // l'unicite est tenue par la contrainte en base, d'ou ces essais.
@@ -52,6 +53,7 @@ export async function createSession(input: {
         p_source_type: input.sourceType,
         p_source_ref: input.sourceRef ?? null,
         p_display_name: input.displayName,
+        p_keep_as_pack: input.keepAsPack ?? false,
       });
     } catch (error) {
       const message = humanizeError(error);

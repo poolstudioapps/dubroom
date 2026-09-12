@@ -28,6 +28,10 @@ const MESSAGES: Record<string, string> = {
   INVALID_EMAIL: 'Cette adresse ne ressemble pas à une adresse e-mail.',
   CANNOT_REVOKE_SELF: 'Tu ne peux pas te retirer toi-même de la liste.',
   PACK_NOT_FOUND: 'Cette scène n’est plus disponible.',
+  ALREADY_PUBLISHED: 'Cette scène est déjà dans la communauté.',
+  NO_SOURCE_URL:
+    'Cette scène vient d’un fichier importé, et ses médias ont été purgés après le rendu. Il fallait cocher « garder cette scène » avant de lancer le rendu.',
+  NOTHING_TO_PUBLISH: 'Cette scène n’a aucun personnage à partager.',
   PACK_FORBIDDEN: 'Seule la personne qui a conservé cette scène peut la retirer.',
 };
 

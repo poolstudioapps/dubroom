@@ -2,6 +2,7 @@
 
 import { Download } from 'lucide-react';
 
+import { PublishCard } from '@/components/scene/publish-card';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
@@ -78,6 +79,8 @@ export function ResultScreen() {
           ))}
         </ul>
       </Card>
+
+      <PublishCard />
 
       {session.purged_at ? <Alert>{t.result.sourcePurged}</Alert> : null}
     </div>

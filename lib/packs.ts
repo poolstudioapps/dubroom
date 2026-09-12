@@ -87,3 +87,16 @@ export async function deletePack(pack: Pack): Promise<void> {
 export function setKeepAsPack(sessionId: string, keep: boolean) {
   return rpc('set_keep_as_pack', { p_session_id: sessionId, p_keep: keep });
 }
+
+/**
+ * Publie une scene venue d'un lien, apres coup.
+ *
+ * Possible meme une fois le rendu produit : une recette ne contient que
+ * le lien et la preparation, et tous deux survivent a la purge.
+ */
+export function publishRecipePack(sessionId: string, title?: string) {
+  return rpc<string>('publish_recipe_pack', {
+    p_session_id: sessionId,
+    p_title: title ?? null,
+  });
+}

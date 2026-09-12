@@ -51,6 +51,7 @@ export interface SessionRow {
   render_size_bytes: number | null;
   keep_as_pack: boolean;
   from_pack_id: string | null;
+  published_pack_id: string | null;
   purged_at: string | null;
   closed_at: string | null;
   created_at: string;

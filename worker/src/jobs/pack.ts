@@ -66,6 +66,7 @@ export async function buildPack(
       duration_ms: session.duration_ms ?? 0,
       kind: asRecipe ? 'url' : 'media',
       source_url: asRecipe ? session.source_ref : null,
+      source_session_id: session.id,
       // Renseignes juste apres l'envoi pour un pack media : on a besoin
       // de l'identifiant pour construire les chemins.
       video_path: asRecipe ? null : 'pending',
@@ -173,6 +174,13 @@ export async function buildPack(
       throw new SystemError(`Copie des repliques impossible : ${lineError.message}`);
     }
   }
+
+  // La scene sait desormais qu'elle a ete publiee : l'ecran de resultat
+  // affiche un lien vers le pack au lieu de reproposer la publication.
+  await db
+    .from('sessions')
+    .update({ published_pack_id: packId })
+    .eq('id', session.id);
 
   logger.info('scène conservée dans la communauté', {
     step: 'purge',

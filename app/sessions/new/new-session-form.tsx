@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { FileVideo, Link2 } from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
-import { Alert, Button, Card, Input, Label, Progress } from '@/components/ui';
+import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
 import { MAX_UPLOAD_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants';
 import { formatBytes, t } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
@@ -43,6 +43,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
+  const [keepAsPack, setKeepAsPack] = useState(false);
 
   async function pickFile(picked: File | null) {
     setError(null);
@@ -75,6 +76,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
         sourceType: mode,
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
+        keepAsPack,
       });
 
       if (mode === 'upload') {
@@ -178,6 +180,22 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
             <Alert tone="warn">{t.create.youtubeWarning}</Alert>
           </div>
         )}
+
+        {/* L'intention de partager se pose souvent des le depart : on
+            prepare une scene pour le groupe, pas pour une seule soiree. */}
+        <div className="flex items-start gap-3 rounded-sm border-2 border-dashed border-border-strong p-3">
+          <Toggle
+            checked={keepAsPack}
+            onChange={setKeepAsPack}
+            label={t.create.keepLabel}
+          />
+          <div className="space-y-0.5">
+            <p className="text-sm font-bold">{t.create.keepLabel}</p>
+            <p className="text-xs text-text-faint">
+              {mode === 'youtube' ? t.create.keepHelpUrl : t.create.keepHelpUpload}
+            </p>
+          </div>
+        </div>
 
         {progress !== null ? (
           <div className="space-y-1">

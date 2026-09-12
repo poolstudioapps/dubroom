@@ -222,7 +222,11 @@ export function StudioSidebar({
             />
             <div className="space-y-0.5">
               <p className="text-sm font-bold">{t.community.keepLabel}</p>
-              <p className="text-xs text-text-faint">{t.community.keepHelp}</p>
+              <p className="text-xs text-text-faint">
+                {session.source_ref
+                  ? t.create.keepHelpUrl
+                  : t.create.keepHelpUpload}
+              </p>
             </div>
           </div>
 

@@ -64,6 +64,13 @@ export const t = {
     removeTitle: 'Retirer cette scène ?',
     removeBody:
       'La vidéo, les pistes séparées et le découpage seront supprimés. Les scènes déjà lancées à partir d’elle cesseront de fonctionner. C’est irréversible.',
+    publish: 'Publier dans la communauté',
+    published: 'Cette scène est dans la communauté',
+    seeInCommunity: 'Voir dans la communauté',
+    publishRecipeHelp:
+      'Seuls le lien et le découpage seront partagés. La vidéo n’est pas hébergée ici.',
+    publishTooLate:
+      'Cette scène vient d’un fichier importé, et ses médias ont été purgés après le rendu. Pour la partager, il aurait fallu le décider avant. Une scène importée par lien, elle, reste publiable à tout moment.',
     keepLabel: 'Garder cette scène pour la rejouer',
     keepHelp:
       'Elle rejoindra l’onglet Communauté après le rendu, avec son découpage et ses personnages. Vos enregistrements, eux, ne sont jamais conservés.',
@@ -165,6 +172,11 @@ export const t = {
     multiTrackWarning:
       'Si ta source contient plusieurs pistes audio (VF, VO, commentaires), c’est la première qui sera doublée.',
     durationWarning: 'La scène doit faire moins de 10 minutes.',
+    keepLabel: 'En faire une scène partagée',
+    keepHelpUrl:
+      'Elle rejoindra l’onglet Communauté. Comme elle vient d’un lien, seuls le lien et le découpage seront conservés : rien n’est hébergé ici.',
+    keepHelpUpload:
+      'Elle rejoindra l’onglet Communauté après le rendu. Comme elle vient d’un fichier, la vidéo et les pistes séparées seront conservées, soit une dizaine de mégaoctets.',
     submitUpload: 'Importer et préparer',
     submitYoutube: 'Télécharger et préparer',
     uploading: 'Envoi du fichier…',
