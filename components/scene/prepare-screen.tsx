@@ -90,7 +90,7 @@ export function PrepareScreen() {
     <div className="space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
             {t.prepare.title}
           </h1>
           <p className="max-w-2xl text-sm text-text-faint">

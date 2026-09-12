@@ -225,6 +225,8 @@ export const t = {
       `${name} (${done}/${total})`,
     everyoneDone: 'Tout le monde a fini. L’hôte peut lancer le rendu.',
     othersDone: 'Les autres ont fini. Il ne manque plus que toi.',
+    soloScene: 'Tu es seul sur cette scène.',
+    soloHint: 'Tous les personnages sont à toi : personne d’autre à attendre.',
     launchRender: 'Lancer le rendu',
     renderBlocked: 'Il reste des clips sans prise validée.',
     kick: 'Exclure ce joueur',

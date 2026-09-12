@@ -29,7 +29,9 @@ export function IngestScreen() {
   if (session.status === 'prepping' && !isHost) {
     return (
       <Card className="mx-auto max-w-lg space-y-2">
-        <h1 className="text-lg font-semibold">{session.title ?? t.ingest.title}</h1>
+        <h1 className="signage text-2xl" style={{ textShadow: 'none' }}>
+          {session.title ?? t.ingest.title}
+        </h1>
         <p className="text-sm text-text-muted">
           L’hôte met au point les personnages. Le lobby s’ouvrira dans un instant.
         </p>

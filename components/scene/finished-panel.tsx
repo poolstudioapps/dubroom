@@ -45,11 +45,13 @@ export function FinishedPanel({
 
       <div className="mx-auto max-w-md space-y-2 text-left">
         <h3 className="text-sm font-bold">
-          {waiting.length > 0
-            ? t.studio.waitingFor
-            : everyoneDone
-              ? t.studio.everyoneDone
-              : t.studio.othersDone}
+          {others.length === 0
+            ? t.studio.soloScene
+            : waiting.length > 0
+              ? t.studio.waitingFor
+              : everyoneDone
+                ? t.studio.everyoneDone
+                : t.studio.othersDone}
         </h3>
 
         {progress.isLoading ? <Spinner /> : null}
@@ -72,7 +74,7 @@ export function FinishedPanel({
         ))}
 
         {others.length === 0 ? (
-          <p className="text-xs text-text-faint">Tu es seul sur cette scène.</p>
+          <p className="text-xs text-text-faint">{t.studio.soloHint}</p>
         ) : null}
       </div>
 

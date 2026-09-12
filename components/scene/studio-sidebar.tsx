@@ -162,11 +162,13 @@ export function StudioSidebar({
 
       <Card className="space-y-2">
         <h2 className="text-sm font-bold">
-          {waiting.length > 0
-            ? t.studio.waitingFor
-            : everyoneDone
-              ? t.studio.everyoneDone
-              : t.studio.othersDone}
+          {others.length === 0
+            ? t.studio.soloScene
+            : waiting.length > 0
+              ? t.studio.waitingFor
+              : everyoneDone
+                ? t.studio.everyoneDone
+                : t.studio.othersDone}
         </h2>
         <ul className="space-y-1.5">
           {others.map((row) => (
@@ -202,7 +204,7 @@ export function StudioSidebar({
           ))}
           {others.length === 0 ? (
             <li className="text-xs text-text-faint">
-              Tu es seul sur cette scène.
+              {t.studio.soloHint}
             </li>
           ) : null}
         </ul>

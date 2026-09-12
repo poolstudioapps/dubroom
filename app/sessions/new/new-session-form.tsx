@@ -97,7 +97,9 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
 
   return (
     <AppShell className="max-w-xl space-y-6">
-      <h1 className="text-xl font-semibold tracking-tight">{t.create.title}</h1>
+      <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+        {t.create.title}
+      </h1>
 
       <div className="flex gap-2">
         <Button

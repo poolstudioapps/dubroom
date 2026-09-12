@@ -25,7 +25,9 @@ export function RenderScreen() {
   return (
     <Card className="mx-auto max-w-lg space-y-5">
       <header>
-        <h1 className="text-lg font-semibold">{t.render.title}</h1>
+        <h1 className="signage text-2xl" style={{ textShadow: 'none' }}>
+          {t.render.title}
+        </h1>
         <p className="text-sm text-text-faint">{t.render.frozen}</p>
       </header>
 
