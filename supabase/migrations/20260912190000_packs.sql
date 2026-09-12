@@ -1,4 +1,4 @@
--- DubRoom — scenes preparees, reutilisables (PRD §16.2).
+-- Dub’Up — scenes preparees, reutilisables (PRD §16.2).
 --
 -- Jusqu'ici une scene mourait avec son rendu : la source etait purgee et
 -- le travail de preparation — separation des voix, transcription,

@@ -69,18 +69,15 @@ export const pt = {
     valueTitle: 'O que sai disso',
     value1: {
       title: 'Sua voz no lugar da deles',
-      body:
-        'Você grava com o microfone do seu fone, em casa. A música e os efeitos originais ficam intactos: só as vozes são substituídas.',
+      body: 'Você grava com o microfone do seu fone, em casa. A música e os efeitos originais ficam intactos: só as vozes são substituídas.',
     },
     value2: {
       title: 'Ninguém ouve nada até o fim',
-      body:
-        'Suas tomadas ficam inaudíveis para os outros enquanto a mixagem final não existir. Descobrir juntos no fim é o jogo inteiro.',
+      body: 'Suas tomadas ficam inaudíveis para os outros enquanto a mixagem final não existir. Descobrir juntos no fim é o jogo inteiro.',
     },
     value3: {
       title: 'Um MP4 que fica',
-      body:
-        'No fim, um arquivo que roda em qualquer lugar, sem legendas gravadas. A cena de origem, essa é apagada.',
+      body: 'No fim, um arquivo que roda em qualquer lugar, sem legendas gravadas. A cena de origem, essa é apagada.',
     },
 
     midCta: 'Escolha uma cena, distribua os papéis, e veja o que sai.',
@@ -94,21 +91,21 @@ export const pt = {
     seoTitle: 'Dublar uma cena de filme entre amigos',
     defineTitle: 'O que é dublar uma cena de filme?',
     defineBody:
-      'Dublar uma cena de filme é trocar as vozes originais pelas suas mantendo todo o resto: a imagem, a música, os efeitos, o ritmo. O resultado não é um comentário por cima, é a própria cena com outros atores. O DubRoom é um software de dublagem online que faz esse trabalho no navegador, sem instalar nada.',
+      'Dublar uma cena de filme é trocar as vozes originais pelas suas mantendo todo o resto: a imagem, a música, os efeitos, o ritmo. O resultado não é um comentário por cima, é a própria cena com outros atores. O Dub’Up é um software de dublagem online que faz esse trabalho no navegador, sem instalar nada.',
     defineHowTitle: 'Como dublar uma cena de filme por conta própria',
     defineHowBody:
-      'São precisas três coisas que ninguém tem em casa: separar as vozes da música para trocar só as vozes, saber quem fala e quando ao milissegundo, e manter a sincronia enquanto se fala. O DubRoom faz as duas primeiras automaticamente a partir da cena, e resolve a terceira com uma faixa rítmica, o texto que passa sob uma cabeça de leitura usada pelos estúdios de dublagem há oitenta anos.',
+      'São precisas três coisas que ninguém tem em casa: separar as vozes da música para trocar só as vozes, saber quem fala e quando ao milissegundo, e manter a sincronia enquanto se fala. O Dub’Up faz as duas primeiras automaticamente a partir da cena, e resolve a terceira com uma faixa rítmica, o texto que passa sob uma cabeça de leitura usada pelos estúdios de dublagem há oitenta anos.',
     defineWhoTitle: 'Para quem serve',
     defineWhoBody:
       'Para grupos de amigos que querem refazer uma fala clássica, para quem faz fandub e procura uma ferramenta que não seja um editor, para professores de idiomas que põem a turma a dublar um trecho, e para quem estuda dublagem e quer treinar em faixa rítmica sem alugar estúdio.',
     faqExtra: [
       {
         q: 'É de graça?',
-        a: 'É. O DubRoom é um projeto pessoal, sem anúncios, sem assinatura e sem limite de cenas.',
+        a: 'É. O Dub’Up é um projeto pessoal, sem anúncios, sem assinatura e sem limite de cenas.',
       },
       {
         q: 'Qual a diferença para um editor de vídeo?',
-        a: 'Um editor entrega uma linha do tempo vazia e deixa você encaixar as tomadas na mão. O DubRoom parte da cena: separa as vozes, acha as falas, atribui aos personagens e reposiciona suas tomadas sobre a voz original.',
+        a: 'Um editor entrega uma linha do tempo vazia e deixa você encaixar as tomadas na mão. O Dub’Up parte da cena: separa as vozes, acha as falas, atribui aos personagens e reposiciona suas tomadas sobre a voz original.',
       },
       {
         q: 'Dá para dublar uma cena em inglês com a interface em português?',
@@ -147,7 +144,7 @@ export const pt = {
     ] as const,
     privateTitle: 'Uma sala privada, não uma rede',
     privateBody:
-      'O DubRoom é só para quem foi convidado. Sem catálogo público, sem compartilhar fora do círculo, sem indexação. É isso que torna a coisa sustentável: dublamos trechos de obras protegidas, entre amigos, sem divulgar nada.',
+      'O Dub’Up é só para quem foi convidado. Sem catálogo público, sem compartilhar fora do círculo, sem indexação. É isso que torna a coisa sustentável: dublamos trechos de obras protegidas, entre amigos, sem divulgar nada.',
     slides: {
       importTitle: 'Escolham a cena que vocês sabem de cor',
       importBody:
@@ -182,7 +179,13 @@ export const pt = {
     voteScore: (n: number) => `Pontuação da comunidade: ${n}`,
     voteHelp:
       'O voto é sobre o corte, não sobre o filme. Uma cena bem cortada economiza uma noite de todo mundo.',
-    sortedByScore: 'As mais bem avaliadas primeiro',
+    sort: {
+      label: 'Ordenar por',
+      popular: 'Mais bem avaliadas',
+      recent: 'Mais recentes',
+      short: 'Mais curtas',
+      title: 'Título (A → Z)',
+    },
     filterLang: 'Idioma da cena',
     filterGenre: 'Gênero',
     filterCast: 'Número de papéis',
@@ -197,21 +200,45 @@ export const pt = {
       'Abra mais os critérios, ou publique a cena que falta no catálogo.',
     langUnknown: 'Idioma desconhecido',
     langNames: {
-      fr: 'Francês', en: 'Inglês', es: 'Espanhol', de: 'Alemão', it: 'Italiano',
-      pt: 'Português', ja: 'Japonês', ko: 'Coreano', zh: 'Chinês', ru: 'Russo',
+      fr: 'Francês',
+      en: 'Inglês',
+      es: 'Espanhol',
+      de: 'Alemão',
+      it: 'Italiano',
+      pt: 'Português',
+      ja: 'Japonês',
+      ko: 'Coreano',
+      zh: 'Chinês',
+      ru: 'Russo',
     } as Record<string, string>,
     genreNames: {
-      action: 'Ação', comedie: 'Comédia', drame: 'Drama', animation: 'Animação',
-      science_fiction: 'Ficção científica', horreur: 'Terror', documentaire: 'Documentário',
+      action: 'Ação',
+      comedie: 'Comédia',
+      drame: 'Drama',
+      animation: 'Animação',
+      anime: 'Anime',
+      serie: 'Série',
+      super_heros: 'Super-heróis',
+      science_fiction: 'Ficção científica',
+      horreur: 'Terror',
+      jeu_video: 'Videogame',
+      chanson: 'Música',
+      documentaire: 'Documentário',
       autre: 'Outro',
     } as Record<string, string>,
     castBuckets: {
-      solo: '1 papel', duo: '2 papéis', small: '3 ou 4 papéis', large: '5 papéis ou mais',
+      solo: '1 papel',
+      duo: '2 papéis',
+      small: '3 ou 4 papéis',
+      large: '5 papéis ou mais',
     } as Record<string, string>,
     lengthBuckets: {
-      short: 'Menos de um minuto', medium: 'De 1 a 3 minutos', long: 'Mais de 3 minutos',
+      short: 'Menos de um minuto',
+      medium: 'De 1 a 3 minutos',
+      long: 'Mais de 3 minutos',
     } as Record<string, string>,
-    sceneCount: (n: number) => (n === 1 ? '1 cena disponível' : `${n} cenas disponíveis`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 cena disponível' : `${n} cenas disponíveis`,
     characterCount: (n: number) => (n === 1 ? '1 personagem' : `${n} personagens`),
     lineCount: (n: number) => (n === 1 ? '1 fala' : `${n} falas`),
     emptyTitle: 'Nenhuma cena guardada por enquanto',
@@ -226,6 +253,8 @@ export const pt = {
     seeInCommunity: 'Ver na comunidade',
     publishRecipeHelp:
       'Só o link e o corte serão compartilhados. O vídeo não fica hospedado aqui.',
+    publishFromCatalogue:
+      'Esta cena veio do catálogo: já está lá. Publicar de novo deixaria duas cópias que ninguém sabe diferenciar.',
     publishTooLate:
       'Esta cena veio de um arquivo importado, e a mídia dela foi apagada depois da renderização. Compartilhar teria que ter sido decidido antes. Uma cena importada por link, essa continua publicável a qualquer momento.',
     keepLabel: 'Guardar esta cena para jogar de novo',
@@ -239,9 +268,23 @@ export const pt = {
     modern: 'Moderno',
   },
 
+  terms: {
+    consent: 'Li e aceito as {terms} e a {privacy}.',
+    linkTerms: 'condições de uso',
+    linkPrivacy: 'política de privacidade',
+    required: 'É preciso aceitar as condições para continuar.',
+    gateTitle: 'Mais uma coisa',
+    gateBody:
+      'As condições de uso mudaram desde a sua última visita, ou você nunca as aceitou. Uma caixinha e voltamos ao jogo.',
+    gateGist:
+      'O essencial: você responde pelos trechos que importa e pelo que faz com eles. Tudo fica entre convidados, nada é publicado.',
+    gateConfirm: 'Aceitar e continuar',
+  },
+
   legal: {
     mentions: 'Aviso legal',
     privacy: 'Privacidade',
+    terms: 'Condições',
     usageNotice:
       'Uso estritamente privado, entre pessoas convidadas. Nenhum conteúdo é divulgado publicamente nem indexado.',
     contact: 'Contato',
@@ -290,8 +333,7 @@ export const pt = {
       `O endereço ${email} não está na lista de convidados. Peça ao anfitrião para adicioná-lo. Se você entrou pelo Discord, vale o endereço da sua conta do Discord.`,
 
     passwordSectionTitle: 'Senha',
-    passwordSectionHelp:
-      'Defina uma para voltar sem passar pelo e-mail.',
+    passwordSectionHelp: 'Defina uma para voltar sem passar pelo e-mail.',
     passwordNew: 'Nova senha',
     passwordSave: 'Salvar a senha',
     passwordSaved: 'Senha salva. Dá para usar já no próximo acesso.',
@@ -313,8 +355,7 @@ export const pt = {
     create: 'Nova cena',
     open: 'Abrir',
     storageUsed: (used: string, total: string) => `${used} de ${total}`,
-    storageWarning:
-      'O espaço está acabando. Exclua cenas antigas para abrir lugar.',
+    storageWarning: 'O espaço está acabando. Exclua cenas antigas para abrir lugar.',
     deleteConfirmTitle: 'Excluir esta cena?',
     deleteConfirmBody:
       'A mixagem final, as tomadas e todos os metadados serão apagados. Não tem volta.',
@@ -331,6 +372,15 @@ export const pt = {
     title: 'Nova cena',
     tabUpload: 'Importar um arquivo',
     tabYoutube: 'Colar um link do YouTube',
+    songLabel: 'É uma música',
+    songHelp:
+      'Pulamos a transcrição: a letra você já sabe. O corte segue a voz da faixa e avisa quando entrar.',
+    matchTitle: 'Esta cena já existe',
+    matchBody:
+      'Alguém já preparou: o corte, os personagens e o texto estão prontos. Pegar essa começa na hora, em vez de esperar vários minutos pelo mesmo resultado.',
+    matchLines: 'As falas a dizer',
+    matchUse: 'Partir desta cena',
+    matchScratch: 'Refazer do zero',
     tabPack: 'Partir de um pack',
     packHelp:
       'Nada para preparar: a cena já está cortada, vocês escolhem os papéis e gravam. O catálogo completo está na aba Comunidade.',
@@ -359,15 +409,14 @@ export const pt = {
   ingest: {
     title: 'Preparando a cena',
     subtitle: 'A cena está sendo cortada. Leva alguns minutos.',
-    queued: 'Esperando o worker. Rode o script no seu PC.',
+    queued: 'O processamento está demorando a começar.',
     queuedHelp:
-      'O processamento roda na máquina do anfitrião. Dê dois cliques em start.bat e o trabalho começa sozinho.',
+      'Costuma pegar sozinho. Se demorar, avise quem hospeda a cena.',
     failed: 'A importação falhou.',
     retry: 'Rodar a importação de novo',
     neverStarted:
       'A importação nunca começou: o envio do arquivo provavelmente falhou. Rode de novo, ou comece uma cena nova.',
-    hostPreparing:
-      'O anfitrião está acertando os personagens. O lobby abre já já.',
+    hostPreparing: 'O anfitrião está acertando os personagens. O lobby abre já já.',
     startOver: 'Nova cena',
   },
 
@@ -401,11 +450,9 @@ export const pt = {
     selectNone: 'Limpar a seleção',
     deleteLine: 'Excluir a fala',
     deleteLineHint: 'O áudio original fica preservado nesse ponto.',
-    textIsAGuide:
-      'O texto é só um guia de tempo. Corrija só se estiver ilegível.',
+    textIsAGuide: 'O texto é só um guia de tempo. Corrija só se estiver ilegível.',
     openLobby: 'Abrir o lobby',
-    openLobbyConfirm:
-      'Depois que o lobby abrir, personagens e falas não mudam mais.',
+    openLobbyConfirm: 'Depois que o lobby abrir, personagens e falas não mudam mais.',
     lockedAfterLobby: 'O preparo está travado desde que o lobby abriu.',
     recalculating: 'Recalculando os clipes…',
     noSelection: 'Selecione falas para movê-las.',
@@ -433,7 +480,8 @@ export const pt = {
     players: 'Jogadores',
     start: 'Começar a partida',
     startBlockedTitle: 'Ainda falta alguma coisa:',
-    startBlockedCharacters: 'personagens sem jogador, para pegar ou deixar no original:',
+    startBlockedCharacters:
+      'personagens sem jogador, para pegar ou deixar no original:',
     startBlockedReady: 'jogadores que não se declararam prontos:',
     clipCount: (n: number) => (n === 1 ? '1 clipe' : `${n} clipes`),
     hostOnly: 'Só o anfitrião pode começar a partida.',
@@ -463,10 +511,8 @@ export const pt = {
     calibrate: 'Calibrar automaticamente',
     calibrating: 'Calibrando… fique em silêncio.',
     calibrationDone: (ms: number) => `Atraso medido: ${ms} ms.`,
-    calibrationFailed:
-      'Não deu para medir o atraso. Ajuste na mão se precisar.',
-    micDenied:
-      'O navegador recusou o microfone. Autorize e recarregue a página.',
+    calibrationFailed: 'Não deu para medir o atraso. Ajuste na mão se precisar.',
+    micDenied: 'O navegador recusou o microfone. Autorize e recarregue a página.',
     headphonesRequired:
       'Fone obrigatório. Enquanto grava você só ouve a música, nunca as vozes originais.',
     overflowWarning:
@@ -475,6 +521,34 @@ export const pt = {
     margin: 'Margem',
     noTake: 'Nenhuma tomada para este clipe.',
     uploading: 'Enviando a tomada…',
+    noCharacter:
+      'Nenhum personagem foi atribuído a você nesta cena. Dá para acompanhar os outros por aqui.',
+    fxTitle: 'Mesa de voz',
+    fxReset: 'Zerar tudo',
+    fxReverb: 'Reverb',
+    fxPitch: 'Altura',
+    fxTune: 'Afinação',
+    fxHelp:
+      'Os efeitos entram na mixagem, nunca na gravação: dá para mudar até o render, ou voltar à voz crua.',
+    fxPresets: {
+      dry: 'Voz crua',
+      room: 'Sala pequena',
+      cathedral: 'Catedral',
+      cartoon: 'Desenho',
+      deep: 'Voz grave',
+      cover: 'Cover',
+    },
+    emptyTake:
+      'Nada foi gravado. Confere se o seu microfone está conectado e selecionado, e grave de novo.',
+    whereEveryoneIs: 'Como está o grupo',
+    you: '(você)',
+    hostTag: '(anfitrião)',
+    stateVo: 'No original',
+    stateDone: 'Pronto',
+    stateRecording: 'Gravando',
+    waitingHost: 'Esperando o anfitrião iniciar a mixagem.',
+    hostCanRender: 'Todo mundo terminou: você já pode iniciar a mixagem.',
+    stillMissing: 'Ainda faltam falas para gravar.',
     finishedTitle: 'Você terminou!',
     finishedBody:
       'Ainda dá para voltar e refazer uma tomada enquanto a renderização não começa.',
@@ -509,20 +583,16 @@ export const pt = {
         : ms > 0
           ? `Você estava ${ms} ms atrasado, já foi corrigido.`
           : `Você estava ${-ms} ms adiantado, já foi corrigido.`,
-    alignUnsure:
-      'O ajuste não achou nada claro nesta tomada. Ela fica como está.',
+    alignUnsure: 'O ajuste não achou nada claro nesta tomada. Ela fica como está.',
   },
-
 
   progress: {
     preparing: 'Preparando a cena',
     rendering: 'Montando o resultado',
     queued: 'Na fila. Começa sozinho daqui a pouco.',
-    working:
-      'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
+    working: 'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
     almost: 'Quase lá.',
-    longer:
-      'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',
+    longer: 'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',
   },
   render: {
     title: 'Renderizando',
@@ -535,11 +605,22 @@ export const pt = {
   result: {
     title: 'O resultado',
     download: 'Baixar o MP4',
+    exportTitle: 'Levar a cena',
+    formatWide: 'Formato largo',
+    formatWideHint: 'Para tela de computador ou televisão.',
+    formatVertical: 'Formato celular',
+    formatVerticalHint: 'Cortado no centro, para stories e reels.',
+    formatVerticalMissing:
+      'Esta cena foi renderizada antes do corte automático. Rode o render de novo para obtê-lo.',
+    share: 'Compartilhar',
+    shareHelp:
+      'No celular, Compartilhar abre o menu do sistema: TikTok, Instagram e os outros apps instalados aparecem ali.',
+    shareUnsupported:
+      'Este navegador não consegue compartilhar um arquivo. Baixe e publique pelo app.',
     cast: 'O elenco',
     voiceOriginal: 'Original mantido',
     shareHint: 'O link só funciona para quem participa desta cena.',
-    sourcePurged:
-      'A fonte foi apagada: só a mixagem final fica.',
+    sourcePurged: 'A fonte foi apagada: só a mixagem final fica.',
   },
 
   errors: {
@@ -550,7 +631,6 @@ export const pt = {
     noAudioTrack: 'Este arquivo não tem faixa de áudio.',
     noVideoTrack: 'Este arquivo não tem vídeo.',
     tooLong: 'Cena longa demais: no máximo 10 minutos.',
-    youtubeFailed:
-      'O download do YouTube falhou. Importe o arquivo de vídeo direto.',
+    youtubeFailed: 'O download do YouTube falhou. Importe o arquivo de vídeo direto.',
   },
 } satisfies Dictionary;

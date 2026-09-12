@@ -72,6 +72,8 @@ export async function seekAll(
   seconds: number,
 ): Promise<void> {
   await Promise.all(
-    elements.filter((el): el is HTMLMediaElement => !!el).map((el) => seekTo(el, seconds)),
+    elements
+      .filter((el): el is HTMLMediaElement => !!el)
+      .map((el) => seekTo(el, seconds)),
   );
 }

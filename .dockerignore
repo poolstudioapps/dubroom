@@ -1,0 +1,25 @@
+# Ce qui ne doit jamais partir dans l'image.
+#
+# Le premier bloc est une question de securite : `.env` porte la cle de
+# service Supabase et celle d'ElevenLabs, et une image se copie. Dans
+# Cloud Run, ces valeurs viennent de Secret Manager, jamais du calque.
+worker/.env
+worker/.env.*
+.env
+.env.*
+.vercel
+
+# Ce qui serait refabrique de toute facon, ou n'a rien a y faire.
+node_modules
+worker/node_modules
+worker/bin
+worker/work
+.next
+.git
+app
+components
+public
+supabase
+docs
+scratchpad
+*.md

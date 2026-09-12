@@ -30,10 +30,14 @@ function sleep(ms: number): Promise<void> {
  */
 async function verifyEnvironment(): Promise<void> {
   try {
-    await run(process.execPath, [path.join(WORKER_ROOT, 'scripts', 'bootstrap.mjs'), '--check'], {
-      timeoutMs: 120_000,
-      onStdout: (chunk) => process.stdout.write(chunk),
-    });
+    await run(
+      process.execPath,
+      [path.join(WORKER_ROOT, 'scripts', 'bootstrap.mjs'), '--check'],
+      {
+        timeoutMs: 120_000,
+        onStdout: (chunk) => process.stdout.write(chunk),
+      },
+    );
   } catch {
     throw new Error(
       "L'environnement est incomplet. Lance start.bat (ou `npm run setup`) pour installer ce qui manque.",
@@ -70,7 +74,11 @@ async function cleanOldWorkDirs(): Promise<void> {
 }
 
 async function handleJob(job: Job): Promise<void> {
-  const logger = scopedLog({ sessionId: job.session_id, jobId: job.id, type: job.type });
+  const logger = scopedLog({
+    sessionId: job.session_id,
+    jobId: job.id,
+    type: job.type,
+  });
   const workDir = path.join(config.workDir, job.session_id);
   await fs.mkdir(workDir, { recursive: true });
 
@@ -106,7 +114,12 @@ async function handleJob(job: Job): Promise<void> {
     if (retryable) {
       await db
         .from('jobs')
-        .update({ status: 'queued', step: null, progress: 0, error: technicalMessage(error) })
+        .update({
+          status: 'queued',
+          step: null,
+          progress: 0,
+          error: technicalMessage(error),
+        })
         .eq('id', job.id);
       await updateSession(job.session_id, { status: queuedStatus });
       logger.warn('job remis en file', { attempts: job.attempts });
@@ -119,10 +132,10 @@ async function handleJob(job: Job): Promise<void> {
 
 async function main(): Promise<void> {
   console.log('');
-  console.log('DubRoom worker');
+  console.log('Dub’Up worker');
   console.log('');
 
-  await verifyEnvironment();
+  if (!config.skipEnvCheck) await verifyEnvironment();
   assertConfig();
 
   await fs.mkdir(config.workDir, { recursive: true });
@@ -138,9 +151,18 @@ async function main(): Promise<void> {
     workDir: config.workDir,
   });
   console.log('');
-  console.log('  En attente de jobs. Laisse cette fenêtre ouverte.');
-  console.log('  Ctrl+C pour arrêter.');
+  if (config.exitWhenIdle) {
+    console.log('  Traitement de la file, puis arrêt.');
+  } else {
+    console.log('  En attente de jobs. Laisse cette fenêtre ouverte.');
+    console.log('  Ctrl+C pour arrêter.');
+  }
   console.log('');
+
+  /** Tours de boucle consecutifs sans rien a faire. */
+  let vides = 0;
+  /** Tours consecutifs qui ont echoue avant meme de reclamer un job. */
+  let echecs = 0;
 
   while (!stopping) {
     try {
@@ -149,14 +171,40 @@ async function main(): Promise<void> {
       const job = await claimJob();
 
       if (!job) {
+        vides += 1;
+        if (config.exitWhenIdle && vides >= config.idleExitPolls) {
+          log.info('file vide, arrêt du worker', { polls: vides });
+          break;
+        }
         await sleep(config.pollIntervalMs);
         continue;
       }
 
+      vides = 0;
+      echecs = 0;
       // Un seul job a la fois : ffmpeg et Demucs saturent la machine.
       await handleJob(job);
     } catch (error) {
       log.error('erreur de boucle', { detail: technicalMessage(error) });
+
+      /*
+       * Un job doit finir, meme quand rien ne va.
+       *
+       * Sur le PC de l'hote, reessayer indefiniment est le bon reflexe :
+       * la box redemarre, le reseau revient, et la soiree reprend. Dans
+       * un job facture a la seconde, c'est l'inverse — une base
+       * injoignable aurait fait tourner le GPU pendant la demi-heure du
+       * delai maximal, sans traiter une seule scene. On abandonne donc
+       * apres quelques echecs d'affilee, et la prochaine execution
+       * retentera.
+       */
+      echecs += 1;
+      if (config.exitWhenIdle && echecs >= config.idleExitPolls) {
+        log.error('trop d’erreurs consécutives, arrêt du worker', { echecs });
+        process.exitCode = 1;
+        break;
+      }
+
       await heartbeat().catch(() => undefined);
       await sleep(config.pollIntervalMs * 5);
     }

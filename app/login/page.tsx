@@ -9,11 +9,11 @@ export default async function LoginPage() {
   const t = await getDictionary();
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-8">
-      <main className="w-full max-w-2xl">
-        <div className="rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel p-4 shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)] sm:p-6">
-          <div className="relative overflow-hidden rounded-[1.25rem] bg-screen px-6 py-10 shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)] sm:px-10 sm:py-14">
+      <main className="w-full max-w-[min(42rem,94vw)]">
+        <div className="tv-frame rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel p-4 shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)] sm:p-6">
+          <div className="tv-screen relative overflow-hidden rounded-[1.25rem] bg-screen px-6 py-10 shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)] sm:px-10 sm:py-14">
             <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent"
+              className="tv-gloss pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent"
               aria-hidden
             />
 
@@ -26,9 +26,7 @@ export default async function LoginPage() {
               </div>
 
               <div className="mx-auto max-w-sm space-y-4 text-left">
-                <p className="text-center text-sm text-text-muted">
-                  {t.auth.subtitle}
-                </p>
+                <p className="text-center text-sm text-text-muted">{t.auth.subtitle}</p>
                 <Suspense>
                   <LoginForm />
                 </Suspense>
@@ -39,7 +37,7 @@ export default async function LoginPage() {
 
         {/* La console sous le poste. */}
         <div
-          className="mx-auto -mt-1 flex w-[80%] items-center justify-between rounded-b-2xl border-x-[3px] border-b-[3px] border-console-dark bg-console px-6 py-3 shadow-[0_12px_24px_-8px_rgb(0_0_0/0.6)]"
+          className="tv-console mx-auto -mt-1 flex w-[80%] items-center justify-between rounded-b-2xl border-x-[3px] border-b-[3px] border-console-dark bg-console px-6 py-3 shadow-[0_12px_24px_-8px_rgb(0_0_0/0.6)]"
           aria-hidden
         >
           <div className="flex gap-2">

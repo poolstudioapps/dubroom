@@ -2,9 +2,9 @@ import { cookies, headers } from 'next/headers';
 
 import { fr } from '@/config/locales/fr';
 import type { Dictionary, Locale } from '@/config/i18n';
-import { LOCALE_COOKIE, resolveLocale } from '@/config/i18n';
+import { LEGACY_LOCALE_COOKIE, LOCALE_COOKIE, resolveLocale } from '@/config/i18n';
 import type { Theme } from '@/config/theme';
-import { THEME_COOKIE, resolveTheme } from '@/config/theme';
+import { LEGACY_THEME_COOKIE, THEME_COOKIE, resolveTheme } from '@/config/theme';
 
 /**
  * Le dictionnaire, cote serveur.
@@ -29,7 +29,7 @@ const loaders: Record<Exclude<Locale, 'fr'>, () => Promise<{ default: Dictionary
 export async function currentLocale(): Promise<Locale> {
   const [jar, head] = await Promise.all([cookies(), headers()]);
   return resolveLocale(
-    jar.get(LOCALE_COOKIE)?.value,
+    jar.get(LOCALE_COOKIE)?.value ?? jar.get(LEGACY_LOCALE_COOKIE)?.value,
     head.get('accept-language') ?? undefined,
   );
 }
@@ -49,5 +49,7 @@ export async function getDictionary(locale?: Locale): Promise<Dictionary> {
 /** La peau demandee par cette requete. */
 export async function currentTheme(): Promise<Theme> {
   const jar = await cookies();
-  return resolveTheme(jar.get(THEME_COOKIE)?.value);
+  return resolveTheme(
+    jar.get(THEME_COOKIE)?.value ?? jar.get(LEGACY_THEME_COOKIE)?.value,
+  );
 }

@@ -29,3 +29,35 @@ export function useShortViewport(threshold = SHORT_VIEWPORT_PX): boolean {
 
   return short;
 }
+
+/** En deca, on est sur un telephone : la colonne laterale passe dessous. */
+export const NARROW_VIEWPORT_PX = 1024;
+
+/**
+ * L'ecran est-il etroit ?
+ *
+ * Le studio est concu pour tenir d'un seul tenant, sans defilement : sur
+ * un ordinateur c'est ce qui evite de perdre le bouton d'arret au milieu
+ * d'une prise. Sur un telephone, la meme regle donne l'inverse — l'image
+ * se retrouve ecrasee a quatre pixels de haut pour faire tenir le reste,
+ * et on double a l'aveugle.
+ *
+ * En dessous de cette largeur, la page redevient une page : elle defile,
+ * l'image garde son format, et c'est la barre de transport qui reste
+ * collee en bas.
+ *
+ * Mesure reelle plutot que media query, comme pour la hauteur : les deux
+ * decisions se prennent au meme endroit et doivent se lire pareil.
+ */
+export function useNarrowViewport(threshold = NARROW_VIEWPORT_PX): boolean {
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    const update = () => setNarrow(window.innerWidth < threshold);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [threshold]);
+
+  return narrow;
+}

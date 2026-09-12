@@ -12,9 +12,14 @@ import { useT } from '@/lib/i18n';
  * son domaine. C'est tout l'interet de ne garder que le lien — la scene
  * reste visible sans qu'on en detienne une copie.
  *
- * Le lecteur n'est monte qu'au clic. Une grille de dix scenes chargerait
- * sinon dix lecteurs tiers au premier affichage, avec ce que cela
- * suppose de requetes et de traceurs.
+ * Deux niveaux, et la distinction fait tout :
+ *
+ *  - la VIGNETTE se charge d'emblee. C'est une image fixe, sans script
+ *    ni cookie, et c'est elle qui transforme une liste de titres en
+ *    catalogue ou l'on reconnait une scene d'un coup d'oeil ;
+ *  - le LECTEUR, lui, n'est monte qu'au clic. Une grille de dix scenes
+ *    chargerait sinon dix lecteurs tiers au premier affichage, avec ce
+ *    que cela suppose de requetes et de traceurs.
  */
 export function UrlPreview({
   url,
@@ -33,6 +38,8 @@ export function UrlPreview({
     : 'rounded-md border-2 border-bezel-dark';
 
   const [open, setOpen] = useState(false);
+  const [vignetteKo, setVignetteKo] = useState(false);
+  const id = videoId(url);
   const embed = toEmbedUrl(url);
 
   if (!embed) {
@@ -54,10 +61,26 @@ export function UrlPreview({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={`${t.community.preview} : ${title}`}
-        className={`group flex aspect-video w-full items-center justify-center bg-stage ${frame}`}
+        className={`group relative flex aspect-video w-full items-center justify-center overflow-hidden bg-stage ${frame}`}
       >
-        <span className="flex flex-col items-center gap-2 text-stage-faint group-hover:text-stage-text">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-ink">
+        {id && !vignetteKo ? (
+          // Une image, rien d'autre : pas de script, pas de cookie. Le
+          // format 4/3 de la vignette est recadre sur le 16/9 de la
+          // carte, sans quoi elle arriverait avec ses bandes noires.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onError={() => setVignetteKo(true)}
+            className="absolute inset-0 h-full w-full scale-[1.35] object-cover transition-transform duration-300 group-hover:scale-[1.42]"
+          />
+        ) : null}
+
+        <span className="relative flex flex-col items-center gap-2 text-white drop-shadow-[0_2px_6px_rgb(0_0_0/0.8)]">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-ink shadow-lg transition-transform duration-200 group-hover:scale-110">
             <Play className="h-5 w-5 fill-current" aria-hidden />
           </span>
           <span className="text-xs font-bold uppercase tracking-wide">
@@ -82,13 +105,13 @@ export function UrlPreview({
 }
 
 /**
- * Convertit un lien en URL de lecteur integrable.
+ * L'identifiant de la video derriere un lien.
  *
  * Volontairement limite a YouTube, seul service que le worker sait
  * telecharger. Un lien qu'on ne reconnait pas n'est pas devine : il est
  * affiche tel quel, en lien sortant.
  */
-function toEmbedUrl(raw: string): string | null {
+export function videoId(raw: string): string | null {
   let parsed: URL;
   try {
     parsed = new URL(raw);
@@ -106,11 +129,24 @@ function toEmbedUrl(raw: string): string | null {
     else if (parsed.pathname.startsWith('/shorts/')) id = parsed.pathname.slice(8);
   }
 
-  if (!id || !/^[\w-]{6,20}$/.test(id)) return null;
+  return id && /^[\w-]{6,20}$/.test(id) ? id : null;
+}
+
+/** Convertit un lien en URL de lecteur integrable. */
+function toEmbedUrl(raw: string): string | null {
+  const id = videoId(raw);
+  if (!id) return null;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return null;
+  }
 
   // Domaine sans cookies : l'apercu ne depose pas de traceur publicitaire.
   const start = parsed.searchParams.get('t')?.replace(/[^0-9]/g, '');
-  const params = new URLSearchParams({ rel: '0', modestbranding: '1' });
+  const params = new URLSearchParams({ rel: '0', modestbranding: '1', autoplay: '1' });
   if (start) params.set('start', start);
 
   return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;

@@ -187,11 +187,24 @@ export function RythmoBand({
   }, [videoRef, lines, characters, activeCharacterId, clip, height]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ height }}
-      className="w-full rounded-md border-2 border-bezel-dark bg-stage"
-      aria-hidden
-    />
+    <div className="min-w-0">
+      {/*
+        `min-w-0` n'est pas decoratif. Un canvas est un element remplace :
+        sa largeur intrinseque est celle de son attribut `width`, que l'on
+        fixe ici a la largeur affichee multipliee par la densite de
+        l'ecran. Sur un telephone a deux pixels par point, cet attribut
+        vaut donc le double — et comme un enfant de grille refuse par
+        defaut de descendre sous sa largeur intrinseque, la colonne
+        s'elargissait d'autant, ce qui elargissait le canvas, et ainsi de
+        suite. L'ecran du studio finissait deux fois trop large, rogne par
+        le cadre du poste.
+      */}
+      <canvas
+        ref={canvasRef}
+        style={{ height }}
+        className="block w-full min-w-0 max-w-full rounded-md border-2 border-bezel-dark bg-stage"
+        aria-hidden
+      />
+    </div>
   );
 }

@@ -67,7 +67,11 @@ export function SiteNav({ signedIn }: { signedIn?: boolean }) {
             href={tab.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'tab inline-flex items-center gap-2 rounded-t-lg border-2 border-b-0 px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors sm:text-sm',
+              // Sur telephone les quatre onglets tiennent sur deux lignes
+              // quoi qu'on fasse : autant qu'elles coutent le moins
+              // possible, l'ecran servant deja a doubler.
+              'tab inline-flex items-center gap-1.5 rounded-t-lg border-2 border-b-0 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-colors',
+              'sm:gap-2 sm:px-3 sm:py-2 sm:text-sm',
               active
                 ? 'tab-on border-bezel-dark bg-screen text-text'
                 : 'tab-off border-transparent bg-bezel-dark/50 text-[oklch(0.85_0.05_260)] hover:bg-bezel-dark',

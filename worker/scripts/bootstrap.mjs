@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * DubRoom — installation automatique de l'environnement du worker
+ * Dub’Up — installation automatique de l'environnement du worker
  * (PRD §20.1).
  *
  * Exigence produit : l'hote ne lance jamais qu'une chose, start.bat. Si
@@ -102,7 +102,7 @@ async function exists(target) {
 async function download(url, destination, label) {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'user-agent': 'dubroom-bootstrap' },
+    headers: { 'user-agent': 'dubup-bootstrap' },
   });
   if (!response.ok || !response.body) {
     throw new Error(`HTTP ${response.status} sur ${url}`);
@@ -220,7 +220,7 @@ async function stepFfmpeg() {
     return;
   }
 
-  const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'dubroom-ffmpeg-'));
+  const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'dubup-ffmpeg-'));
   const zip = path.join(temp, 'ffmpeg.zip');
 
   try {
@@ -288,7 +288,7 @@ async function stepYtDlp() {
 
   try {
     const response = await fetch(YTDLP_RELEASE, {
-      headers: { 'user-agent': 'dubroom-bootstrap' },
+      headers: { 'user-agent': 'dubup-bootstrap' },
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const release = await response.json();
@@ -576,7 +576,7 @@ async function stepWeights(python, model) {
   // l'utilisateur verrait une etape bloquee plusieurs minutes sans
   // explication (PRD §20.1.6).
   work(`préchargement des poids ${model} (~300 Mo, une seule fois)`);
-  const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'dubroom-warmup-'));
+  const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'dubup-warmup-'));
   const silence = path.join(temp, 'warmup.wav');
 
   try {
@@ -721,7 +721,7 @@ async function stepEnv() {
 
 async function main() {
   console.log('');
-  console.log('DubRoom worker — vérification de l’environnement');
+  console.log('Dub’Up worker — vérification de l’environnement');
   console.log('');
 
   await stepNpm();

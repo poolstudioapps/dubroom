@@ -37,7 +37,25 @@ export function JobProgress({
 
   const progress = job?.progress ?? 0;
   const queued = job?.status === 'queued';
-  const waitingForWorker = queued && !state?.workerOnline;
+
+  /*
+   * L'alerte « aucun worker » n'apparait qu'au bout d'un moment.
+   *
+   * Elle datait de l'epoque ou le worker tournait en permanence sur le
+   * PC de l'hote : s'il n'y en avait aucun, c'est qu'on avait oublie de
+   * le lancer, et le dire tout de suite etait le bon reflexe.
+   *
+   * Le worker vit maintenant dans le nuage et ne demarre qu'a la demande.
+   * Entre le moment ou la tache entre dans la file et celui ou le
+   * conteneur repond, il s'ecoule une poignee de secondes pendant
+   * lesquelles aucun worker ne s'annonce — et l'alerte accusait a tort.
+   * On laisse donc passer une minute avant de s'inquieter : en dessous,
+   * c'est le fonctionnement normal.
+   */
+  const attenteS = job?.created_at
+    ? (Date.now() - new Date(job.created_at).getTime()) / 1000
+    : 0;
+  const waitingForWorker = queued && !state?.workerOnline && attenteS > 60;
 
   // Le temps ecoule sert a la derniere phrase : au-dela de ce qu'on avait
   // annonce, mieux vaut le reconnaitre que laisser croire a un blocage.

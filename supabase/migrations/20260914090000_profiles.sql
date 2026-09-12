@@ -1,4 +1,4 @@
--- DubRoom — le compte.
+-- Dub’Up — le compte.
 --
 -- Jusqu'ici, un joueur n'existait que dans une scene : son nom etait
 -- devine depuis son adresse e-mail a chaque fois, et il pouvait le

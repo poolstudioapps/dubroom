@@ -148,7 +148,13 @@ export function alignTake(
     // Le joueur en retard de `lag` pas : sa prise ressemble a l'original
     // pris `lag` pas plus tot.
     const fromMs = placedAtMs - (lag * 1000) / hz;
-    const slice = resampleOriginal(original, originalHz, fromMs, takeEnvelope.length, hz);
+    const slice = resampleOriginal(
+      original,
+      originalHz,
+      fromMs,
+      takeEnvelope.length,
+      hz,
+    );
     const other = normalize(slice);
     if (other.norm === 0) continue;
 

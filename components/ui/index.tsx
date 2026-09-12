@@ -21,15 +21,22 @@ const buttonVariants = cva(
   'btn-3d inline-flex items-center justify-center gap-2 font-semibold uppercase tracking-wide select-none disabled:pointer-events-none disabled:opacity-50 disabled:saturate-50',
   {
     variants: {
+      // Chaque variante porte son nom en classe : c'est par la que la
+      // seconde peau les redessine. Sans ce crochet il fallait deviner
+      // la variante depuis ses utilitaires, et un bouton discret se
+      // reconnaissait a `bg-transparent` — ce qui a tenu jusqu'au jour
+      // ou un ecran en a ajoute un autre.
       variant: {
         primary:
-          'bg-accent text-accent-ink hover:bg-accent-hover [--btn-lip:var(--color-accent-ink)]',
+          'btn-primary bg-accent text-accent-ink hover:bg-accent-hover [--btn-lip:var(--color-accent-ink)]',
         secondary:
-          'bg-surface-raised text-text hover:bg-surface [--btn-lip:var(--color-border-strong)]',
+          'btn-secondary bg-surface-raised text-text hover:bg-surface [--btn-lip:var(--color-border-strong)]',
         ghost:
-          'bg-transparent text-text-muted shadow-none hover:bg-surface-raised hover:text-text active:translate-y-0 [--btn-lip:transparent]',
-        danger: 'bg-danger text-white hover:brightness-110 [--btn-lip:oklch(0.36_0.16_25)]',
-        record: 'bg-record text-white hover:brightness-110 [--btn-lip:oklch(0.38_0.17_25)]',
+          'btn-ghost bg-transparent text-text-muted shadow-none hover:bg-surface-raised hover:text-text active:translate-y-0 [--btn-lip:transparent]',
+        danger:
+          'btn-danger bg-danger text-white hover:brightness-110 [--btn-lip:oklch(0.36_0.16_25)]',
+        record:
+          'btn-record bg-record text-white hover:brightness-110 [--btn-lip:oklch(0.38_0.17_25)]',
       },
       size: {
         sm: 'h-8 px-3 text-xs',
@@ -43,7 +50,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
 }
@@ -80,7 +88,7 @@ export const Input = React.forwardRef<
     <input
       ref={ref}
       className={cn(
-        'h-10 w-full rounded-sm border-2 border-border-strong bg-screen px-3 text-sm text-text',
+        'ui-input h-10 w-full rounded-sm border-2 border-border-strong bg-screen px-3 text-sm text-text',
         'shadow-[inset_0_2px_4px_0_rgb(0_0_0/0.18)]',
         'placeholder:text-text-faint placeholder:italic focus:border-bezel focus:outline-none',
         className,
@@ -115,7 +123,7 @@ export function MenuLabel({
   return (
     <span className={cn('flex items-center gap-3', className)}>
       <span className={cn('led shrink-0', on && 'led-on')} aria-hidden />
-      <span className="flex-1 rounded-sm border border-border-strong bg-surface-raised px-3 py-1.5 text-sm font-bold shadow-[inset_0_1px_0_0_rgb(255_255_255/0.6)]">
+      <span className="ui-menu-label flex-1 rounded-sm border border-border-strong bg-surface-raised px-3 py-1.5 text-sm font-bold shadow-[inset_0_1px_0_0_rgb(255_255_255/0.6)]">
         {children}
       </span>
     </span>
@@ -137,7 +145,7 @@ export const Select = React.forwardRef<
     <select
       ref={ref}
       className={cn(
-        'h-10 w-full min-w-0 rounded-lg border-2 border-border-strong bg-surface-raised px-3 text-sm font-bold',
+        'ui-select h-10 w-full min-w-0 rounded-lg border-2 border-border-strong bg-surface-raised px-3 text-sm font-bold',
         'shadow-[inset_0_2px_3px_0_rgb(0_0_0/0.12)] outline-none',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className,
@@ -178,7 +186,7 @@ export function Card({
 // ── Badge ─────────────────────────────────────────────────────────────
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide',
+  'ui-badge inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide',
   {
     variants: {
       tone: {
@@ -225,7 +233,7 @@ export function Alert({
     <div
       role="status"
       className={cn(
-        'rounded-sm border-2 border-dashed px-3 py-2 text-sm font-medium',
+        'ui-alert rounded-sm border-2 border-dashed px-3 py-2 text-sm font-medium',
         tones[tone],
         className,
       )}
@@ -250,7 +258,7 @@ export function Progress({
   return (
     <div
       className={cn(
-        'h-4 w-full overflow-hidden rounded-sm border-2 border-border-strong bg-surface-sunken',
+        'ui-progress h-4 w-full overflow-hidden rounded-sm border-2 border-border-strong bg-surface-sunken',
         'shadow-[inset_0_2px_4px_0_rgb(0_0_0/0.25)]',
         className,
       )}
@@ -266,9 +274,7 @@ export function Progress({
           indeterminate && 'w-1/3 animate-pulse',
         )}
         style={
-          indeterminate
-            ? undefined
-            : { width: `${Math.min(100, Math.max(0, value))}%` }
+          indeterminate ? undefined : { width: `${Math.min(100, Math.max(0, value))}%` }
         }
       />
     </div>
@@ -298,14 +304,14 @@ export function Toggle({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={cn(
-        'relative h-7 w-14 shrink-0 rounded-sm border-2 border-border-strong transition-colors',
+        'ui-toggle relative h-7 w-14 shrink-0 rounded-sm border-2 border-border-strong transition-colors',
         'shadow-[inset_0_2px_4px_0_rgb(0_0_0/0.25)] disabled:opacity-50',
         checked ? 'bg-accent/40' : 'bg-surface-sunken',
       )}
     >
       <span
         className={cn(
-          'absolute top-0.5 h-5 w-6 rounded-sm border border-border-strong bg-surface-raised transition-all',
+          'ui-toggle-knob absolute top-0.5 h-5 w-6 rounded-sm border border-border-strong bg-surface-raised transition-all',
           'shadow-[0_1px_2px_0_rgb(0_0_0/0.4)]',
           checked ? 'left-[calc(100%-1.6rem)]' : 'left-0.5',
         )}
@@ -318,9 +324,7 @@ export function Toggle({
 // ── Spinner ───────────────────────────────────────────────────────────
 
 export function Spinner({ className }: { className?: string }) {
-  return (
-    <Loader2 className={cn('h-4 w-4 animate-spin text-text-faint', className)} />
-  );
+  return <Loader2 className={cn('h-4 w-4 animate-spin text-text-faint', className)} />;
 }
 
 // ── Dialog ────────────────────────────────────────────────────────────
@@ -359,7 +363,7 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       className={cn(
-        'm-auto w-[min(34rem,calc(100vw-2rem))] rounded-md p-2 text-text backdrop:bg-room-deep/80',
+        'ui-dialog m-auto w-[min(34rem,calc(100vw-2rem))] rounded-md p-2 text-text backdrop:bg-room-deep/80',
         'border-[6px] border-[oklch(0.55_0.12_45)] bg-[oklch(0.32_0.03_300)]',
         'shadow-[0_20px_50px_-10px_rgb(0_0_0/0.7)]',
       )}

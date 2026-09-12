@@ -10,7 +10,12 @@ import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Button, Card, Input, Select } from '@/components/ui';
 
 import { humanizeError } from '@/lib/errors';
-import { PACK_GENRES, PACK_LANGS, publishRecipePack, type PackGenre } from '@/lib/packs';
+import {
+  PACK_GENRES,
+  PACK_LANGS,
+  publishRecipePack,
+  type PackGenre,
+} from '@/lib/packs';
 
 /**
  * Publier une scene terminee.
@@ -56,6 +61,30 @@ export function PublishCard() {
         <p className="flex items-center gap-2 text-sm font-bold">
           <Library className="h-4 w-4 text-ok" aria-hidden />
           {t.community.published}
+        </p>
+        <Link
+          href="/communaute"
+          className="inline-flex min-h-11 items-center text-sm font-bold text-link underline underline-offset-4"
+        >
+          {t.community.seeInCommunity}
+        </Link>
+      </Card>
+    );
+  }
+
+  /*
+   * Scene venue du catalogue : elle y est deja.
+   *
+   * Rien ne l'empechait d'y retourner une seconde fois, avec le meme
+   * lien et le meme decoupage. Au troisieme groupe qui rejoue la scene,
+   * le catalogue en contient quatre exemplaires identiques.
+   */
+  if (session.from_pack_id) {
+    return (
+      <Card className="flex flex-wrap items-center justify-between gap-3">
+        <p className="flex items-center gap-2 text-sm text-text-muted">
+          <Library className="h-4 w-4 shrink-0 text-text-faint" aria-hidden />
+          {t.community.publishFromCatalogue}
         </p>
         <Link
           href="/communaute"

@@ -1,10 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import {
-  SESSION_CODE_ALPHABET,
-  SESSION_CODE_LENGTH,
-} from '@/config/constants';
+import { SESSION_CODE_ALPHABET, SESSION_CODE_LENGTH } from '@/config/constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

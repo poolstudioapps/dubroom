@@ -1,4 +1,4 @@
--- DubRoom — ecran de preparation (PRD §9).
+-- Dub’Up — ecran de preparation (PRD §9).
 --
 -- Toutes ces operations sont reservees a l'hote et au seul statut
 -- `prepping` : au-dela, la preparation est verrouillee (PRD §9.4).

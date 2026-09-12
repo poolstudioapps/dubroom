@@ -1,4 +1,4 @@
--- DubRoom — publier une scene dans la communaute.
+-- Dub’Up — publier une scene dans la communaute.
 --
 -- Trois moments possibles, et ils ne se valent pas :
 --

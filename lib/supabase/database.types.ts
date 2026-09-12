@@ -8,12 +8,7 @@
  */
 
 export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+  string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type SessionStatus =
   | 'draft'
@@ -50,6 +45,11 @@ export interface SessionRow {
   render_path: string | null;
   render_size_bytes: number | null;
   keep_as_pack: boolean;
+  /** Reprise musicale : découpage à l'enveloppe, sans transcription. */
+  is_song: boolean;
+  /** Rendu recadré en 9/16, ou `null` s'il n'a pas été produit. */
+  render_vertical_path: string | null;
+  render_vertical_size_bytes: number | null;
   from_pack_id: string | null;
   published_pack_id: string | null;
   purged_at: string | null;
@@ -66,6 +66,10 @@ export interface ParticipantRow {
   is_ready: boolean;
   is_kicked: boolean;
   mic_offset_ms: number;
+  /** Reglages de la console de voix, par joueur et par scene. */
+  fx_reverb: number;
+  fx_pitch: number;
+  fx_tune: number;
   created_at: string;
 }
 

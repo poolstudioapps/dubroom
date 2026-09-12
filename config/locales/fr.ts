@@ -7,7 +7,6 @@
  * mieux qu'une phrase francaise surgissant au milieu d'une page anglaise.
  */
 
-
 export const fr = {
   nav: {
     home: 'Accueil',
@@ -70,18 +69,15 @@ export const fr = {
     valueTitle: 'Ce que ça donne',
     value1: {
       title: 'Ta voix à la place de la leur',
-      body:
-        'Tu enregistres au micro de ton casque, chez toi. La musique et les bruitages d’origine restent intacts : on ne remplace que les voix.',
+      body: 'Tu enregistres au micro de ton casque, chez toi. La musique et les bruitages d’origine restent intacts : on ne remplace que les voix.',
     },
     value2: {
       title: 'Personne n’entend rien avant la fin',
-      body:
-        'Tes prises sont inaudibles des autres tant que le rendu n’a pas été produit. La découverte à la fin, tous ensemble, c’est tout le jeu.',
+      body: 'Tes prises sont inaudibles des autres tant que le rendu n’a pas été produit. La découverte à la fin, tous ensemble, c’est tout le jeu.',
     },
     value3: {
       title: 'Un MP4 qui se garde',
-      body:
-        'À la fin, un fichier qui se lit partout, sans sous-titres incrustés. La scène source, elle, est effacée.',
+      body: 'À la fin, un fichier qui se lit partout, sans sous-titres incrustés. La scène source, elle, est effacée.',
     },
 
     midCta: 'Choisis une scène, distribue les rôles, et vois ce que ça donne.',
@@ -95,21 +91,21 @@ export const fr = {
     seoTitle: 'Doubler une scène de film entre amis',
     defineTitle: 'Qu’est-ce que le doublage d’une scène de film ?',
     defineBody:
-      'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. DubRoom est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
+      'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. Dub’Up est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
     defineHowTitle: 'Comment doubler une scène de film soi-même',
     defineHowBody:
-      'Il faut trois choses que personne n’a chez soi : séparer les voix de la musique pour ne remplacer que les voix, savoir qui parle et quand à la milliseconde, et se synchroniser en parlant. DubRoom fait les deux premières automatiquement à partir de la scène, et résout la troisième avec une bande rythmo, le texte défilant sous une tête de lecture qu’utilisent les studios de doublage professionnels depuis quatre-vingts ans.',
+      'Il faut trois choses que personne n’a chez soi : séparer les voix de la musique pour ne remplacer que les voix, savoir qui parle et quand à la milliseconde, et se synchroniser en parlant. Dub’Up fait les deux premières automatiquement à partir de la scène, et résout la troisième avec une bande rythmo, le texte défilant sous une tête de lecture qu’utilisent les studios de doublage professionnels depuis quatre-vingts ans.',
     defineWhoTitle: 'À qui ça sert',
     defineWhoBody:
       'Aux groupes d’amis qui veulent refaire une réplique culte, aux amateurs de fandub qui cherchent un outil sans montage, aux professeurs de langue qui font doubler un extrait à leur classe, et à ceux qui apprennent le doublage et veulent s’entraîner sur une bande rythmo sans louer un studio.',
     faqExtra: [
       {
         q: 'Est-ce que c’est gratuit ?',
-        a: 'Oui. DubRoom est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
+        a: 'Oui. Dub’Up est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
       },
       {
         q: 'Quelle différence avec un montage vidéo classique ?',
-        a: 'Un logiciel de montage vous donne une timeline vide et vous laisse caler vos prises à la main. DubRoom part de la scène : il en sépare les voix, repère les répliques, les attribue aux personnages et recale automatiquement vos prises sur la voix d’origine.',
+        a: 'Un logiciel de montage vous donne une timeline vide et vous laisse caler vos prises à la main. Dub’Up part de la scène : il en sépare les voix, repère les répliques, les attribue aux personnages et recale automatiquement vos prises sur la voix d’origine.',
       },
       {
         q: 'Peut-on doubler une scène en anglais depuis le français ?',
@@ -148,7 +144,7 @@ export const fr = {
     ] as const,
     privateTitle: 'Un salon privé, pas un réseau',
     privateBody:
-      'DubRoom est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
+      'Dub’Up est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
     slides: {
       importTitle: 'Choisissez la scène que vous connaissez par cœur',
       importBody:
@@ -183,7 +179,13 @@ export const fr = {
     voteScore: (n: number) => `Score de la communauté : ${n}`,
     voteHelp:
       'Le vote porte sur le découpage, pas sur le film. Une scène bien découpée fait gagner une soirée à tout le monde.',
-    sortedByScore: 'Les mieux notées en premier',
+    sort: {
+      label: 'Trier par',
+      popular: 'Les mieux notées',
+      recent: 'Les plus récentes',
+      short: 'Les plus courtes',
+      title: 'Titre (A → Z)',
+    },
 
     filterLang: 'Langue de la scène',
     filterGenre: 'Genre',
@@ -215,8 +217,13 @@ export const fr = {
       comedie: 'Comédie',
       drame: 'Drame',
       animation: 'Animation',
+      anime: 'Anime',
+      serie: 'Série',
+      super_heros: 'Super-héros',
       science_fiction: 'Science-fiction',
       horreur: 'Horreur',
+      jeu_video: 'Jeu vidéo',
+      chanson: 'Chanson',
       documentaire: 'Documentaire',
       autre: 'Autre',
     } as Record<string, string>,
@@ -231,7 +238,8 @@ export const fr = {
       medium: '1 à 3 minutes',
       long: 'Plus de 3 minutes',
     } as Record<string, string>,
-    sceneCount: (n: number) => (n === 1 ? '1 scène disponible' : `${n} scènes disponibles`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 scène disponible' : `${n} scènes disponibles`,
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
     emptyTitle: 'Aucune scène conservée pour l’instant',
@@ -246,6 +254,8 @@ export const fr = {
     seeInCommunity: 'Voir dans la communauté',
     publishRecipeHelp:
       'Seuls le lien et le découpage seront partagés. La vidéo n’est pas hébergée ici.',
+    publishFromCatalogue:
+      'Cette scène vient du catalogue : elle y est déjà. La republier en ferait un doublon que personne ne saurait départager.',
     publishTooLate:
       'Cette scène vient d’un fichier importé, et ses médias ont été purgés après le rendu. Pour la partager, il aurait fallu le décider avant. Une scène importée par lien, elle, reste publiable à tout moment.',
     keepLabel: 'Garder cette scène pour la rejouer',
@@ -259,9 +269,23 @@ export const fr = {
     modern: 'Moderne',
   },
 
+  terms: {
+    consent: 'J’ai lu et j’accepte les {terms} et la {privacy}.',
+    linkTerms: 'conditions générales d’utilisation',
+    linkPrivacy: 'politique de confidentialité',
+    required: 'Il faut accepter les conditions pour continuer.',
+    gateTitle: 'Encore une chose',
+    gateBody:
+      'Les conditions générales d’utilisation ont changé depuis ta dernière visite, ou tu ne les as jamais acceptées. Une case à cocher et on y retourne.',
+    gateGist:
+      'L’essentiel : tu réponds toi-même des extraits que tu importes et de ce que tu en fais. Tout reste entre invités, rien n’est publié.',
+    gateConfirm: 'Accepter et continuer',
+  },
+
   legal: {
     mentions: 'Mentions légales',
     privacy: 'Confidentialité',
+    terms: 'Conditions',
     usageNotice:
       'Usage strictement privé, entre personnes invitées. Aucun contenu n’est diffusé publiquement ni indexé.',
     contact: 'Contact',
@@ -314,7 +338,8 @@ export const fr = {
       'Définis-en un pour te reconnecter sans passer par ta boîte mail.',
     passwordNew: 'Nouveau mot de passe',
     passwordSave: 'Enregistrer le mot de passe',
-    passwordSaved: 'Mot de passe enregistré. Tu peux l’utiliser dès la prochaine connexion.',
+    passwordSaved:
+      'Mot de passe enregistré. Tu peux l’utiliser dès la prochaine connexion.',
     passwordTooShort: 'Huit caractères au minimum.',
   },
 
@@ -351,6 +376,15 @@ export const fr = {
     title: 'Nouvelle scène',
     tabUpload: 'Importer un fichier',
     tabYoutube: 'Coller un lien YouTube',
+    songLabel: 'C’est une chanson',
+    songHelp:
+      'On saute la transcription : les paroles, tu les connais. Le découpage suit la voix du morceau et te dit quand entrer.',
+    matchTitle: 'Cette scène existe déjà',
+    matchBody:
+      'Quelqu’un l’a déjà préparée : découpage, personnages et texte sont prêts. La reprendre démarre tout de suite, au lieu d’attendre plusieurs minutes pour le même résultat.',
+    matchLines: 'Les répliques à dire',
+    matchUse: 'Partir de cette scène',
+    matchScratch: 'Refaire depuis zéro',
     tabPack: 'Partir d’un pack',
     packHelp:
       'Rien à préparer : la scène est déjà découpée, vous choisissez les rôles et vous enregistrez. Le catalogue complet est dans l’onglet Communauté.',
@@ -379,9 +413,9 @@ export const fr = {
   ingest: {
     title: 'Préparation de la scène',
     subtitle: 'On découpe la scène. Ça prend quelques minutes.',
-    queued: 'En attente du worker. Lance le script sur ton PC.',
+    queued: 'Le traitement tarde à démarrer.',
     queuedHelp:
-      'Le traitement tourne sur la machine de l’hôte. Double-clique sur start.bat, le job démarrera tout seul.',
+      'Il repart tout seul d’habitude. Si ça dure, préviens l’hôte de la scène.',
     failed: 'L’import a échoué.',
     retry: 'Relancer l’import',
     neverStarted:
@@ -495,6 +529,34 @@ export const fr = {
     margin: 'Marge',
     noTake: 'Aucune prise pour ce clip.',
     uploading: 'Envoi de la prise…',
+    noCharacter:
+      'Aucun personnage ne t’a été attribué sur cette scène. Tu peux suivre les autres ici.',
+    fxTitle: 'Console de voix',
+    fxReset: 'Remettre à plat',
+    fxReverb: 'Réverbe',
+    fxPitch: 'Hauteur',
+    fxTune: 'Justesse',
+    fxHelp:
+      'Les effets sont posés au mixage, jamais sur l’enregistrement : tu peux les changer jusqu’au rendu, ou revenir à ta voix nue.',
+    fxPresets: {
+      dry: 'Voix nue',
+      room: 'Petite salle',
+      cathedral: 'Cathédrale',
+      cartoon: 'Dessin animé',
+      deep: 'Voix grave',
+      cover: 'Reprise',
+    },
+    emptyTake:
+      'Rien n’a été enregistré. Vérifie que ton micro est bien branché et choisi, puis refais la prise.',
+    whereEveryoneIs: 'Où en est le groupe',
+    you: '(toi)',
+    hostTag: '(hôte)',
+    stateVo: 'En VO',
+    stateDone: 'Fini',
+    stateRecording: 'En cours',
+    waitingHost: 'On attend que l’hôte lance le rendu.',
+    hostCanRender: 'Tout le monde a fini : tu peux lancer le rendu.',
+    stillMissing: 'Il reste des répliques à enregistrer.',
     finishedTitle: 'Tu as fini !',
     finishedBody:
       'Tu peux encore revenir modifier une prise tant que le rendu n’est pas lancé.',
@@ -533,7 +595,6 @@ export const fr = {
       'Le calage n’a rien trouvé de net sur cette prise. Elle est posée telle quelle.',
   },
 
-
   progress: {
     preparing: 'Préparation de la scène',
     rendering: 'Montage en cours',
@@ -541,12 +602,11 @@ export const fr = {
     working:
       'Compte quelques minutes. Tu peux laisser l’onglet ouvert et revenir plus tard.',
     almost: 'Presque fini.',
-    longer:
-      'C’est plus long que d’habitude, mais ça tourne toujours. Laisse faire.',
+    longer: 'C’est plus long que d’habitude, mais ça tourne toujours. Laisse faire.',
   },
   render: {
     title: 'Rendu en cours',
-    queued: 'En attente du worker. Lance le script sur ton PC.',
+    queued: 'Le traitement tarde à démarrer.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
     failed: 'Le rendu a échoué.',
     retry: 'Relancer le rendu',
@@ -555,11 +615,22 @@ export const fr = {
   result: {
     title: 'Le résultat',
     download: 'Télécharger le MP4',
+    exportTitle: 'Emporter la scène',
+    formatWide: 'Format large',
+    formatWideHint: 'Pour un écran d’ordinateur ou une télévision.',
+    formatVertical: 'Format téléphone',
+    formatVerticalHint: 'Recadré au centre, pour les stories et les reels.',
+    formatVerticalMissing:
+      'Cette scène a été rendue avant le recadrage automatique. Relance un rendu pour l’obtenir.',
+    share: 'Partager',
+    shareHelp:
+      'Sur téléphone, « Partager » ouvre la feuille du système : TikTok, Instagram et les autres applications installées y apparaissent.',
+    shareUnsupported:
+      'Ce navigateur ne sait pas partager un fichier. Télécharge-le, puis publie-le depuis l’application.',
     cast: 'La distribution',
     voiceOriginal: 'VO conservée',
     shareHint: 'Le lien n’est accessible qu’aux participants de cette scène.',
-    sourcePurged:
-      'La source a été supprimée : seul le rendu final est conservé.',
+    sourcePurged: 'La source a été supprimée : seul le rendu final est conservé.',
   },
 
   errors: {

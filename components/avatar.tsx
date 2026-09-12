@@ -39,7 +39,9 @@ export function Avatar({
         SIZES[size],
         className,
       )}
-      style={url.data ? undefined : { backgroundColor: tintFor(name), color: '#10121a' }}
+      style={
+        url.data ? undefined : { backgroundColor: tintFor(name), color: '#10121a' }
+      }
       aria-hidden
     >
       {url.data ? (
@@ -53,7 +55,10 @@ export function Avatar({
 }
 
 function initials(name: string): string {
-  const parts = name.trim().split(/[\s_.-]+/).filter(Boolean);
+  const parts = name
+    .trim()
+    .split(/[\s_.-]+/)
+    .filter(Boolean);
   if (parts.length === 0) return '?';
   const first = parts[0]?.[0] ?? '';
   const second = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? '') : '';

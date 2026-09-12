@@ -1,4 +1,4 @@
--- DubRoom — le jugement du groupe sur les scenes publiees.
+-- Dub’Up — le jugement du groupe sur les scenes publiees.
 --
 -- Une scene preparee vaut par son decoupage : un mauvais decoupage donne
 -- des repliques coupees au milieu, et la personne qui la lance perd sa

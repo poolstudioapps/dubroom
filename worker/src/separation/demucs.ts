@@ -41,16 +41,23 @@ async function runDemucs(
   await run(
     config.python,
     [
-      '-m', 'demucs',
+      '-m',
+      'demucs',
       // Deux stems seulement (voix / reste) : c'est exactement ce dont
       // on a besoin, et c'est plus rapide que la separation en quatre.
       '--two-stems=vocals',
-      '-n', config.demucsModel,
-      '--device', config.demucsDevice,
-      '-j', config.demucsJobs,
-      '--segment', String(segment),
-      '--filename', '{stem}.{ext}',
-      '-o', outDir,
+      '-n',
+      config.demucsModel,
+      '--device',
+      config.demucsDevice,
+      '-j',
+      config.demucsJobs,
+      '--segment',
+      String(segment),
+      '--filename',
+      '{stem}.{ext}',
+      '-o',
+      outDir,
       inputWav,
     ],
     {

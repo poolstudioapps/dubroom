@@ -1,4 +1,4 @@
--- DubRoom — fonctions metier.
+-- Dub’Up — fonctions metier.
 --
 -- Parti pris : la lecture passe par RLS, mais toute TRANSITION d'etat passe
 -- par une fonction `security definer`. C'est ce qui permet de tenir les

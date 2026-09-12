@@ -2,7 +2,16 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { Combine, Pause, Play, RotateCcw, Scissors, Trash2, Users, X } from 'lucide-react';
+import {
+  Combine,
+  Pause,
+  Play,
+  RotateCcw,
+  Scissors,
+  Trash2,
+  Users,
+  X,
+} from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
@@ -187,13 +196,12 @@ export function PrepareScreen() {
                     aria-pressed={filtreChar === character.id}
                     onClick={() => {
                       setSelectedLines(new Set());
-                      setFiltreChar(
-                        filtreChar === character.id ? null : character.id,
-                      );
+                      setFiltreChar(filtreChar === character.id ? null : character.id);
                     }}
                     className={cn(
                       'min-h-8 rounded-md px-1.5 text-left transition-colors hover:bg-surface hover:text-text',
-                      filtreChar === character.id && 'bg-select/15 font-bold text-select',
+                      filtreChar === character.id &&
+                        'bg-select/15 font-bold text-select',
                     )}
                   >
                     {t.prepare.lineCount(stat?.lineCount ?? 0)} ·{' '}
@@ -276,7 +284,8 @@ export function PrepareScreen() {
                   )
                 }
               >
-                {selectedLines.size === lignesVisibles.length && lignesVisibles.length > 0
+                {selectedLines.size === lignesVisibles.length &&
+                lignesVisibles.length > 0
                   ? t.prepare.selectNone
                   : t.prepare.selectAll}
               </Button>
@@ -392,6 +401,42 @@ export function PrepareScreen() {
                       }
                     }}
                   />
+
+                  {/*
+                    Retirer une ligne, sur la ligne elle-meme.
+                    L'action existait deja, mais uniquement sur une
+                    selection : pour effacer un « euh » entendu par la
+                    transcription, il fallait cocher une case, descendre
+                    jusqu'a la barre d'actions, cliquer, puis decocher.
+                    Le meme bouton retablit ce qu'il vient d'enlever :
+                    c'est un interrupteur, pas une porte.
+                  */}
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 shrink-0"
+                    aria-label={
+                      line.is_deleted ? t.prepare.restoreLine : t.prepare.deleteLine
+                    }
+                    title={
+                      line.is_deleted
+                        ? t.prepare.restoreLine
+                        : `${t.prepare.deleteLine} · ${t.prepare.deleteLineHint}`
+                    }
+                    onClick={() =>
+                      run(() =>
+                        line.is_deleted
+                          ? restoreLines([line.id])
+                          : deleteLines([line.id]),
+                      )
+                    }
+                  >
+                    {line.is_deleted ? (
+                      <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+                    ) : (
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                    )}
+                  </Button>
                 </div>
               );
             })}

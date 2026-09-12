@@ -1,4 +1,4 @@
--- DubRoom — enveloppe de la voix d'origine.
+-- Dub’Up — enveloppe de la voix d'origine.
 --
 -- Le studio doit montrer au joueur quand l'acteur parle, pour qu'il
 -- anticipe son entree au lieu de la decouvrir. Servir le stem voix au

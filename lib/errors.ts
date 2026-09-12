@@ -76,7 +76,15 @@ export function errorStatus(error: unknown): number {
       ? String((error as { message: unknown }).message)
       : '';
   const code = raw.split(':')[0]?.trim() ?? '';
-  if (['HOST_ONLY', 'FORBIDDEN', 'NOT_A_PARTICIPANT', 'NOT_YOUR_CHARACTER', 'NOT_ALLOWED'].includes(code)) {
+  if (
+    [
+      'HOST_ONLY',
+      'FORBIDDEN',
+      'NOT_A_PARTICIPANT',
+      'NOT_YOUR_CHARACTER',
+      'NOT_ALLOWED',
+    ].includes(code)
+  ) {
     return 403;
   }
   if (code.endsWith('_NOT_FOUND')) return 404;

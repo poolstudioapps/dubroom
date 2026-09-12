@@ -44,6 +44,7 @@ export interface Session {
   voice_peaks_hz: number | null;
   keep_as_pack: boolean;
   from_pack_id: string | null;
+  is_song: boolean;
 }
 
 /** Reclame un job en file. `null` s'il n'y a rien a faire (PRD §7.2). */
@@ -98,7 +99,8 @@ export async function updateSession(
   patch: Record<string, unknown>,
 ): Promise<void> {
   const { error } = await db.from('sessions').update(patch).eq('id', sessionId);
-  if (error) throw new SystemError(`Mise à jour de session impossible : ${error.message}`);
+  if (error)
+    throw new SystemError(`Mise à jour de session impossible : ${error.message}`);
 }
 
 export async function setJobStep(

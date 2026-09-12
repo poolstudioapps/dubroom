@@ -8,19 +8,23 @@ import { Clapperboard, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import {
+  DEFAULT_SORT,
   EMPTY_FILTER,
   PackFilters,
   matchesFilter,
+  sortPacks,
   type PackFilter,
+  type PackSort,
 } from '@/components/pack-filters';
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
 import { Alert, Badge, Button, Card, Dialog, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
-import { deletePack, listPacks, startFromPack, type Pack } from '@/lib/packs';
+import { PACKS_QUERY, deletePack, startFromPack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
 import { useMyProfile } from '@/lib/profile';
+import { cn } from '@/lib/utils';
 
 /**
  * Le catalogue des scenes preparees.
@@ -34,6 +38,14 @@ import { useMyProfile } from '@/lib/profile';
  * deux listes dessinees separement auraient diverge des la premiere
  * retouche.
  */
+/** Combien de colonnes pour ce nombre de scenes. */
+function gridColumns(count: number): string {
+  if (count <= 1) return 'max-w-sm';
+  if (count === 2) return 'sm:grid-cols-2';
+  if (count === 3) return 'sm:grid-cols-2 lg:grid-cols-3';
+  return 'sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4';
+}
+
 export function CommunityClient({
   displayName,
   scope = 'all',
@@ -56,8 +68,9 @@ export function CommunityClient({
    */
   const [startingId, setStartingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
+  const [sort, setSort] = useState<PackSort>(DEFAULT_SORT);
 
-  const packs = useQuery({ queryKey: ['packs'], queryFn: listPacks });
+  const packs = useQuery(PACKS_QUERY);
 
   const start = useMutation({
     mutationFn: (pack: Pack) =>
@@ -82,7 +95,10 @@ export function CommunityClient({
   // criteres laissent passer. Le premier decide si le catalogue est vide,
   // le second s'il faut elargir les criteres. Les deux messages different.
   const mine = (packs.data ?? []).filter((pack) => scope === 'all' || pack.is_mine);
-  const visible = mine.filter((pack) => matchesFilter(pack, filter));
+  const visible = sortPacks(
+    mine.filter((pack) => matchesFilter(pack, filter)),
+    sort,
+  );
   const strings = scope === 'mine' ? t.myPacks : t.community;
 
   return (
@@ -96,7 +112,7 @@ export function CommunityClient({
         </p>
         {visible.length > 0 ? (
           <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
-            {strings.sceneCount(visible.length)} · {t.community.sortedByScore}
+            {strings.sceneCount(visible.length)}
           </p>
         ) : null}
       </header>
@@ -111,7 +127,13 @@ export function CommunityClient({
       ) : null}
 
       {mine.length > 1 ? (
-        <PackFilters packs={mine} value={filter} onChange={setFilter} />
+        <PackFilters
+          packs={mine}
+          value={filter}
+          onChange={setFilter}
+          sort={sort}
+          onSortChange={setSort}
+        />
       ) : null}
 
       {packs.isSuccess && mine.length === 0 ? (
@@ -132,13 +154,14 @@ export function CommunityClient({
         </Card>
       ) : null}
 
-      {/* A un seul element, la grille a deux colonnes laisse une moitie
-          vide : elle ne se dedouble qu'a partir de deux. */}
-      <ul
-        className={
-          visible.length > 1 ? 'grid gap-5 md:grid-cols-2' : 'grid max-w-xl gap-5'
-        }
-      >
+      {/*
+        Une grille de catalogue, pas une pile de fiches.
+        Le nombre de colonnes suit le nombre de scenes : a un element,
+        quatre colonnes laissent trois quarts de vide ; a douze, une
+        seule colonne oblige a faire defiler pour comparer. La carte,
+        elle, reste la meme partout.
+      */}
+      <ul className={cn('grid gap-5', gridColumns(visible.length))}>
         {visible.map((pack) => (
           <li key={pack.id} className="panel flex flex-col overflow-hidden">
             {/*
@@ -150,10 +173,12 @@ export function CommunityClient({
               <UrlPreview url={pack.source_url} title={pack.title} flush />
             ) : null}
 
-            <div className="flex flex-1 flex-col gap-3 p-4">
+            <div className="flex flex-1 flex-col gap-2.5 p-4">
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 space-y-1">
-                  <h2 className="font-bold leading-snug">{pack.title}</h2>
+                <div className="min-w-0 space-y-0.5">
+                  <h2 className="truncate font-bold leading-snug" title={pack.title}>
+                    {pack.title}
+                  </h2>
                   <p className="text-xs text-text-faint">
                     {formatDuration(pack.duration_ms)} ·{' '}
                     {t.community.characterCount(pack.character_count)} ·{' '}
@@ -168,16 +193,26 @@ export function CommunityClient({
                 {pack.characters.map((character) => (
                   <li
                     key={character.name}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-bold"
+                    className="inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-bold"
                   >
                     <span
-                      className="h-2 w-2 rounded-full"
+                      className="h-2 w-2 shrink-0 rounded-full"
                       style={{ backgroundColor: characterColorVar(character.color) }}
                       aria-hidden
                     />
                     {character.name}
                   </li>
                 ))}
+              </ul>
+
+              {/*
+                Les etiquettes de catalogue : ce sur quoi on trie, et
+                rien d'autre. La phrase qui expliquait qu'une recette
+                n'est pas hebergee ici occupait trois lignes sur chaque
+                carte et disait douze fois la meme chose ; elle tient
+                dans une pastille, et le detail vit sous la grille.
+              */}
+              <ul className="flex flex-wrap gap-1.5">
                 <li>
                   <Badge>{t.community.genreNames[pack.genre]}</Badge>
                 </li>
@@ -188,16 +223,19 @@ export function CommunityClient({
                     </Badge>
                   </li>
                 ) : null}
+                <li>
+                  <Badge>
+                    {pack.kind === 'url'
+                      ? t.community.kindRecipe
+                      : t.community.kindMedia}
+                  </Badge>
+                </li>
                 {pack.is_mine && scope === 'all' ? (
                   <li>
                     <Badge tone="accent">{t.community.mine}</Badge>
                   </li>
                 ) : null}
               </ul>
-
-              <p className="text-xs leading-relaxed text-text-faint">
-                {pack.kind === 'url' ? t.community.recipeHelp : t.community.mediaHelp}
-              </p>
 
               <div className="mt-auto flex items-center gap-2 pt-1">
                 <Button
@@ -231,9 +269,10 @@ export function CommunityClient({
       </ul>
 
       {visible.length > 0 ? (
-        <p className="text-xs leading-relaxed text-text-faint">
-          {t.community.voteHelp}
-        </p>
+        <div className="space-y-1 text-xs leading-relaxed text-text-faint">
+          <p>{t.community.voteHelp}</p>
+          <p>{t.community.recipeHelp}</p>
+        </div>
       ) : null}
 
       <Dialog

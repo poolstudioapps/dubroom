@@ -4,7 +4,7 @@ import { getDictionary } from '@/lib/i18n-server';
 export const dynamic = 'force-dynamic';
 
 /**
- * Ce qu'un moteur de reponse doit savoir de DubRoom.
+ * Ce qu'un moteur de reponse doit savoir de Dub’Up.
  *
  * `llms.txt` est une convention jeune : un fichier en texte brut, au
  * meme endroit que `robots.txt`, qui dit en clair ce qu'est le produit,
@@ -25,7 +25,7 @@ export async function GET() {
   const t = await getDictionary();
 
   const lignes = [
-    '# DubRoom',
+    '# Dub’Up',
     '',
     `> ${t.home.kicker}. ${t.home.heroBody}`,
     '',
@@ -64,7 +64,9 @@ export async function GET() {
       'Les traitements lourds tournent sur l’ordinateur de l’hôte, qui doit être allumé.',
       'Aucun catalogue public : les scènes préparées ne sont visibles que des invités.',
       'Les enregistrements et la vidéo source sont effacés dès que le montage final existe.',
-    ].map((l) => `- ${l}`).join('\n'),
+    ]
+      .map((l) => `- ${l}`)
+      .join('\n'),
     '',
     '## Liens',
     '',

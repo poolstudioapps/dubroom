@@ -5,8 +5,10 @@ import { useState } from 'react';
 import { Clapperboard, UserMinus, Wand2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
+import { PlayerProgressList } from '@/components/scene/player-progress';
+import { VoiceConsole } from '@/components/scene/voice-console';
 import { useSceneCtx } from '@/components/scene-page';
-import { Alert, Badge, Button, Card, Dialog, Progress, Toggle } from '@/components/ui';
+import { Alert, Button, Card, Dialog, Progress, Toggle } from '@/components/ui';
 import {
   MIC_OFFSET_MAX_MS,
   MIC_OFFSET_MIN_MS,
@@ -170,6 +172,13 @@ export function StudioSidebar({
         </div>
       </Card>
 
+      {/*
+        La console vient juste apres les reglages techniques et avant
+        l'avancement : on la pousse entre deux prises, pas en debut de
+        seance.
+      */}
+      <VoiceConsole />
+
       <Card variant="plate" className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span>{t.studio.myClips}</span>
@@ -187,6 +196,11 @@ export function StudioSidebar({
         ) : null}
       </Card>
 
+      {/*
+        Tout le groupe, soi compris, et en direct. La liste ne montrait
+        que les autres : on ne savait donc pas si on etait soi-meme celui
+        qu'on attend.
+      */}
       <Card variant="plate" className="space-y-2">
         <h2 className="text-sm font-bold">
           {others.length === 0
@@ -197,44 +211,33 @@ export function StudioSidebar({
                 ? t.studio.everyoneDone
                 : t.studio.othersDone}
         </h2>
-        <ul className="space-y-1.5">
-          {others.map((row) => (
-            <li
-              key={row.participant_id}
-              className="flex items-center justify-between gap-2 text-sm"
-            >
-              <span className="truncate">
-                {t.studio.playerProgress(row.display_name, row.done, row.total)}
-              </span>
-              <div className="flex items-center gap-1">
-                <Badge tone={row.done >= row.total ? 'ok' : 'neutral'}>
-                  {row.done >= row.total ? 'Fini' : 'En cours'}
-                </Badge>
-                {isHost && row.done < row.total ? (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    aria-label={t.studio.kick}
-                    title={t.studio.kick}
-                    onClick={() =>
-                      setPendingKick(
-                        participants.find((p) => p.id === row.participant_id) ??
-                          null,
-                      )
-                    }
-                  >
-                    <UserMinus className="h-4 w-4" />
-                  </Button>
-                ) : null}
-              </div>
-            </li>
-          ))}
-          {others.length === 0 ? (
-            <li className="text-xs text-text-faint">
-              {t.studio.soloHint}
-            </li>
-          ) : null}
-        </ul>
+
+        <PlayerProgressList
+          sessionId={session.id}
+          myParticipantId={me?.id ?? null}
+          action={(row) =>
+            isHost && row.participant_id !== me?.id && row.done < row.total ? (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6"
+                aria-label={t.studio.kick}
+                title={t.studio.kick}
+                onClick={() =>
+                  setPendingKick(
+                    participants.find((p) => p.id === row.participant_id) ?? null,
+                  )
+                }
+              >
+                <UserMinus className="h-3.5 w-3.5" />
+              </Button>
+            ) : null
+          }
+        />
+
+        {others.length === 0 ? (
+          <p className="text-xs text-text-faint">{t.studio.soloHint}</p>
+        ) : null}
       </Card>
 
       {isHost ? (
@@ -249,9 +252,7 @@ export function StudioSidebar({
             <div className="space-y-0.5">
               <p className="text-sm font-bold">{t.community.keepLabel}</p>
               <p className="text-xs text-text-faint">
-                {session.source_ref
-                  ? t.create.keepHelpUrl
-                  : t.create.keepHelpUpload}
+                {session.source_ref ? t.create.keepHelpUrl : t.create.keepHelpUpload}
               </p>
             </div>
           </div>

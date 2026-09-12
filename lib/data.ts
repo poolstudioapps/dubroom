@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 
 import {
   BUCKET_RENDERS,
@@ -30,6 +30,24 @@ export interface SceneData {
   me: ParticipantRow | null;
 }
 
+/**
+ * Un nom de canal qui n'appartient qu'a ce montage.
+ *
+ * Supabase indexe ses canaux par leur nom : deux composants qui
+ * demandent `progress:<id>` recoivent le meme objet, et le second se
+ * voit refuser ses ecoutes avec « cannot add postgres_changes callbacks
+ * after subscribe() ». L'exception part d'un effet, donc React demonte
+ * tout l'arbre : la page devient un fond vide.
+ *
+ * C'est exactement ce qui arrivait a la fin des prises, ou la colonne de
+ * reglages et l'ecran d'attente demandent tous deux l'avancement. Le
+ * suffixe rend le nom unique, et chaque abonne a le sien.
+ */
+function useChannelName(prefix: string, sessionId: string): string {
+  const unique = useId();
+  return `${prefix}:${sessionId}:${unique}`;
+}
+
 const keys = {
   scene: (id: string) => ['scene', id] as const,
   job: (id: string) => ['job', id] as const,
@@ -53,7 +71,11 @@ async function fetchScene(sessionId: string, userId: string): Promise<SceneData>
   ]);
 
   const error =
-    session.error ?? participants.error ?? characters.error ?? lines.error ?? clips.error;
+    session.error ??
+    participants.error ??
+    characters.error ??
+    lines.error ??
+    clips.error;
   if (error) throw error;
 
   const people = (participants.data ?? []) as ParticipantRow[];
@@ -76,14 +98,20 @@ async function fetchScene(sessionId: string, userId: string): Promise<SceneData>
  */
 export function useScene(sessionId: string, userId: string) {
   const qc = useQueryClient();
+  const channelName = useChannelName('scene', sessionId);
 
   useEffect(() => {
     const db = supabaseBrowser();
     const channel = db
-      .channel(`scene:${sessionId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'sessions', filter: `id=eq.${sessionId}` },
+        {
+          event: '*',
+          schema: 'public',
+          table: 'sessions',
+          filter: `id=eq.${sessionId}`,
+        },
         () => invalidateScene(qc, sessionId),
       )
       .on(
@@ -108,7 +136,12 @@ export function useScene(sessionId: string, userId: string) {
       )
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'jobs', filter: `session_id=eq.${sessionId}` },
+        {
+          event: '*',
+          schema: 'public',
+          table: 'jobs',
+          filter: `session_id=eq.${sessionId}`,
+        },
         () => {
           void qc.invalidateQueries({ queryKey: keys.job(sessionId) });
           invalidateScene(qc, sessionId);
@@ -119,7 +152,7 @@ export function useScene(sessionId: string, userId: string) {
     return () => {
       void db.removeChannel(channel);
     };
-  }, [qc, sessionId]);
+  }, [qc, sessionId, channelName]);
 
   return useQuery({
     queryKey: keys.scene(sessionId),
@@ -184,21 +217,20 @@ export function useJobState(sessionId: string, enabled = true) {
 
 export function useTakes(sessionId: string, clipIds: string[]) {
   const qc = useQueryClient();
+  const channelName = useChannelName('takes', sessionId);
 
   useEffect(() => {
     const db = supabaseBrowser();
     const channel = db
-      .channel(`takes:${sessionId}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'takes' },
-        () => invalidateTakes(qc, sessionId),
+      .channel(channelName)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'takes' }, () =>
+        invalidateTakes(qc, sessionId),
       )
       .subscribe();
     return () => {
       void db.removeChannel(channel);
     };
-  }, [qc, sessionId]);
+  }, [qc, sessionId, channelName]);
 
   return useQuery({
     queryKey: keys.takes(sessionId),
@@ -234,12 +266,9 @@ export function useMediaUrls(session: SessionRow | undefined) {
       const db = supabaseBrowser();
       // Le fond servi au navigateur est la version compressee : le WAV
       // de reference ne quitte jamais Supabase que vers le worker.
-      const musicPath =
-        session!.stem_music_preview_path ?? session!.stem_music_path;
+      const musicPath = session!.stem_music_preview_path ?? session!.stem_music_path;
 
-      const paths = [session!.video_path, musicPath].filter(
-        Boolean,
-      ) as string[];
+      const paths = [session!.video_path, musicPath].filter(Boolean) as string[];
 
       const { data, error } = await db.storage
         .from(BUCKET_SOURCES)
@@ -257,17 +286,32 @@ export function useMediaUrls(session: SessionRow | undefined) {
   });
 }
 
-export function useRenderUrl(session: SessionRow | undefined) {
+/**
+ * L'adresse signee d'un rendu.
+ *
+ * `format` choisit entre la version d'origine et celle recadree pour les
+ * ecrans tenus a la verticale. Les deux ont leur propre cle de cache :
+ * une seule adresse pour les deux fichiers aurait servi le mauvais des
+ * qu'on passe de l'un a l'autre.
+ */
+export function useRenderUrl(
+  session: SessionRow | undefined,
+  format: 'large' | 'vertical' = 'large',
+) {
+  const chemin =
+    format === 'vertical' ? session?.render_vertical_path : session?.render_path;
+  const suffixe = format === 'vertical' ? ' (9x16)' : '';
+
   return useQuery({
-    queryKey: keys.render(session?.id ?? 'none'),
-    enabled: !!session?.render_path,
+    queryKey: [...keys.render(session?.id ?? 'none'), format],
+    enabled: !!chemin,
     staleTime: (SIGNED_URL_TTL_S - 120) * 1000,
     queryFn: async () => {
       const db = supabaseBrowser();
       const { data, error } = await db.storage
         .from(BUCKET_RENDERS)
-        .createSignedUrl(session!.render_path!, SIGNED_URL_TTL_S, {
-          download: `${session!.title ?? 'dubroom'}.mp4`,
+        .createSignedUrl(chemin!, SIGNED_URL_TTL_S, {
+          download: `${session!.title ?? 'dubup'}${suffixe}.mp4`,
         });
       if (error) throw error;
       return data.signedUrl;
@@ -323,11 +367,12 @@ export interface PlayerProgressRow {
  */
 export function useSessionProgress(sessionId: string) {
   const qc = useQueryClient();
+  const channelName = useChannelName('progress', sessionId);
 
   useEffect(() => {
     const db = supabaseBrowser();
     const channel = db
-      .channel(`progress:${sessionId}`)
+      .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'takes' }, () => {
         void qc.invalidateQueries({ queryKey: keys.progress(sessionId) });
       })
@@ -335,7 +380,7 @@ export function useSessionProgress(sessionId: string) {
     return () => {
       void db.removeChannel(channel);
     };
-  }, [qc, sessionId]);
+  }, [qc, sessionId, channelName]);
 
   return useQuery({
     queryKey: keys.progress(sessionId),

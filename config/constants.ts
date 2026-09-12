@@ -11,6 +11,15 @@ export const LINE_SPLIT_SILENCE_MS = 700;
 export const CLIP_MERGE_GAP_MS = 3_000;
 /** Marge de respiration ajoutee avant et apres la fenetre de parole d'un clip. */
 export const CLIP_MARGIN_MS = 2_000;
+/**
+ * Plafond de parole dans un clip.
+ *
+ * Au-dela, la replique suivante ouvre un nouveau clip. Quinze secondes,
+ * c'est ce qu'on tient sans reprendre son souffle et sans risquer de
+ * tout refaire pour un mot rate a la fin. Une replique seule plus longue
+ * n'est jamais coupee : on ne tronconne pas une phrase.
+ */
+export const CLIP_MAX_MS = 15_000;
 
 // ── Garde-fous d'ingestion (PRD §6.2) ──────────────────────────────────
 export const MAX_VIDEO_DURATION_MS = 600_000; // 10 min
@@ -27,8 +36,44 @@ export const DEFAULT_BACKING_VOLUME = 0.6;
 export const RYTHMO_PLAYHEAD_RATIO = 0.35;
 /** Largeur temporelle visible de la bande rythmo, en ms. */
 export const RYTHMO_WINDOW_MS = 6_000;
+/**
+ * Retard applique d'office a toutes les prises, en ms.
+ *
+ * Une chaine de capture a sa latence : le navigateur ouvre le micro,
+ * l'encodeur remplit son tampon, et la prise arrive systematiquement un
+ * peu en avance par rapport a ce qu'on croit avoir dit. Regler ca a la
+ * main, curseur apres curseur, ne marchait pour personne — on ne s'entend
+ * pas assez bien pour juger quarante millisecondes.
+ *
+ * Cette valeur est donc posee une fois pour toutes, sous le reglage
+ * manuel. Elle n'apparait nulle part dans l'interface : le curseur
+ * continue d'afficher zero quand il n'a pas ete touche, parce que zero
+ * veut dire « le reglage par defaut », pas « aucun retard ».
+ */
+export const MIC_OFFSET_BASELINE_MS = 40;
+
 /** Cle localStorage du miroir de mic_offset_ms. */
-export const MIC_OFFSET_STORAGE_KEY = 'dubroom.micOffsetMs';
+export const MIC_OFFSET_STORAGE_KEY = 'dubup.micOffsetMs';
+/**
+ * L'ancien nom de la meme cle, avant le changement de marque.
+ *
+ * Le decalage du micro se mesure une fois, casque sur les oreilles, et
+ * personne n'a envie de recommencer parce qu'un produit a change de nom.
+ * On lit donc encore l'ancienne cle a defaut de la nouvelle. Cette
+ * ligne pourra disparaitre quand plus personne n'aura l'ancienne.
+ */
+export const LEGACY_MIC_OFFSET_STORAGE_KEY = 'dubroom.micOffsetMs';
+/**
+ * En deca, la prise est consideree comme vide.
+ *
+ * Le navigateur rend parfois un fichier reduit a son entete quand le
+ * micro n'a rien capte — casque debranche, mauvaise entree choisie,
+ * autorisation retiree en cours de route. Envoye tel quel, il faisait
+ * echouer le rendu de toute la soiree, plusieurs jours plus tard et sans
+ * rapport visible avec la prise fautive.
+ */
+export const TAKE_MIN_MS = 200;
+
 /** Debit vise pour l'encodage des prises. */
 export const TAKE_AUDIO_BITS_PER_SECOND = 96_000;
 /** Nombre de colonnes de la forme d'onde affichee. */

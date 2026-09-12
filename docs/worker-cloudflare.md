@@ -1,6 +1,6 @@
 # Faire tourner le worker sur Cloudflare
 
-Écrit pour la personne qui administre DubRoom, c'est-à-dire toi.
+Écrit pour la personne qui administre Dub’Up, c'est-à-dire toi.
 
 Réponse courte : **oui sur Cloudflare Containers, non sur Cloudflare
 Workers**, et le passage coûte la séparation par Demucs. Le détail
@@ -11,14 +11,14 @@ ci-dessous dit pourquoi, ce qu'il faut changer, et ce que ça coûte.
 ## 1. Pourquoi Workers ne peut pas marcher
 
 Un Worker est un isolat V8. Pas de système de fichiers, pas de création de
-processus. Or le worker de DubRoom passe son temps à lancer des binaires :
+processus. Or le worker de Dub’Up passe son temps à lancer des binaires :
 
-| Binaire | À quoi il sert | Où il est appelé |
-| --- | --- | --- |
-| `ffmpeg` | extraction, mixage, muxage | `worker/src/lib/ffmpeg.ts` |
-| `ffprobe` | sonder la source | `worker/src/lib/ffmpeg.ts` |
-| `yt-dlp` | télécharger depuis un lien | `worker/src/lib/ytdlp.ts` |
-| `python -m demucs` | séparer voix et musique | `worker/src/separation/demucs.ts` |
+| Binaire            | À quoi il sert             | Où il est appelé                  |
+| ------------------ | -------------------------- | --------------------------------- |
+| `ffmpeg`           | extraction, mixage, muxage | `worker/src/lib/ffmpeg.ts`        |
+| `ffprobe`          | sonder la source           | `worker/src/lib/ffmpeg.ts`        |
+| `yt-dlp`           | télécharger depuis un lien | `worker/src/lib/ytdlp.ts`         |
+| `python -m demucs` | séparer voix et musique    | `worker/src/separation/demucs.ts` |
 
 Ce n'est pas un réglage à trouver, c'est une incompatibilité d'exécution.
 Réécrire le mixage en WebAssembly serait un autre produit.
@@ -61,7 +61,7 @@ Deux montages possibles, et un seul est raisonnable.
 
 **Garder la boucle, garder le conteneur éveillé.** Tu allonges
 `sleepAfter` et tu ne touches à rien d'autre. Sauf que la mémoire et le
-disque sont facturés sur ce qui est *provisionné*, pas sur ce qui est
+disque sont facturés sur ce qui est _provisionné_, pas sur ce qui est
 utilisé : 12 Gio en permanence, c'est de l'ordre de 79 $ par mois pour une
 machine qui ne fait rien la plupart du temps. À écarter.
 
@@ -82,12 +82,12 @@ une tâche traitée, au lieu de dormir. Une vingtaine de lignes.
 Il faut le plan Workers payant, 5 $ par mois, puis l'usage. Pour un rendu
 de cinq minutes sur `standard-4` :
 
-| Poste | Calcul | Montant |
-| --- | --- | --- |
-| Processeur | 1 200 vCPU·s | 0,024 $ |
-| Mémoire | 3 600 Gio·s | 0,009 $ |
-| Disque | 6 000 Go·s | 0,0004 $ |
-| **Par rendu** | | **≈ 0,033 $** |
+| Poste         | Calcul       | Montant       |
+| ------------- | ------------ | ------------- |
+| Processeur    | 1 200 vCPU·s | 0,024 $       |
+| Mémoire       | 3 600 Gio·s  | 0,009 $       |
+| Disque        | 6 000 Go·s   | 0,0004 $      |
+| **Par rendu** |              | **≈ 0,033 $** |
 
 L'enveloppe mensuelle incluse (375 vCPU·minutes, 25 Gio·heures,
 200 Go·heures) couvre à peu près dix-huit rendus. Au-delà, c'est quelques

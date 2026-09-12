@@ -71,7 +71,7 @@ export function SpeakCue({
 
   return (
     <div
-      className="flex items-center gap-3 rounded-card border px-4 py-3"
+      className="flex items-center gap-3 rounded-card border px-3 py-2 sm:px-4 sm:py-3"
       style={{
         borderColor: phase === 'speaking' ? color : 'var(--color-border)',
         backgroundColor:
@@ -81,7 +81,7 @@ export function SpeakCue({
       }}
     >
       <span
-        className="h-10 w-1.5 shrink-0 rounded-full"
+        className="h-8 w-1.5 shrink-0 rounded-full sm:h-10"
         style={{ backgroundColor: color }}
         aria-hidden
       />
@@ -91,14 +91,23 @@ export function SpeakCue({
           {t.studio.youAreDubbing}
         </p>
         <p
-          className="truncate text-xl leading-tight font-bold"
+          className="truncate text-lg leading-tight font-bold sm:text-xl"
           style={{ color: inkColor }}
         >
           {character.name}
         </p>
       </div>
 
-      <div className="shrink-0 text-right" aria-live="polite">
+      {/*
+        Hauteur fixe : le decompte tient sur deux lignes (un libelle et
+        les secondes) et les autres phases sur une seule. Sans elle, le
+        bloc grandissait a l'entree en zone de parole et l'image
+        au-dessus perdait quelques pixels au milieu de la prise.
+      */}
+      <div
+        className="flex h-10 shrink-0 flex-col justify-center text-right sm:h-12"
+        aria-live="polite"
+      >
         {phase === 'waiting' ? (
           <>
             <p className="text-[11px] uppercase tracking-wide text-text-faint">

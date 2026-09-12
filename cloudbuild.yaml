@@ -1,0 +1,59 @@
+# Construction de l'image du worker, chez Google.
+#
+# Le contexte est la racine du depot et non `worker/`, parce que le
+# worker importe `config/` et `lib/` — la segmentation, les constantes et
+# le calcul des clips sont partages avec l'application, et c'est
+# volontaire : deux implementations du meme decoupage finiraient par
+# diverger.
+#
+# D'ou ce fichier plutot qu'un simple `--tag` : il faut pouvoir designer
+# un Dockerfile qui n'est pas a la racine.
+#
+# Usage :
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_IMAGE=europe-west1-docker.pkg.dev/PROJET/worker/dubup:1
+
+steps:
+  # Recuperer l'image precedente pour en reutiliser les couches.
+  #
+  # Cloud Build demarre chaque construction sur une machine neuve : sans
+  # cette etape, il n'y a aucun cache local et PyTorch se retelecharge
+  # integralement a chaque fois, soit onze minutes pour changer trois
+  # lignes du worker. Le `|| true` est la parce que la toute premiere
+  # construction n'a rien a recuperer, et que ce n'est pas une erreur.
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args: ['-c', 'docker pull ${_CACHE} || true']
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - worker/Dockerfile
+      - --cache-from
+      - '${_CACHE}'
+      - -t
+      - '${_IMAGE}'
+      - -t
+      - '${_CACHE}'
+      - .
+
+images:
+  - '${_IMAGE}'
+  # L'etiquette `cache` suit toujours la derniere construction reussie :
+  # c'est elle que la suivante ira chercher.
+  - '${_CACHE}'
+
+substitutions:
+  _CACHE: europe-west1-docker.pkg.dev/dubup-508419/worker/dubup:cache
+
+options:
+  # PyTorch et ses bibliotheques CUDA pesent plusieurs gigaoctets : la
+  # machine par defaut y passe un temps deraisonnable, et le disque par
+  # defaut est trop petit.
+  machineType: E2_HIGHCPU_8
+  diskSizeGb: 100
+
+# Telecharger torch, installer demucs et recuperer le modele prend un
+# bon quart d'heure la premiere fois.
+timeout: 2400s

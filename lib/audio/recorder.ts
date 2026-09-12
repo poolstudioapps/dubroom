@@ -20,11 +20,7 @@ export const MIC_CONSTRAINTS: MediaTrackConstraints = {
 };
 
 function pickMimeType(): string | undefined {
-  const candidates = [
-    'audio/webm;codecs=opus',
-    'audio/webm',
-    'audio/ogg;codecs=opus',
-  ];
+  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
   return candidates.find((type) => MediaRecorder.isTypeSupported(type));
 }
 

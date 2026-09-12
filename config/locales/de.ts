@@ -47,7 +47,8 @@ export const de = {
     title: 'Meine Packs',
     subtitle:
       'Die Szenen, die du veröffentlicht hast. Alle können sie spielen, und nur du kannst sie zurückziehen.',
-    sceneCount: (n: number) => (n === 1 ? '1 Szene veröffentlicht' : `${n} Szenen veröffentlicht`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 Szene veröffentlicht' : `${n} Szenen veröffentlicht`,
     emptyTitle: 'Du hast noch nichts veröffentlicht',
     emptyBody:
       'Am Ende einer über Link importierten Szene kannst du sie veröffentlichen: Link und Schnitt gehen an die Community, ohne das Video.',
@@ -69,18 +70,15 @@ export const de = {
     valueTitle: 'Was dabei herauskommt',
     value1: {
       title: 'Deine Stimme statt ihrer',
-      body:
-        'Du nimmst mit dem Mikrofon deines Headsets auf, zu Hause. Musik und Geräusche des Originals bleiben unangetastet: nur die Stimmen werden ersetzt.',
+      body: 'Du nimmst mit dem Mikrofon deines Headsets auf, zu Hause. Musik und Geräusche des Originals bleiben unangetastet: nur die Stimmen werden ersetzt.',
     },
     value2: {
       title: 'Bis zum Schluss hört niemand etwas',
-      body:
-        'Deine Aufnahmen bleiben für alle anderen unhörbar, solange es keine fertige Mischung gibt. Sie am Ende gemeinsam zu entdecken, ist das ganze Spiel.',
+      body: 'Deine Aufnahmen bleiben für alle anderen unhörbar, solange es keine fertige Mischung gibt. Sie am Ende gemeinsam zu entdecken, ist das ganze Spiel.',
     },
     value3: {
       title: 'Eine MP4, die bleibt',
-      body:
-        'Am Ende eine Datei, die überall läuft, ohne eingebrannte Untertitel. Die Quellszene selbst wird gelöscht.',
+      body: 'Am Ende eine Datei, die überall läuft, ohne eingebrannte Untertitel. Die Quellszene selbst wird gelöscht.',
     },
 
     midCta: 'Szene aussuchen, Rollen verteilen, und schauen, was dabei herauskommt.',
@@ -94,21 +92,21 @@ export const de = {
     seoTitle: 'Eine Filmszene unter Freunden synchronisieren',
     defineTitle: 'Was heißt eine Filmszene synchronisieren?',
     defineBody:
-      'Eine Filmszene zu synchronisieren heißt, die Originalstimmen durch die eigenen zu ersetzen und alles andere zu behalten: Bild, Musik, Geräusche, Rhythmus. Das Ergebnis ist kein Kommentar darüber, es ist die Szene selbst, mit anderen Sprechern. DubRoom ist eine Synchronsoftware im Browser, ohne Installation.',
+      'Eine Filmszene zu synchronisieren heißt, die Originalstimmen durch die eigenen zu ersetzen und alles andere zu behalten: Bild, Musik, Geräusche, Rhythmus. Das Ergebnis ist kein Kommentar darüber, es ist die Szene selbst, mit anderen Sprechern. Dub’Up ist eine Synchronsoftware im Browser, ohne Installation.',
     defineHowTitle: 'Wie man eine Filmszene selbst synchronisiert',
     defineHowBody:
-      'Es braucht drei Dinge, die zu Hause niemand hat: die Stimmen von der Musik trennen, damit nur die Stimmen ersetzt werden, auf die Millisekunde wissen, wer wann spricht, und beim Sprechen synchron bleiben. DubRoom erledigt die ersten beiden automatisch aus der Szene und löst das dritte mit einem Laufband, dem unter einem Abspielkopf durchlaufenden Text, den Synchronstudios seit achtzig Jahren benutzen.',
+      'Es braucht drei Dinge, die zu Hause niemand hat: die Stimmen von der Musik trennen, damit nur die Stimmen ersetzt werden, auf die Millisekunde wissen, wer wann spricht, und beim Sprechen synchron bleiben. Dub’Up erledigt die ersten beiden automatisch aus der Szene und löst das dritte mit einem Laufband, dem unter einem Abspielkopf durchlaufenden Text, den Synchronstudios seit achtzig Jahren benutzen.',
     defineWhoTitle: 'Für wen das ist',
     defineWhoBody:
       'Für Freundesgruppen, die eine berühmte Zeile nachsprechen wollen, für Fandub-Leute, die kein Schnittprogramm suchen, für Sprachlehrer, die eine Klasse einen Ausschnitt synchronisieren lassen, und für alle, die Sprechen lernen und am Laufband üben wollen, ohne ein Studio zu mieten.',
     faqExtra: [
       {
         q: 'Ist das kostenlos?',
-        a: 'Ja. DubRoom ist ein privates Projekt, ohne Werbung, ohne Abo und ohne Begrenzung der Szenen.',
+        a: 'Ja. Dub’Up ist ein privates Projekt, ohne Werbung, ohne Abo und ohne Begrenzung der Szenen.',
       },
       {
         q: 'Was ist der Unterschied zu einem Schnittprogramm?',
-        a: 'Ein Schnittprogramm gibt dir eine leere Zeitleiste und lässt dich deine Aufnahmen von Hand ausrichten. DubRoom geht von der Szene aus: es trennt die Stimmen, findet die Sätze, ordnet sie den Figuren zu und rückt deine Aufnahmen automatisch auf die Originalstimme.',
+        a: 'Ein Schnittprogramm gibt dir eine leere Zeitleiste und lässt dich deine Aufnahmen von Hand ausrichten. Dub’Up geht von der Szene aus: es trennt die Stimmen, findet die Sätze, ordnet sie den Figuren zu und rückt deine Aufnahmen automatisch auf die Originalstimme.',
       },
       {
         q: 'Kann ich eine englische Szene aus einer deutschen Oberfläche synchronisieren?',
@@ -147,7 +145,7 @@ export const de = {
     ] as const,
     privateTitle: 'Ein privates Wohnzimmer, kein Netzwerk',
     privateBody:
-      'DubRoom ist nur für eingeladene Personen. Kein öffentlicher Katalog, kein Teilen außerhalb des Kreises, keine Indexierung. Genau das macht die Sache tragfähig: wir synchronisieren Ausschnitte geschützter Werke, unter Freunden, ohne etwas zu verbreiten.',
+      'Dub’Up ist nur für eingeladene Personen. Kein öffentlicher Katalog, kein Teilen außerhalb des Kreises, keine Indexierung. Genau das macht die Sache tragfähig: wir synchronisieren Ausschnitte geschützter Werke, unter Freunden, ohne etwas zu verbreiten.',
     slides: {
       importTitle: 'Nehmt die Szene, die ihr auswendig könnt',
       importBody:
@@ -182,7 +180,13 @@ export const de = {
     voteScore: (n: number) => `Bewertung der Community: ${n}`,
     voteHelp:
       'Bewertet wird der Schnitt, nicht der Film. Eine gut geschnittene Szene erspart allen einen Abend.',
-    sortedByScore: 'Bestbewertete zuerst',
+    sort: {
+      label: 'Sortieren nach',
+      popular: 'Bestbewertet',
+      recent: 'Neueste',
+      short: 'Kürzeste',
+      title: 'Titel (A → Z)',
+    },
     filterLang: 'Sprache der Szene',
     filterGenre: 'Genre',
     filterCast: 'Anzahl Rollen',
@@ -197,21 +201,45 @@ export const de = {
       'Mach die Auswahl breiter, oder veröffentliche die Szene, die dem Katalog fehlt.',
     langUnknown: 'Sprache unbekannt',
     langNames: {
-      fr: 'Französisch', en: 'Englisch', es: 'Spanisch', de: 'Deutsch', it: 'Italienisch',
-      pt: 'Portugiesisch', ja: 'Japanisch', ko: 'Koreanisch', zh: 'Chinesisch', ru: 'Russisch',
+      fr: 'Französisch',
+      en: 'Englisch',
+      es: 'Spanisch',
+      de: 'Deutsch',
+      it: 'Italienisch',
+      pt: 'Portugiesisch',
+      ja: 'Japanisch',
+      ko: 'Koreanisch',
+      zh: 'Chinesisch',
+      ru: 'Russisch',
     } as Record<string, string>,
     genreNames: {
-      action: 'Action', comedie: 'Komödie', drame: 'Drama', animation: 'Animation',
-      science_fiction: 'Science-Fiction', horreur: 'Horror', documentaire: 'Dokumentation',
+      action: 'Action',
+      comedie: 'Komödie',
+      drame: 'Drama',
+      animation: 'Animation',
+      anime: 'Anime',
+      serie: 'Serie',
+      super_heros: 'Superhelden',
+      science_fiction: 'Science-Fiction',
+      horreur: 'Horror',
+      jeu_video: 'Videospiel',
+      chanson: 'Lied',
+      documentaire: 'Dokumentation',
       autre: 'Sonstiges',
     } as Record<string, string>,
     castBuckets: {
-      solo: '1 Rolle', duo: '2 Rollen', small: '3 oder 4 Rollen', large: '5 Rollen oder mehr',
+      solo: '1 Rolle',
+      duo: '2 Rollen',
+      small: '3 oder 4 Rollen',
+      large: '5 Rollen oder mehr',
     } as Record<string, string>,
     lengthBuckets: {
-      short: 'Unter einer Minute', medium: '1 bis 3 Minuten', long: 'Über 3 Minuten',
+      short: 'Unter einer Minute',
+      medium: '1 bis 3 Minuten',
+      long: 'Über 3 Minuten',
     } as Record<string, string>,
-    sceneCount: (n: number) => (n === 1 ? '1 Szene verfügbar' : `${n} Szenen verfügbar`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 Szene verfügbar' : `${n} Szenen verfügbar`,
     characterCount: (n: number) => (n === 1 ? '1 Figur' : `${n} Figuren`),
     lineCount: (n: number) => (n === 1 ? '1 Satz' : `${n} Sätze`),
     emptyTitle: 'Noch keine Szene aufbewahrt',
@@ -226,6 +254,8 @@ export const de = {
     seeInCommunity: 'In der Community ansehen',
     publishRecipeHelp:
       'Geteilt werden nur Link und Schnitt. Das Video liegt nicht hier.',
+    publishFromCatalogue:
+      'Diese Szene kommt aus dem Katalog, sie steht also schon drin. Ein zweites Mal veröffentlicht gäbe es zwei Fassungen, die niemand auseinanderhält.',
     publishTooLate:
       'Diese Szene kam aus einer importierten Datei, und ihre Medien wurden nach der Ausgabe gelöscht. Das Teilen hätte vorher entschieden werden müssen. Eine über Link importierte Szene bleibt dagegen jederzeit veröffentlichbar.',
     keepLabel: 'Diese Szene zum Wiederspielen behalten',
@@ -239,9 +269,23 @@ export const de = {
     modern: 'Modern',
   },
 
+  terms: {
+    consent: 'Ich habe die {terms} und die {privacy} gelesen und akzeptiere sie.',
+    linkTerms: 'Nutzungsbedingungen',
+    linkPrivacy: 'Datenschutzerklärung',
+    required: 'Ohne Zustimmung geht es nicht weiter.',
+    gateTitle: 'Noch eine Sache',
+    gateBody:
+      'Die Nutzungsbedingungen haben sich seit deinem letzten Besuch geändert, oder du hast sie nie akzeptiert. Ein Häkchen, und es geht weiter.',
+    gateGist:
+      'Kurz gesagt: Du stehst selbst für die Ausschnitte ein, die du hochlädst, und für das, was du damit machst. Alles bleibt unter Eingeladenen, nichts wird veröffentlicht.',
+    gateConfirm: 'Akzeptieren und weiter',
+  },
+
   legal: {
     mentions: 'Impressum',
     privacy: 'Datenschutz',
+    terms: 'Nutzungsbedingungen',
     usageNotice:
       'Streng private Nutzung, unter eingeladenen Personen. Kein Inhalt wird öffentlich verbreitet oder indexiert.',
     contact: 'Kontakt',
@@ -294,7 +338,8 @@ export const de = {
       'Lege eines fest, um ohne Umweg über dein Postfach zurückzukommen.',
     passwordNew: 'Neues Passwort',
     passwordSave: 'Passwort speichern',
-    passwordSaved: 'Passwort gespeichert. Du kannst es ab der nächsten Anmeldung verwenden.',
+    passwordSaved:
+      'Passwort gespeichert. Du kannst es ab der nächsten Anmeldung verwenden.',
     passwordTooShort: 'Mindestens acht Zeichen.',
   },
 
@@ -331,6 +376,15 @@ export const de = {
     title: 'Neue Szene',
     tabUpload: 'Datei importieren',
     tabYoutube: 'YouTube-Link einfügen',
+    songLabel: 'Das ist ein Lied',
+    songHelp:
+      'Wir überspringen die Transkription: den Text kennst du. Der Schnitt folgt der Gesangsspur und sagt dir, wann du einsetzt.',
+    matchTitle: 'Diese Szene gibt es schon',
+    matchBody:
+      'Jemand hat sie bereits vorbereitet: Schnitt, Rollen und Text sind fertig. Sie zu übernehmen geht sofort, statt mehrere Minuten auf dasselbe Ergebnis zu warten.',
+    matchLines: 'Die Sätze zum Sprechen',
+    matchUse: 'Diese Szene übernehmen',
+    matchScratch: 'Von vorn aufbauen',
     tabPack: 'Mit einem Pack starten',
     packHelp:
       'Nichts vorzubereiten: die Szene ist schon geschnitten, ihr wählt die Rollen und nehmt auf. Der ganze Katalog steht im Reiter Community.',
@@ -359,9 +413,9 @@ export const de = {
   ingest: {
     title: 'Szene wird vorbereitet',
     subtitle: 'Die Szene wird zerlegt. Das dauert ein paar Minuten.',
-    queued: 'Warte auf den Worker. Starte das Skript auf deinem PC.',
+    queued: 'Die Verarbeitung startet nur langsam.',
     queuedHelp:
-      'Die Verarbeitung läuft auf dem Rechner des Gastgebers. Doppelklick auf start.bat, dann holt sich der Auftrag selbst ab.',
+      'Normalerweise läuft sie von selbst an. Wenn es dauert, sag der gastgebenden Person Bescheid.',
     failed: 'Der Import ist fehlgeschlagen.',
     retry: 'Import neu starten',
     neverStarted:
@@ -433,7 +487,8 @@ export const de = {
     players: 'Spieler',
     start: 'Partie starten',
     startBlockedTitle: 'Es fehlt noch etwas:',
-    startBlockedCharacters: 'Figuren ohne Spieler, zu nehmen oder im Original zu lassen:',
+    startBlockedCharacters:
+      'Figuren ohne Spieler, zu nehmen oder im Original zu lassen:',
     startBlockedReady: 'Spieler, die sich nicht bereit gemeldet haben:',
     clipCount: (n: number) => (n === 1 ? '1 Clip' : `${n} Clips`),
     hostOnly: 'Nur der Gastgeber kann die Partie starten.',
@@ -475,6 +530,34 @@ export const de = {
     margin: 'Rand',
     noTake: 'Keine Aufnahme für diesen Clip.',
     uploading: 'Aufnahme wird hochgeladen…',
+    noCharacter:
+      'Dir wurde in dieser Szene keine Rolle zugeteilt. Hier kannst du den anderen zusehen.',
+    fxTitle: 'Stimmpult',
+    fxReset: 'Alles zurück',
+    fxReverb: 'Hall',
+    fxPitch: 'Tonhöhe',
+    fxTune: 'Stimmung',
+    fxHelp:
+      'Die Effekte kommen beim Mischen dazu, nie auf die Aufnahme: du kannst sie bis zum Rendern ändern oder zur nackten Stimme zurück.',
+    fxPresets: {
+      dry: 'Nackte Stimme',
+      room: 'Kleiner Raum',
+      cathedral: 'Kathedrale',
+      cartoon: 'Zeichentrick',
+      deep: 'Tiefe Stimme',
+      cover: 'Coverversion',
+    },
+    emptyTake:
+      'Es wurde nichts aufgenommen. Prüfe, ob dein Mikrofon angeschlossen und ausgewählt ist, und nimm noch einmal auf.',
+    whereEveryoneIs: 'Wo alle stehen',
+    you: '(du)',
+    hostTag: '(Gastgeber)',
+    stateVo: 'Original',
+    stateDone: 'Fertig',
+    stateRecording: 'Nimmt auf',
+    waitingHost: 'Wir warten darauf, dass der Gastgeber das Rendern startet.',
+    hostCanRender: 'Alle sind fertig: du kannst das Rendern starten.',
+    stillMissing: 'Es fehlen noch Aufnahmen.',
     finishedTitle: 'Du bist fertig!',
     finishedBody:
       'Solange die Ausgabe nicht läuft, kannst du zurückkommen und eine Aufnahme wiederholen.',
@@ -513,7 +596,6 @@ export const de = {
       'Die Ausrichtung hat bei dieser Aufnahme nichts Eindeutiges gefunden. Sie bleibt, wie sie ist.',
   },
 
-
   progress: {
     preparing: 'Szene wird vorbereitet',
     rendering: 'Wird zusammengesetzt',
@@ -521,8 +603,7 @@ export const de = {
     working:
       'Rechne mit ein paar Minuten. Du kannst den Tab offen lassen und später zurückkommen.',
     almost: 'Fast fertig.',
-    longer:
-      'Es dauert länger als sonst, läuft aber weiter. Lass es zu Ende laufen.',
+    longer: 'Es dauert länger als sonst, läuft aber weiter. Lass es zu Ende laufen.',
   },
   render: {
     title: 'Ausgabe läuft',
@@ -535,11 +616,22 @@ export const de = {
   result: {
     title: 'Das Ergebnis',
     download: 'MP4 herunterladen',
+    exportTitle: 'Die Szene mitnehmen',
+    formatWide: 'Breitformat',
+    formatWideHint: 'Für einen Computerbildschirm oder Fernseher.',
+    formatVertical: 'Hochformat',
+    formatVerticalHint: 'Mittig zugeschnitten, für Stories und Reels.',
+    formatVerticalMissing:
+      'Diese Szene wurde vor dem automatischen Zuschnitt gerendert. Starte das Rendern erneut.',
+    share: 'Teilen',
+    shareHelp:
+      'Auf dem Handy öffnet Teilen das Systemmenü: TikTok, Instagram und alles andere Installierte stehen dort.',
+    shareUnsupported:
+      'Dieser Browser kann keine Datei teilen. Lade sie herunter und poste sie aus der App.',
     cast: 'Die Besetzung',
     voiceOriginal: 'Original bleibt',
     shareHint: 'Der Link funktioniert nur für die Beteiligten dieser Szene.',
-    sourcePurged:
-      'Die Quelle wurde gelöscht: nur die fertige Mischung bleibt.',
+    sourcePurged: 'Die Quelle wurde gelöscht: nur die fertige Mischung bleibt.',
   },
 
   errors: {

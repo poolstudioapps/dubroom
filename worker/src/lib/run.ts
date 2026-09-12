@@ -58,7 +58,12 @@ export function run(
       }
       // Un code 0 accompagne de stderr n'est pas une erreur.
       if (code === 0) resolve({ stdout, stderr });
-      else reject(new SystemError(`${bin} a terminé avec le code ${code}\n${stderr.slice(-2000)}`));
+      else
+        reject(
+          new SystemError(
+            `${bin} a terminé avec le code ${code}\n${stderr.slice(-2000)}`,
+          ),
+        );
     });
   });
 }

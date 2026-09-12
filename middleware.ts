@@ -1,22 +1,26 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import { INDEXABLE_PATHS } from '@/config/site';
 import { AUTH_COOKIE_OPTIONS, withAuthCookieOptions } from '@/lib/supabase/cookies';
 
-const PUBLIC_PATHS = [
-  '/login',
-  '/auth/callback',
-  '/auth/confirm',
-  '/auth/error',
-  '/mentions-legales',
-  '/confidentialite',
-];
+const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'];
 
-// L'accueil se visite sans compte : il n'expose aucune scene, aucun
-// participant, aucun rendu, seulement le principe du produit. Les trois
+// L'accueil et les pages legales se visitent sans compte : elles
+// n'exposent aucune scene, aucun participant, aucun rendu. Les trois
 // fichiers destines aux robots suivent, sans quoi ils repondraient par
 // une redirection vers la connexion et ne serviraient a rien.
-const PUBLIC_EXACT = ['/', '/robots.txt', '/sitemap.xml', '/llms.txt'];
+//
+// La liste n'est pas recopiee mais tiree de celle des pages indexables :
+// c'est la meme question posee deux fois. Une page ouverte aux moteurs
+// et fermee par ce fichier ne s'indexe pas — elle renvoie une
+// redirection vers la connexion. Les conditions generales sont nees
+// comme ca, et le lien pose sous le formulaire de connexion, celui-la
+// meme qu'il faut lire avant de cocher, menait a la connexion.
+/** Ce qui ne s'adresse qu'aux machines, et ne connait pas de session. */
+const ROBOT_FILES = ['/robots.txt', '/sitemap.xml', '/llms.txt'] as readonly string[];
+
+const PUBLIC_EXACT = [...INDEXABLE_PATHS, ...ROBOT_FILES] as readonly string[];
 // /auth/callback/hash est couvert par le prefixe /auth/callback.
 
 /**
@@ -45,31 +49,44 @@ export async function middleware(request: NextRequest) {
     );
   }
 
+  /*
+   * Les fichiers pour robots n'ont pas de session a rafraichir.
+   *
+   * Le middleware tourne sur chaque requete et appelait le serveur
+   * d'authentification a chaque fois, y compris pour trois fichiers
+   * texte qui n'ont aucune notion d'utilisateur. C'etait un aller-retour
+   * reseau ajoute au temps de reponse, pour rien.
+   *
+   * La liste s'arrete la, et c'est reflechi. L'accueil et les pages
+   * legales sont publiques mais affichent une barre qui depend de l'etat
+   * de connexion : les priver du rafraichissement ferait apparaitre
+   * « Se connecter » a quelqu'un qui l'est, le temps d'une page.
+   */
+  if (ROBOT_FILES.includes(request.nextUrl.pathname)) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookieOptions: AUTH_COOKIE_OPTIONS,
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          for (const { name, value } of cookiesToSet) {
-            request.cookies.set(name, value);
-          }
-          response = NextResponse.next({ request });
-          for (const { name, value, options } of cookiesToSet) {
-            // Chaque navigation repousse l'echeance : quelqu'un qui
-            // revient une fois par mois ne se reconnecte jamais.
-            response.cookies.set(name, value, withAuthCookieOptions(options));
-          }
-        },
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookieOptions: AUTH_COOKIE_OPTIONS,
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        for (const { name, value } of cookiesToSet) {
+          request.cookies.set(name, value);
+        }
+        response = NextResponse.next({ request });
+        for (const { name, value, options } of cookiesToSet) {
+          // Chaque navigation repousse l'echeance : quelqu'un qui
+          // revient une fois par mois ne se reconnecte jamais.
+          response.cookies.set(name, value, withAuthCookieOptions(options));
+        }
       },
     },
-  );
+  });
 
   // getUser() et pas getSession() : seul getUser valide le jeton
   // aupres du serveur d'auth.
@@ -89,8 +106,7 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isPublic =
-    PUBLIC_EXACT.includes(pathname) ||
-    PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+    PUBLIC_EXACT.includes(pathname) || PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
@@ -112,5 +128,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4)$).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4)$).*)',
+  ],
 };

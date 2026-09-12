@@ -31,7 +31,11 @@ export async function separateWithElevenLabs(
 
   const buffer = await fs.readFile(inputWav);
   const form = new FormData();
-  form.append('audio', new Blob([new Uint8Array(buffer)], { type: 'audio/wav' }), 'audio.wav');
+  form.append(
+    'audio',
+    new Blob([new Uint8Array(buffer)], { type: 'audio/wav' }),
+    'audio.wav',
+  );
   // Format PCM demande explicitement : sans lui la reponse est un MP3,
   // donc un encodage avec perte, et l'option A est condamnee.
   form.append('output_format', 'pcm_48000');
@@ -85,14 +89,24 @@ export async function separateWithElevenLabs(
   await run(
     config.ffmpeg,
     [
-      '-hide_banner', '-nostats',
-      '-i', inputWav,
-      '-i', voicePath,
+      '-hide_banner',
+      '-nostats',
+      '-i',
+      inputWav,
+      '-i',
+      voicePath,
       '-filter_complex',
       '[1:a]volume=-1[inv];[0:a][inv]amix=inputs=2:normalize=0:duration=first[fond]',
-      '-map', '[fond]',
-      '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le',
-      '-y', musicPath,
+      '-map',
+      '[fond]',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+      '-c:a',
+      'pcm_s16le',
+      '-y',
+      musicPath,
     ],
     { timeoutMs: TIMEOUTS.mix },
   );

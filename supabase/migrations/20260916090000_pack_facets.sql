@@ -1,4 +1,4 @@
--- DubRoom — de quoi trier le catalogue.
+-- Dub’Up — de quoi trier le catalogue.
 --
 -- Une liste de scenes triee par score marche tant qu'elle en compte dix.
 -- Au-dela, la question n'est plus « laquelle est la mieux decoupee » mais

@@ -44,7 +44,9 @@ export async function upload(
     upsert: true,
   });
   if (error) {
-    throw new SystemError(`Envoi impossible : ${bucket}/${remotePath} (${error.message})`);
+    throw new SystemError(
+      `Envoi impossible : ${bucket}/${remotePath} (${error.message})`,
+    );
   }
 }
 
@@ -81,7 +83,9 @@ export async function removeSessionFolder(
 ): Promise<number> {
   let removed = 0;
 
-  const { data: entries } = await db.storage.from(bucket).list(sessionId, { limit: 1000 });
+  const { data: entries } = await db.storage
+    .from(bucket)
+    .list(sessionId, { limit: 1000 });
   const files: string[] = [];
 
   for (const entry of entries ?? []) {

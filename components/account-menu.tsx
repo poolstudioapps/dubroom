@@ -62,7 +62,7 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-label={t.account.menuLabel}
         onClick={() => setOpen((value) => !value)}
-        className="btn-3d flex h-11 items-center gap-2 bg-surface-raised pl-1.5 pr-3 [--btn-lip:var(--color-border-strong)]"
+        className="btn-3d btn-secondary flex h-11 items-center gap-2 bg-surface-raised pl-1.5 pr-3 [--btn-lip:var(--color-border-strong)]"
       >
         <Avatar name={name} path={profile.data?.avatar_path} size="sm" />
         <span className="hidden max-w-32 truncate text-sm font-bold sm:inline">

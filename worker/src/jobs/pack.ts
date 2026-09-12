@@ -177,10 +177,7 @@ export async function buildPack(
 
   // La scene sait desormais qu'elle a ete publiee : l'ecran de resultat
   // affiche un lien vers le pack au lieu de reproposer la publication.
-  await db
-    .from('sessions')
-    .update({ published_pack_id: packId })
-    .eq('id', session.id);
+  await db.from('sessions').update({ published_pack_id: packId }).eq('id', session.id);
 
   logger.info('scène conservée dans la communauté', {
     step: 'purge',

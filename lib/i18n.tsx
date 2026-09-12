@@ -30,7 +30,16 @@ import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_MAX_AGE } from '@/config/i18n';
  * charger a la demande.
  */
 const DICTIONARIES: Record<Locale, Dictionary> = {
-  fr, en, es, de, it, pt, ja, ko, zh, ru,
+  fr,
+  en,
+  es,
+  de,
+  it,
+  pt,
+  ja,
+  ko,
+  zh,
+  ru,
 };
 
 /**

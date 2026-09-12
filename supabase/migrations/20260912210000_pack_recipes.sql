@@ -1,4 +1,4 @@
--- DubRoom — packs sans media.
+-- Dub’Up — packs sans media.
 --
 -- Un pack conserve le travail de preparation d'une scene. Jusqu'ici il
 -- gardait aussi la video et les pistes separees : 13 Mo par pack.

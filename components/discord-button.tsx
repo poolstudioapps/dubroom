@@ -18,19 +18,29 @@ import { supabaseBrowser } from '@/lib/supabase/client';
  * Discord fournit l'adresse du compte, et c'est elle qui est confrontee a
  * la liste blanche. Si elle differe de celle qui a ete invitee, la porte
  * reste fermee et le message dit laquelle ajouter.
+ *
+ * C'est aussi une creation de compte, donc les conditions valent ici
+ * comme ailleurs. Le bouton n'est pas grise pour autant : un bouton
+ * eteint sans explication fait chercher la panne. Il refuse, et il dit
+ * pourquoi — `guard` rend la main a l'ecran de connexion, qui sait
+ * afficher le message et ou se trouve la case.
  */
 export function DiscordButton({
   next,
   onError,
+  guard,
 }: {
   next: string;
   onError: (message: string) => void;
+  /** Rend `false` pour arreter la connexion avant le depart chez Discord. */
+  guard?: () => boolean;
 }) {
   const t = useT();
 
   const [working, setWorking] = useState(false);
 
   async function signIn() {
+    if (guard && !guard()) return;
     setWorking(true);
     const { error } = await supabaseBrowser().auth.signInWithOAuth({
       provider: 'discord',
@@ -50,7 +60,7 @@ export function DiscordButton({
       type="button"
       variant="secondary"
       size="lg"
-      className="w-full bg-[#5865F2] text-white hover:brightness-110 [--btn-lip:#3b45c4]"
+      className="btn-brand w-full bg-[#5865F2] text-white hover:brightness-110 [--btn-lip:#3b45c4]"
       loading={working}
       onClick={() => void signIn()}
     >

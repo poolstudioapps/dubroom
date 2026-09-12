@@ -3,7 +3,10 @@
 import { Badge } from '@/components/ui';
 import type { SessionStatus } from '@/lib/supabase/database.types';
 
-const LABELS: Record<SessionStatus, { text: string; tone: 'neutral' | 'ok' | 'warn' | 'danger' | 'accent' }> = {
+const LABELS: Record<
+  SessionStatus,
+  { text: string; tone: 'neutral' | 'ok' | 'warn' | 'danger' | 'accent' }
+> = {
   draft: { text: 'Brouillon', tone: 'neutral' },
   ingest_queued: { text: 'En file', tone: 'warn' },
   ingesting: { text: 'Import en cours', tone: 'accent' },

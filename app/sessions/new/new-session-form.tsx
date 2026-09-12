@@ -7,6 +7,7 @@ import { FileVideo, Library, Link2, Upload } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { PackMatch } from '@/components/pack-match';
 import { PackSourcePicker } from '@/components/pack-source-picker';
 import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
 import { MAX_UPLOAD_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants';
@@ -48,6 +49,15 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [keepAsPack, setKeepAsPack] = useState(false);
+  /**
+   * Le raccourci a-t-il ete ecarte ?
+   *
+   * Une fois qu'on a lu le texte du pack et decide de refaire la scene,
+   * la carte n'a plus rien a dire : elle disparait pour ce lien-la, et
+   * revient si on en colle un autre.
+   */
+  const [ecarte, setEcarte] = useState('');
+  const [isSong, setIsSong] = useState(false);
 
   async function pickFile(picked: File | null) {
     setError(null);
@@ -84,6 +94,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
         keepAsPack,
+        isSong,
       });
 
       if (mode === 'upload') {
@@ -210,9 +221,38 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
                   placeholder={t.create.youtubePlaceholder}
                 />
               </div>
+
+              {/*
+                Le lien pointe peut-etre vers une scene deja preparee. Si
+                c'est le cas, on le dit avant de lancer plusieurs minutes
+                de traitement pour refaire ce qui existe.
+              */}
+              {youtubeUrl.trim() && ecarte !== youtubeUrl.trim() ? (
+                <PackMatch
+                  url={youtubeUrl.trim()}
+                  displayName={displayName}
+                  onDismiss={() => setEcarte(youtubeUrl.trim())}
+                />
+              ) : null}
+
               <Alert tone="warn">{t.create.youtubeWarning}</Alert>
             </div>
           )}
+
+          {/*
+            Une reprise ne se prepare pas comme une scene de film : il n'y
+            a rien a transcrire, et le decoupage suit la voix du morceau.
+            La question se pose ici, avant le traitement, parce qu'apres
+            il est trop tard et qu'on aura paye la transcription pour
+            rien.
+          */}
+          <div className="panel flex items-start gap-3 p-3">
+            <Toggle checked={isSong} onChange={setIsSong} label={t.create.songLabel} />
+            <div className="space-y-0.5">
+              <p className="text-sm font-bold">{t.create.songLabel}</p>
+              <p className="text-xs text-text-faint">{t.create.songHelp}</p>
+            </div>
+          </div>
 
           {/* L'intention de partager se pose souvent des le depart : on
             prepare une scene pour le groupe, pas pour une seule soiree. */}

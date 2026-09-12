@@ -5,10 +5,22 @@ import {
   BUCKET_RENDERS,
   BUCKET_SOURCES,
   BUCKET_TAKES,
+  MIC_OFFSET_BASELINE_MS,
 } from '../../../config/constants.ts';
 import { SystemError, UserError } from '../errors.ts';
 import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
-import { graphPathFor, mixWithGraph, muxFinal } from '../lib/ffmpeg.ts';
+import { autotune } from '../lib/autotune.ts';
+import {
+  audioDurationMs,
+  decodeTakeToWav,
+  extractAudio,
+  graphPathFor,
+  meanVolumeDb,
+  mixWithGraph,
+  muxFinal,
+  muxVertical,
+} from '../lib/ffmpeg.ts';
+import { readWavMono, writeWavMono } from '../lib/wav.ts';
 import { buildMixGraph, placeTake, type VoSegment } from '../lib/mixgraph.ts';
 import { buildPack } from './pack.ts';
 import * as storage from '../lib/storage.ts';
@@ -18,6 +30,8 @@ interface ClipRow {
   id: string;
   character_id: string;
   window_start_ms: number;
+  speech_start_ms: number;
+  speech_end_ms: number;
 }
 
 interface CharacterRow {
@@ -63,7 +77,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     db.from('characters').select('id, is_released').eq('session_id', session.id),
     db
       .from('clips')
-      .select('id, character_id, window_start_ms')
+      .select('id, character_id, window_start_ms, speech_start_ms, speech_end_ms')
       .eq('session_id', session.id),
     db
       .from('lines')
@@ -75,24 +89,33 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       .eq('is_selected', true),
     db
       .from('participants')
-      .select('id, mic_offset_ms, is_kicked')
+      .select('id, mic_offset_ms, is_kicked, fx_reverb, fx_pitch, fx_tune')
       .eq('session_id', session.id),
   ]);
 
   const dbError =
     characters.error ?? clips.error ?? lines.error ?? takes.error ?? participants.error;
-  if (dbError) throw new SystemError(`Lecture de la scène impossible : ${dbError.message}`);
+  if (dbError)
+    throw new SystemError(`Lecture de la scène impossible : ${dbError.message}`);
 
   const characterRows = (characters.data ?? []) as CharacterRow[];
   const clipRows = (clips.data ?? []) as ClipRow[];
   const lineRows = (lines.data ?? []) as LineRow[];
   const clipIds = new Set(clipRows.map((c) => c.id));
-  const takeRows = ((takes.data ?? []) as TakeRow[]).filter((t) => clipIds.has(t.clip_id));
+  const takeRows = ((takes.data ?? []) as TakeRow[]).filter((t) =>
+    clipIds.has(t.clip_id),
+  );
 
   const micOffsetOf = new Map(
     (participants.data ?? []).map((p) => [
       p.id as string,
-      { offset: p.mic_offset_ms as number, kicked: p.is_kicked as boolean },
+      {
+        offset: p.mic_offset_ms as number,
+        kicked: p.is_kicked as boolean,
+        reverb: (p.fx_reverb as number | null) ?? 0,
+        pitch: (p.fx_pitch as number | null) ?? 0,
+        tune: (p.fx_tune as number | null) ?? 0,
+      },
     ]),
   );
   const releasedCharacters = new Set(
@@ -127,7 +150,62 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
 
     const local = path.join(takesDir, `${take.id}.webm`);
     await storage.download(BUCKET_TAKES, take.audio_path, local);
-    usableTakes.push({ take, local, clip });
+
+    /*
+     * Une prise vide ne vaut pas un rendu rate.
+     *
+     * Le navigateur rend parfois un WebM reduit a son entete, quelques
+     * dizaines d'octets, quand le micro n'a rien capte. ffmpeg refuse ce
+     * fichier et le rendu entier echoue sur un message que personne ne
+     * peut relier a la prise fautive. On l'ecarte, on le dit dans les
+     * logs, et la replique garde sa VO comme si elle n'avait pas ete
+     * doublee.
+     */
+    const takeMs = await audioDurationMs(local);
+    if (takeMs === null) {
+      logger.warn('prise illisible, ignorée', {
+        step: 'fetch',
+        takeId: take.id,
+        clipId: take.clip_id,
+      });
+      continue;
+    }
+
+    /*
+     * Le recalage sur les notes, s'il est demande.
+     *
+     * Il se fait ici et pas dans le graphe de mixage : ffmpeg sait
+     * transposer mais pas corriger, et la correction demande de
+     * reconnaitre chaque note avant de la deplacer. La prise est donc
+     * decodee, traitee, et reecrite a cote ; l'originale reste intacte
+     * en reserve, ce qui permet de changer le reglage et de relancer.
+     */
+    const reglages = micOffsetOf.get(take.participant_id)!;
+    let fichier = local;
+
+    if (reglages.tune > 0) {
+      try {
+        const brut = path.join(takesDir, `${take.id}-brut.wav`);
+        const corrige = path.join(takesDir, `${take.id}-tune.wav`);
+        await decodeTakeToWav(local, brut);
+        const wav = await readWavMono(brut);
+        await writeWavMono(corrige, {
+          sampleRate: wav.sampleRate,
+          samples: autotune(wav.samples, wav.sampleRate, reglages.tune / 100),
+        });
+        fichier = corrige;
+      } catch (error) {
+        // Un effet rate ne vaut pas un rendu perdu : la prise part
+        // telle qu'elle a ete enregistree.
+        logger.warn('recalage impossible, prise laissée brute', {
+          step: 'fetch',
+          takeId: take.id,
+          detail: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+
+    usableTakes.push({ take, local: fichier, clip });
 
     fetched += 1;
     await setJobStep(
@@ -149,41 +227,102 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     .map((line) => ({ startMs: line.start_ms, endMs: line.end_ms }))
     .sort((a, b) => a.startMs - b.startMs);
 
+  /*
+   * D'ou vient le son la ou personne ne double.
+   *
+   * Le stem de voix separee servait a tout : c'est une reconstruction,
+   * et elle s'entend. Or aux endroits qu'on ne remplace pas, l'original
+   * est disponible, intact et gratuit. On le prend donc lui, et on coupe
+   * le lit musical pendant ces passages pour ne pas entendre la musique
+   * deux fois.
+   *
+   * Le stem de voix ne sert plus qu'au calage cote client. Il reste
+   * telecharge parce qu'il part dans le pack quand l'hote garde la
+   * scene.
+   */
   const inputs = [musicLocal];
-  const voiceInput = voSegments.length > 0 ? inputs.push(voiceLocal) - 1 : null;
+  const voiceInput = voSegments.length > 0 ? inputs.push(videoLocal) - 1 : null;
 
-  const placements = usableTakes.map(({ take, local, clip }) => {
+  /*
+   * Le niveau de chaque prise, aligne sur la voix qu'elle remplace.
+   *
+   * Un joueur qui parle a trente centimetres du micro et un autre qui le
+   * mange n'arrivent pas au meme volume, et le mixage les posait tels
+   * quels : l'un passait sous la musique, l'autre ecrasait la scene. On
+   * mesure donc ce que faisait la voix d'origine a cet endroit precis,
+   * ce que fait la prise, et on comble l'ecart.
+   *
+   * La correction est bornee a douze decibels dans chaque sens. Au-dela,
+   * c'est que la mesure s'est trompee — un fou rire hors micro, un
+   * passage ou l'acteur chuchote — et forcer ferait pire.
+   */
+  const CORRECTION_MAX_DB = 12;
+  const placements: ReturnType<typeof placeTake>[] = [];
+
+  for (const { take, local, clip } of usableTakes) {
     const index = inputs.push(local) - 1;
-    return placeTake(
-      clip.window_start_ms,
-      take.offset_ms,
-      micOffsetOf.get(take.participant_id)?.offset ?? 0,
-      index,
+    const reglages = micOffsetOf.get(take.participant_id);
+
+    const [origine, prise] = await Promise.all([
+      meanVolumeDb(voiceLocal, clip.speech_start_ms, clip.speech_end_ms),
+      meanVolumeDb(local),
+    ]);
+    const gainDb =
+      origine !== null && prise !== null
+        ? Math.max(-CORRECTION_MAX_DB, Math.min(CORRECTION_MAX_DB, origine - prise))
+        : 0;
+
+    placements.push(
+      placeTake(
+        clip.window_start_ms,
+        take.offset_ms,
+        // Le reglage du joueur s'ajoute au retard de base : celui-ci
+        // compense la latence de capture, que personne ne sait juger a
+        // l'oreille, et l'autre corrige ce qui reste.
+        (reglages?.offset ?? 0) + MIC_OFFSET_BASELINE_MS,
+        index,
+        { gainDb, reverb: reglages?.reverb ?? 0, pitch: reglages?.pitch ?? 0 },
+      ),
     );
-  });
+  }
 
-  const graph = buildMixGraph({
-    musicInput: 0,
-    voiceInput,
-    voSegments,
-    takes: placements,
-  });
-
-  const mixPath = path.join(workDir, 'mix.wav');
   const durationMs = session.duration_ms ?? 0;
-  await mixWithGraph(
-    inputs,
-    graph,
-    graphPathFor(workDir),
-    mixPath,
-    durationMs,
-    (pct) => void setJobStep(job.id, 'mix', pct).catch(() => undefined),
-  );
-  logger.info('mixage terminé', {
-    step: 'mix',
-    inputs: inputs.length,
-    voSegments: voSegments.length,
-  });
+  const mixPath = path.join(workDir, 'mix.wav');
+
+  if (placements.length === 0) {
+    /*
+     * Personne n'a double quoi que ce soit.
+     *
+     * Rien a remplacer, donc rien a reconstruire : on garde la bande
+     * son d'origine telle quelle. La recomposer a partir des stems
+     * aurait coute une generation de qualite pour rendre exactement ce
+     * qu'on avait deja.
+     */
+    await extractAudio(videoLocal, mixPath);
+    await setJobStep(job.id, 'mix', 100);
+    logger.info('aucune prise : bande son d’origine conservée', { step: 'mix' });
+  } else {
+    const graph = buildMixGraph({
+      musicInput: 0,
+      voiceInput,
+      voSegments,
+      takes: placements,
+    });
+
+    await mixWithGraph(
+      inputs,
+      graph,
+      graphPathFor(workDir),
+      mixPath,
+      durationMs,
+      (pct) => void setJobStep(job.id, 'mix', pct).catch(() => undefined),
+    );
+    logger.info('mixage terminé', {
+      step: 'mix',
+      inputs: inputs.length,
+      voSegments: voSegments.length,
+    });
+  }
 
   // ── 3. Mux final ────────────────────────────────────────────────────
   // La video est copiee sans reencodage, et aucun sous-titre n'est
@@ -191,9 +330,36 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
   // remixe (PRD §12.4, §12.5).
   await setJobStep(job.id, 'mux', 0);
   const finalPath = path.join(workDir, 'final.mp4');
-  await muxFinal(videoLocal, mixPath, finalPath, durationMs, (pct) =>
-    void setJobStep(job.id, 'mux', pct).catch(() => undefined),
+  await muxFinal(
+    videoLocal,
+    mixPath,
+    finalPath,
+    durationMs,
+    (pct) => void setJobStep(job.id, 'mux', pct).catch(() => undefined),
   );
+
+  // ── 3 bis. La version debout ────────────────────────────────────────
+  //
+  // Elle sort du rendu fini, pas des sources : meme image, meme mixage,
+  // recadres. Son echec ne compromet rien — le rendu principal est deja
+  // sur le disque, et l'interface sait se passer d'une version qui
+  // manque.
+  const verticalPath = path.join(workDir, 'final-vertical.mp4');
+  let verticalOk = false;
+  try {
+    await muxVertical(
+      finalPath,
+      verticalPath,
+      durationMs,
+      (pct) => void setJobStep(job.id, 'mux', 50 + pct / 2).catch(() => undefined),
+    );
+    verticalOk = true;
+  } catch (error) {
+    logger.warn('recadrage vertical impossible', {
+      step: 'mux',
+      detail: error instanceof Error ? error.message : String(error),
+    });
+  }
 
   // ── 4. Envoi ────────────────────────────────────────────────────────
   await setJobStep(job.id, 'upload', 0);
@@ -205,6 +371,18 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     render_path: renderPath,
     render_size_bytes: size,
   });
+
+  if (verticalOk) {
+    const droitPath = `${session.id}/final-vertical.mp4`;
+    await storage.upload(BUCKET_RENDERS, droitPath, verticalPath, 'video/mp4');
+    const droitSize = await storage.verifyUploaded(BUCKET_RENDERS, droitPath);
+    await updateSession(session.id, {
+      render_vertical_path: droitPath,
+      render_vertical_size_bytes: droitSize,
+    });
+    logger.info('version verticale envoyée', { step: 'upload', bytes: droitSize });
+  }
+
   await setJobStep(job.id, 'upload', 100);
   logger.info('rendu envoyé', { step: 'upload', bytes: size });
 

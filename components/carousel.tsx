@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -108,39 +108,66 @@ export function Carousel({ slides }: { slides: Slide[] }) {
       </div>
 
       {/*
+        Les quatre legendes occupent la meme case.
+        Elles n'ont pas la meme longueur : un titre sur deux lignes et un
+        autre sur trois, et le bloc changeait de hauteur a chaque vue —
+        les pastilles et tout ce qui suit sautaient. Empilees dans une
+        seule case de grille, la case prend la hauteur de la plus haute
+        et n'en bouge plus, quelle que soit la langue ou la largeur.
+        Aucune hauteur ecrite en dur : ce serait juste aujourd'hui, en
+        francais, et faux des la premiere traduction.
+
+        Les inactives restent en place mais `invisible` : elles tiennent
+        la hauteur sans etre lues par une synthese vocale, que
+        `visibility: hidden` ecarte deja de l'arbre d'accessibilite.
+
         La region vivante porte le texte, pas l'illustration : c'est lui
         qui change et qu'une synthese vocale doit relire. Atomique, sinon
         seule la phrase modifiee est annoncee, hors de son titre.
       */}
-      <div className="space-y-2 text-center" aria-live="polite" aria-atomic>
-        <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
-          Étape {index + 1} sur {slides.length}
-        </p>
-        <h3
-          key={index}
-          className={cn(
-            'signage text-2xl sm:text-3xl',
-            !reduced && 'animate-fade-in',
-          )}
-          style={{ textShadow: 'none' }}
-        >
-          {current.title}
-        </h3>
-        <p className="mx-auto max-w-prose text-sm leading-relaxed text-text-muted">
-          {current.body}
-        </p>
+      <div className="grid text-center" aria-live="polite" aria-atomic>
+        {slides.map((slide, i) => {
+          const actif = i === index;
+          return (
+            <div
+              key={slide.title}
+              className={cn(
+                'col-start-1 row-start-1 space-y-2',
+                actif ? 'visible' : 'invisible',
+              )}
+              aria-hidden={!actif}
+              inert={!actif ? true : undefined}
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
+                Étape {i + 1} sur {slides.length}
+              </p>
+              <h3
+                key={actif ? `on-${i}` : `off-${i}`}
+                className={cn(
+                  'signage text-2xl sm:text-3xl',
+                  actif && !reduced && 'animate-fade-in',
+                )}
+                style={{ textShadow: 'none' }}
+              >
+                {slide.title}
+              </h3>
+              <p className="mx-auto max-w-prose text-sm leading-relaxed text-text-muted">
+                {slide.body}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex items-center justify-center gap-2">
-        <button
-          type="button"
-          aria-label="Étape précédente"
-          onClick={() => go(index - 1)}
-          className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
-        >
-          <ChevronLeft className="h-4 w-4" aria-hidden />
-        </button>
-
+      {/*
+        Les pastilles, et rien d'autre.
+        Les deux fleches disaient « precedent » et « suivant » a cote de
+        quatre points qui disaient deja ou l'on est et permettaient d'y
+        aller directement. Trois facons de faire la meme chose sous un
+        seul carrousel, c'est deux de trop : restent les points, qui sont
+        aussi le seul des trois a montrer la longueur du parcours.
+      */}
+      <div className="flex items-center justify-center gap-1">
         {/*
           La pastille visible fait douze pixels, mais la zone cliquable en
           fait trente-deux : un point de six pixels de large est une cible
@@ -154,26 +181,19 @@ export function Carousel({ slides }: { slides: Slide[] }) {
               aria-label={`Étape ${i + 1} : ${slide.title}`}
               aria-current={i === index ? 'true' : undefined}
               onClick={() => go(i)}
-              className="flex h-8 w-8 items-center justify-center"
+              className="group flex h-10 w-10 items-center justify-center"
             >
               <span
                 className={cn(
                   'rounded-full border-2 border-border-strong transition-all',
-                  i === index ? 'h-3 w-6 bg-accent' : 'h-3 w-3 bg-surface-sunken',
+                  i === index
+                    ? 'h-3 w-7 bg-accent'
+                    : 'h-3 w-3 bg-surface-sunken group-hover:w-5 group-hover:bg-border-strong',
                 )}
               />
             </button>
           ))}
         </div>
-
-        <button
-          type="button"
-          aria-label="Étape suivante"
-          onClick={() => go(index + 1)}
-          className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
-        >
-          <ChevronRight className="h-4 w-4" aria-hidden />
-        </button>
 
         {slides.length > 1 ? (
           <button

@@ -41,6 +41,12 @@ export function Footer() {
             {t.legal.mentions}
           </Link>
           <Link
+            href="/conditions"
+            className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
+          >
+            {t.legal.terms}
+          </Link>
+          <Link
             href="/confidentialite"
             className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
           >

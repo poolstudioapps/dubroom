@@ -1,4 +1,4 @@
--- DubRoom — avancement des joueurs (PRD §11.7).
+-- Dub’Up — avancement des joueurs (PRD §11.7).
 --
 -- L'ecran d'attente doit afficher « on attend Marie (2/5) », mais les
 -- policies interdisent a un joueur de lire les prises des autres avant le

@@ -50,7 +50,9 @@ export type Dictionary = Widen<typeof fr>;
 export const DEFAULT_LOCALE: Locale = 'fr';
 
 /** Le cookie retient le choix. Un an : ce n'est pas une decision qu'on refait. */
-export const LOCALE_COOKIE = 'dubroom.locale';
+export const LOCALE_COOKIE = 'dubup.locale';
+/** Le meme cookie sous son ancien nom, lu a defaut du nouveau. */
+export const LEGACY_LOCALE_COOKIE = 'dubroom.locale';
 export const LOCALE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function isLocale(value: string | undefined | null): value is Locale {

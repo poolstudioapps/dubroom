@@ -1,10 +1,10 @@
-# DubRoom
+# Dub’Up
 
 Studio de doublage collaboratif dans le navigateur. Une scène de film, des amis,
 chacun prend un personnage, enregistre ses répliques de son côté, et on découvre
 le résultat mixé à la fin.
 
-Spécification complète : [PRD-dubroom.md](PRD-dubroom.md).
+Spécification complète : [PRD-dubup.md](PRD-dubup.md).
 
 ---
 

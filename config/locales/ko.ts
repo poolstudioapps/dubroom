@@ -43,7 +43,8 @@ export const ko = {
 
   myPacks: {
     title: '내 팩',
-    subtitle: '공개한 장면입니다. 누구나 다시 할 수 있고, 내리는 건 본인만 할 수 있습니다.',
+    subtitle:
+      '공개한 장면입니다. 누구나 다시 할 수 있고, 내리는 건 본인만 할 수 있습니다.',
     sceneCount: (n: number) => `공개한 장면 ${n}개`,
     emptyTitle: '아직 공개한 것이 없습니다',
     emptyBody:
@@ -66,18 +67,15 @@ export const ko = {
     valueTitle: '무엇이 나오나',
     value1: {
       title: '그들의 목소리 대신 당신의 목소리',
-      body:
-        '집에서 헤드셋 마이크로 녹음합니다. 원래 음악과 효과음은 그대로 두고 목소리만 바뀝니다.',
+      body: '집에서 헤드셋 마이크로 녹음합니다. 원래 음악과 효과음은 그대로 두고 목소리만 바뀝니다.',
     },
     value2: {
       title: '끝날 때까지 아무도 듣지 못합니다',
-      body:
-        '완성본이 나오기 전까지 내 녹음은 다른 사람에게 들리지 않습니다. 마지막에 다 같이 확인하는 것이 이 놀이의 전부입니다.',
+      body: '완성본이 나오기 전까지 내 녹음은 다른 사람에게 들리지 않습니다. 마지막에 다 같이 확인하는 것이 이 놀이의 전부입니다.',
     },
     value3: {
       title: '남는 MP4 하나',
-      body:
-        '마지막에 어디서나 재생되는 파일이 남습니다. 자막은 입혀지지 않습니다. 원본 장면 쪽은 지워집니다.',
+      body: '마지막에 어디서나 재생되는 파일이 남습니다. 자막은 입혀지지 않습니다. 원본 장면 쪽은 지워집니다.',
     },
 
     midCta: '장면을 고르고, 배역을 나누고, 어떻게 되는지 보세요.',
@@ -91,21 +89,21 @@ export const ko = {
     seoTitle: '친구들과 영화 장면 더빙하기',
     defineTitle: '영화 장면 더빙이란',
     defineBody:
-      '영화 장면을 더빙한다는 것은 화면, 음악, 효과음, 리듬을 그대로 두고 원래 목소리만 내 목소리로 바꾸는 일입니다. 위에 해설을 얹는 게 아니라, 장면 자체를 다른 연기자로 다시 하는 것입니다. DubRoom은 그 작업을 브라우저에서 하는 온라인 더빙 소프트웨어입니다.',
+      '영화 장면을 더빙한다는 것은 화면, 음악, 효과음, 리듬을 그대로 두고 원래 목소리만 내 목소리로 바꾸는 일입니다. 위에 해설을 얹는 게 아니라, 장면 자체를 다른 연기자로 다시 하는 것입니다. Dub’Up은 그 작업을 브라우저에서 하는 온라인 더빙 소프트웨어입니다.',
     defineHowTitle: '영화 장면을 직접 더빙하는 방법',
     defineHowBody:
-      '집에는 없는 세 가지가 필요합니다. 목소리만 바꾸기 위해 목소리와 음악을 분리하는 것, 누가 언제 말하는지 밀리초 단위로 아는 것, 그리고 말하면서 타이밍을 맞추는 것. DubRoom은 앞의 두 가지를 장면에서 자동으로 처리하고, 세 번째는 리드미 밴드로 풉니다. 재생 헤드 아래로 글자가 흐르는 이 방식은 더빙 스튜디오가 팔십 년째 쓰고 있습니다.',
+      '집에는 없는 세 가지가 필요합니다. 목소리만 바꾸기 위해 목소리와 음악을 분리하는 것, 누가 언제 말하는지 밀리초 단위로 아는 것, 그리고 말하면서 타이밍을 맞추는 것. Dub’Up은 앞의 두 가지를 장면에서 자동으로 처리하고, 세 번째는 리드미 밴드로 풉니다. 재생 헤드 아래로 글자가 흐르는 이 방식은 더빙 스튜디오가 팔십 년째 쓰고 있습니다.',
     defineWhoTitle: '누구에게 쓸모가 있나',
     defineWhoBody:
       '명대사를 다시 해 보고 싶은 친구들, 편집 프로그램이 아닌 도구를 찾는 팬더빙 제작자, 학생들에게 한 대목을 더빙시키는 어학 교사, 그리고 스튜디오를 빌리지 않고 리드미 밴드로 연습하려는 성우 지망생에게.',
     faqExtra: [
       {
         q: '무료인가요?',
-        a: '네. DubRoom은 개인 프로젝트이며 광고도, 구독료도, 장면 수 제한도 없습니다.',
+        a: '네. Dub’Up은 개인 프로젝트이며 광고도, 구독료도, 장면 수 제한도 없습니다.',
       },
       {
         q: '영상 편집 프로그램과 무엇이 다른가요?',
-        a: '편집 프로그램은 빈 타임라인을 주고 테이크 정렬을 손에 맡깁니다. DubRoom은 장면에서 출발합니다. 목소리를 분리하고, 대사를 찾고, 등장인물에 배정하고, 녹음을 원래 목소리에 자동으로 다시 맞춥니다.',
+        a: '편집 프로그램은 빈 타임라인을 주고 테이크 정렬을 손에 맡깁니다. Dub’Up은 장면에서 출발합니다. 목소리를 분리하고, 대사를 찾고, 등장인물에 배정하고, 녹음을 원래 목소리에 자동으로 다시 맞춥니다.',
       },
       {
         q: '한국어 화면으로 영어 장면을 더빙할 수 있나요?',
@@ -144,7 +142,7 @@ export const ko = {
     ] as const,
     privateTitle: '네트워크가 아니라 사적인 방',
     privateBody:
-      'DubRoom은 초대된 사람만 쓸 수 있습니다. 공개 목록도, 바깥으로의 공유도, 검색 등록도 없습니다. 그래서 성립합니다. 보호받는 저작물의 일부를 친구끼리 더빙하되, 밖으로는 내보내지 않습니다.',
+      'Dub’Up은 초대된 사람만 쓸 수 있습니다. 공개 목록도, 바깥으로의 공유도, 검색 등록도 없습니다. 그래서 성립합니다. 보호받는 저작물의 일부를 친구끼리 더빙하되, 밖으로는 내보내지 않습니다.',
     slides: {
       importTitle: '대사까지 외우고 있는 그 장면을 고르세요',
       importBody:
@@ -179,7 +177,13 @@ export const ko = {
     voteScore: (n: number) => `커뮤니티 점수: ${n}`,
     voteHelp:
       '평가 대상은 영화가 아니라 구간 나누기입니다. 잘 나뉜 장면은 모두의 저녁 한 번을 아껴 줍니다.',
-    sortedByScore: '평가 높은 순',
+    sort: {
+      label: '정렬',
+      popular: '평가 높은 순',
+      recent: '최신순',
+      short: '짧은 순',
+      title: '제목순',
+    },
     filterLang: '장면 언어',
     filterGenre: '장르',
     filterCast: '배역 수',
@@ -190,23 +194,45 @@ export const ko = {
     filterAnyLength: '상관없음',
     filterReset: '전부 보기',
     filterNoMatch: '조건에 맞는 장면이 없습니다',
-    filterNoMatchBody:
-      '조건을 넓히거나, 목록에 없는 장면을 직접 공개해 보세요.',
+    filterNoMatchBody: '조건을 넓히거나, 목록에 없는 장면을 직접 공개해 보세요.',
     langUnknown: '언어 모름',
     langNames: {
-      fr: '프랑스어', en: '영어', es: '스페인어', de: '독일어', it: '이탈리아어',
-      pt: '포르투갈어', ja: '일본어', ko: '한국어', zh: '중국어', ru: '러시아어',
+      fr: '프랑스어',
+      en: '영어',
+      es: '스페인어',
+      de: '독일어',
+      it: '이탈리아어',
+      pt: '포르투갈어',
+      ja: '일본어',
+      ko: '한국어',
+      zh: '중국어',
+      ru: '러시아어',
     } as Record<string, string>,
     genreNames: {
-      action: '액션', comedie: '코미디', drame: '드라마', animation: '애니메이션',
-      science_fiction: 'SF', horreur: '공포', documentaire: '다큐멘터리',
+      action: '액션',
+      comedie: '코미디',
+      drame: '드라마',
+      animation: '애니메이션',
+      anime: '애니메이션',
+      serie: '드라마',
+      super_heros: '히어로',
+      science_fiction: 'SF',
+      horreur: '공포',
+      jeu_video: '게임',
+      chanson: '노래',
+      documentaire: '다큐멘터리',
       autre: '기타',
     } as Record<string, string>,
     castBuckets: {
-      solo: '1 배역', duo: '2 배역', small: '3~4 배역', large: '5 배역 이상',
+      solo: '1 배역',
+      duo: '2 배역',
+      small: '3~4 배역',
+      large: '5 배역 이상',
     } as Record<string, string>,
     lengthBuckets: {
-      short: '1분 미만', medium: '1~3분', long: '3분 이상',
+      short: '1분 미만',
+      medium: '1~3분',
+      long: '3분 이상',
     } as Record<string, string>,
     sceneCount: (n: number) => `이용할 수 있는 장면 ${n}개`,
     characterCount: (n: number) => `등장인물 ${n}명`,
@@ -221,7 +247,10 @@ export const ko = {
     publish: '커뮤니티에 공개',
     published: '이 장면은 커뮤니티에 있습니다',
     seeInCommunity: '커뮤니티에서 보기',
-    publishRecipeHelp: '공유되는 것은 링크와 구간뿐입니다. 영상은 여기 보관되지 않습니다.',
+    publishRecipeHelp:
+      '공유되는 것은 링크와 구간뿐입니다. 영상은 여기 보관되지 않습니다.',
+    publishFromCatalogue:
+      '이 장면은 목록에서 가져온 것이라 이미 등록돼 있습니다. 다시 올리면 구분할 수 없는 중복이 생깁니다.',
     publishTooLate:
       '이 장면은 가져온 파일로 만들었고, 소재는 렌더링 뒤에 지워졌습니다. 공유하려면 그 전에 정했어야 합니다. 링크로 가져온 장면이라면 언제든 공개할 수 있습니다.',
     keepLabel: '다시 할 수 있게 이 장면 보관',
@@ -235,9 +264,23 @@ export const ko = {
     modern: '모던',
   },
 
+  terms: {
+    consent: '{terms}과 {privacy}을 읽고 동의합니다.',
+    linkTerms: '이용약관',
+    linkPrivacy: '개인정보 처리방침',
+    required: '계속하려면 동의가 필요합니다.',
+    gateTitle: '하나만 더',
+    gateBody:
+      '지난 방문 이후 이용약관이 바뀌었거나, 아직 동의한 적이 없습니다. 체크 한 번이면 다시 이어집니다.',
+    gateGist:
+      '핵심은 이렇습니다. 가져온 영상과 그 사용에 대한 책임은 본인에게 있습니다. 모든 것은 초대된 사람들 사이에만 머물고, 공개되지 않습니다.',
+    gateConfirm: '동의하고 계속하기',
+  },
+
   legal: {
     mentions: '운영자 정보',
     privacy: '개인정보',
+    terms: '이용약관',
     usageNotice:
       '초대된 사람들 사이의 엄격히 사적인 이용입니다. 어떤 내용도 공개 배포되거나 검색에 등록되지 않습니다.',
     contact: '문의',
@@ -309,7 +352,8 @@ export const ko = {
     storageUsed: (used: string, total: string) => `${total} 중 ${used}`,
     storageWarning: '저장 공간이 거의 찼습니다. 오래된 장면을 지워 자리를 만드세요.',
     deleteConfirmTitle: '이 장면을 삭제할까요?',
-    deleteConfirmBody: '완성본, 테이크, 모든 메타데이터가 지워집니다. 되돌릴 수 없습니다.',
+    deleteConfirmBody:
+      '완성본, 테이크, 모든 메타데이터가 지워집니다. 되돌릴 수 없습니다.',
     joinByCode: '코드로 참여',
     join: '참여',
     storageTitle: '사용 중인 공간',
@@ -323,6 +367,15 @@ export const ko = {
     title: '새 장면',
     tabUpload: '파일 가져오기',
     tabYoutube: 'YouTube 링크 붙여넣기',
+    songLabel: '노래입니다',
+    songHelp:
+      '가사는 이미 알 테니 받아쓰기는 건너뜁니다. 구간은 곡의 보컬을 따라가며 들어갈 타이밍만 알려줍니다.',
+    matchTitle: '이 장면은 이미 있습니다',
+    matchBody:
+      '누군가 이미 준비해 두었습니다. 구간, 배역, 대사가 모두 있습니다. 그대로 쓰면 같은 결과를 몇 분씩 기다릴 필요 없이 바로 시작합니다.',
+    matchLines: '말할 대사',
+    matchUse: '이 장면으로 시작하기',
+    matchScratch: '처음부터 다시 만들기',
     tabPack: '팩에서 시작하기',
     packHelp:
       '준비할 게 없습니다. 장면은 이미 나뉘어 있으니 배역만 고르고 녹음하면 됩니다. 전체 목록은 커뮤니티 탭에 있습니다.',
@@ -351,15 +404,14 @@ export const ko = {
   ingest: {
     title: '장면 준비',
     subtitle: '장면을 나누는 중입니다. 몇 분 걸립니다.',
-    queued: '워커를 기다리는 중입니다. PC에서 스크립트를 실행하세요.',
+    queued: '처리가 늦게 시작되고 있습니다.',
     queuedHelp:
-      '처리는 호스트 컴퓨터에서 돕니다. start.bat을 두 번 누르면 작업이 알아서 시작됩니다.',
+      '보통은 저절로 시작됩니다. 오래 걸리면 장면을 연 사람에게 알려 주세요.',
     failed: '가져오기에 실패했습니다.',
     retry: '가져오기 다시 실행',
     neverStarted:
       '가져오기가 시작되지 않았습니다. 파일 전송이 실패했을 가능성이 큽니다. 다시 실행하거나 새 장면으로 시작하세요.',
-    hostPreparing:
-      '호스트가 등장인물을 정리하는 중입니다. 곧 로비가 열립니다.',
+    hostPreparing: '호스트가 등장인물을 정리하는 중입니다. 곧 로비가 열립니다.',
     startOver: '새 장면',
   },
 
@@ -460,6 +512,34 @@ export const ko = {
     margin: '여유',
     noTake: '이 클립에는 테이크가 없습니다.',
     uploading: '테이크 보내는 중…',
+    noCharacter:
+      '이 장면에서 배정된 배역이 없습니다. 여기서 다른 사람들의 진행 상황을 볼 수 있습니다.',
+    fxTitle: '보이스 콘솔',
+    fxReset: '전부 초기화',
+    fxReverb: '리버브',
+    fxPitch: '음높이',
+    fxTune: '음정 보정',
+    fxHelp:
+      '효과는 믹싱할 때 입히는 것이라 녹음 자체에는 들어가지 않습니다. 렌더링 전까지 몇 번이든 바꾸거나 원래 목소리로 돌아갈 수 있습니다.',
+    fxPresets: {
+      dry: '원래 목소리',
+      room: '작은 방',
+      cathedral: '대성당',
+      cartoon: '만화 목소리',
+      deep: '낮은 목소리',
+      cover: '커버',
+    },
+    emptyTake:
+      '아무것도 녹음되지 않았습니다. 마이크가 연결되고 선택돼 있는지 확인한 뒤 다시 녹음하세요.',
+    whereEveryoneIs: '모두의 진행 상황',
+    you: '(나)',
+    hostTag: '(호스트)',
+    stateVo: '원음 유지',
+    stateDone: '완료',
+    stateRecording: '녹음 중',
+    waitingHost: '호스트가 렌더링을 시작하기를 기다리는 중입니다.',
+    hostCanRender: '모두 끝났습니다. 렌더링을 시작할 수 있습니다.',
+    stillMissing: '아직 녹음할 대사가 남아 있습니다.',
     finishedTitle: '끝났습니다!',
     finishedBody: '렌더링이 시작되기 전까지는 돌아와서 테이크를 다시 할 수 있습니다.',
     waitingFor: '아직 기다리는 사람:',
@@ -496,16 +576,13 @@ export const ko = {
     alignUnsure: '이 테이크에서는 뚜렷한 기준을 찾지 못했습니다. 그대로 놓습니다.',
   },
 
-
   progress: {
     preparing: '장면을 준비하는 중',
     rendering: '결과물을 만드는 중',
     queued: '대기 중입니다. 곧 알아서 시작됩니다.',
-    working:
-      '몇 분 걸립니다. 탭을 열어 둔 채 나중에 돌아와도 됩니다.',
+    working: '몇 분 걸립니다. 탭을 열어 둔 채 나중에 돌아와도 됩니다.',
     almost: '거의 다 됐습니다.',
-    longer:
-      '평소보다 오래 걸리고 있지만 계속 돌아가는 중입니다. 그대로 두세요.',
+    longer: '평소보다 오래 걸리고 있지만 계속 돌아가는 중입니다. 그대로 두세요.',
   },
   render: {
     title: '렌더링 중',
@@ -518,6 +595,18 @@ export const ko = {
   result: {
     title: '완성',
     download: 'MP4 내려받기',
+    exportTitle: '장면 가져가기',
+    formatWide: '가로 형식',
+    formatWideHint: '컴퓨터 화면이나 TV용.',
+    formatVertical: '세로 형식',
+    formatVerticalHint: '가운데를 잘라낸 스토리·릴스용.',
+    formatVerticalMissing:
+      '이 장면은 자동 자르기 이전에 렌더링됐습니다. 다시 렌더링하면 받을 수 있습니다.',
+    share: '공유',
+    shareHelp:
+      '휴대폰에서는 공유를 누르면 시스템 공유 시트가 열립니다. 설치된 틱톡, 인스타그램 등이 거기 나옵니다.',
+    shareUnsupported:
+      '이 브라우저는 파일을 공유하지 못합니다. 내려받은 뒤 앱에서 올리세요.',
     cast: '배역',
     voiceOriginal: '원래 음성',
     shareHint: '이 링크는 이 장면의 참가자만 열 수 있습니다.',

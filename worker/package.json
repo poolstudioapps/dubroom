@@ -1,9 +1,9 @@
 {
-  "name": "dubroom-worker",
+  "name": "dubup-worker",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Worker local DubRoom : ingestion, separation, transcription, rendu.",
+  "description": "Worker local Dub’Up : ingestion, separation, transcription, rendu.",
   "scripts": {
     "start": "node worker.js",
     "check": "node scripts/bootstrap.mjs --check",

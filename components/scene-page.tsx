@@ -142,8 +142,7 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
 
   const join = useMutation({
     mutationFn: () => joinSession(code, name.trim() || defaultName),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: ['session-by-code', code] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['session-by-code', code] }),
     onError: (e) => setError(humanizeError(e)),
   });
 

@@ -1,4 +1,4 @@
--- DubRoom — gestion de la liste blanche depuis l'application.
+-- Dub’Up — gestion de la liste blanche depuis l'application.
 --
 -- Jusqu'ici la liste ne se modifiait qu'avec la cle service, donc depuis
 -- le worker. En pratique le besoin arrive au pire moment : quelqu'un se

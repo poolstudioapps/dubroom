@@ -4,11 +4,14 @@ import path from 'node:path';
 import {
   BUCKET_SOURCES,
   CLIP_MARGIN_MS,
+  CLIP_MAX_MS,
   CLIP_MERGE_GAP_MS,
+  LINE_SPLIT_SILENCE_MS,
   characterColorToken,
 } from '../../../config/constants.ts';
 import {
   groupWordsIntoLines,
+  spansFromEnvelope,
   speakersInOrder,
 } from '../../../lib/segmentation.ts';
 import { config } from '../config.ts';
@@ -138,6 +141,7 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
       p_session_id: session.id,
       p_gap_ms: CLIP_MERGE_GAP_MS,
       p_margin_ms: CLIP_MARGIN_MS,
+      p_max_ms: CLIP_MAX_MS,
     });
     if (clipError) {
       throw new SystemError(`Découpage en clips impossible : ${clipError.message}`);
@@ -154,6 +158,82 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
     return;
   }
 
+  // ── Mode chanson ────────────────────────────────────────────────────
+  //
+  // On ne transcrit pas une reprise : la reconnaissance rend des
+  // syllabes etirees pour un cout par minute sans contrepartie, et celui
+  // qui reprend une chanson en connait les paroles. Ce qu'il faut
+  // savoir, c'est quand entrer — et l'enveloppe qu'on vient de calculer
+  // le dit deja. Une seule voix est creee ; l'hote la scindera sur
+  // l'ecran de preparation s'ils sont deux a chanter.
+  if (session.is_song) {
+    await setJobStep(job.id, 'transcribe', 100);
+    await setJobStep(job.id, 'segment', 0);
+
+    const spans = spansFromEnvelope(
+      new Uint8Array(Buffer.from(envelope.peaks, 'base64')),
+      envelope.hz,
+    );
+
+    await db.from('characters').delete().eq('session_id', session.id);
+    const { data: voix, error: voixError } = await db
+      .from('characters')
+      .insert({
+        session_id: session.id,
+        speaker_key: 'song_0',
+        name: 'Voix',
+        color: characterColorToken(0),
+        sort_order: 0,
+      })
+      .select('id')
+      .single();
+    if (voixError || !voix) {
+      throw new SystemError(`Création de la voix impossible : ${voixError?.message}`);
+    }
+
+    if (spans.length > 0) {
+      const { error: lineError } = await db.from('lines').insert(
+        spans.map((span) => ({
+          session_id: session.id,
+          character_id: voix.id as string,
+          start_ms: span.startMs,
+          end_ms: span.endMs,
+          text: '',
+          words: [],
+        })),
+      );
+      if (lineError) {
+        throw new SystemError(
+          `Insertion des entrées impossible : ${lineError.message}`,
+        );
+      }
+    }
+
+    const { error: songClipError } = await db.rpc('recompute_clips', {
+      p_session_id: session.id,
+      p_gap_ms: CLIP_MERGE_GAP_MS,
+      p_margin_ms: CLIP_MARGIN_MS,
+      p_max_ms: CLIP_MAX_MS,
+    });
+    if (songClipError) {
+      throw new SystemError(`Découpage en clips impossible : ${songClipError.message}`);
+    }
+
+    await setJobStep(job.id, 'segment', 100);
+    await updateSession(session.id, { status: 'prepping' });
+    logger.info('reprise découpée à l’enveloppe', {
+      step: 'segment',
+      entrees: spans.length,
+    });
+
+    if (session.upload_path) {
+      await db.storage.from(BUCKET_SOURCES).remove([session.upload_path]);
+      await updateSession(session.id, { upload_path: null });
+    }
+    await fs.rm(path.join(workDir, 'voice-raw'), { force: true });
+    return;
+  }
+
   // ── 5. Transcription et diarisation ─────────────────────────────────
   await setJobStep(job.id, 'transcribe', 10);
   // Scribe tourne sur le stem voix, pas sur l'audio complet : le taux de
@@ -165,11 +245,29 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
 
   // ── 6. Decoupage ────────────────────────────────────────────────────
   await setJobStep(job.id, 'segment', 0);
-  const draftLines = groupWordsIntoLines(words);
+  const draftLines = groupWordsIntoLines(words, LINE_SPLIT_SILENCE_MS);
   const speakers = speakersInOrder(draftLines);
 
-  // Reprise apres crash : on repart d'une table propre plutot que de
-  // dupliquer personnages et repliques (PRD §18, jobs idempotents).
+  /*
+   * Reprise apres crash : on repart d'une table propre plutot que de
+   * dupliquer personnages et repliques (PRD §18, jobs idempotents).
+   *
+   * Les noms deja donnes sont releves avant d'effacer, et rendus a qui
+   * de droit par leur `speaker_key`. Sans cela, une scene reprise depuis
+   * une recette de la communaute perdait « Donnie » et « Léo » pour
+   * « Personnage 1 » et « Personnage 2 » : tout le travail de
+   * l'hote d'origine, efface par une reprise technique.
+   */
+  const { data: anciens } = await db
+    .from('characters')
+    .select('speaker_key, name')
+    .eq('session_id', session.id);
+  const nomConnu = new Map(
+    (anciens ?? [])
+      .filter((row) => typeof row.name === 'string' && row.name.trim() !== '')
+      .map((row) => [row.speaker_key as string, row.name as string]),
+  );
+
   await db.from('characters').delete().eq('session_id', session.id);
 
   const { data: inserted, error: charError } = await db
@@ -178,14 +276,16 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
       speakers.map((speaker, index) => ({
         session_id: session.id,
         speaker_key: speaker,
-        name: `Personnage ${index + 1}`,
+        name: nomConnu.get(speaker) ?? `Personnage ${index + 1}`,
         color: characterColorToken(index),
         sort_order: index,
       })),
     )
     .select('id, speaker_key');
   if (charError) {
-    throw new SystemError(`Insertion des personnages impossible : ${charError.message}`);
+    throw new SystemError(
+      `Insertion des personnages impossible : ${charError.message}`,
+    );
   }
 
   const characterBySpeaker = new Map(
@@ -212,6 +312,7 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
     p_session_id: session.id,
     p_gap_ms: CLIP_MERGE_GAP_MS,
     p_margin_ms: CLIP_MARGIN_MS,
+    p_max_ms: CLIP_MAX_MS,
   });
   if (clipError) {
     throw new SystemError(`Découpage en clips impossible : ${clipError.message}`);

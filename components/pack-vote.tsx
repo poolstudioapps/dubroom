@@ -51,8 +51,11 @@ export function PackVote({ pack }: { pack: Pack }) {
       <span
         className={cn(
           'min-w-7 text-center text-sm font-bold tabular-nums',
-          score > 0 && 'text-ok',
-          score < 0 && 'text-danger',
+          // `text-ok` est une couleur d'aplat : ecrite sur la carte
+          // blanche, elle donnait trois de contraste. L'encre est la
+          // meme teinte, assombrie de ce qu'il faut pour se lire.
+          score > 0 && 'text-ok-ink',
+          score < 0 && 'text-danger-ink',
           score === 0 && 'text-text-faint',
         )}
         aria-label={t.community.voteScore(score)}
@@ -94,8 +97,10 @@ function VoteButton({
       className={cn(
         'flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
         'text-text-muted hover:bg-surface-sunken hover:text-text',
-        active && tone === 'up' && 'bg-ok/20 text-ok hover:text-ok',
-        active && tone === 'down' && 'bg-danger/20 text-danger hover:text-danger',
+        active && tone === 'up' && 'bg-ok/20 text-ok-ink hover:text-ok-ink',
+        active &&
+          tone === 'down' &&
+          'bg-danger/20 text-danger-ink hover:text-danger-ink',
       )}
     >
       {children}

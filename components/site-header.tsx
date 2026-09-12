@@ -29,7 +29,9 @@ export function SiteHeader({
   return (
     <header
       className={[
-        'mb-3 flex w-full flex-wrap items-end gap-x-4 gap-y-3',
+        // Les espaces se resserrent sur telephone : chaque pixel rendu
+        // ici rapproche le bouton d'enregistrement du premier ecran.
+        'mb-2 flex w-full flex-wrap items-end gap-x-4 gap-y-2 sm:mb-3 sm:gap-y-3',
         className ?? '',
       ].join(' ')}
     >
@@ -40,7 +42,7 @@ export function SiteHeader({
       */}
       <Link
         href="/"
-        className="signage order-1 rounded-sm text-2xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
+        className="signage order-1 rounded-sm text-xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
       >
         {APP_NAME}
       </Link>
@@ -57,7 +59,7 @@ export function SiteHeader({
         {right ?? (
           <Link
             href="/login"
-            className="btn-3d inline-flex h-11 items-center gap-2 bg-accent px-5 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
+            className="btn-3d btn-primary inline-flex h-11 items-center gap-2 bg-accent px-5 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
           >
             {t.auth.signIn}
           </Link>

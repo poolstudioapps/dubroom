@@ -8,9 +8,6 @@ export default async function SessionsPage() {
   if (!user) redirect('/login');
 
   return (
-    <SessionsClient
-      userId={user.id}
-      displayName={displayNameFromEmail(user.email)}
-    />
+    <SessionsClient userId={user.id} displayName={displayNameFromEmail(user.email)} />
   );
 }

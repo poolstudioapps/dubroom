@@ -24,7 +24,9 @@ export type Theme = keyof typeof THEMES;
 export const DEFAULT_THEME: Theme = 'retro';
 
 /** Un an : ce n'est pas un choix qu'on refait a chaque visite. */
-export const THEME_COOKIE = 'dubroom.theme';
+export const THEME_COOKIE = 'dubup.theme';
+/** Le meme cookie sous son ancien nom, lu a defaut du nouveau. */
+export const LEGACY_THEME_COOKIE = 'dubroom.theme';
 export const THEME_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function isTheme(value: string | undefined | null): value is Theme {

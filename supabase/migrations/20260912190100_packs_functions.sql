@@ -1,4 +1,4 @@
--- DubRoom — operations sur les scenes preparees.
+-- Dub’Up — operations sur les scenes preparees.
 
 /** L'hote decide, pendant l'enregistrement, si la scene sera conservee. */
 create or replace function set_keep_as_pack(p_session_id uuid, p_keep boolean)

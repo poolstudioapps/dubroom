@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  BUCKET_SOURCES,
-  CLIP_MARGIN_MS,
-  CLIP_MERGE_GAP_MS,
-} from '@/config/constants';
+import { BUCKET_SOURCES, CLIP_MARGIN_MS, CLIP_MERGE_GAP_MS } from '@/config/constants';
 import { AppError, humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import type { SessionRow } from '@/lib/supabase/database.types';
@@ -40,14 +36,30 @@ export interface Pack {
   characters: PackCharacter[];
 }
 
-/** Les genres du catalogue. L'ordre est celui des listes deroulantes. */
+/**
+ * Les genres du catalogue. L'ordre est celui des listes deroulantes.
+ *
+ * Il melange deux questions — de quel genre, et de quelle sorte d'oeuvre
+ * — et c'est assume : personne ne cherche « une comedie » sans savoir
+ * s'il veut un film ou un anime, et un catalogue d'amis n'a pas assez de
+ * lignes pour supporter deux menus.
+ *
+ * Aucun nom de studio ni de franchise : « Animation » couvre ce qu'on
+ * range d'ordinaire sous un nom propre, sans emprunter celui de
+ * personne.
+ */
 export const PACK_GENRES = [
   'action',
   'comedie',
   'drame',
   'animation',
+  'anime',
+  'serie',
+  'super_heros',
   'science_fiction',
   'horreur',
+  'jeu_video',
+  'chanson',
   'documentaire',
   'autre',
 ] as const;
@@ -62,7 +74,16 @@ export type PackGenre = (typeof PACK_GENRES)[number];
  * interface francaise tous les jours.
  */
 export const PACK_LANGS = [
-  'fr', 'en', 'es', 'de', 'it', 'pt', 'ja', 'ko', 'zh', 'ru',
+  'fr',
+  'en',
+  'es',
+  'de',
+  'it',
+  'pt',
+  'ja',
+  'ko',
+  'zh',
+  'ru',
 ] as const;
 
 async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
@@ -74,6 +95,70 @@ async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T
 
 export function listPacks(): Promise<Pack[]> {
   return rpc<Pack[]>('list_packs');
+}
+
+/**
+ * Le catalogue vieillit lentement.
+ *
+ * Une scene y entre quand quelqu'un publie, c'est-a-dire rarement. Le
+ * relire a chaque retour d'onglet et a chaque navigation ajoutait un
+ * aller-retour avant l'affichage, plusieurs fois par minute, pour une
+ * liste qui n'avait pas bouge. Deux minutes de fraicheur, et la
+ * publication invalide le cache de toute facon.
+ */
+export const PACKS_QUERY = {
+  queryKey: ['packs'] as const,
+  queryFn: listPacks,
+  staleTime: 120_000,
+  refetchOnWindowFocus: false,
+};
+
+export interface PackLine {
+  start_ms: number;
+  end_ms: number;
+  text: string;
+  characterName: string;
+  characterColor: string;
+}
+
+/**
+ * Les repliques d'un pack, telles qu'elles seront a dire.
+ *
+ * Sert a une seule chose, et elle compte : montrer le texte avant de
+ * s'engager. Une scene du catalogue arrive avec la transcription de
+ * quelqu'un d'autre, qui a pu la corriger, la tronquer, ou y mettre
+ * n'importe quoi. On la lit, puis on decide de la reprendre ou de tout
+ * refaire.
+ *
+ * Lecture directe plutot que fonction serveur : les politiques laissent
+ * deja tout invite lire le catalogue, et il n'y a rien de plus a
+ * verifier ici.
+ */
+export async function listPackLines(packId: string): Promise<PackLine[]> {
+  const { data, error } = await supabaseBrowser()
+    .from('pack_lines')
+    .select('start_ms, end_ms, text, is_deleted, pack_characters (name, color)')
+    .eq('pack_id', packId)
+    .order('start_ms', { ascending: true });
+  if (error) throw new AppError('PACK_LINES_FAILED', humanizeError(error));
+
+  type Row = {
+    start_ms: number;
+    end_ms: number;
+    text: string | null;
+    is_deleted: boolean;
+    pack_characters: { name: string; color: string } | null;
+  };
+
+  return ((data ?? []) as unknown as Row[])
+    .filter((row) => !row.is_deleted)
+    .map((row) => ({
+      start_ms: row.start_ms,
+      end_ms: row.end_ms,
+      text: row.text ?? '',
+      characterName: row.pack_characters?.name ?? '',
+      characterColor: row.pack_characters?.color ?? 'character-1',
+    }));
 }
 
 /**

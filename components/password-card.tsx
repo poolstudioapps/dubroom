@@ -40,7 +40,7 @@ export function PasswordCard({ bare }: { bare?: boolean } = {}) {
     onSuccess: () => {
       setPassword('');
       setDone(true);
-      window.localStorage.setItem('dubroom.loginMode', 'password');
+      window.localStorage.setItem('dubup.loginMode', 'password');
     },
     onError: (e) => setError(humanizeError(e)),
   });
@@ -55,7 +55,9 @@ export function PasswordCard({ bare }: { bare?: boolean } = {}) {
           <h2 className="text-sm font-bold">{t.auth.passwordSectionTitle}</h2>
         </div>
       )}
-      <p className="text-xs leading-relaxed text-text-faint">{t.auth.passwordSectionHelp}</p>
+      <p className="text-xs leading-relaxed text-text-faint">
+        {t.auth.passwordSectionHelp}
+      </p>
 
       <form
         className="flex flex-wrap gap-2"
@@ -90,6 +92,12 @@ export function PasswordCard({ bare }: { bare?: boolean } = {}) {
 }
 
 /** Le meme contenu, sans la plaque : le tiroir en fournit deja une. */
-function BareShell({ className, children }: { className?: string; children: React.ReactNode }) {
+function BareShell({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
   return <div className={className}>{children}</div>;
 }

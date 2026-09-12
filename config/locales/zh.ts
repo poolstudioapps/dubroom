@@ -37,8 +37,7 @@ export const zh = {
     method: '登录方式',
     methodEmail: '邮件链接',
     since: '加入时间',
-    emailLocked:
-      '邮箱不能在这里修改：受邀名单上写的就是它。要改请联系站点作者。',
+    emailLocked: '邮箱不能在这里修改：受邀名单上写的就是它。要改请联系站点作者。',
   },
 
   myPacks: {
@@ -66,18 +65,15 @@ export const zh = {
     valueTitle: '做出来是什么',
     value1: {
       title: '用你的声音替掉他们的',
-      body:
-        '在家用耳机上的麦克风录。原来的音乐和音效原封不动，换掉的只有人声。',
+      body: '在家用耳机上的麦克风录。原来的音乐和音效原封不动，换掉的只有人声。',
     },
     value2: {
       title: '到最后谁也听不到',
-      body:
-        '成片没出来之前，你录的东西别人听不见。最后一起揭晓，这就是整个玩法。',
+      body: '成片没出来之前，你录的东西别人听不见。最后一起揭晓，这就是整个玩法。',
     },
     value3: {
       title: '留得下的一个 MP4',
-      body:
-        '最后得到一个到处都能播的文件，字幕不会烧进去。原片这边则会被删掉。',
+      body: '最后得到一个到处都能播的文件，字幕不会烧进去。原片这边则会被删掉。',
     },
 
     midCta: '挑一个片段，分好角色，看看能做出什么。',
@@ -91,21 +87,21 @@ export const zh = {
     seoTitle: '和朋友一起给电影片段配音',
     defineTitle: '什么叫给电影片段配音',
     defineBody:
-      '给电影片段配音，就是画面、音乐、音效、节奏全都留着，只把原来的人声换成自己的。它不是在上面加一层解说，而是同一个片段换一批演员重做一遍。DubRoom 是一个在浏览器里完成这件事的在线配音软件，什么都不用装。',
+      '给电影片段配音，就是画面、音乐、音效、节奏全都留着，只把原来的人声换成自己的。它不是在上面加一层解说，而是同一个片段换一批演员重做一遍。Dub’Up 是一个在浏览器里完成这件事的在线配音软件，什么都不用装。',
     defineHowTitle: '怎么自己给电影片段配音',
     defineHowBody:
-      '需要三样家里没有的东西：把人声和音乐分开，好只换人声；精确到毫秒地知道谁在什么时候说话；以及一边说一边对上口型。前两样 DubRoom 从片段里自动做掉，第三样用字带解决，文字在播放头下面走过，这是专业配音棚用了八十年的办法。',
+      '需要三样家里没有的东西：把人声和音乐分开，好只换人声；精确到毫秒地知道谁在什么时候说话；以及一边说一边对上口型。前两样 Dub’Up 从片段里自动做掉，第三样用字带解决，文字在播放头下面走过，这是专业配音棚用了八十年的办法。',
     defineWhoTitle: '给谁用的',
     defineWhoBody:
       '给想重演经典台词的朋友们，给不想用剪辑软件的同人配音作者，给让学生配一段的语言老师，也给想在字带上练习又不想租棚的配音学习者。',
     faqExtra: [
       {
         q: '免费吗？',
-        a: '免费。DubRoom 是个人项目，没有广告，没有订阅，片段数量也不设上限。',
+        a: '免费。Dub’Up 是个人项目，没有广告，没有订阅，片段数量也不设上限。',
       },
       {
         q: '跟视频剪辑软件有什么不一样？',
-        a: '剪辑软件给你一条空时间轴，对齐录音得自己来。DubRoom 从片段出发：分离人声、找出台词、分配角色，再把你的录音自动对回原声的位置。',
+        a: '剪辑软件给你一条空时间轴，对齐录音得自己来。Dub’Up 从片段出发：分离人声、找出台词、分配角色，再把你的录音自动对回原声的位置。',
       },
       {
         q: '能用中文界面配英文片段吗？',
@@ -144,7 +140,7 @@ export const zh = {
     ] as const,
     privateTitle: '一个私人客厅，不是社交网络',
     privateBody:
-      'DubRoom 只给受邀请的人用。没有公开目录，不往圈子外分享，不被搜索收录。正因为这样才站得住：我们在朋友之间给受保护作品的片段配音，什么也不往外传。',
+      'Dub’Up 只给受邀请的人用。没有公开目录，不往圈子外分享，不被搜索收录。正因为这样才站得住：我们在朋友之间给受保护作品的片段配音，什么也不往外传。',
     slides: {
       importTitle: '挑一段你们台词都背得出来的戏',
       importBody:
@@ -178,7 +174,13 @@ export const zh = {
     voteDown: '这个片段切得不好',
     voteScore: (n: number) => `社区评分：${n}`,
     voteHelp: '投的是切分，不是电影。切得好的片段能给所有人省下一个晚上。',
-    sortedByScore: '评分高的在前',
+    sort: {
+      label: '排序',
+      popular: '评分最高',
+      recent: '最新',
+      short: '最短',
+      title: '标题 A→Z',
+    },
     filterLang: '片段语言',
     filterGenre: '类型',
     filterCast: '角色数',
@@ -189,23 +191,45 @@ export const zh = {
     filterAnyLength: '不限',
     filterReset: '全部显示',
     filterNoMatch: '没有符合条件的片段',
-    filterNoMatchBody:
-      '把条件放宽一点，或者把目录里还缺的那个片段发出来。',
+    filterNoMatchBody: '把条件放宽一点，或者把目录里还缺的那个片段发出来。',
     langUnknown: '语言未知',
     langNames: {
-      fr: '法语', en: '英语', es: '西班牙语', de: '德语', it: '意大利语',
-      pt: '葡萄牙语', ja: '日语', ko: '韩语', zh: '中文', ru: '俄语',
+      fr: '法语',
+      en: '英语',
+      es: '西班牙语',
+      de: '德语',
+      it: '意大利语',
+      pt: '葡萄牙语',
+      ja: '日语',
+      ko: '韩语',
+      zh: '中文',
+      ru: '俄语',
     } as Record<string, string>,
     genreNames: {
-      action: '动作', comedie: '喜剧', drame: '剧情', animation: '动画',
-      science_fiction: '科幻', horreur: '恐怖', documentaire: '纪录片',
+      action: '动作',
+      comedie: '喜剧',
+      drame: '剧情',
+      animation: '动画',
+      anime: '动漫',
+      serie: '剧集',
+      super_heros: '超级英雄',
+      science_fiction: '科幻',
+      horreur: '恐怖',
+      jeu_video: '游戏',
+      chanson: '歌曲',
+      documentaire: '纪录片',
       autre: '其他',
     } as Record<string, string>,
     castBuckets: {
-      solo: '1 个角色', duo: '2 个角色', small: '3 到 4 个角色', large: '5 个角色以上',
+      solo: '1 个角色',
+      duo: '2 个角色',
+      small: '3 到 4 个角色',
+      large: '5 个角色以上',
     } as Record<string, string>,
     lengthBuckets: {
-      short: '不到一分钟', medium: '1 到 3 分钟', long: '超过 3 分钟',
+      short: '不到一分钟',
+      medium: '1 到 3 分钟',
+      long: '超过 3 分钟',
     } as Record<string, string>,
     sceneCount: (n: number) => `可用片段 ${n} 个`,
     characterCount: (n: number) => `${n} 个角色`,
@@ -221,11 +245,12 @@ export const zh = {
     published: '这个片段已经在社区里',
     seeInCommunity: '去社区看看',
     publishRecipeHelp: '分享出去的只有链接和切分。视频不存在这里。',
+    publishFromCatalogue:
+      '这个片段本来就是从目录里拿的，已经在那儿了。再发一次只会多出一份分不清的副本。',
     publishTooLate:
       '这个片段来自导入的文件，素材在出片之后已经清掉了。要分享得提前决定。用链接导入的片段则随时都能发布。',
     keepLabel: '保留这个片段以便再玩',
-    keepHelp:
-      '出片之后它会进入社区页，带着切分和角色。你们的录音则从来不保留。',
+    keepHelp: '出片之后它会进入社区页，带着切分和角色。你们的录音则从来不保留。',
   },
 
   theme: {
@@ -234,9 +259,23 @@ export const zh = {
     modern: '现代',
   },
 
+  terms: {
+    consent: '我已阅读并接受{terms}和{privacy}。',
+    linkTerms: '使用条款',
+    linkPrivacy: '隐私政策',
+    required: '需要同意条款才能继续。',
+    gateTitle: '还有一件事',
+    gateBody:
+      '自你上次来过之后，使用条款有了变化，也可能你还没同意过。勾一下就能继续。',
+    gateGist:
+      '要点只有一条：你自己对导入的片段和它的用途负责。一切只在受邀的人之间，不会公开。',
+    gateConfirm: '同意并继续',
+  },
+
   legal: {
     mentions: '法律信息',
     privacy: '隐私',
+    terms: '使用条款',
     usageNotice: '仅限受邀者之间的私人使用。任何内容都不公开传播，也不被收录。',
     contact: '联系',
     contactEmail: 'ienders.pro@gmail.com',
@@ -272,8 +311,7 @@ export const zh = {
     signIn: '登录',
     passwordLabel: '你的密码',
     badCredentials: '邮箱或密码不对。',
-    rateLimited:
-      '这一小时内请求的链接太多了。让房主直接发一条给你，或者用密码登录。',
+    rateLimited: '这一小时内请求的链接太多了。让房主直接发一条给你，或者用密码登录。',
     switchToPassword: '我有密码，直接登录',
     switchToLink: '我没有密码，发链接给我',
     inviteOnly: '只有受邀的邮箱能用。',
@@ -321,9 +359,16 @@ export const zh = {
     title: '新片段',
     tabUpload: '导入文件',
     tabYoutube: '粘贴 YouTube 链接',
+    songLabel: '这是一首歌',
+    songHelp: '不做转写，歌词你本来就会。断句跟着歌里的人声走，只告诉你什么时候进。',
+    matchTitle: '这个片段已经有了',
+    matchBody:
+      '有人已经准备好了：断句、角色和台词都在。直接用就能马上开始，不用为同样的结果再等几分钟。',
+    matchLines: '要念的台词',
+    matchUse: '用这个片段',
+    matchScratch: '从头重做',
     tabPack: '从现成的包开始',
-    packHelp:
-      '不用准备：片段已经切好，挑好角色就能录。完整目录在社区页。',
+    packHelp: '不用准备：片段已经切好，挑好角色就能录。完整目录在社区页。',
     titleLabel: '片段标题',
     titlePlaceholder: '桥上的决斗',
     dropzone: '把 MP4 拖到这里，或者点一下来选',
@@ -333,12 +378,10 @@ export const zh = {
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
     youtubeWarning:
       '从 YouTube 下载只是图方便，不保证成功，经常会挂。不行的话就直接导入文件。',
-    multiTrackWarning:
-      '如果源里有多条音轨（配音、原声、评论），会拿第一条来配。',
+    multiTrackWarning: '如果源里有多条音轨（配音、原声、评论），会拿第一条来配。',
     durationWarning: '片段要短于 10 分钟。',
     keepLabel: '做成共享片段',
-    keepHelpUrl:
-      '它会进入社区页。因为来自链接，只保存链接和切分：这里什么都不存。',
+    keepHelpUrl: '它会进入社区页。因为来自链接，只保存链接和切分：这里什么都不存。',
     keepHelpUpload:
       '出片之后它会进入社区页。因为来自文件，会保存视频和分离出来的音轨，大概十来兆。',
     submitUpload: '导入并准备',
@@ -349,22 +392,19 @@ export const zh = {
   ingest: {
     title: '正在准备片段',
     subtitle: '正在切分片段，要几分钟。',
-    queued: '等 worker。在你的电脑上把脚本跑起来。',
+    queued: '处理迟迟没有开始。',
     queuedHelp:
-      '处理是在房主的机器上跑的。双击 start.bat，任务自己会开始。',
-    failed: '导入失败了。',
+      '一般会自己跑起来。要是一直这样，告诉开这个片段的人。',
+    failed: '导入失败。',
     retry: '重新导入',
-    neverStarted:
-      '导入根本没开始：多半是文件上传失败了。重来一次，或者从新片段开始。',
-    hostPreparing:
-      '房主正在理角色，大厅马上就开。',
+    neverStarted: '导入根本没开始：多半是文件上传失败了。重来一次，或者从新片段开始。',
+    hostPreparing: '房主正在理角色，大厅马上就开。',
     startOver: '新片段',
   },
 
   prepare: {
     title: '整理角色',
-    subtitle:
-      '自动识别经常认错人。现在是改的时候：大厅一开就动不了了。',
+    subtitle: '自动识别经常认错人。现在是改的时候：大厅一开就动不了了。',
     charactersHeading: '识别出的角色',
     linesHeading: '台词',
     linesOf: (name: string) => `${name} 的台词`,
@@ -457,6 +497,31 @@ export const zh = {
     margin: '余量',
     noTake: '这个片段还没有录音。',
     uploading: '正在上传…',
+    noCharacter: '这个片段没有分配角色给你。你可以在这里看大家的进度。',
+    fxTitle: '人声台',
+    fxReset: '全部归零',
+    fxReverb: '混响',
+    fxPitch: '音高',
+    fxTune: '音准',
+    fxHelp: '效果是在合成时加上去的，不会写进录音里。合成之前随时能改，也能回到原声。',
+    fxPresets: {
+      dry: '原声',
+      room: '小房间',
+      cathedral: '大教堂',
+      cartoon: '动画声',
+      deep: '低音',
+      cover: '翻唱',
+    },
+    emptyTake: '没有录到声音。确认麦克风已接好并被选中，然后重录一次。',
+    whereEveryoneIs: '大家的进度',
+    you: '（你）',
+    hostTag: '（房主）',
+    stateVo: '保留原声',
+    stateDone: '完成',
+    stateRecording: '录制中',
+    waitingHost: '等房主开始合成。',
+    hostCanRender: '大家都录完了，可以开始合成。',
+    stillMissing: '还有台词没录。',
     finishedTitle: '录完了！',
     finishedBody: '出片开始之前，你还能回来重录。',
     waitingFor: '还在等：',
@@ -482,8 +547,7 @@ export const zh = {
     originalTrace: '有颜色的波形显示原声在什么时候说话。',
     micWindow: '麦克风只在你那句台词上打开。',
     autoAlign: '自动对位',
-    autoAlignHelp:
-      '把你录的跟原声比对，再放回该在的位置。想保留自己的节奏就关掉。',
+    autoAlignHelp: '把你录的跟原声比对，再放回该在的位置。想保留自己的节奏就关掉。',
     alignedBy: (ms: number) =>
       ms === 0
         ? '你录的本来就正好。'
@@ -493,16 +557,13 @@ export const zh = {
     alignUnsure: '这一条没找到明确的对位点，就按原样放着。',
   },
 
-
   progress: {
     preparing: '正在准备片段',
     rendering: '正在合成',
     queued: '排队中，马上会自己开始。',
-    working:
-      '要几分钟。可以让标签页开着，晚点再回来。',
+    working: '要几分钟。可以让标签页开着，晚点再回来。',
     almost: '快好了。',
-    longer:
-      '比平时久一些，但还在跑。让它跑完就行。',
+    longer: '比平时久一些，但还在跑。让它跑完就行。',
   },
   render: {
     title: '正在出片',
@@ -515,6 +576,15 @@ export const zh = {
   result: {
     title: '成片',
     download: '下载 MP4',
+    exportTitle: '把片段带走',
+    formatWide: '横版',
+    formatWideHint: '给电脑屏幕或电视看。',
+    formatVertical: '竖版',
+    formatVerticalHint: '居中裁切，适合快拍和 Reels。',
+    formatVerticalMissing: '这个片段是在自动裁切之前合成的。重新合成一次就能拿到。',
+    share: '分享',
+    shareHelp: '在手机上点分享会打开系统的分享面板，装了的抖音、Instagram 都在里面。',
+    shareUnsupported: '这个浏览器不支持分享文件。先下载，再到应用里发。',
     cast: '演员表',
     voiceOriginal: '保留原声',
     shareHint: '这条链接只有这个片段的参与者打得开。',

@@ -45,7 +45,10 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
   });
 
   const mutate = useMutation({
-    mutationFn: async (input: { fn: 'allow_guest' | 'revoke_guest'; email: string }) => {
+    mutationFn: async (input: {
+      fn: 'allow_guest' | 'revoke_guest';
+      email: string;
+    }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error: rpcError } = await (supabaseBrowser().rpc as any)(input.fn, {
         p_email: input.email,
@@ -88,7 +91,11 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
           onChange={(e) => setEmail(e.target.value)}
           className="min-w-48 flex-1"
         />
-        <Button type="submit" loading={mutate.isPending} disabled={!email.includes('@')}>
+        <Button
+          type="submit"
+          loading={mutate.isPending}
+          disabled={!email.includes('@')}
+        >
           {t.guests.add}
         </Button>
       </form>
@@ -131,6 +138,12 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
 }
 
 /** Le meme contenu, sans la plaque : le tiroir en fournit deja une. */
-function BareShell({ className, children }: { className?: string; children: React.ReactNode }) {
+function BareShell({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
   return <div className={className}>{children}</div>;
 }

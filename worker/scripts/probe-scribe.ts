@@ -26,7 +26,7 @@ import { groupWordsIntoLines } from '../../lib/segmentation.ts';
 const PHRASE =
   "Bonjour. Tu fais quoi ce soir ? Moi je reste ici, j'ai du travail.";
 
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dubroom-scribe-'));
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dubup-scribe-'));
 const key = config.elevenLabsKey;
 
 console.log('\nControle de l adaptateur Scribe\n');

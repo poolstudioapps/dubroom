@@ -1,4 +1,4 @@
-# PRD — DubRoom (nom de travail)
+# PRD — Dub’Up (nom de travail)
 
 > Studio de doublage collaboratif dans le navigateur. Une scène de film, des amis, chacun prend un personnage, enregistre ses répliques de son côté, et on découvre le résultat mixé à la fin.
 
@@ -1169,7 +1169,7 @@ C'est la seule interaction du script. Une fois faite, elle ne se reproduit plus.
 Au deuxième lancement, la totalité doit tenir en quelques lignes et moins de trois secondes :
 
 ```
-DubRoom worker — vérification de l'environnement
+Dub’Up worker — vérification de l'environnement
 
   ✓ dépendances npm
   ✓ ffmpeg 7.1

@@ -54,7 +54,11 @@ export function TvSet({
             className="tv-gloss pointer-events-none absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-transparent"
             aria-hidden
           />
-          <div className={['relative', fill ? 'flex min-h-0 flex-1 flex-col' : ''].join(' ')}>
+          <div
+            className={['relative', fill ? 'flex min-h-0 flex-1 flex-col' : ''].join(
+              ' ',
+            )}
+          >
             {children}
           </div>
         </div>

@@ -6,17 +6,20 @@ import { useState } from 'react';
 import { Clapperboard } from 'lucide-react';
 
 import {
+  DEFAULT_SORT,
   EMPTY_FILTER,
   PackFilters,
   matchesFilter,
+  sortPacks,
   type PackFilter,
+  type PackSort,
 } from '@/components/pack-filters';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
 import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
-import { listPacks, startFromPack, type Pack } from '@/lib/packs';
+import { PACKS_QUERY, startFromPack, type Pack } from '@/lib/packs';
 import { useMyProfile } from '@/lib/profile';
 
 /**
@@ -37,10 +40,11 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
   const router = useRouter();
   const profile = useMyProfile();
   const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
+  const [sort, setSort] = useState<PackSort>(DEFAULT_SORT);
   const [startingId, setStartingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const packs = useQuery({ queryKey: ['packs'], queryFn: listPacks });
+  const packs = useQuery(PACKS_QUERY);
 
   const start = useMutation({
     mutationFn: (pack: Pack) =>
@@ -53,7 +57,10 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
   });
 
   const tous = packs.data ?? [];
-  const visibles = tous.filter((pack) => matchesFilter(pack, filter));
+  const visibles = sortPacks(
+    tous.filter((pack) => matchesFilter(pack, filter)),
+    sort,
+  );
 
   if (packs.isLoading) {
     return (
@@ -80,7 +87,13 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
       {error ? <Alert tone="danger">{error}</Alert> : null}
 
       {tous.length > 1 ? (
-        <PackFilters packs={tous} value={filter} onChange={setFilter} />
+        <PackFilters
+          packs={tous}
+          value={filter}
+          onChange={setFilter}
+          sort={sort}
+          onSortChange={setSort}
+        />
       ) : null}
 
       {visibles.length === 0 ? (
@@ -139,9 +152,7 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
         ))}
       </ul>
 
-      <p className="text-xs leading-relaxed text-text-faint">
-        {t.create.packHelp}
-      </p>
+      <p className="text-xs leading-relaxed text-text-faint">{t.create.packHelp}</p>
     </div>
   );
 }

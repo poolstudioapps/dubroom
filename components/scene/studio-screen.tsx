@@ -6,6 +6,7 @@ import { Check, ChevronLeft, ChevronRight, Circle, Play, Square } from 'lucide-r
 
 import { useT } from '@/lib/i18n';
 import { FinishedPanel } from '@/components/scene/finished-panel';
+import { PlayerProgressList } from '@/components/scene/player-progress';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
@@ -17,9 +18,12 @@ import {
   AUDIO_SYNC_TOLERANCE_MS,
   BUCKET_TAKES,
   DEFAULT_BACKING_VOLUME,
+  LEGACY_MIC_OFFSET_STORAGE_KEY,
+  MIC_OFFSET_BASELINE_MS,
   MIC_OFFSET_STORAGE_KEY,
   REC_LEAD_IN_MS,
   REC_TAIL_MS,
+  TAKE_MIN_MS,
   SIGNED_URL_TTL_S,
   characterColorVar,
 } from '@/config/constants';
@@ -35,7 +39,7 @@ import { humanizeError } from '@/lib/errors';
 import { clipsForParticipant, selectedTakeByClip } from '@/lib/scene-stats';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
-import { useShortViewport } from '@/lib/viewport';
+import { useNarrowViewport, useShortViewport } from '@/lib/viewport';
 
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
@@ -43,7 +47,14 @@ export function StudioScreen() {
   const t = useT();
 
   const compact = useShortViewport();
-  const { session, characters, clips, lines, me, refetch } = useSceneCtx();
+  /*
+   * Sur telephone, chaque bande gagnee rapproche le bouton
+   * d'enregistrement du premier ecran. Il reste atteignable de toute
+   * facon — la barre de transport est collee en bas — mais le voir sans
+   * faire defiler change la premiere impression du studio.
+   */
+  const narrow = useNarrowViewport();
+  const { session, characters, clips, lines, me, isHost, refetch } = useSceneCtx();
   const media = useMediaUrls(session);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -98,7 +109,9 @@ export function StudioScreen() {
 
   // ── Restauration du reglage de latence ─────────────────────────────
   useEffect(() => {
-    const stored = window.localStorage.getItem(MIC_OFFSET_STORAGE_KEY);
+    const stored =
+      window.localStorage.getItem(MIC_OFFSET_STORAGE_KEY) ??
+      window.localStorage.getItem(LEGACY_MIC_OFFSET_STORAGE_KEY);
     if (stored && me?.mic_offset_ms === 0) setMicOffset(Number(stored));
   }, [me?.mic_offset_ms]);
 
@@ -127,7 +140,10 @@ export function StudioScreen() {
 
     // Bornes du micro : on ouvre un peu avant la replique et on ferme un
     // peu apres, jamais sur toute la fenetre.
-    const micOpenMs = Math.max(clip.window_start_ms, clip.speech_start_ms - REC_LEAD_IN_MS);
+    const micOpenMs = Math.max(
+      clip.window_start_ms,
+      clip.speech_start_ms - REC_LEAD_IN_MS,
+    );
     const micCloseMs = Math.min(clip.window_end_ms, clip.speech_end_ms + REC_TAIL_MS);
 
     const tick = () => {
@@ -140,7 +156,11 @@ export function StudioScreen() {
 
       if (mode === 'recording') {
         const recorder = recorderRef.current;
-        if (!recorder.recording && recStartedAtMs.current === null && nowMs >= micOpenMs) {
+        if (
+          !recorder.recording &&
+          recStartedAtMs.current === null &&
+          nowMs >= micOpenMs
+        ) {
           // On releve l'heure reelle : c'est elle qui servira a replacer
           // la prise au mixage, pas la valeur theorique.
           recStartedAtMs.current = nowMs;
@@ -270,11 +290,7 @@ export function StudioScreen() {
   }
 
   const upload = useMutation({
-    mutationFn: async (input: {
-      blob: Blob;
-      durationMs: number;
-      offsetMs: number;
-    }) => {
+    mutationFn: async (input: { blob: Blob; durationMs: number; offsetMs: number }) => {
       if (!clip || !me) throw new Error('Clip introuvable');
       return uploadTake({
         sessionId: session.id,
@@ -309,13 +325,28 @@ export function StudioScreen() {
     if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
     localTakeUrl.current = URL.createObjectURL(blob);
     setTakeUrl(localTakeUrl.current);
+    /*
+     * Une prise qu'on ne peut pas decoder n'est pas une prise.
+     *
+     * Elle etait envoyee quand meme, et le rendu tombait dessus des
+     * jours plus tard sans que rien ne relie l'echec a cet
+     * enregistrement-la. Mieux vaut le dire tout de suite, tant que le
+     * casque est encore sur les oreilles.
+     */
     let durationMs = clip ? clip.speech_end_ms - clip.speech_start_ms : 0;
+    let analysed: TakeAnalysis | null = null;
     try {
-      const result = await analyzeTake(blob);
-      setAnalysis(result);
-      durationMs = Math.round(result.durationMs);
+      analysed = await analyzeTake(blob);
+      durationMs = Math.round(analysed.durationMs);
     } catch {
-      setAnalysis(null);
+      analysed = null;
+    }
+    setAnalysis(analysed);
+
+    if (!analysed || durationMs < TAKE_MIN_MS) {
+      setError(t.studio.emptyTake);
+      setTakeUrl(null);
+      return;
     }
 
     // Ou poser la prise : la ou le micro s'est ouvert, et non au debut de
@@ -327,7 +358,9 @@ export function StudioScreen() {
     setAlignment(measured);
 
     if (measured?.reliable && autoAlign) {
-      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(-ALIGN_HISTORY);
+      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(
+        -ALIGN_HISTORY,
+      );
       offsetMs -= measured.lagMs;
     }
 
@@ -372,7 +405,7 @@ export function StudioScreen() {
      * la deplace encore. Le retard a simuler est donc celui de la prise,
      * plus le decalage micro, compte depuis le debut de la fenetre.
      */
-    const delayMs = (currentTake?.offset_ms ?? 0) + micOffset;
+    const delayMs = (currentTake?.offset_ms ?? 0) + micOffset + MIC_OFFSET_BASELINE_MS;
     take.currentTime = delayMs < 0 ? -delayMs / 1000 : 0;
     await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
 
@@ -399,23 +432,36 @@ export function StudioScreen() {
 
   if (myClips.length === 0) {
     return (
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_22rem]">
-        <Card variant="plate" className="space-y-2">
+      <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
+        <Card variant="plate" className="space-y-3 self-start">
           <h1 className="text-lg font-semibold">{t.studio.title}</h1>
-          <p className="text-sm text-text-muted">
-            Aucun personnage ne t’a été attribué sur cette scène.
-          </p>
+          <p className="text-sm text-text-muted">{t.studio.noCharacter}</p>
+
+          {/* Sans role a jouer, on regarde les autres avancer. */}
+          <div className="space-y-2 pt-1">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-text-faint">
+              {t.studio.whereEveryoneIs}
+            </h2>
+            <PlayerProgressList sessionId={session.id} myParticipantId={me.id} />
+          </div>
         </Card>
-        <StudioSidebar
-          backing={backing}
-          onBacking={setBacking}
-          micOffset={micOffset}
-          onMicOffset={setMicOffset}
-          autoAlign={autoAlign}
-          onAutoAlign={setAutoAlign}
-          done={0}
-          total={0}
-        />
+        {/*
+          La colonne de reglages defile pour elle seule. Le studio tient
+          dans une fenetre fixe : sans ce conteneur, ses cartes passaient
+          sous le bord bas et le bouton de rendu devenait inatteignable.
+        */}
+        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+          <StudioSidebar
+            backing={backing}
+            onBacking={setBacking}
+            micOffset={micOffset}
+            onMicOffset={setMicOffset}
+            autoAlign={autoAlign}
+            onAutoAlign={setAutoAlign}
+            done={0}
+            total={0}
+          />
+        </div>
       </div>
     );
   }
@@ -424,38 +470,67 @@ export function StudioScreen() {
 
   const recording = mode === 'recording';
 
+  /**
+   * Ce qu'il y a a dire, et rien de plus.
+   *
+   * Un seul message a la fois, par ordre d'urgence : ce qui bloque
+   * passe avant ce qui rassure. La ligne existe toujours, meme vide,
+   * pour que rien ne bouge autour.
+   */
+  const statut: { tone: 'danger' | 'warn' | 'ok' | 'muted'; text: string } = error
+    ? { tone: 'danger', text: error }
+    : upload.isPending
+      ? { tone: 'muted', text: t.studio.uploading }
+      : analysis?.truncated
+        ? { tone: 'warn', text: t.studio.overflowWarning }
+        : allDone
+          ? { tone: 'ok', text: t.studio.allTakesSaved }
+          : currentTake
+            ? { tone: 'ok', text: t.studio.takeSaved }
+            : !micReady
+              ? { tone: 'muted', text: t.studio.headphonesRequired }
+              : { tone: 'muted', text: t.studio.micWindow };
+
   if (acknowledged && allDone) {
     return (
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_22rem]">
+      <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
         <FinishedPanel
           sessionId={session.id}
           myParticipantId={me.id}
+          isHost={isHost}
           onBack={() => setAcknowledged(false)}
         />
-        <StudioSidebar
-          backing={backing}
-          onBacking={setBacking}
-          micOffset={micOffset}
-          onMicOffset={setMicOffset}
-          autoAlign={autoAlign}
-          onAutoAlign={setAutoAlign}
-          done={doneCount}
-          total={myClips.length}
-        />
+        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+          <StudioSidebar
+            backing={backing}
+            onBacking={setBacking}
+            micOffset={micOffset}
+            onMicOffset={setMicOffset}
+            autoAlign={autoAlign}
+            onAutoAlign={setAutoAlign}
+            done={doneCount}
+            total={myClips.length}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[1fr_22rem]">
+    <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
       {/*
         Colonne principale : tout y est de hauteur fixe sauf l'image, qui
         absorbe ce qui reste. C'est ce qui permet a l'ecran de tenir dans
         la fenetre quelle qu'elle soit, au lieu de pousser les commandes
         sous la ligne de flottaison pendant qu'on enregistre.
       */}
-      <div className="flex min-h-0 flex-col gap-2">
-        <header className="flex shrink-0 flex-wrap items-center justify-between gap-2">
+      <div className="flex min-w-0 flex-col gap-2 lg:min-h-0">
+        {/*
+          L'ordre change entre telephone et ordinateur, d'ou les classes
+          `order-*` sur les blocs qui suivent. Le DOM, lui, garde l'ordre
+          de lecture : entete, image, ce qu'on joue, commandes.
+        */}
+        <header className="order-1 flex shrink-0 flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span
               className="h-3 w-3 rounded-full"
@@ -493,35 +568,64 @@ export function StudioScreen() {
           naturelle : sans lui, la video impose sa hauteur et fait
           deborder toute la colonne.
         */}
-        <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-card border-2 border-bezel-dark bg-black">
+        {/*
+          L'image, et les deux facons de la cadrer.
+          Sur un ordinateur elle prend la hauteur qui reste et deduit sa
+          largeur : le cadre noir epouse alors le format du film au lieu
+          d'etaler deux bandes noires sur un ecran large.
+          Sur un telephone il n'y a pas de hauteur a prendre — la lui
+          faire calculer la reduisait a quatre pixels. Elle garde donc
+          son format et toute la largeur, et c'est la page qui defile.
+        */}
+        <div
+          className={cn(
+            'order-2 flex items-center justify-center overflow-hidden',
+            'aspect-video w-full shrink-0',
+            'lg:aspect-auto lg:min-h-0 lg:flex-1',
+          )}
+        >
           {media.data?.video ? (
             <video
               ref={videoRef}
               src={media.data.video}
               playsInline
               preload="auto"
-              className="h-full w-full object-contain"
+              className={cn(
+                'rounded-card border-2 border-bezel-dark bg-black object-contain',
+                'h-full w-full',
+                'lg:max-h-full lg:w-auto lg:max-w-full',
+              )}
             />
           ) : (
             <Spinner />
           )}
         </div>
 
-        <div className="shrink-0 space-y-2">
+        {/* Qui je double et quand j'entre : toujours sous l'image. */}
+        <div className="order-3 shrink-0">
           <SpeakCue
             character={character}
             clip={clip}
             videoRef={videoRef}
             active={mode !== 'idle'}
           />
+        </div>
 
+        {/*
+          Les courbes passent SOUS les commandes sur telephone.
+          Elles aident a jouer, elles ne font pas jouer : sur un ecran
+          ou la page defile, ce sont les boutons qui doivent arriver en
+          premier. Sur un ordinateur tout tient d'un bloc et l'ordre de
+          lecture naturel reprend.
+        */}
+        <div className="order-5 shrink-0 space-y-2 lg:order-4">
           <RythmoBand
             videoRef={videoRef}
             lines={lines}
             characters={characters}
             activeCharacterId={character.id}
             clip={clip}
-            height={compact ? 104 : 132}
+            height={narrow ? 84 : compact ? 104 : 132}
           />
 
           <WaveformView
@@ -531,17 +635,20 @@ export function StudioScreen() {
             voicePeaks={session.voice_peaks}
             voicePeaksHz={session.voice_peaks_hz}
             characterColor={character.color}
-            height={compact ? 68 : 96}
+            height={narrow ? 52 : compact ? 68 : 96}
           />
 
           {/*
-            Une seule ligne d'etat sous les courbes : la place est
-            comptee, et c'est la qu'on regarde deja.
+            Le calage de la derniere prise, sur une ligne qui ne se
+            replie jamais : `flex-wrap` la faisait passer sur deux lignes
+            des que le texte arrivait, et l'image perdait cinq pixels a
+            chaque enregistrement.
           */}
-          <p className="flex flex-wrap items-center gap-x-3 text-xs text-text-faint">
-            <span>{t.studio.micWindow}</span>
+          <p className="flex h-5 items-center gap-x-3 overflow-hidden text-xs text-text-faint">
             {alignment ? (
-              <span className={alignment.reliable ? 'font-bold text-ok' : undefined}>
+              <span
+                className={cn('truncate', alignment.reliable && 'font-bold text-ok')}
+              >
                 {alignment.reliable && autoAlign
                   ? t.studio.alignedBy(alignment.lagMs)
                   : t.studio.alignUnsure}
@@ -550,58 +657,97 @@ export function StudioScreen() {
           </p>
         </div>
 
-        <div className="shrink-0 space-y-2">
-          {analysis?.truncated ? (
-            <Alert tone="warn">{t.studio.overflowWarning}</Alert>
-          ) : null}
-          {allDone ? (
-            <Alert tone="ok">
-              <span className="font-bold">{t.studio.finishedTitle}</span>{' '}
-              {t.studio.allTakesSaved}
-            </Alert>
-          ) : currentTake && !upload.isPending ? (
-            <Alert tone="ok">{t.studio.takeSaved}</Alert>
-          ) : null}
+        {/*
+          Les commandes. Quatrieme sur telephone, donc juste apres
+          l'image et avant les courbes ; dernieres sur ordinateur, ou
+          l'ecran ne defile pas et ou la lecture va du haut vers le bas.
+        */}
+        <div className="order-4 shrink-0 space-y-2 lg:order-5">
+          {/*
+            Une seule ligne d'etat, de hauteur fixe, et jamais retiree.
+            Les messages etaient six blocs qui apparaissaient et
+            disparaissaient les uns sous les autres : chaque prise faisait
+            donc sauter la mise en page et retrecir l'image de plusieurs
+            dizaines de pixels, definitivement. Ici la place est reservee
+            une fois pour toutes, et c'est le message qui change.
+          */}
+          <p
+            role="status"
+            className={cn(
+              // Deux lignes sur telephone, une seule au-dela : le texte y
+              // est le meme et la place, non. Les deux hauteurs sont
+              // fixes, c'est ce qui empeche la page de sauter quand le
+              // message change.
+              'flex h-11 items-center gap-2 rounded-card px-3 text-xs font-bold lg:h-9',
+              statut.tone === 'danger' && 'bg-danger/15 text-[oklch(0.42_0.18_25)]',
+              statut.tone === 'warn' && 'bg-warn/20 text-[oklch(0.42_0.12_75)]',
+              statut.tone === 'ok' && 'bg-ok/15 text-[oklch(0.4_0.13_150)]',
+              statut.tone === 'muted' && 'text-text-faint',
+            )}
+          >
+            {upload.isPending ? <Spinner /> : null}
+            <span className="line-clamp-2 lg:truncate">{statut.text}</span>
+          </p>
 
-          {upload.isPending ? (
-            <p className="flex items-center gap-2 text-xs text-text-faint">
-              <Spinner />
-              {t.studio.uploading}
-            </p>
-          ) : null}
-          {error ? <Alert tone="danger">{error}</Alert> : null}
-
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={() => void playOriginal()} disabled={recording}>
-              <Play className="h-4 w-4" aria-hidden />
-              {t.studio.playOriginal}
-            </Button>
-
+          {/*
+            Deux colonnes sur telephone, une rangee sur ordinateur.
+            La rangee qui se replie donnait, en trois cent quatre-vingt
+            dix pixels, une marche d'escalier ou chaque bouton tombait a
+            une largeur differente. La grille les aligne, et le bouton
+            d'enregistrement prend la largeur entiere parce que c'est
+            celui qu'on vise sans regarder.
+          */}
+          <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-wrap">
             {recording ? (
-              <Button variant="record" onClick={() => void finishRecording()}>
+              <Button
+                variant="record"
+                className="col-span-2 lg:order-2"
+                onClick={() => void finishRecording()}
+              >
                 <Square className="h-4 w-4" aria-hidden />
                 {t.studio.stop}
               </Button>
             ) : (
-              <Button variant="record" onClick={() => void startRecording()}>
+              <Button
+                variant="record"
+                className="col-span-2 lg:order-2"
+                onClick={() => void startRecording()}
+              >
                 <Circle className="h-4 w-4 fill-current" aria-hidden />
                 {currentTake ? t.studio.redo : t.studio.record}
               </Button>
             )}
 
-            <Button onClick={() => void playTake()} disabled={recording || !takeUrl}>
+            <Button
+              className="lg:order-1"
+              onClick={() => void playOriginal()}
+              disabled={recording}
+            >
+              <Play className="h-4 w-4" aria-hidden />
+              {t.studio.playOriginal}
+            </Button>
+
+            <Button
+              className="lg:order-3"
+              onClick={() => void playTake()}
+              disabled={recording || !takeUrl}
+            >
               <Play className="h-4 w-4" aria-hidden />
               {t.studio.playTake}
             </Button>
 
             {mode !== 'idle' && !recording ? (
-              <Button variant="ghost" onClick={stopAll}>
+              <Button
+                variant="ghost"
+                className="col-span-2 lg:order-4"
+                onClick={stopAll}
+              >
                 <Square className="h-4 w-4" aria-hidden />
                 {t.studio.stop}
               </Button>
             ) : null}
 
-            <div className="ml-auto flex gap-2">
+            <div className="col-span-2 grid grid-cols-2 gap-2 lg:order-5 lg:ml-auto lg:flex">
               <Button
                 variant="ghost"
                 disabled={index === 0 || recording}
@@ -634,8 +780,6 @@ export function StudioScreen() {
               )}
             </div>
           </div>
-
-          {!micReady ? <Alert>{t.studio.headphonesRequired}</Alert> : null}
         </div>
 
         {/* Stem de fond : la seule sortie audible pendant une prise. */}
@@ -644,7 +788,7 @@ export function StudioScreen() {
       </div>
 
       {/* La colonne de reglages defile pour elle seule : la page, non. */}
-      <div className="min-h-0 overflow-y-auto lg:pr-1">
+      <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         <StudioSidebar
           backing={backing}
           onBacking={setBacking}

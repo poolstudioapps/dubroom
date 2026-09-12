@@ -4,6 +4,7 @@ import {
   BUCKET_SOURCES,
   BUCKET_TAKES,
   CLIP_MARGIN_MS,
+  CLIP_MAX_MS,
   CLIP_MERGE_GAP_MS,
   characterColorToken,
 } from '@/config/constants';
@@ -12,6 +13,7 @@ import { supabaseBrowser } from '@/lib/supabase/client';
 import type {
   CharacterRow,
   JobRow,
+  ParticipantRow,
   SessionRow,
   TakeRow,
 } from '@/lib/supabase/database.types';
@@ -42,6 +44,7 @@ export async function createSession(input: {
   sourceRef?: string;
   displayName: string;
   keepAsPack?: boolean;
+  isSong?: boolean;
 }): Promise<SessionRow> {
   // Le code est tire cote client depuis l'alphabet de constants.ts ;
   // l'unicite est tenue par la contrainte en base, d'ou ces essais.
@@ -54,6 +57,7 @@ export async function createSession(input: {
         p_source_ref: input.sourceRef ?? null,
         p_display_name: input.displayName,
         p_keep_as_pack: input.keepAsPack ?? false,
+        p_is_song: input.isSong ?? false,
       });
     } catch (error) {
       const message = humanizeError(error);
@@ -103,7 +107,11 @@ export function joinSession(code: string, displayName: string) {
 
 // ── Preparation (PRD §9) ──────────────────────────────────────────────
 
-const segmentation = { p_gap_ms: CLIP_MERGE_GAP_MS, p_margin_ms: CLIP_MARGIN_MS };
+const segmentation = {
+  p_gap_ms: CLIP_MERGE_GAP_MS,
+  p_margin_ms: CLIP_MARGIN_MS,
+  p_max_ms: CLIP_MAX_MS,
+};
 
 export function renameCharacter(characterId: string, name: string) {
   return rpc<CharacterRow>('prep_rename_character', {
@@ -157,6 +165,19 @@ export function deleteCharacter(characterId: string) {
   return rpc('prep_delete_character', {
     p_character_id: characterId,
     ...segmentation,
+  });
+}
+
+/** Regle sa console de voix pour cette scene. */
+export function setVoiceFx(
+  sessionId: string,
+  fx: { reverb: number; pitch: number; tune: number },
+) {
+  return rpc<ParticipantRow>('set_voice_fx', {
+    p_session_id: sessionId,
+    p_reverb: fx.reverb,
+    p_pitch: fx.pitch,
+    p_tune: fx.tune,
   });
 }
 

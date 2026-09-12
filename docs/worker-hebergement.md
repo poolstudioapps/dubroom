@@ -1,6 +1,6 @@
 # Où faire tourner le worker sans rien changer au rendu
 
-Écrit pour la personne qui administre DubRoom, c'est-à-dire toi. Décision
+Écrit pour la personne qui administre Dub’Up, c'est-à-dire toi. Décision
 à prendre plus tard, rien n'est implémenté.
 
 Réponse courte : **Cloud Run Jobs avec GPU L4**. C'est le seul candidat
@@ -15,12 +15,12 @@ facture à la seconde.
 Tu as demandé « pile poil notre rendu actuel ». Ça veut dire quatre
 choses concrètes, et c'est ce qui élimine presque tout le marché.
 
-| Exigence | Pourquoi elle contraint |
-| --- | --- |
-| `ffmpeg`, `ffprobe`, `yt-dlp` | Binaires natifs. Exclut tout runtime JavaScript isolé. |
-| Demucs `htdemucs` sur carte graphique | Sur processeur, une scène de dix minutes dépasse le délai de trente minutes du worker. Et basculer sur ElevenLabs change le son. |
-| Fichiers de plusieurs centaines de mégaoctets | Exclut les plateformes à disque minuscule ou à charge utile plafonnée. |
-| Quelques minutes par job, zéro job la plupart du temps | Une machine allumée en permanence coûte cent fois ce que coûte l'usage. |
+| Exigence                                               | Pourquoi elle contraint                                                                                                          |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `ffmpeg`, `ffprobe`, `yt-dlp`                          | Binaires natifs. Exclut tout runtime JavaScript isolé.                                                                           |
+| Demucs `htdemucs` sur carte graphique                  | Sur processeur, une scène de dix minutes dépasse le délai de trente minutes du worker. Et basculer sur ElevenLabs change le son. |
+| Fichiers de plusieurs centaines de mégaoctets          | Exclut les plateformes à disque minuscule ou à charge utile plafonnée.                                                           |
+| Quelques minutes par job, zéro job la plupart du temps | Une machine allumée en permanence coûte cent fois ce que coûte l'usage.                                                          |
 
 La troisième ligne est celle qu'on oublie. `htdemucs` a besoin d'environ
 quatre gigaoctets de mémoire vidéo à `segment=7`. N'importe quelle carte
@@ -50,15 +50,15 @@ peut-être deux heures par semaine, c'est absurde.
 Les trois savent faire tourner un conteneur avec carte graphique et
 tomber à zéro. Ils se départagent sur le détail.
 
-| | Cloud Run Jobs | Modal | RunPod Serverless |
-| --- | --- | --- | --- |
-| Modèle | Conteneur OCI standard | Fonctions Python décorées | Conteneur + handler |
-| Ton code | Inchangé | À envelopper | À envelopper |
-| Carte | L4, 24 Go | T4 à B200 | A4000 à H100 |
-| Facturation | À la centaine de millisecondes | À la seconde | À la seconde |
-| Zéro à l'arrêt | Oui | Oui | Oui |
-| Démarrage à froid | ~5 s | quelques secondes | variable |
-| Disque | Éphémère, suffisant | Éphémère + volumes | Éphémère + volumes |
+|                   | Cloud Run Jobs                 | Modal                     | RunPod Serverless   |
+| ----------------- | ------------------------------ | ------------------------- | ------------------- |
+| Modèle            | Conteneur OCI standard         | Fonctions Python décorées | Conteneur + handler |
+| Ton code          | Inchangé                       | À envelopper              | À envelopper        |
+| Carte             | L4, 24 Go                      | T4 à B200                 | A4000 à H100        |
+| Facturation       | À la centaine de millisecondes | À la seconde              | À la seconde        |
+| Zéro à l'arrêt    | Oui                            | Oui                       | Oui                 |
+| Démarrage à froid | ~5 s                           | quelques secondes         | variable            |
+| Disque            | Éphémère, suffisant            | Éphémère + volumes        | Éphémère + volumes  |
 
 **Cloud Run gagne sur la première ligne**, et c'est celle qui compte ici.
 Ton worker est un programme Node qui lance des binaires ; les deux autres
@@ -77,11 +77,11 @@ Hypothèse : une scène de deux minutes, environ cinq minutes de traitement
 dont trois de séparation sur carte graphique. Région `europe-west4`, sans
 redondance zonale.
 
-| Volume | Temps de calcul | Ordre de grandeur |
-| --- | --- | --- |
-| 20 rendus par mois | 100 min | quelques euros |
-| 200 rendus par mois | ~17 h | quelques dizaines d'euros |
-| 2 000 rendus par mois | ~167 h | quelques centaines d'euros |
+| Volume                | Temps de calcul | Ordre de grandeur          |
+| --------------------- | --------------- | -------------------------- |
+| 20 rendus par mois    | 100 min         | quelques euros             |
+| 200 rendus par mois   | ~17 h           | quelques dizaines d'euros  |
+| 2 000 rendus par mois | ~167 h          | quelques centaines d'euros |
 
 Deux remarques qui valent plus que les chiffres eux-mêmes.
 
@@ -119,7 +119,7 @@ ici.
 ## 6. Mon avis
 
 Le PRD §5.3.1 a choisi ton ordinateur exprès, et ce choix reste le bon
-tant que DubRoom est un jeu entre amis : zéro facture, zéro
+tant que Dub’Up est un jeu entre amis : zéro facture, zéro
 configuration, et une carte graphique que tu as déjà payée.
 
 Cloud Run Jobs est ce vers quoi basculer le jour où l'une de ces trois

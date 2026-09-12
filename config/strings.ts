@@ -8,7 +8,7 @@
 
 import { fr } from './locales/fr';
 
-export const APP_NAME = 'DubRoom';
+export const APP_NAME = 'Dub’Up';
 export const APP_TAGLINE = 'Le studio de doublage entre amis.';
 
 export const t = fr;

@@ -1,4 +1,4 @@
-project_id = "dubroom"
+project_id = "dubup"
 
 [api]
 enabled = true

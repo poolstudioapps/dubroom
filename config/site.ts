@@ -28,7 +28,12 @@ export const SITE_URL =
  * transforme un usage prive en service de contrefacon : la liste est
  * donc blanche, et non noire. Ce qui n'y figure pas est ferme.
  */
-export const INDEXABLE_PATHS = ['/', '/mentions-legales', '/confidentialite'] as const;
+export const INDEXABLE_PATHS = [
+  '/',
+  '/mentions-legales',
+  '/confidentialite',
+  '/conditions',
+] as const;
 
 /**
  * Les memes adresses, ecrites pour `robots.txt`.
@@ -39,7 +44,12 @@ export const INDEXABLE_PATHS = ['/', '/mentions-legales', '/confidentialite'] as
  * serait alors ouvert au parcours. Le `$` ancre la fin de chaine et ne
  * laisse passer que la racine elle-meme.
  */
-export const ROBOTS_ALLOW = ['/$', '/mentions-legales', '/confidentialite'] as const;
+export const ROBOTS_ALLOW = [
+  '/$',
+  '/mentions-legales',
+  '/confidentialite',
+  '/conditions',
+] as const;
 
 export function isIndexable(pathname: string): boolean {
   return (INDEXABLE_PATHS as readonly string[]).includes(pathname);

@@ -49,7 +49,8 @@ export const en = {
     title: 'My packs',
     subtitle:
       'The scenes you published. Anyone can play them, and only you can take them down.',
-    sceneCount: (n: number) => (n === 1 ? '1 scene published' : `${n} scenes published`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 scene published' : `${n} scenes published`,
     emptyTitle: 'You have not published anything yet',
     emptyBody:
       'At the end of a scene imported from a link, you can publish it: the link and the cut join the community, without the video.',
@@ -71,18 +72,15 @@ export const en = {
     valueTitle: 'What you get',
     value1: {
       title: 'Your voice instead of theirs',
-      body:
-        'You record on your headset mic, at home. The original music and sound effects stay untouched: only the voices are replaced.',
+      body: 'You record on your headset mic, at home. The original music and sound effects stay untouched: only the voices are replaced.',
     },
     value2: {
       title: 'Nobody hears a thing until the end',
-      body:
-        'Your takes stay inaudible to everyone else until the final mix exists. Discovering it together at the end is the whole game.',
+      body: 'Your takes stay inaudible to everyone else until the final mix exists. Discovering it together at the end is the whole game.',
     },
     value3: {
       title: 'An MP4 you keep',
-      body:
-        'At the end, a file that plays anywhere, with no burnt-in subtitles. The source scene itself is erased.',
+      body: 'At the end, a file that plays anywhere, with no burnt-in subtitles. The source scene itself is erased.',
     },
 
     midCta: 'Pick a scene, hand out the roles, and see what comes out.',
@@ -96,21 +94,21 @@ export const en = {
     seoTitle: 'Dub a film scene with friends',
     defineTitle: 'What is dubbing a film scene?',
     defineBody:
-      'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. DubRoom is online dubbing software that does this work in the browser, with nothing to install.',
+      'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. Dub’Up is online dubbing software that does this work in the browser, with nothing to install.',
     defineHowTitle: 'How to dub a film scene yourself',
     defineHowBody:
-      'It takes three things nobody has at home: separating the voices from the music so that only the voices are replaced, knowing who speaks and when to the millisecond, and staying in sync while talking. DubRoom does the first two automatically from the scene, and solves the third with a rythmo band, the scrolling text under a playhead that professional dubbing studios have used for eighty years.',
+      'It takes three things nobody has at home: separating the voices from the music so that only the voices are replaced, knowing who speaks and when to the millisecond, and staying in sync while talking. Dub’Up does the first two automatically from the scene, and solves the third with a rythmo band, the scrolling text under a playhead that professional dubbing studios have used for eighty years.',
     defineWhoTitle: 'Who it is for',
     defineWhoBody:
       'Groups of friends who want to redo a famous line, fandub makers looking for a tool that is not a video editor, language teachers having a class dub an extract, and anyone learning voice acting who wants to practise on a rythmo band without renting a studio.',
     faqExtra: [
       {
         q: 'Is it free?',
-        a: 'Yes. DubRoom is a personal project, with no ads, no subscription and no limit on scenes.',
+        a: 'Yes. Dub’Up is a personal project, with no ads, no subscription and no limit on scenes.',
       },
       {
         q: 'How is this different from a normal video editor?',
-        a: 'A video editor hands you an empty timeline and leaves you to line up your takes by hand. DubRoom starts from the scene: it separates the voices, finds the lines, assigns them to characters and automatically realigns your takes on the original voice.',
+        a: 'A video editor hands you an empty timeline and leaves you to line up your takes by hand. Dub’Up starts from the scene: it separates the voices, finds the lines, assigns them to characters and automatically realigns your takes on the original voice.',
       },
       {
         q: 'Can I dub an English scene from a French interface?',
@@ -149,7 +147,7 @@ export const en = {
     ] as const,
     privateTitle: 'A private room, not a network',
     privateBody:
-      'DubRoom is for invited people only. No public catalogue, no sharing outside the circle, no search indexing. That is what makes it workable: we dub extracts of protected works, among friends, without publishing anything.',
+      'Dub’Up is for invited people only. No public catalogue, no sharing outside the circle, no search indexing. That is what makes it workable: we dub extracts of protected works, among friends, without publishing anything.',
     slides: {
       importTitle: 'Pick the scene you know by heart',
       importBody:
@@ -184,7 +182,13 @@ export const en = {
     voteScore: (n: number) => `Community score: ${n}`,
     voteHelp:
       'The vote is about the cut, not the film. A well cut scene saves everyone an evening.',
-    sortedByScore: 'Best rated first',
+    sort: {
+      label: 'Sort by',
+      popular: 'Best rated',
+      recent: 'Newest',
+      short: 'Shortest',
+      title: 'Title (A → Z)',
+    },
     filterLang: 'Scene language',
     filterGenre: 'Genre',
     filterCast: 'Number of roles',
@@ -199,21 +203,45 @@ export const en = {
       'Widen the filters, or publish the scene the catalogue is missing.',
     langUnknown: 'Language unknown',
     langNames: {
-      fr: 'French', en: 'English', es: 'Spanish', de: 'German', it: 'Italian',
-      pt: 'Portuguese', ja: 'Japanese', ko: 'Korean', zh: 'Chinese', ru: 'Russian',
+      fr: 'French',
+      en: 'English',
+      es: 'Spanish',
+      de: 'German',
+      it: 'Italian',
+      pt: 'Portuguese',
+      ja: 'Japanese',
+      ko: 'Korean',
+      zh: 'Chinese',
+      ru: 'Russian',
     } as Record<string, string>,
     genreNames: {
-      action: 'Action', comedie: 'Comedy', drame: 'Drama', animation: 'Animation',
-      science_fiction: 'Science fiction', horreur: 'Horror', documentaire: 'Documentary',
+      action: 'Action',
+      comedie: 'Comedy',
+      drame: 'Drama',
+      animation: 'Animation',
+      anime: 'Anime',
+      serie: 'TV series',
+      super_heros: 'Superhero',
+      science_fiction: 'Science fiction',
+      horreur: 'Horror',
+      jeu_video: 'Video game',
+      chanson: 'Song',
+      documentaire: 'Documentary',
       autre: 'Other',
     } as Record<string, string>,
     castBuckets: {
-      solo: '1 role', duo: '2 roles', small: '3 or 4 roles', large: '5 roles or more',
+      solo: '1 role',
+      duo: '2 roles',
+      small: '3 or 4 roles',
+      large: '5 roles or more',
     } as Record<string, string>,
     lengthBuckets: {
-      short: 'Under a minute', medium: '1 to 3 minutes', long: 'Over 3 minutes',
+      short: 'Under a minute',
+      medium: '1 to 3 minutes',
+      long: 'Over 3 minutes',
     } as Record<string, string>,
-    sceneCount: (n: number) => (n === 1 ? '1 scene available' : `${n} scenes available`),
+    sceneCount: (n: number) =>
+      n === 1 ? '1 scene available' : `${n} scenes available`,
     characterCount: (n: number) => (n === 1 ? '1 character' : `${n} characters`),
     lineCount: (n: number) => (n === 1 ? '1 line' : `${n} lines`),
     emptyTitle: 'No scene kept yet',
@@ -228,6 +256,8 @@ export const en = {
     seeInCommunity: 'See it in the community',
     publishRecipeHelp:
       'Only the link and the cut will be shared. The video is not hosted here.',
+    publishFromCatalogue:
+      'This scene comes from the catalogue: it is already there. Publishing it again would leave two copies nobody can tell apart.',
     publishTooLate:
       'This scene came from an imported file, and its media was purged after the render. Sharing it had to be decided beforehand. A scene imported from a link stays publishable at any time.',
     keepLabel: 'Keep this scene to play again',
@@ -241,9 +271,23 @@ export const en = {
     modern: 'Modern',
   },
 
+  terms: {
+    consent: 'I have read and accept the {terms} and the {privacy}.',
+    linkTerms: 'terms of use',
+    linkPrivacy: 'privacy policy',
+    required: 'You need to accept the terms to continue.',
+    gateTitle: 'One more thing',
+    gateBody:
+      'The terms of use have changed since your last visit, or you have never accepted them. One checkbox and we are back to it.',
+    gateGist:
+      'The short version: you answer for the clips you import and for what you do with them. Everything stays between invited people, nothing is published.',
+    gateConfirm: 'Accept and continue',
+  },
+
   legal: {
     mentions: 'Legal notice',
     privacy: 'Privacy',
+    terms: 'Terms',
     usageNotice:
       'Strictly private use, between invited people. No content is published or indexed.',
     contact: 'Contact',
@@ -272,8 +316,7 @@ export const en = {
     send: 'Send me a link',
     sending: 'Sending…',
     sent: 'Link sent. Go check your inbox.',
-    notAllowed:
-      'This address is not on the guest list. Ask the host to add you.',
+    notAllowed: 'This address is not on the guest list. Ask the host to add you.',
     errorTitle: 'Cannot sign you in',
     backToSignIn: 'Back to sign in',
     signOut: 'Sign out',
@@ -292,8 +335,7 @@ export const en = {
       `The address ${email} is not on the guest list. Ask the host to add it. If you came through Discord, it is your Discord account address that counts.`,
 
     passwordSectionTitle: 'Password',
-    passwordSectionHelp:
-      'Set one to come back without going through your inbox.',
+    passwordSectionHelp: 'Set one to come back without going through your inbox.',
     passwordNew: 'New password',
     passwordSave: 'Save password',
     passwordSaved: 'Password saved. You can use it from your next sign-in.',
@@ -315,8 +357,7 @@ export const en = {
     create: 'New scene',
     open: 'Open',
     storageUsed: (used: string, total: string) => `${used} of ${total}`,
-    storageWarning:
-      'Storage is running out. Delete old scenes to make room.',
+    storageWarning: 'Storage is running out. Delete old scenes to make room.',
     deleteConfirmTitle: 'Delete this scene?',
     deleteConfirmBody:
       'The final mix, the takes and all the metadata will be erased. There is no undo.',
@@ -333,6 +374,15 @@ export const en = {
     title: 'New scene',
     tabUpload: 'Import a file',
     tabYoutube: 'Paste a YouTube link',
+    songLabel: 'It is a song',
+    songHelp:
+      'We skip the transcription: you know the lyrics. The cutting follows the vocal track and tells you when to come in.',
+    matchTitle: 'This scene already exists',
+    matchBody:
+      'Someone has already prepared it: the cutting, the characters and the text are ready. Taking it starts right away instead of waiting several minutes for the same result.',
+    matchLines: 'The lines to say',
+    matchUse: 'Start from this scene',
+    matchScratch: 'Redo it from scratch',
     tabPack: 'Start from a pack',
     packHelp:
       'Nothing to prepare: the scene is already cut, you pick the roles and record. The full catalogue is in the Community tab.',
@@ -361,9 +411,9 @@ export const en = {
   ingest: {
     title: 'Preparing the scene',
     subtitle: 'The scene is being cut up. It takes a few minutes.',
-    queued: 'Waiting for the worker. Start the script on your PC.',
+    queued: 'Processing is slow to start.',
     queuedHelp:
-      'Processing runs on the host machine. Double-click start.bat and the job will pick itself up.',
+      'It usually picks itself up. If it lasts, tell whoever hosts the scene.',
     failed: 'The import failed.',
     retry: 'Restart the import',
     neverStarted:
@@ -403,8 +453,7 @@ export const en = {
     selectNone: 'Clear selection',
     deleteLine: 'Delete the line',
     deleteLineHint: 'The original audio will be kept at that spot.',
-    textIsAGuide:
-      'The text is only a timing guide. Fix it only if it is unreadable.',
+    textIsAGuide: 'The text is only a timing guide. Fix it only if it is unreadable.',
     openLobby: 'Open the lobby',
     openLobbyConfirm:
       'Once the lobby is open, characters and lines can no longer be changed.',
@@ -435,7 +484,8 @@ export const en = {
     players: 'Players',
     start: 'Start the game',
     startBlockedTitle: 'Something is still missing:',
-    startBlockedCharacters: 'characters with no player, to take or to leave as original:',
+    startBlockedCharacters:
+      'characters with no player, to take or to leave as original:',
     startBlockedReady: 'players who have not said they are ready:',
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Only the host can start the game.',
@@ -465,10 +515,8 @@ export const en = {
     calibrate: 'Calibrate automatically',
     calibrating: 'Calibrating… stay quiet.',
     calibrationDone: (ms: number) => `Measured offset: ${ms} ms.`,
-    calibrationFailed:
-      'Could not measure the offset. Set it by hand if needed.',
-    micDenied:
-      'The browser refused the microphone. Allow it, then reload the page.',
+    calibrationFailed: 'Could not measure the offset. Set it by hand if needed.',
+    micDenied: 'The browser refused the microphone. Allow it, then reload the page.',
     headphonesRequired:
       'Headphones required. While recording you only hear the music, never the original voices.',
     overflowWarning:
@@ -477,9 +525,36 @@ export const en = {
     margin: 'Margin',
     noTake: 'No take for this clip.',
     uploading: 'Uploading the take…',
+    noCharacter:
+      'No character was assigned to you on this scene. You can follow the others here.',
+    fxTitle: 'Voice desk',
+    fxReset: 'Flatten',
+    fxReverb: 'Reverb',
+    fxPitch: 'Pitch',
+    fxTune: 'Tuning',
+    fxHelp:
+      'Effects are laid on at the mix, never on the recording: you can change them until the render, or go back to your bare voice.',
+    fxPresets: {
+      dry: 'Bare voice',
+      room: 'Small room',
+      cathedral: 'Cathedral',
+      cartoon: 'Cartoon',
+      deep: 'Deep voice',
+      cover: 'Cover',
+    },
+    emptyTake:
+      'Nothing was recorded. Check that your microphone is plugged in and selected, then take it again.',
+    whereEveryoneIs: 'Where everyone is',
+    you: '(you)',
+    hostTag: '(host)',
+    stateVo: 'Original',
+    stateDone: 'Done',
+    stateRecording: 'Recording',
+    waitingHost: 'Waiting for the host to start the render.',
+    hostCanRender: 'Everyone is done: you can start the render.',
+    stillMissing: 'Some lines are still to be recorded.',
     finishedTitle: 'You are done!',
-    finishedBody:
-      'You can still come back and redo a take until the render starts.',
+    finishedBody: 'You can still come back and redo a take until the render starts.',
     waitingFor: 'Still waiting on:',
     playerProgress: (name: string, done: number, total: number) =>
       `${name} (${done}/${total})`,
@@ -515,16 +590,13 @@ export const en = {
       'Alignment found nothing clear on this take. It is placed as recorded.',
   },
 
-
   progress: {
     preparing: 'Preparing the scene',
     rendering: 'Putting it together',
     queued: 'In the queue. It starts on its own in a moment.',
-    working:
-      'Count a few minutes. You can leave the tab open and come back later.',
+    working: 'Count a few minutes. You can leave the tab open and come back later.',
     almost: 'Nearly there.',
-    longer:
-      'This is taking longer than usual, but it is still running. Let it finish.',
+    longer: 'This is taking longer than usual, but it is still running. Let it finish.',
   },
   render: {
     title: 'Rendering',
@@ -537,11 +609,22 @@ export const en = {
   result: {
     title: 'The result',
     download: 'Download the MP4',
+    exportTitle: 'Take the scene with you',
+    formatWide: 'Wide format',
+    formatWideHint: 'For a computer screen or a television.',
+    formatVertical: 'Phone format',
+    formatVerticalHint: 'Cropped to the centre, for stories and reels.',
+    formatVerticalMissing:
+      'This scene was rendered before automatic cropping. Run the render again to get it.',
+    share: 'Share',
+    shareHelp:
+      'On a phone, Share opens the system sheet: TikTok, Instagram and whatever else is installed show up there.',
+    shareUnsupported:
+      'This browser cannot share a file. Download it, then post it from the app.',
     cast: 'The cast',
     voiceOriginal: 'Original kept',
     shareHint: 'The link only works for people in this scene.',
-    sourcePurged:
-      'The source has been deleted: only the final mix is kept.',
+    sourcePurged: 'The source has been deleted: only the final mix is kept.',
   },
 
   errors: {

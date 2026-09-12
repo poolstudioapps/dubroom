@@ -17,6 +17,10 @@ export interface Profile {
   avatar_path: string | null;
   created_at: string;
   updated_at: string;
+  /** Quand cette personne a accepte les conditions, ou `null` si jamais. */
+  terms_accepted_at: string | null;
+  /** La version acceptee, sous forme de date. Voir `config/terms.ts`. */
+  terms_version: string | null;
 }
 
 async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
@@ -82,6 +86,23 @@ export function useAvatarUrl(path: string | null | undefined) {
   });
 }
 
+/**
+ * Inscrit l'acceptation des conditions au profil.
+ *
+ * Le profil revenant de la fonction est pose directement dans le cache :
+ * sans cela, la carte qui bloque l'entree se redessinerait a l'identique
+ * le temps d'une nouvelle lecture, et on croirait que le clic n'a pas
+ * pris.
+ */
+export function useAcceptTerms() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (version: string) =>
+      rpc<Profile>('accept_terms', { p_version: version }),
+    onSuccess: (profile) => qc.setQueryData(profileKeys.me, profile),
+  });
+}
+
 export function useUpdateProfile() {
   const qc = useQueryClient();
   return useMutation({
@@ -90,8 +111,7 @@ export function useUpdateProfile() {
         p_display_name: input.displayName ?? null,
         // `null` ne touche a rien, `''` retire la photo : la distinction
         // est portee jusqu'a la fonction SQL.
-        p_avatar_path:
-          input.avatarPath === undefined ? null : (input.avatarPath ?? ''),
+        p_avatar_path: input.avatarPath === undefined ? null : (input.avatarPath ?? ''),
       }),
     onSuccess: (profile) => {
       qc.setQueryData(profileKeys.me, profile);
@@ -115,7 +135,8 @@ export async function uploadAvatar(userId: string, file: File): Promise<string> 
     throw new AppError('TOO_BIG', 'La photo ne doit pas dépasser 2 Mo.');
   }
 
-  const extension = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const extension =
+    file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
   const path = `${userId}/${Date.now()}.${extension}`;
 
   const { error } = await supabaseBrowser()
@@ -154,7 +175,10 @@ export function useProfilesOf(userIds: string[]) {
         .from('profiles')
         .select('user_id, display_name, avatar_path')
         .in('user_id', ids);
-      const byUser = new Map<string, { display_name: string; avatar_path: string | null }>();
+      const byUser = new Map<
+        string,
+        { display_name: string; avatar_path: string | null }
+      >();
       for (const row of (data ?? []) as Profile[]) {
         byUser.set(row.user_id, {
           display_name: row.display_name,

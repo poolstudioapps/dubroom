@@ -1,15 +1,12 @@
 'use client';
 
-import { Download } from 'lucide-react';
-
 import { useT } from '@/lib/i18n';
+import { ExportCard } from '@/components/scene/export-card';
 import { PublishCard } from '@/components/scene/publish-card';
 import { useSceneCtx } from '@/components/scene-page';
 import { Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
-import { formatBytes } from '@/config/strings';
 import { useRenderUrl } from '@/lib/data';
-import { cn } from '@/lib/utils';
 
 export function ResultScreen() {
   const t = useT();
@@ -41,26 +38,8 @@ export function ResultScreen() {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <a
-          href={url.data ?? undefined}
-          download
-          aria-disabled={!url.data}
-          className={cn(
-            'btn-3d inline-flex h-12 items-center gap-2 bg-accent px-6 text-sm font-semibold uppercase',
-            'tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover',
-            !url.data && 'pointer-events-none opacity-40',
-          )}
-        >
-          <Download className="h-4 w-4" aria-hidden />
-          {t.result.download}
-        </a>
-        {session.render_size_bytes ? (
-          <span className="text-sm text-text-faint">
-            {formatBytes(session.render_size_bytes)}
-          </span>
-        ) : null}
-      </div>
+      {/* Les deux formats et le partage vivent dans leur propre carte. */}
+      <ExportCard />
 
       <Card className="space-y-3">
         <h2 className="text-sm font-medium">{t.result.cast}</h2>

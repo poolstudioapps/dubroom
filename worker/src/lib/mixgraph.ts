@@ -26,6 +26,19 @@ export interface TakePlacement {
   delayMs: number;
   /** Nombre de ms a retirer en tete quand le decalage rend `delayMs` negatif. */
   trimHeadMs: number;
+  /**
+   * Correction de niveau, en decibels.
+   *
+   * Elle rapproche la prise du volume qu'avait la voix d'origine a cet
+   * endroit : un joueur qui parle loin du micro ne doit pas disparaitre
+   * sous la musique, et celui qui hurle dedans ne doit pas ecraser la
+   * scene. Zero laisse la prise telle quelle.
+   */
+  gainDb?: number;
+  /** Reverberation, 0 a 100. */
+  reverb?: number;
+  /** Transposition en demi-tons, -12 a +12. */
+  pitch?: number;
 }
 
 export interface VoSegment {
@@ -36,7 +49,14 @@ export interface VoSegment {
 export interface MixGraphInput {
   /** Index de l'entree du stem de fond. Toujours 0. */
   musicInput: number;
-  /** Index de l'entree du stem voix, ou null si aucune VO a reinjecter. */
+  /**
+   * Index de l'entree qui porte la bande son d'origine, ou null s'il n'y
+   * a aucune VO a conserver.
+   *
+   * C'etait le stem de voix separee ; c'est desormais le fichier
+   * d'origine. La ou personne ne double, il n'y a rien a reconstruire, et
+   * une separation rendue telle quelle s'entend.
+   */
   voiceInput: number | null;
   /** Repliques dont la VO doit etre conservee (personnages liberes, repliques supprimees). */
   voSegments: VoSegment[];
@@ -60,23 +80,92 @@ export function placeTake(
   takeOffsetMs: number,
   micOffsetMs: number,
   inputIndex: number,
+  effets: { gainDb?: number; reverb?: number; pitch?: number } = {},
 ): TakePlacement {
   const total = windowStartMs + takeOffsetMs + micOffsetMs;
   return {
     inputIndex,
     delayMs: Math.max(0, Math.round(total)),
     trimHeadMs: total < 0 ? Math.round(-total) : 0,
+    ...effets,
   };
+}
+
+/**
+ * La chaine d'effets d'une prise, dans l'ordre ou l'on branche.
+ *
+ * L'ordre n'est pas decoratif. La hauteur passe en premier parce qu'elle
+ * travaille sur la voix seule ; le niveau ensuite, pour que la mesure
+ * faite sur la prise brute reste valable ; la reverberation en dernier,
+ * parce qu'une salle s'ajoute autour d'une voix deja reglee, jamais
+ * avant.
+ */
+function chaineEffets(take: TakePlacement): string {
+  const etapes: string[] = [];
+
+  if (take.pitch && take.pitch !== 0) {
+    // `rubberband` attend un rapport de frequences, pas des demi-tons.
+    const ratio = Math.pow(2, take.pitch / 12);
+    etapes.push(`rubberband=pitch=${ratio.toFixed(5)}`);
+  }
+
+  if (take.gainDb && Math.abs(take.gainDb) >= 0.5) {
+    etapes.push(`volume=${take.gainDb.toFixed(1)}dB`);
+  }
+
+  if (take.reverb && take.reverb > 0) {
+    /*
+     * Une reverberation en trois reflexions.
+     *
+     * ffmpeg n'a pas de reverbe a convolution utilisable sans fichier
+     * d'empreinte ; trois echos rapproches et decroissants en donnent
+     * l'essentiel — la queue et la sensation de volume — pour rien. Le
+     * curseur pilote la part de son reflechi, de la voix seche a la
+     * grande salle.
+     */
+    const part = Math.min(1, take.reverb / 100);
+    const niveau = (0.25 + 0.45 * part).toFixed(2);
+    const decroissance = [0.5, 0.32, 0.2].map((d) => (d * part).toFixed(2)).join('|');
+    etapes.push(`aecho=0.9:${niveau}:47|71|103:${decroissance}`);
+  }
+
+  return etapes.length > 0 ? `${etapes.join(',')},` : '';
 }
 
 export function buildMixGraph(input: MixGraphInput): string {
   const lines: string[] = [];
-  const mixLabels: string[] = [`[${input.musicInput}:a]`];
+  const garderVo = input.voiceInput !== null && input.voSegments.length > 0;
+
+  /*
+   * Le lit musical se tait pendant la VO.
+   *
+   * Les passages non doubles sont pris dans la bande son d'origine, qui
+   * contient deja sa musique. Sans cette coupure on entendrait la
+   * musique deux fois, une fois nette et une fois separee, decalees de
+   * rien du tout — ce qui sonne comme un flanger.
+   *
+   * La coupure est un cran a l'interieur du segment, pour qu'elle tombe
+   * pendant le fondu de la VO et non a coté.
+   */
+  let bed = `[${input.musicInput}:a]`;
+  if (garderVo) {
+    const fenetres = input.voSegments
+      .map((s) => {
+        const duree = Math.max(1, s.endMs - s.startMs) / 1000;
+        const fade = Math.min(VO_FADE_S, duree / 4);
+        return `between(t,${seconds(s.startMs + fade * 1000)},${seconds(s.endMs - fade * 1000)})`;
+      })
+      .join('+');
+    lines.push(`[${input.musicInput}:a]volume=0:enable='${fenetres}'[bed];`);
+    bed = '[bed]';
+  }
+
+  const mixLabels: string[] = [bed];
 
   // ── Reinjection de la VO ────────────────────────────────────────────
   // Une entree ffmpeg ne peut etre consommee qu'une fois : il faut
-  // dupliquer explicitement le stem voix, une branche par replique.
-  if (input.voiceInput !== null && input.voSegments.length > 0) {
+  // dupliquer explicitement la source, une branche par replique.
+  if (garderVo) {
     const count = input.voSegments.length;
     const splitOutputs = input.voSegments.map((_, i) => `[vsrc${i}]`).join('');
     lines.push(`[${input.voiceInput}:a]asplit=${count}${splitOutputs};`);
@@ -104,9 +193,12 @@ export function buildMixGraph(input: MixGraphInput): string {
 
   // ── Prises des joueurs ──────────────────────────────────────────────
   input.takes.forEach((take, i) => {
-    const trim = take.trimHeadMs > 0 ? `atrim=start=${seconds(take.trimHeadMs)},asetpts=PTS-STARTPTS,` : '';
+    const trim =
+      take.trimHeadMs > 0
+        ? `atrim=start=${seconds(take.trimHeadMs)},asetpts=PTS-STARTPTS,`
+        : '';
     lines.push(
-      `[${take.inputIndex}:a]${trim}` +
+      `[${take.inputIndex}:a]${trim}${chaineEffets(take)}` +
         `aresample=48000,aformat=channel_layouts=stereo,` +
         `adelay=${take.delayMs}:all=1[t${i}];`,
     );

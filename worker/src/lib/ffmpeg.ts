@@ -14,6 +14,38 @@ export interface Probe {
 }
 
 /** Inspecte la source avant tout traitement (PRD §20.3). */
+/**
+ * Duree d'un fichier audio, ou `null` s'il est illisible.
+ *
+ * Sert a ecarter les prises vides avant le mixage : un fichier WebM
+ * reduit a son entete — cela arrive quand le micro n'a rien rendu — fait
+ * echouer ffmpeg, et avec lui tout le rendu de la soiree. Autant le
+ * constater ici et passer au suivant.
+ */
+export async function audioDurationMs(input: string): Promise<number | null> {
+  try {
+    const { stdout } = await run(
+      config.ffprobe,
+      [
+        '-v',
+        'error',
+        '-select_streams',
+        'a:0',
+        '-show_entries',
+        'format=duration',
+        '-of',
+        'default=nw=1:nk=1',
+        input,
+      ],
+      { timeoutMs: TIMEOUTS.ffprobe },
+    );
+    const ms = Math.round(parseFloat(stdout.trim()) * 1000);
+    return Number.isFinite(ms) && ms > 0 ? ms : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function probe(input: string): Promise<Probe> {
   const { stdout } = await run(
     config.ffprobe,
@@ -133,23 +165,38 @@ export async function normalize(
 ): Promise<void> {
   await ffmpeg(
     [
-      '-i', input,
-      '-map', '0:v:0',
-      '-map', '0:a:0',
+      '-i',
+      input,
+      '-map',
+      '0:v:0',
+      '-map',
+      '0:a:0',
       '-sn',
       '-dn',
-      '-vf', "scale='min(1280,iw)':-2",
-      '-c:v', 'libx264',
-      '-preset', 'veryfast',
-      '-crf', '23',
-      '-profile:v', 'high',
-      '-level', '4.0',
-      '-pix_fmt', 'yuv420p',
-      '-movflags', '+faststart',
-      '-c:a', 'aac',
-      '-b:a', '192k',
-      '-ar', '48000',
-      '-ac', '2',
+      '-vf',
+      "scale='min(1280,iw)':-2",
+      '-c:v',
+      'libx264',
+      '-preset',
+      'veryfast',
+      '-crf',
+      '23',
+      '-profile:v',
+      'high',
+      '-level',
+      '4.0',
+      '-pix_fmt',
+      'yuv420p',
+      '-movflags',
+      '+faststart',
+      '-c:a',
+      'aac',
+      '-b:a',
+      '192k',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
     ],
     output,
     { durationMs, onProgress, timeoutMs: TIMEOUTS.encode },
@@ -163,6 +210,72 @@ export async function extractAudio(input: string, output: string): Promise<void>
     output,
     { timeoutMs: TIMEOUTS.extract },
   );
+}
+
+/**
+ * Decode une prise en WAV mono, pret pour un traitement fait ici.
+ *
+ * 44,1 kHz et non 48 : la detection de hauteur travaille par decalages
+ * entiers d'echantillons, et descendre la frequence rapproche les crans
+ * sans rien couter — la voix ne monte de toute facon pas au-dela de
+ * mille hertz.
+ */
+export async function decodeTakeToWav(input: string, output: string): Promise<void> {
+  await ffmpeg(
+    ['-i', input, '-vn', '-acodec', 'pcm_s16le', '-ar', '44100', '-ac', '1'],
+    output,
+    {
+      timeoutMs: TIMEOUTS.extract,
+    },
+  );
+}
+
+/**
+ * Niveau moyen d'un passage, en decibels, ou `null` s'il est muet.
+ *
+ * `volumedetect` rend la moyenne quadratique sur ce qu'on lui donne :
+ * c'est la mesure qui correspond a ce qu'on entend comme « fort » ou
+ * « faible », a la difference du pic, qu'un seul claquement suffit a
+ * fausser.
+ */
+export async function meanVolumeDb(
+  input: string,
+  startMs?: number,
+  endMs?: number,
+): Promise<number | null> {
+  const decoupe: string[] = [];
+  if (startMs !== undefined) decoupe.push('-ss', (startMs / 1000).toFixed(3));
+  if (startMs !== undefined && endMs !== undefined) {
+    decoupe.push('-t', (Math.max(1, endMs - startMs) / 1000).toFixed(3));
+  }
+
+  try {
+    const { stderr } = await run(
+      config.ffmpeg,
+      [
+        '-hide_banner',
+        '-nostdin',
+        ...decoupe,
+        '-i',
+        input,
+        '-map',
+        '0:a:0',
+        '-af',
+        'volumedetect',
+        '-f',
+        'null',
+        '-',
+      ],
+      { timeoutMs: TIMEOUTS.extract },
+    );
+    const trouve = stderr.match(/mean_volume:\s*(-?\d+(?:\.\d+)?) dB/);
+    if (!trouve) return null;
+    const db = Number(trouve[1]);
+    // -91 dB est ce que rend volumedetect sur du silence numerique.
+    return Number.isFinite(db) && db > -80 ? db : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -190,8 +303,20 @@ export async function encodeBackingPreview(
   output: string,
 ): Promise<void> {
   await ffmpeg(
-    ['-i', input, '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', '-ac', '2',
-     '-movflags', '+faststart'],
+    [
+      '-i',
+      input,
+      '-c:a',
+      'aac',
+      '-b:a',
+      '96k',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+      '-movflags',
+      '+faststart',
+    ],
     output,
     { timeoutMs: TIMEOUTS.extract },
   );
@@ -207,13 +332,22 @@ export async function encodeBackingPreview(
  * AAC : la difference ne s'entend pas sur une piste de fond destinee a
  * etre recouverte de voix.
  */
-export async function encodeStemForPack(
-  input: string,
-  output: string,
-): Promise<void> {
+export async function encodeStemForPack(input: string, output: string): Promise<void> {
   await ffmpeg(
-    ['-i', input, '-c:a', 'aac', '-b:a', '128k', '-ar', '48000', '-ac', '2',
-     '-movflags', '+faststart'],
+    [
+      '-i',
+      input,
+      '-c:a',
+      'aac',
+      '-b:a',
+      '128k',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+      '-movflags',
+      '+faststart',
+    ],
     output,
     { timeoutMs: TIMEOUTS.extract },
   );
@@ -274,9 +408,12 @@ export async function mixWithGraph(
       await ffmpeg(
         [
           ...inputs.flatMap((file) => ['-i', file]),
-          flag, graphPath,
-          '-map', '[out]',
-          '-c:a', 'pcm_s16le',
+          flag,
+          graphPath,
+          '-map',
+          '[out]',
+          '-c:a',
+          'pcm_s16le',
         ],
         output,
         { durationMs, onProgress, timeoutMs: TIMEOUTS.mix },
@@ -289,7 +426,9 @@ export async function mixWithGraph(
     }
   }
 
-  throw lastError ?? new SystemError('Aucune syntaxe de filtergraph acceptée par ffmpeg.');
+  throw (
+    lastError ?? new SystemError('Aucune syntaxe de filtergraph acceptée par ffmpeg.')
+  );
 }
 
 /**
@@ -308,15 +447,72 @@ export async function muxFinal(
 ): Promise<void> {
   await ffmpeg(
     [
-      '-i', video,
-      '-i', audio,
-      '-map', '0:v:0',
-      '-map', '1:a:0',
+      '-i',
+      video,
+      '-i',
+      audio,
+      '-map',
+      '0:v:0',
+      '-map',
+      '1:a:0',
       '-shortest',
-      '-c:v', 'copy',
-      '-c:a', 'aac',
-      '-b:a', '192k',
-      '-movflags', '+faststart',
+      '-c:v',
+      'copy',
+      '-c:a',
+      'aac',
+      '-b:a',
+      '192k',
+      '-movflags',
+      '+faststart',
+    ],
+    output,
+    { durationMs, onProgress, timeoutMs: TIMEOUTS.mux },
+  );
+}
+
+/**
+ * La meme scene, debout.
+ *
+ * Un rendu se partage aujourd'hui sur des ecrans tenus a la verticale,
+ * et une video 16/9 y occupe un bandeau au milieu de rien. On en tire
+ * donc une seconde version au format 9/16, recadree au centre.
+ *
+ * Recadrer, pas redimensionner : on garde la hauteur entiere et on prend
+ * la largeur qu'il faut au milieu de l'image. Une scene de dialogue y
+ * survit — les visages sont au centre — mais un plan large y perd ses
+ * bords, et c'est la contrepartie assumee du format.
+ *
+ * L'audio est recopie tel quel : c'est le meme mixage, il n'y a aucune
+ * raison de le reencoder une seconde fois.
+ */
+export async function muxVertical(
+  input: string,
+  output: string,
+  durationMs: number,
+  onProgress: (pct: number) => void,
+): Promise<void> {
+  await ffmpeg(
+    [
+      '-i',
+      input,
+      '-vf',
+      // `min` protege le cas d'une source deja verticale : on ne
+      // recadre alors rien, on se contente de la mettre a l'echelle.
+      "crop='min(iw,ih*9/16)':ih:(iw-min(iw,ih*9/16))/2:0," +
+        'scale=1080:1920:flags=lanczos:force_original_aspect_ratio=decrease,' +
+        'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1',
+      '-c:v',
+      'libx264',
+      '-preset',
+      'veryfast',
+      '-crf',
+      '21',
+      '-pix_fmt',
+      'yuv420p',
+      '-c:a',
+      'copy',
+      '-movflags',
+      '+faststart',
     ],
     output,
     { durationMs, onProgress, timeoutMs: TIMEOUTS.mux },
@@ -329,10 +525,14 @@ export async function generateSilence(output: string, seconds = 2): Promise<void
     config.ffmpeg,
     [
       '-hide_banner',
-      '-f', 'lavfi',
-      '-i', 'anullsrc=r=44100:cl=stereo',
-      '-t', String(seconds),
-      '-y', output,
+      '-f',
+      'lavfi',
+      '-i',
+      'anullsrc=r=44100:cl=stereo',
+      '-t',
+      String(seconds),
+      '-y',
+      output,
     ],
     { timeoutMs: 60_000 },
   );

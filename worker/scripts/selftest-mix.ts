@@ -67,7 +67,7 @@ async function video(file: string, seconds: number) {
 }
 
 async function main() {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'dubroom-selftest-'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'dubup-selftest-'));
   console.log(`\nAuto-test du mixage\n  dossier : ${dir}\n`);
 
   const music = path.join(dir, 'music.wav');

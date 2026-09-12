@@ -1,12 +1,10 @@
 import type { SessionStatus } from '@/lib/supabase/database.types';
 
 /** Ecran canonique d'une session, deduit de son statut (PRD §8). */
-export type SceneScreen = 'ingest' | 'prepare' | 'lobby' | 'studio' | 'render' | 'result';
+export type SceneScreen =
+  'ingest' | 'prepare' | 'lobby' | 'studio' | 'render' | 'result';
 
-export function screenForStatus(
-  status: SessionStatus,
-  isHost: boolean,
-): SceneScreen {
+export function screenForStatus(status: SessionStatus, isHost: boolean): SceneScreen {
   switch (status) {
     case 'draft':
     case 'ingest_queued':

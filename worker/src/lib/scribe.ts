@@ -134,7 +134,9 @@ export async function transcribe(
     if (response.status === 429) {
       throw new SystemError('Quota ElevenLabs atteint, nouvelle tentative plus tard.');
     }
-    throw new SystemError(`Scribe a répondu ${response.status} : ${text.slice(0, 500)}`);
+    throw new SystemError(
+      `Scribe a répondu ${response.status} : ${text.slice(0, 500)}`,
+    );
   }
 
   logger.info('transcription reçue', { bytes: text.length, raw: rawPath });

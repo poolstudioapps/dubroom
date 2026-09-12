@@ -51,7 +51,7 @@ for (const session of sessions) {
   const label = `${session.code} ${session.title ?? ''}`.trim();
   process.stdout.write(`  . ${label} `);
 
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'dubroom-envelope-'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'dubup-envelope-'));
   const local = path.join(dir, 'voice.wav');
 
   try {

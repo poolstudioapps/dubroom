@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { useT } from '@/lib/i18n';
 import { DiscordButton } from '@/components/discord-button';
+import { TermsConsent } from '@/components/terms-consent';
 import { Alert, Button, Input, Label } from '@/components/ui';
+import { TERMS_STORAGE_KEY, TERMS_VERSION } from '@/config/terms';
 
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
@@ -13,8 +15,8 @@ import { supabaseBrowser } from '@/lib/supabase/client';
 type Mode = 'password' | 'link';
 
 /** Se souvient du dernier mode utilise : un habitue ne rechoisit pas. */
-const MODE_KEY = 'dubroom.loginMode';
-const EMAIL_KEY = 'dubroom.lastEmail';
+const MODE_KEY = 'dubup.loginMode';
+const EMAIL_KEY = 'dubup.lastEmail';
 
 export function LoginForm() {
   const t = useT();
@@ -27,13 +29,32 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [state, setState] = useState<'idle' | 'working' | 'sent'>('idle');
   const [error, setError] = useState<string | null>(null);
+  /**
+   * L'acceptation des conditions.
+   *
+   * Elle n'est pas prise ici pour la forme : le compte n'existe pas
+   * encore quand on demande un lien, donc la reponse attend dans le
+   * navigateur et la premiere page connectee l'inscrit au profil. Une
+   * case deja cochee n'est pas un consentement, elle repart donc a vide
+   * a chaque visite tant que rien n'a ete accepte.
+   */
+  const [accepted, setAccepted] = useState(false);
 
   useEffect(() => {
     // Le premier passage se fait forcement par lien : personne n'a de mot
     // de passe avant d'etre entre une fois.
-    const storedMode = window.localStorage.getItem(MODE_KEY);
+    // Qui a deja accepte la version en cours ne se le voit pas
+    // redemander a chaque connexion.
+    if (window.localStorage.getItem(TERMS_STORAGE_KEY) === TERMS_VERSION) {
+      setAccepted(true);
+    }
+    const storedMode =
+      window.localStorage.getItem(MODE_KEY) ??
+      window.localStorage.getItem('dubroom.loginMode');
     if (storedMode === 'password') setMode('password');
-    const storedEmail = window.localStorage.getItem(EMAIL_KEY);
+    const storedEmail =
+      window.localStorage.getItem(EMAIL_KEY) ??
+      window.localStorage.getItem('dubroom.lastEmail');
     if (storedEmail) setEmail(storedEmail);
   }, []);
 
@@ -47,8 +68,28 @@ export function LoginForm() {
     return false;
   }
 
+  /**
+   * Le passage oblige, commun aux trois chemins d'entree.
+   *
+   * Il ne se contente pas de refuser : il amene la case sous les yeux.
+   * Elle est en bas d'un formulaire, et quelqu'un qui vient de cliquer
+   * sur Discord ne regarde pas la.
+   */
+  function acceptTerms(): boolean {
+    if (!accepted) {
+      setError(t.terms.required);
+      document
+        .getElementById('terms-consent')
+        ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return false;
+    }
+    window.localStorage.setItem(TERMS_STORAGE_KEY, TERMS_VERSION);
+    return true;
+  }
+
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    if (!acceptTerms()) return;
     setError(null);
     setState('working');
 
@@ -105,7 +146,7 @@ export function LoginForm() {
 
   return (
     <div className="space-y-4">
-      <DiscordButton next={next} onError={setError} />
+      <DiscordButton next={next} onError={setError} guard={acceptTerms} />
 
       <div className="flex items-center gap-3">
         <span className="h-px flex-1 bg-border-strong" />
@@ -143,6 +184,8 @@ export function LoginForm() {
           </div>
         ) : null}
 
+        <TermsConsent checked={accepted} onChange={setAccepted} />
+
         {error ? <Alert tone="danger">{error}</Alert> : null}
 
         <Button
@@ -167,9 +210,7 @@ export function LoginForm() {
           {mode === 'password' ? t.auth.switchToLink : t.auth.switchToPassword}
         </button>
 
-        <p className="text-center text-xs text-text-faint">
-          {t.auth.inviteOnly}
-        </p>
+        <p className="text-center text-xs text-text-faint">{t.auth.inviteOnly}</p>
       </form>
     </div>
   );

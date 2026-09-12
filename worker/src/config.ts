@@ -34,7 +34,11 @@ function binary(name: string, fallbackName: string): string {
       ? configured
       : path.resolve(WORKER_ROOT, configured);
   }
-  return path.join(WORKER_ROOT, 'bin', isWindows ? `${fallbackName}.exe` : fallbackName);
+  return path.join(
+    WORKER_ROOT,
+    'bin',
+    isWindows ? `${fallbackName}.exe` : fallbackName,
+  );
 }
 
 export const config = {
@@ -52,6 +56,14 @@ export const config = {
   ffmpeg: binary('FFMPEG_PATH', 'ffmpeg'),
   ffprobe: binary('FFPROBE_PATH', 'ffprobe'),
   ytdlp: binary('YTDLP_PATH', 'yt-dlp'),
+  /**
+   * Clients YouTube a essayer, separes par des virgules.
+   *
+   * Vide depuis une connexion domestique : le client par defaut y passe
+   * sans encombre. Renseigne dans un centre de donnees, ou YouTube
+   * oppose son controle anti-robot aux adresses d'hebergeurs.
+   */
+  ytdlpClients: str('YTDLP_CLIENTS'),
 
   python: str('PYTHON_PATH', isWindows ? 'python' : 'python3'),
   demucsModel: str('DEMUCS_MODEL', 'htdemucs'),
@@ -62,6 +74,27 @@ export const config = {
   maxVideoDurationMs: int('MAX_VIDEO_DURATION_MS', 600_000),
   maxUploadBytes: int('MAX_UPLOAD_BYTES', 2_147_483_648),
   pollIntervalMs: int('JOB_POLL_INTERVAL_MS', 2_000),
+
+  /*
+   * Deux facons de vivre, et elles s'excluent.
+   *
+   * Sur le PC de l'hote, le worker attend indefiniment : la fenetre
+   * reste ouverte et les scenes partent quand elles arrivent.
+   *
+   * Dans un job Cloud Run, attendre est exactement ce qu'il ne faut pas
+   * faire — un job se doit de finir, et on paye le GPU tant qu'il tourne.
+   * Il travaille donc tant qu'il y a a faire, puis s'arrete des que la
+   * file reste vide un moment. La tache suivante relancera un job.
+   */
+  exitWhenIdle: str('EXIT_WHEN_IDLE') === '1',
+  idleExitPolls: int('IDLE_EXIT_POLLS', 5),
+
+  /*
+   * Le controle d'environnement suppose une installation faite par
+   * `start.bat` : des binaires dans `worker/bin`, un Python a cote. Dans
+   * une image, tout cela vient du `Dockerfile` et se trouve ailleurs.
+   */
+  skipEnvCheck: str('SKIP_ENV_CHECK') === '1',
   maxAttempts: int('JOB_MAX_ATTEMPTS', 3),
   staleMinutes: int('JOB_STALE_MINUTES', 10),
   maxConcurrentJobs: int('MAX_CONCURRENT_JOBS', 1),

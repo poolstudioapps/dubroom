@@ -16,6 +16,44 @@ export interface PackFilter {
 export const EMPTY_FILTER: PackFilter = { lang: '', genre: '', cast: '', length: '' };
 
 /**
+ * L'ordre du catalogue.
+ *
+ * Les criteres ne disent pas la meme chose et ne servent pas au meme
+ * moment. On cherche la mieux notee quand on ne sait pas quoi jouer, la
+ * plus recente quand on suit ce que le groupe publie, la plus courte
+ * quand il reste vingt minutes avant que tout le monde parte, et le
+ * titre quand on sait deja ce qu'on veut.
+ */
+export const PACK_SORTS = ['popular', 'recent', 'short', 'title'] as const;
+
+export type PackSort = (typeof PACK_SORTS)[number];
+
+/** Ce que la base renvoie deja : inutile de la contredire au premier rendu. */
+export const DEFAULT_SORT: PackSort = 'popular';
+
+/**
+ * Ordonne une copie de la liste.
+ *
+ * Copie, parce que `sort` travaille sur place et que la liste vient du
+ * cache de requetes : la trier la retournerait aussi pour tous les
+ * autres ecrans qui la partagent.
+ *
+ * Chaque critere a un second rang, sinon deux scenes a egalite
+ * changeraient de place a chaque rendu, ce qui se voit et donne
+ * l'impression que la page bouge toute seule.
+ */
+export function sortPacks(packs: Pack[], sort: PackSort): Pack[] {
+  const recent = (a: Pack, b: Pack) => b.created_at.localeCompare(a.created_at);
+
+  return [...packs].sort((a, b) => {
+    if (sort === 'recent') return recent(a, b);
+    if (sort === 'short') return a.duration_ms - b.duration_ms || recent(a, b);
+    if (sort === 'title') return a.title.localeCompare(b.title);
+    return b.score - a.score || recent(a, b);
+  });
+}
+
+/**
  * Garde les scenes qui correspondent.
  *
  * Le filtrage se fait ici, sur la liste deja chargee, et non en base :
@@ -61,24 +99,48 @@ export function matchesFilter(pack: Pack, filter: PackFilter): boolean {
  * Seules les valeurs presentes dans le catalogue sont proposees : une
  * liste de dix langues dont huit ne donnent rien fait perdre du temps a
  * chaque fois.
+ *
+ * Le tri est en tete, et non parmi les criteres : filtrer retire des
+ * scenes, trier n'en retire aucune. Les melanger ferait chercher un
+ * filtre disparu la ou il n'a jamais ete.
  */
 export function PackFilters({
   packs,
   value,
   onChange,
+  sort,
+  onSortChange,
 }: {
   packs: Pack[];
   value: PackFilter;
   onChange: (next: PackFilter) => void;
+  sort: PackSort;
+  onSortChange: (next: PackSort) => void;
 }) {
   const t = useT();
 
-  const langs = [...new Set(packs.map((p) => p.source_lang).filter(Boolean))].sort() as string[];
+  const langs = [
+    ...new Set(packs.map((p) => p.source_lang).filter(Boolean)),
+  ].sort() as string[];
   const genres = PACK_GENRES.filter((g) => packs.some((p) => p.genre === g));
   const active = value.lang || value.genre || value.cast || value.length;
 
   return (
     <div className="flex flex-wrap items-end gap-2">
+      <Field label={t.community.sort.label}>
+        <Select
+          value={sort}
+          aria-label={t.community.sort.label}
+          onChange={(e) => onSortChange(e.target.value as PackSort)}
+        >
+          {PACK_SORTS.map((key) => (
+            <option key={key} value={key}>
+              {t.community.sort[key]}
+            </option>
+          ))}
+        </Select>
+      </Field>
+
       {langs.length > 1 ? (
         <Field label={t.community.filterLang}>
           <Select

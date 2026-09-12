@@ -37,7 +37,8 @@ export function scopedLog(base: LogContext) {
   return {
     info: (message: string, ctx?: LogContext) => log.info(message, { ...base, ...ctx }),
     warn: (message: string, ctx?: LogContext) => log.warn(message, { ...base, ...ctx }),
-    error: (message: string, ctx?: LogContext) => log.error(message, { ...base, ...ctx }),
+    error: (message: string, ctx?: LogContext) =>
+      log.error(message, { ...base, ...ctx }),
   };
 }
 

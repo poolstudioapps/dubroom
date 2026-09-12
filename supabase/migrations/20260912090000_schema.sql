@@ -1,4 +1,4 @@
--- DubRoom — schema initial (PRD §7)
+-- Dub’Up — schema initial (PRD §7)
 -- Toutes les tables ont id uuid primary key default gen_random_uuid()
 -- et created_at timestamptz default now().
 

@@ -33,7 +33,7 @@ export function isUserError(error: unknown): error is UserError {
 /** Message a stocker dans `jobs.error`, donc visible par l'utilisateur. */
 export function publicMessage(error: unknown): string {
   if (isUserError(error)) return error.message;
-  return "Le traitement a échoué. Regarde les logs du worker pour le détail.";
+  return 'Le traitement a échoué. Regarde les logs du worker pour le détail.';
 }
 
 export function technicalMessage(error: unknown): string {

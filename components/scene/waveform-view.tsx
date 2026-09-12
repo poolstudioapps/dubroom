@@ -51,8 +51,7 @@ export function WaveformView({
     if (!canvas || !ctx) return;
 
     const windowMs = clip.window_end_ms - clip.window_start_ms;
-    const speechStartRatio =
-      (clip.speech_start_ms - clip.window_start_ms) / windowMs;
+    const speechStartRatio = (clip.speech_start_ms - clip.window_start_ms) / windowMs;
     const speechEndRatio = (clip.speech_end_ms - clip.window_start_ms) / windowMs;
 
     const envelope = decodeEnvelope(voicePeaks);
@@ -156,11 +155,22 @@ export function WaveformView({
   }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor]);
 
   return (
-    <div className="space-y-1">
+    <div className="min-w-0 space-y-1">
+      {/*
+        `min-w-0` n'est pas decoratif. Un canvas est un element remplace :
+        sa largeur intrinseque est celle de son attribut `width`, que l'on
+        fixe ici a la largeur affichee multipliee par la densite de
+        l'ecran. Sur un telephone a deux pixels par point, cet attribut
+        vaut donc le double — et comme un enfant de grille refuse par
+        defaut de descendre sous sa largeur intrinseque, la colonne
+        s'elargissait d'autant, ce qui elargissait le canvas, et ainsi de
+        suite. L'ecran du studio finissait deux fois trop large, rogne par
+        le cadre du poste.
+      */}
       <canvas
         ref={canvasRef}
         style={{ height }}
-        className="w-full rounded-md border-2 border-bezel-dark bg-stage"
+        className="block w-full min-w-0 max-w-full rounded-md border-2 border-bezel-dark bg-stage"
         aria-hidden
       />
       <div className="flex justify-between text-[10px] text-text-faint">

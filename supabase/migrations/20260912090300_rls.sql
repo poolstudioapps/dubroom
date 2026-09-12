@@ -1,4 +1,4 @@
--- DubRoom — RLS et Storage (PRD §7.1, §13, §14).
+-- Dub’Up — RLS et Storage (PRD §7.1, §13, §14).
 --
 -- Principe : les policies ne gouvernent que la LECTURE et quelques
 -- ecritures triviales. Toutes les transitions passent par les fonctions

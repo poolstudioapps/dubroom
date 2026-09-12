@@ -18,9 +18,6 @@ export default async function MyPacksPage() {
   if (!user) redirect('/login?next=%2Fmes-packs');
 
   return (
-    <CommunityClient
-      displayName={displayNameFromEmail(user.email)}
-      scope="mine"
-    />
+    <CommunityClient displayName={displayNameFromEmail(user.email)} scope="mine" />
   );
 }
