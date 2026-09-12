@@ -60,10 +60,21 @@ if (!res.ok) {
 }
 
 const payload = (await res.json()) as {
+  hashed_token?: string;
   action_link?: string;
-  properties?: { action_link?: string };
+  properties?: { hashed_token?: string; action_link?: string };
 };
-const link = payload.properties?.action_link ?? payload.action_link;
+const props = payload.properties ?? payload;
+
+// On construit le lien nous-memes vers /auth/confirm plutot que d'utiliser
+// celui de Supabase : le sien passe par un rebond qui renvoie le jeton dans
+// le FRAGMENT de l'URL, invisible du serveur. Notre route verifie
+// l'empreinte cote serveur, pose les cookies proprement — ce qu'un
+// composant serveur ne peut pas faire — et sait dire qu'un lien a expire.
+const link = props.hashed_token
+  ? `${site}/auth/confirm?token_hash=${props.hashed_token}` +
+    `&type=magiclink&next=${encodeURIComponent(next)}`
+  : props.action_link;
 
 if (!link) {
   console.error('\n  Reponse inattendue de Supabase.\n');
