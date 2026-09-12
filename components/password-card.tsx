@@ -22,7 +22,7 @@ const MIN_LENGTH = 8;
  * rend les retours immediats, sans toucher a la liste blanche : elle
  * reste verifiee a chaque connexion, quel que soit le chemin.
  */
-export function PasswordCard() {
+export function PasswordCard({ bare }: { bare?: boolean } = {}) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -42,13 +42,17 @@ export function PasswordCard() {
     onError: (e) => setError(humanizeError(e)),
   });
 
+  const Shell = bare ? BareShell : Card;
+
   return (
-    <Card className="space-y-3">
-      <div className="flex items-center gap-2">
-        <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
-        <h2 className="text-sm font-bold">{t.auth.passwordSectionTitle}</h2>
-      </div>
-      <p className="text-xs text-text-faint">{t.auth.passwordSectionHelp}</p>
+    <Shell className="space-y-3">
+      {bare ? null : (
+        <div className="flex items-center gap-2">
+          <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
+          <h2 className="text-sm font-bold">{t.auth.passwordSectionTitle}</h2>
+        </div>
+      )}
+      <p className="text-xs leading-relaxed text-text-faint">{t.auth.passwordSectionHelp}</p>
 
       <form
         className="flex flex-wrap gap-2"
@@ -78,6 +82,11 @@ export function PasswordCard() {
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
       {done ? <Alert tone="ok">{t.auth.passwordSaved}</Alert> : null}
-    </Card>
+    </Shell>
   );
+}
+
+/** Le meme contenu, sans la plaque : le tiroir en fournit deja une. */
+function BareShell({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={className}>{children}</div>;
 }

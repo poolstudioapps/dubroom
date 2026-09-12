@@ -7,10 +7,14 @@ import { Home, Library, Clapperboard } from 'lucide-react';
 import { t } from '@/config/strings';
 import { cn } from '@/lib/utils';
 
+/**
+ * Le libelle court n'est pas le premier mot du long : « Mes scènes »
+ * donnait « Mes », qui ne designe rien. Il est ecrit a la main.
+ */
 const TABS = [
-  { href: '/', label: t.nav.home, icon: Home, exact: true },
-  { href: '/sessions', label: t.nav.sessions, icon: Clapperboard, exact: false },
-  { href: '/communaute', label: t.nav.community, icon: Library, exact: false },
+  { href: '/', label: t.nav.home, short: t.nav.homeShort, icon: Home, exact: true },
+  { href: '/sessions', label: t.nav.sessions, short: t.nav.sessionsShort, icon: Clapperboard, exact: false },
+  { href: '/communaute', label: t.nav.community, short: t.nav.communityShort, icon: Library, exact: false },
 ] as const;
 
 /**
@@ -46,7 +50,7 @@ export function SiteNav() {
           >
             <Icon className="h-4 w-4" aria-hidden />
             <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+            <span className="sm:hidden">{tab.short}</span>
           </Link>
         );
       })}

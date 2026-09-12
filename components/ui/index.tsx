@@ -1,7 +1,7 @@
 'use client';
 
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Loader2, X } from 'lucide-react';
+import { ChevronDown, Loader2, X } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -344,5 +344,47 @@ export function Dialog({
         ) : null}
       </div>
     </dialog>
+  );
+}
+
+// ── Disclosure ────────────────────────────────────────────────────────
+// Un tiroir qu'on ouvre. Ce qui n'est utile qu'une fois de temps en temps
+// n'a pas a occuper le haut d'un ecran en permanence.
+
+export function Disclosure({
+  title,
+  hint,
+  icon,
+  defaultOpen,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details
+      open={defaultOpen}
+      className="plate group rounded-card [&[open]_.chevron]:rotate-180"
+    >
+      <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 text-sm font-bold [&::-webkit-details-marker]:hidden">
+        {icon ? <span className="shrink-0 text-text-muted">{icon}</span> : null}
+        <span className="flex-1">
+          {title}
+          {hint ? (
+            <span className="ml-2 font-medium text-text-faint">{hint}</span>
+          ) : null}
+        </span>
+        <ChevronDown
+          className="chevron h-4 w-4 shrink-0 text-text-muted transition-transform"
+          aria-hidden
+        />
+      </summary>
+      <div className="space-y-4 border-t-2 border-border px-4 pb-4 pt-4">
+        {children}
+      </div>
+    </details>
   );
 }

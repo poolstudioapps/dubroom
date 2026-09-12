@@ -11,8 +11,11 @@ export const APP_TAGLINE = 'Le studio de doublage entre amis.';
 export const t = {
   nav: {
     home: 'Accueil',
+    homeShort: 'Accueil',
     sessions: 'Mes scènes',
+    sessionsShort: 'Scènes',
     community: 'Communauté',
+    communityShort: 'Communauté',
   },
 
   home: {
@@ -55,6 +58,7 @@ export const t = {
       'Cette scène n’est pas hébergée ici : seuls le lien et le découpage sont conservés. La vidéo est retéléchargée au lancement, ce qui prend quelques minutes.',
     mediaHelp: 'Scène hébergée ici : elle démarre immédiatement.',
     mine: 'La tienne',
+    sceneCount: (n: number) => (n === 1 ? '1 scène disponible' : `${n} scènes disponibles`),
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
     emptyTitle: 'Aucune scène conservée pour l’instant',
@@ -81,6 +85,8 @@ export const t = {
     privacy: 'Confidentialité',
     usageNotice:
       'Usage strictement privé, entre personnes invitées. Aucun contenu n’est diffusé publiquement ni indexé.',
+    contact: 'Contact',
+    contactEmail: 'ienders.pro@gmail.com',
   },
 
   common: {
@@ -145,13 +151,17 @@ export const t = {
     empty: 'Aucune scène pour l’instant. Importes-en une pour commencer.',
     create: 'Nouvelle scène',
     open: 'Ouvrir',
-    storageUsed: (used: string, total: string) => `${used} / ${total} utilisés`,
+    storageUsed: (used: string, total: string) => `${used} sur ${total}`,
     storageWarning:
       'L’espace de stockage arrive à saturation. Supprime d’anciennes scènes pour faire de la place.',
     deleteConfirmTitle: 'Supprimer cette scène ?',
     deleteConfirmBody:
       'Le rendu final, les prises et toutes les métadonnées seront effacés. C’est irréversible.',
     joinByCode: 'Rejoindre avec un code',
+    join: 'Rejoindre',
+    storageTitle: 'Espace utilisé',
+    storageHelp:
+      'La vidéo source et les pistes séparées sont effacées dès qu’un rendu est produit : seul le montage final occupe durablement de la place. Supprimer une scène libère la sienne.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Aucune scène ne correspond à ce code.',
   },
@@ -253,9 +263,9 @@ export const t = {
     waitingBadge: 'En attente',
     players: 'Joueurs',
     start: 'Lancer la partie',
-    startBlockedCharacters:
-      'Chaque personnage doit être pris par un joueur, ou laissé en VO.',
-    startBlockedReady: 'Tous les joueurs présents doivent être prêts.',
+    startBlockedTitle: 'Il manque encore quelque chose :',
+    startBlockedCharacters: 'personnages sans joueur, à prendre ou à laisser en VO —',
+    startBlockedReady: 'joueurs qui ne se sont pas déclarés prêts —',
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Seul l’hôte peut lancer la partie.',
   },

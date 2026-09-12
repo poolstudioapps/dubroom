@@ -88,6 +88,21 @@
   --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, monospace;
 
   --radius-card: 0.5rem;
+
+  /* Un fondu court, jamais un glissement : le contenu qui arrive doit
+     etre lisible tout de suite, pas attendu. */
+  --animate-fade-in: fade-in 260ms ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 @layer base {
@@ -125,9 +140,25 @@
     accent-color: var(--color-bezel);
   }
 
-  /* Les titres sont des enseignes : condenses, larges, en capitales. */
-  h1,
-  h2 {
+  /* Filet de securite global : quelqu'un qui a demande moins d'animation
+     ne doit pas dependre du fait que chaque composant y ait pense. Le
+     defilement instantane evite aussi le mal des transports. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Seul le titre de page est une enseigne. Les titres de carte font
+     quatorze pixels : la condensee y devenait illisible, et jurait avec
+     les entetes de tiroirs restes en police de texte. Ce qui doit crier
+     porte `.signage` explicitement. */
+  h1 {
     font-family: var(--font-display);
     letter-spacing: 0.01em;
   }

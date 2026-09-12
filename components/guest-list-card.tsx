@@ -24,7 +24,7 @@ interface Guest {
  * l'application evite d'aller chercher un terminal au milieu d'une
  * soiree.
  */
-export function GuestListCard() {
+export function GuestListCard({ bare }: { bare?: boolean } = {}) {
   const qc = useQueryClient();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -56,13 +56,19 @@ export function GuestListCard() {
     onError: (e) => setError(humanizeError(e)),
   });
 
+  // Dans un tiroir, le titre est deja porte par l'entete du tiroir : le
+  // repeter ferait deux fois le meme mot a deux lignes d'intervalle.
+  const Shell = bare ? BareShell : Card;
+
   return (
-    <Card className="space-y-3">
-      <div className="flex items-center gap-2">
-        <UserPlus className="h-4 w-4 text-text-muted" aria-hidden />
-        <h2 className="text-sm font-bold">{t.guests.title}</h2>
-      </div>
-      <p className="text-xs text-text-faint">{t.guests.help}</p>
+    <Shell className="space-y-3">
+      {bare ? null : (
+        <div className="flex items-center gap-2">
+          <UserPlus className="h-4 w-4 text-text-muted" aria-hidden />
+          <h2 className="text-sm font-bold">{t.guests.title}</h2>
+        </div>
+      )}
+      <p className="text-xs leading-relaxed text-text-faint">{t.guests.help}</p>
 
       <form
         className="flex flex-wrap gap-2"
@@ -117,6 +123,11 @@ export function GuestListCard() {
           ))}
         </ul>
       )}
-    </Card>
+    </Shell>
   );
+}
+
+/** Le meme contenu, sans la plaque : le tiroir en fournit deja une. */
+function BareShell({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <div className={className}>{children}</div>;
 }

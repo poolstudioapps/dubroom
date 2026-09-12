@@ -26,13 +26,24 @@ export function CommunityClient({ displayName }: { displayName: string }) {
   const qc = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Pack | null>(null);
+  /**
+   * Quelle scene est en train de demarrer.
+   *
+   * L'etat de la mutation est commun a toutes les cartes : s'y fier
+   * faisait tourner les dix boutons pour un seul clic, et laissait croire
+   * qu'on avait lance dix scenes.
+   */
+  const [startingId, setStartingId] = useState<string | null>(null);
 
   const packs = useQuery({ queryKey: ['packs'], queryFn: listPacks });
 
   const start = useMutation({
     mutationFn: (pack: Pack) => startFromPack(pack.id, displayName),
     onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
-    onError: (e) => setError(humanizeError(e)),
+    onError: (e) => {
+      setStartingId(null);
+      setError(humanizeError(e));
+    },
   });
 
   const remove = useMutation({
@@ -44,13 +55,22 @@ export function CommunityClient({ displayName }: { displayName: string }) {
     onError: (e) => setError(humanizeError(e)),
   });
 
+  const count = packs.data?.length ?? 0;
+
   return (
     <AppShell className="space-y-6">
       <header className="space-y-1">
         <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
           {t.community.title}
         </h1>
-        <p className="max-w-2xl text-sm text-text-muted">{t.community.subtitle}</p>
+        <p className="max-w-2xl text-sm leading-relaxed text-text-muted">
+          {t.community.subtitle}
+        </p>
+        {count > 0 ? (
+          <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
+            {t.community.sceneCount(count)}
+          </p>
+        ) : null}
       </header>
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
@@ -62,86 +82,94 @@ export function CommunityClient({ displayName }: { displayName: string }) {
         </div>
       ) : null}
 
-      {packs.data?.length === 0 ? (
+      {packs.isSuccess && count === 0 ? (
         <Card className="space-y-2">
           <h2 className="text-sm font-bold">{t.community.emptyTitle}</h2>
-          <p className="text-sm text-text-muted">{t.community.emptyBody}</p>
+          <p className="text-sm leading-relaxed text-text-muted">
+            {t.community.emptyBody}
+          </p>
         </Card>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <ul className="grid gap-4 md:grid-cols-2">
         {packs.data?.map((pack) => (
-          <Card key={pack.id} className="flex flex-col gap-3">
-            {pack.kind === 'url' && pack.source_url ? (
-              <UrlPreview url={pack.source_url} title={pack.title} />
-            ) : null}
-
-            <div className="space-y-1">
-              <div className="flex items-start justify-between gap-2">
-                <h2 className="font-bold">{pack.title}</h2>
-                <div className="flex shrink-0 gap-1">
-                  <Badge tone={pack.kind === 'url' ? 'neutral' : 'warn'}>
-                    {pack.kind === 'url' ? t.community.kindRecipe : t.community.kindMedia}
-                  </Badge>
-                  {pack.is_mine ? (
-                    <Badge tone="accent">{t.community.mine}</Badge>
-                  ) : null}
-                </div>
-              </div>
-              <p className="text-xs text-text-faint">
-                {formatDuration(pack.duration_ms)} ·{' '}
-                {t.community.characterCount(pack.character_count)} ·{' '}
-                {t.community.lineCount(pack.line_count)}
-                {pack.kind === 'media' ? ` · ${formatBytes(pack.size_bytes)}` : ''}
-              </p>
-              <p className="text-xs text-text-faint">
-                {pack.kind === 'url' ? t.community.recipeHelp : t.community.mediaHelp}
-              </p>
-            </div>
-
-            <ul className="flex flex-wrap gap-1.5">
-              {pack.characters.map((character) => (
-                <li
-                  key={character.name}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface-raised px-2 py-0.5 text-xs font-bold"
-                >
-                  <span
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ backgroundColor: characterColorVar(character.color) }}
-                    aria-hidden
-                  />
-                  {character.name}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-auto flex items-center gap-2">
-              <Button
-                variant="primary"
-                className="flex-1"
-                loading={start.isPending}
-                onClick={() => {
-                  setError(null);
-                  start.mutate(pack);
-                }}
-              >
-                <Clapperboard className="h-4 w-4" aria-hidden />
-                {t.community.play}
-              </Button>
-              {pack.is_mine ? (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label={t.community.remove}
-                  onClick={() => setPendingDelete(pack)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+          <li key={pack.id} className="flex">
+            <Card className="flex w-full flex-col gap-3">
+              {pack.kind === 'url' && pack.source_url ? (
+                <UrlPreview url={pack.source_url} title={pack.title} />
               ) : null}
-            </div>
-          </Card>
+
+              <div className="space-y-1.5">
+                <div className="flex items-start justify-between gap-2">
+                  <h2 className="font-bold leading-snug">{pack.title}</h2>
+                  <div className="flex shrink-0 flex-wrap justify-end gap-1">
+                    <Badge tone={pack.kind === 'url' ? 'neutral' : 'warn'}>
+                      {pack.kind === 'url'
+                        ? t.community.kindRecipe
+                        : t.community.kindMedia}
+                    </Badge>
+                    {pack.is_mine ? (
+                      <Badge tone="accent">{t.community.mine}</Badge>
+                    ) : null}
+                  </div>
+                </div>
+                <p className="text-xs text-text-faint">
+                  {formatDuration(pack.duration_ms)} ·{' '}
+                  {t.community.characterCount(pack.character_count)} ·{' '}
+                  {t.community.lineCount(pack.line_count)}
+                  {pack.kind === 'media' ? ` · ${formatBytes(pack.size_bytes)}` : ''}
+                </p>
+                <p className="text-xs leading-relaxed text-text-faint">
+                  {pack.kind === 'url' ? t.community.recipeHelp : t.community.mediaHelp}
+                </p>
+              </div>
+
+              <ul className="flex flex-wrap gap-1.5">
+                {pack.characters.map((character) => (
+                  <li
+                    key={character.name}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border-strong bg-surface-raised px-2 py-0.5 text-xs font-bold"
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: characterColorVar(character.color) }}
+                      aria-hidden
+                    />
+                    {character.name}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto flex items-center gap-2 pt-1">
+                <Button
+                  variant="primary"
+                  className="flex-1"
+                  loading={startingId === pack.id}
+                  disabled={startingId !== null && startingId !== pack.id}
+                  onClick={() => {
+                    setError(null);
+                    setStartingId(pack.id);
+                    start.mutate(pack);
+                  }}
+                >
+                  <Clapperboard className="h-4 w-4" aria-hidden />
+                  {t.community.play}
+                </Button>
+                {pack.is_mine ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`${t.community.remove} — ${pack.title}`}
+                    onClick={() => setPendingDelete(pack)}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden />
+                  </Button>
+                ) : null}
+              </div>
+            </Card>
+          </li>
         ))}
-      </div>
+      </ul>
 
       <Dialog
         open={!!pendingDelete}
