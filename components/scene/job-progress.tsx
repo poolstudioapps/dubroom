@@ -68,7 +68,7 @@ export function JobProgress({
               {done ? (
                 <Check className="h-4 w-4 text-ok" aria-hidden />
               ) : active ? (
-                <Loader2 className="h-4 w-4 animate-spin text-accent" aria-hidden />
+                <Loader2 className="h-4 w-4 animate-spin text-link" aria-hidden />
               ) : (
                 <CircleDashed className="h-4 w-4" aria-hidden />
               )}

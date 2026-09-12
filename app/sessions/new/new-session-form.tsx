@@ -147,7 +147,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
               className={cn(
                 'flex h-32 w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-sm text-text-faint',
                 'hover:border-border-strong hover:text-text-muted',
-                file && 'border-accent/60 text-text',
+                file && 'border-select bg-select/10 text-text',
               )}
             >
               {file ? (

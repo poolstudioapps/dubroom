@@ -44,7 +44,7 @@ export function RythmoBand({
     const colorOf = new Map(
       characters.map((c) => [c.id, resolveCharacterColor(c.color)]),
     );
-    const guideColor = resolveCssColor('var(--color-text-faint)', '#8a8a99');
+    const guideColor = resolveCssColor('var(--color-stage-faint)', '#8a8a99');
     const playheadColor = resolveCssColor('var(--color-accent)', '#ff8159');
 
     const visible = lines.filter((line) => !line.is_deleted);
@@ -84,7 +84,7 @@ export function RythmoBand({
         const zoneStart = toX(clip.speech_start_ms);
         const zoneEnd = toX(clip.speech_end_ms);
         if (zoneEnd > 0 && zoneStart < cssWidth) {
-          ctx.fillStyle = resolveCssColor('var(--color-surface-raised)', '#2a2a35');
+          ctx.fillStyle = resolveCssColor('var(--color-stage-raised)', '#2a2a35');
           ctx.globalAlpha = 0.55;
           ctx.fillRect(zoneStart, 0, Math.max(2, zoneEnd - zoneStart), cssHeight);
           ctx.globalAlpha = 1;
@@ -179,7 +179,7 @@ export function RythmoBand({
     <canvas
       ref={canvasRef}
       style={{ height }}
-      className="w-full rounded-lg border border-border bg-surface-sunken"
+      className="w-full rounded-md border-2 border-bezel-dark bg-stage"
       aria-hidden
     />
   );

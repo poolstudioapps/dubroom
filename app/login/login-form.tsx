@@ -62,13 +62,14 @@ export function LoginForm() {
       <Button
         type="submit"
         variant="primary"
+        size="lg"
         className="w-full"
         loading={state === 'sending'}
       >
         {state === 'sending' ? t.auth.sending : t.auth.send}
       </Button>
 
-      <p className="text-xs text-text-faint">
+      <p className="text-center text-xs text-text-faint">
         L’accès est réservé aux adresses invitées.
       </p>
     </form>

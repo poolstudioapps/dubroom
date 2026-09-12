@@ -131,7 +131,7 @@ export function PrepareScreen() {
                 key={character.id}
                 className={cn(
                   'space-y-2 py-3',
-                  checked && 'border-accent/60 bg-accent/5',
+                  checked && 'border-select bg-select/12',
                 )}
               >
                 <div className="flex items-center gap-2">
@@ -272,7 +272,7 @@ export function PrepareScreen() {
                   className={cn(
                     'flex items-start gap-2 rounded-lg border border-transparent px-2 py-1.5',
                     'hover:border-border hover:bg-surface',
-                    checked && 'border-accent/60 bg-accent/5',
+                    checked && 'border-select bg-select/12',
                     // Supprimee : elle ne sera pas doublable, mais sa VO
                     // reste au mixage — d'ou le barre plutot que le retrait.
                     line.is_deleted && 'opacity-45',

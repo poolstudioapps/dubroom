@@ -165,7 +165,7 @@ export function LobbyScreen() {
           <div className="space-y-1">
             <p className="text-xs text-text-faint">{t.lobby.shareCode}</p>
             <div className="flex items-center gap-2">
-              <code className="flex-1 rounded-lg bg-surface-sunken px-3 py-2 font-mono text-lg tracking-[0.3em]">
+              <code className="taped relative flex-1 rounded-sm border-2 border-border-strong bg-screen py-3 text-center font-display text-3xl tracking-[0.2em] shadow-[inset_0_2px_4px_rgb(0_0_0/0.15)]">
                 {session.code}
               </code>
               <Button
@@ -231,6 +231,7 @@ export function LobbyScreen() {
           <Card className="space-y-3">
             <Button
               variant="primary"
+              size="lg"
               className="w-full"
               disabled={!canStart}
               loading={act.isPending}

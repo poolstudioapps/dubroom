@@ -2,78 +2,237 @@
 
 /*
  * DubRoom — jetons de theme.
- * Aucune couleur n'est ecrite en dur dans un composant : tout passe par
- * ces variables (PRD §18). Les couleurs de personnage sont nommees
- * `character-1..8` et referencees en base par leur token, jamais par un hex.
+ *
+ * L'univers est celui d'un jeu de soiree : un vieux poste de television
+ * dans un salon, des plaques de metal vissees, des boutons qu'on a envie
+ * d'enfoncer. Les noms de jetons n'ont pas change depuis la premiere
+ * version : chaque composant suit la nouvelle peau sans etre retouche.
+ *
+ * Deux mondes coexistent, et c'est voulu :
+ *  - l'ECRAN et ses PLAQUES sont clairs, le texte y est sombre ;
+ *  - la SCENE (video, bande rythmo, forme d'onde) reste noire, parce
+ *    qu'on y regarde un film et qu'on y lit du texte en mouvement.
+ * D'ou le jeu de jetons `stage-*`, qui ne suit pas l'inversion.
  */
 
 @theme {
-  --color-ink: oklch(0.16 0.012 275);
-  --color-surface: oklch(0.2 0.014 275);
-  --color-surface-raised: oklch(0.25 0.016 275);
-  --color-surface-sunken: oklch(0.13 0.012 275);
-  --color-border: oklch(0.32 0.018 275);
-  --color-border-strong: oklch(0.42 0.022 275);
+  /* ── Le salon et le poste ─────────────────────────────────────────── */
+  --color-room: oklch(0.26 0.09 305);
+  --color-room-deep: oklch(0.19 0.07 305);
+  --color-bezel: oklch(0.42 0.14 300);
+  --color-bezel-dark: oklch(0.32 0.12 300);
+  --color-console: oklch(0.62 0.09 200);
+  --color-console-dark: oklch(0.48 0.08 200);
 
-  --color-text: oklch(0.96 0.004 275);
-  --color-text-muted: oklch(0.72 0.012 275);
-  --color-text-faint: oklch(0.55 0.012 275);
+  /* ── Plaques et ecran (clair) ─────────────────────────────────────── */
+  --color-ink: oklch(0.26 0.09 305);
+  --color-screen: oklch(0.97 0.005 90);
+  --color-surface: oklch(0.9 0.004 90);
+  --color-surface-raised: oklch(0.95 0.004 90);
+  --color-surface-sunken: oklch(0.84 0.005 90);
+  --color-border: oklch(0.74 0.008 90);
+  --color-border-strong: oklch(0.58 0.01 90);
 
-  --color-accent: oklch(0.72 0.17 22);
-  --color-accent-hover: oklch(0.66 0.18 22);
-  --color-accent-ink: oklch(0.15 0.02 22);
+  --color-text: oklch(0.22 0.01 300);
+  --color-text-muted: oklch(0.42 0.012 300);
+  --color-text-faint: oklch(0.55 0.012 300);
 
-  --color-record: oklch(0.63 0.23 25);
-  --color-ok: oklch(0.72 0.15 155);
-  --color-warn: oklch(0.8 0.15 78);
-  --color-danger: oklch(0.63 0.22 20);
+  /* ── La scene : toujours sombre ───────────────────────────────────── */
+  --color-stage: oklch(0.16 0.02 300);
+  --color-stage-raised: oklch(0.24 0.025 300);
+  --color-stage-text: oklch(0.97 0.004 300);
+  --color-stage-faint: oklch(0.66 0.015 300);
 
-  --color-character-1: oklch(0.74 0.15 250);
-  --color-character-2: oklch(0.76 0.16 145);
-  --color-character-3: oklch(0.8 0.15 75);
-  --color-character-4: oklch(0.72 0.17 340);
-  --color-character-5: oklch(0.78 0.13 195);
-  --color-character-6: oklch(0.74 0.16 30);
-  --color-character-7: oklch(0.76 0.14 290);
-  --color-character-8: oklch(0.8 0.12 110);
+  /* ── Accents ──────────────────────────────────────────────────────── */
+  --color-accent: oklch(0.78 0.2 143);
+  --color-accent-hover: oklch(0.72 0.2 143);
+  --color-accent-ink: oklch(0.22 0.06 143);
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  /* Le vert accent est fait pour des aplats de boutons. Le texte et les
+     selections ont besoin d un ton qui tienne sur metal clair. */
+  --color-link: oklch(0.48 0.17 255);
+  --color-select: oklch(0.5 0.15 300);
+
+  --color-record: oklch(0.58 0.23 25);
+  --color-ok: oklch(0.62 0.17 150);
+  --color-warn: oklch(0.72 0.16 75);
+  --color-danger: oklch(0.55 0.22 25);
+  --color-led: oklch(0.6 0.24 27);
+
+  /* ── Personnages ──────────────────────────────────────────────────── */
+  /* Choisies pour rester lisibles sur la plaque claire ET sur la scene
+     noire : la bande rythmo et les pastilles partagent ces valeurs. */
+  --color-character-1: oklch(0.6 0.19 255);
+  --color-character-2: oklch(0.62 0.17 155);
+  --color-character-3: oklch(0.66 0.17 60);
+  --color-character-4: oklch(0.6 0.22 350);
+  --color-character-5: oklch(0.63 0.14 205);
+  --color-character-6: oklch(0.62 0.2 35);
+  --color-character-7: oklch(0.58 0.2 295);
+  --color-character-8: oklch(0.64 0.16 120);
+
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, monospace;
 
-  --radius-card: 0.75rem;
+  --radius-card: 0.5rem;
 }
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
-    background-color: var(--color-ink);
+    /* Le salon : un degrade sourd, une lueur derriere le poste, et un
+       grain leger pour que l'aplat ne fasse pas surface numerique. */
+    background-color: var(--color-room-deep);
+    background-image:
+      radial-gradient(
+        ellipse 80% 60% at 50% 0%,
+        color-mix(in oklch, var(--color-bezel) 45%, transparent),
+        transparent 70%
+      ),
+      linear-gradient(180deg, var(--color-room), var(--color-room-deep));
+    background-attachment: fixed;
     color: var(--color-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background-color: color-mix(in oklch, var(--color-accent) 40%, transparent);
+    background-color: color-mix(in oklch, var(--color-accent) 45%, transparent);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 3px solid var(--color-accent);
     outline-offset: 2px;
   }
 
-  /* Le studio se joue au clavier autant qu'a la souris : les curseurs
-     de volume et de decalage doivent rester saisissables. */
   input[type='range'] {
-    accent-color: var(--color-accent);
+    accent-color: var(--color-bezel);
+  }
+
+  /* Les titres sont des enseignes : condenses, larges, en capitales. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+}
+
+@layer components {
+  /* ── Bouton physique ──────────────────────────────────────────────
+     Une plaque coloree posee sur une levre plus sombre. Elle s'enfonce
+     au clic : c'est ce deplacement qui fait le bouton, pas l'ombre. */
+  .btn-3d {
+    position: relative;
+    border-radius: 0.5rem;
+    box-shadow:
+      0 4px 0 0 var(--btn-lip, oklch(0.4 0.02 300)),
+      0 5px 6px -1px rgb(0 0 0 / 0.35);
+    transform: translateY(0);
+    transition:
+      transform 80ms ease-out,
+      box-shadow 80ms ease-out,
+      background-color 120ms ease-out;
+  }
+
+  .btn-3d:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow:
+      0 0 0 0 var(--btn-lip, oklch(0.4 0.02 300)),
+      0 1px 2px 0 rgb(0 0 0 / 0.3);
+  }
+
+  .btn-3d:disabled {
+    box-shadow: 0 3px 0 0 oklch(0.62 0.01 300);
+  }
+
+  /* ── Plaque vissee ────────────────────────────────────────────────
+     Le fond metal des panneaux, avec quatre vis aux angles dessinees en
+     degrades radiaux : pas d'image, donc rien a charger. */
+  .plate {
+    background-color: var(--color-surface);
+    background-image:
+      radial-gradient(circle 3px at 10px 10px, oklch(0.62 0.01 90) 38%, transparent 42%),
+      radial-gradient(circle 3px at calc(100% - 10px) 10px, oklch(0.62 0.01 90) 38%, transparent 42%),
+      radial-gradient(circle 3px at 10px calc(100% - 10px), oklch(0.62 0.01 90) 38%, transparent 42%),
+      radial-gradient(circle 3px at calc(100% - 10px) calc(100% - 10px), oklch(0.62 0.01 90) 38%, transparent 42%);
+    border: 1px solid var(--color-border-strong);
+    box-shadow:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.55),
+      inset 0 -2px 4px 0 oklch(0 0 0 / 0.08);
+  }
+
+  /* ── Diode ────────────────────────────────────────────────────────
+     Le petit temoin rouge a gauche de chaque libelle du menu. */
+  .led {
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+    border-radius: 9999px;
+    background: radial-gradient(
+      circle at 35% 30%,
+      oklch(0.85 0.12 27),
+      var(--color-led) 60%,
+      oklch(0.35 0.15 27)
+    );
+    box-shadow:
+      inset 0 0 2px 0 oklch(0 0 0 / 0.5),
+      0 0 6px 0 color-mix(in oklch, var(--color-led) 60%, transparent);
+  }
+
+  .led-on {
+    --color-led: oklch(0.75 0.2 143);
+  }
+
+  /* ── Ruban adhesif ───────────────────────────────────────────────
+     Les coins scotches des champs de saisie de la reference. */
+  .taped::before,
+  .taped::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    height: 14px;
+    width: 34px;
+    background-color: oklch(0.93 0.09 95 / 0.75);
+    box-shadow: 0 1px 2px oklch(0 0 0 / 0.2);
+  }
+
+  .taped::before {
+    left: -10px;
+    transform: rotate(-8deg);
+  }
+
+  .taped::after {
+    right: -10px;
+    transform: rotate(7deg);
+  }
+
+  /* ── Texte d'enseigne ─────────────────────────────────────────────
+     L'ombre portee dure, decalee, des logos de jeux televises. */
+  .signage {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-shadow:
+      2px 2px 0 var(--color-bezel-dark),
+      4px 4px 0 oklch(0 0 0 / 0.25);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Grille du haut-parleur, en degrade repete. */
+  .grille {
+    background-image: repeating-linear-gradient(
+      135deg,
+      oklch(0 0 0 / 0.22) 0 2px,
+      transparent 2px 6px
+    );
   }
 }

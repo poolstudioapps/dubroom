@@ -55,7 +55,9 @@ export function SessionsClient({
     <AppShell className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{t.sessions.title}</h1>
+          <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+            {t.sessions.title}
+          </h1>
           <p className="text-sm text-text-faint">
             {t.sessions.storageUsed(
               formatBytes(used),
@@ -120,7 +122,7 @@ export function SessionsClient({
               <div className="flex items-center gap-2">
                 <Link
                   href={`/s/${session.code}`}
-                  className="truncate font-medium hover:text-accent"
+                  className="truncate font-bold hover:text-link hover:underline"
                 >
                   {session.title ?? 'Scène sans titre'}
                 </Link>

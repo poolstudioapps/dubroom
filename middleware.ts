@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/error'];
+const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'];
 
 /**
  * Rafraichit la session Supabase a chaque navigation et ferme le site

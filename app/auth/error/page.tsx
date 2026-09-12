@@ -16,15 +16,19 @@ export default async function AuthErrorPage({
   const message = REASONS[reason ?? ''] ?? t.common.unknownError;
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center gap-4 px-4">
-      <h1 className="text-lg font-semibold">Connexion impossible</h1>
-      <p className="text-sm text-text-muted">{message}</p>
-      <Link
-        href="/login"
-        className="text-sm text-accent underline underline-offset-4"
-      >
-        Revenir à la connexion
-      </Link>
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4">
+      <div className="plate rounded-card space-y-4 p-6">
+        <h1 className="signage text-2xl" style={{ textShadow: 'none' }}>
+          Connexion impossible
+        </h1>
+        <p className="text-sm text-text-muted">{message}</p>
+        <Link
+          href="/login"
+          className="inline-block text-sm font-bold text-[oklch(0.45_0.17_255)] underline underline-offset-4"
+        >
+          Revenir à la connexion
+        </Link>
+      </div>
     </main>
   );
 }
