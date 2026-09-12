@@ -49,8 +49,16 @@ export default async function AuthCallbackPage({
 
     const { data: allowed } = await supabase.rpc('app_is_allowed');
     if (!allowed) {
+      // Avec Discord, l'adresse du compte n'est pas forcement celle qui a
+      // ete invitee. La nommer evite de chercher a l'aveugle.
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const refused = user?.email ?? '';
       await supabase.auth.signOut();
-      redirect('/auth/error?reason=not_allowed');
+      redirect(
+        `/auth/error?reason=not_allowed&email=${encodeURIComponent(refused)}`,
+      );
     }
 
     redirect(landing);

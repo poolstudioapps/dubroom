@@ -40,8 +40,14 @@ export async function GET(request: NextRequest) {
 
   const { data: allowed } = await supabase.rpc('app_is_allowed');
   if (!allowed) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const refused = encodeURIComponent(user?.email ?? '');
     await supabase.auth.signOut();
-    return NextResponse.redirect(`${origin}/auth/error?reason=not_allowed`);
+    return NextResponse.redirect(
+      `${origin}/auth/error?reason=not_allowed&email=${refused}`,
+    );
   }
 
   return NextResponse.redirect(`${origin}${landing}`);

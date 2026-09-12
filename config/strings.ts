@@ -43,6 +43,10 @@ export const t = {
     switchToPassword: 'J’ai un mot de passe, je me connecte directement',
     switchToLink: 'Je n’ai pas de mot de passe, envoyez-moi un lien',
     inviteOnly: 'L’accès est réservé aux adresses invitées.',
+    discord: 'Continuer avec Discord',
+    orSeparator: 'ou par e-mail',
+    notAllowedWith: (email: string) =>
+      `L’adresse ${email} n’est pas sur la liste des invités. Demande à l’hôte de l’ajouter — c’est l’adresse de ton compte Discord si tu es passé par là.`,
 
     passwordSectionTitle: 'Mot de passe',
     passwordSectionHelp:

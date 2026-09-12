@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { DiscordButton } from '@/components/discord-button';
 import { Alert, Button, Input, Label } from '@/components/ui';
 import { t } from '@/config/strings';
 import { humanizeError } from '@/lib/errors';
@@ -100,62 +101,73 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-3">
-      <div className="space-y-1.5">
-        <Label htmlFor="email">{t.auth.emailLabel}</Label>
-        <Input
-          id="email"
-          type="email"
-          required
-          autoComplete="email"
-          autoFocus
-          placeholder={t.auth.emailPlaceholder}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <div className="space-y-4">
+      <DiscordButton next={next} onError={setError} />
+
+      <div className="flex items-center gap-3">
+        <span className="h-px flex-1 bg-border-strong" />
+        <span className="text-xs font-bold text-text-faint uppercase">
+          {t.auth.orSeparator}
+        </span>
+        <span className="h-px flex-1 bg-border-strong" />
       </div>
 
-      {mode === 'password' ? (
+      <form onSubmit={submit} className="space-y-3">
         <div className="space-y-1.5">
-          <Label htmlFor="password">{t.auth.passwordLabel}</Label>
+          <Label htmlFor="email">{t.auth.emailLabel}</Label>
           <Input
-            id="password"
-            type="password"
+            id="email"
+            type="email"
             required
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="email"
+            placeholder={t.auth.emailPlaceholder}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-      ) : null}
 
-      {error ? <Alert tone="danger">{error}</Alert> : null}
+        {mode === 'password' ? (
+          <div className="space-y-1.5">
+            <Label htmlFor="password">{t.auth.passwordLabel}</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+        ) : null}
 
-      <Button
-        type="submit"
-        variant="primary"
-        size="lg"
-        className="w-full"
-        loading={state === 'working'}
-      >
-        {mode === 'password' ? t.auth.signIn : t.auth.send}
-      </Button>
+        {error ? <Alert tone="danger">{error}</Alert> : null}
 
-      <button
-        type="button"
-        className="w-full text-center text-xs font-bold text-link underline underline-offset-4"
-        onClick={() => {
-          setError(null);
-          setPassword('');
-          setMode(mode === 'password' ? 'link' : 'password');
-        }}
-      >
-        {mode === 'password' ? t.auth.switchToLink : t.auth.switchToPassword}
-      </button>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          loading={state === 'working'}
+        >
+          {mode === 'password' ? t.auth.signIn : t.auth.send}
+        </Button>
 
-      <p className="text-center text-xs text-text-faint">
-        {t.auth.inviteOnly}
-      </p>
-    </form>
+        <button
+          type="button"
+          className="w-full text-center text-xs font-bold text-link underline underline-offset-4"
+          onClick={() => {
+            setError(null);
+            setPassword('');
+            setMode(mode === 'password' ? 'link' : 'password');
+          }}
+        >
+          {mode === 'password' ? t.auth.switchToLink : t.auth.switchToPassword}
+        </button>
+
+        <p className="text-center text-xs text-text-faint">
+          {t.auth.inviteOnly}
+        </p>
+      </form>
+    </div>
   );
 }

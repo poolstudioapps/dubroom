@@ -12,10 +12,13 @@ const REASONS: Record<string, string> = {
 export default async function AuthErrorPage({
   searchParams,
 }: {
-  searchParams: Promise<{ reason?: string }>;
+  searchParams: Promise<{ reason?: string; email?: string }>;
 }) {
-  const { reason } = await searchParams;
-  const message = REASONS[reason ?? ''] ?? t.common.unknownError;
+  const { reason, email } = await searchParams;
+  const message =
+    reason === 'not_allowed' && email
+      ? t.auth.notAllowedWith(email)
+      : (REASONS[reason ?? ''] ?? t.common.unknownError);
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4">

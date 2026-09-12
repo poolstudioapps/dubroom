@@ -52,8 +52,12 @@ export function HashSessionFallback({ landing }: { landing: string }) {
 
       const { data: allowed } = await supabase.rpc('app_is_allowed');
       if (!allowed) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        const refused = encodeURIComponent(user?.email ?? '');
         await supabase.auth.signOut();
-        router.replace('/auth/error?reason=not_allowed');
+        router.replace(`/auth/error?reason=not_allowed&email=${refused}`);
         return;
       }
 
