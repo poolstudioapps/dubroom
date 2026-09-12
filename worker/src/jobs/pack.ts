@@ -51,17 +51,26 @@ export async function buildPack(
     return;
   }
 
+  // Une scene venue d'un lien devient une RECETTE : on garde le lien et
+  // la preparation, pas une copie de l'oeuvre. Le pack tombe de 13 Mo a
+  // quelques kilo-octets, et le telechargement sera refait a la demande.
+  // Une scene venue d'un fichier importe n'a pas de lien : il faut alors
+  // conserver les medias, sans quoi elle serait irrecuperable.
+  const asRecipe = session.source_type === 'youtube' && !!session.source_ref;
+
   const { data: pack, error: packError } = await db
     .from('packs')
     .insert({
       created_by: session.host_id,
       title: session.title ?? 'Scène sans titre',
       duration_ms: session.duration_ms ?? 0,
-      // Renseignes juste apres l'envoi : on a besoin de l'identifiant
-      // pour construire les chemins.
-      video_path: 'pending',
-      stem_voice_path: 'pending',
-      stem_music_path: 'pending',
+      kind: asRecipe ? 'url' : 'media',
+      source_url: asRecipe ? session.source_ref : null,
+      // Renseignes juste apres l'envoi pour un pack media : on a besoin
+      // de l'identifiant pour construire les chemins.
+      video_path: asRecipe ? null : 'pending',
+      stem_voice_path: asRecipe ? null : 'pending',
+      stem_music_path: asRecipe ? null : 'pending',
       voice_peaks: session.voice_peaks,
       voice_peaks_hz: session.voice_peaks_hz,
       character_count: (characters.data ?? []).length,
@@ -75,37 +84,46 @@ export async function buildPack(
   }
 
   const packId = pack.id as string;
-  const prefix = `packs/${packId}`;
 
-  // Stems compresses : voir encodeStemForPack pour le calcul de poids.
-  const voiceOut = path.join(workDir, 'pack-voice.m4a');
-  const musicOut = path.join(workDir, 'pack-music.m4a');
-  await encodeStemForPack(local.voice, voiceOut);
-  await encodeStemForPack(local.music, musicOut);
+  let totalBytes = 0;
 
-  const videoPath = `${prefix}/work.mp4`;
-  const voicePath = `${prefix}/voice.m4a`;
-  const musicPath = `${prefix}/music.m4a`;
+  if (!asRecipe) {
+    const prefix = `packs/${packId}`;
 
-  await storage.upload(BUCKET_SOURCES, videoPath, local.video, 'video/mp4');
-  await storage.upload(BUCKET_SOURCES, voicePath, voiceOut, 'audio/mp4');
-  await storage.upload(BUCKET_SOURCES, musicPath, musicOut, 'audio/mp4');
+    // Stems compresses : voir encodeStemForPack pour le calcul de poids.
+    const voiceOut = path.join(workDir, 'pack-voice.m4a');
+    const musicOut = path.join(workDir, 'pack-music.m4a');
+    await encodeStemForPack(local.voice, voiceOut);
+    await encodeStemForPack(local.music, musicOut);
 
-  const sizes = await Promise.all([
-    storage.verifyUploaded(BUCKET_SOURCES, videoPath),
-    storage.verifyUploaded(BUCKET_SOURCES, voicePath),
-    storage.verifyUploaded(BUCKET_SOURCES, musicPath),
-  ]);
+    const videoPath = `${prefix}/work.mp4`;
+    const voicePath = `${prefix}/voice.m4a`;
+    const musicPath = `${prefix}/music.m4a`;
 
-  await db
-    .from('packs')
-    .update({
-      video_path: videoPath,
-      stem_voice_path: voicePath,
-      stem_music_path: musicPath,
-      size_bytes: sizes.reduce((sum, n) => sum + n, 0),
-    })
-    .eq('id', packId);
+    await storage.upload(BUCKET_SOURCES, videoPath, local.video, 'video/mp4');
+    await storage.upload(BUCKET_SOURCES, voicePath, voiceOut, 'audio/mp4');
+    await storage.upload(BUCKET_SOURCES, musicPath, musicOut, 'audio/mp4');
+
+    const sizes = await Promise.all([
+      storage.verifyUploaded(BUCKET_SOURCES, videoPath),
+      storage.verifyUploaded(BUCKET_SOURCES, voicePath),
+      storage.verifyUploaded(BUCKET_SOURCES, musicPath),
+    ]);
+    totalBytes = sizes.reduce((sum, n) => sum + n, 0);
+
+    await db
+      .from('packs')
+      .update({
+        video_path: videoPath,
+        stem_voice_path: voicePath,
+        stem_music_path: musicPath,
+        size_bytes: totalBytes,
+      })
+      .eq('id', packId);
+
+    await fs.rm(voiceOut, { force: true });
+    await fs.rm(musicOut, { force: true });
+  }
 
   // Personnages, puis repliques rattachees par leur cle de locuteur.
   const { data: packChars, error: charError } = await db
@@ -156,12 +174,10 @@ export async function buildPack(
     }
   }
 
-  await fs.rm(voiceOut, { force: true });
-  await fs.rm(musicOut, { force: true });
-
   logger.info('scène conservée dans la communauté', {
     step: 'purge',
     packId,
-    megaoctets: Math.round(sizes.reduce((s, n) => s + n, 0) / 1_048_576),
+    nature: asRecipe ? 'recette' : 'médias',
+    kilooctets: Math.round(totalBytes / 1024),
   });
 }

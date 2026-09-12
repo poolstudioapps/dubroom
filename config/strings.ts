@@ -47,6 +47,13 @@ export const t = {
     subtitle:
       'Des scènes déjà importées, séparées et découpées par le groupe. Il ne reste qu’à choisir les rôles : pas d’attente, pas de préparation à refaire.',
     play: 'Doubler cette scène',
+    preview: 'Aperçu',
+    openSource: 'Ouvrir la source',
+    kindRecipe: 'Recette',
+    kindMedia: 'Fichiers gardés',
+    recipeHelp:
+      'Cette scène n’est pas hébergée ici : seuls le lien et le découpage sont conservés. La vidéo est retéléchargée au lancement, ce qui prend quelques minutes.',
+    mediaHelp: 'Scène hébergée ici : elle démarre immédiatement.',
     mine: 'La tienne',
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),

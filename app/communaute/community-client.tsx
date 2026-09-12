@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Clapperboard, Trash2 } from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
+import { UrlPreview } from '@/components/url-preview';
 import { Alert, Badge, Button, Card, Dialog, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration, t } from '@/config/strings';
@@ -71,16 +72,30 @@ export function CommunityClient({ displayName }: { displayName: string }) {
       <div className="grid gap-4 md:grid-cols-2">
         {packs.data?.map((pack) => (
           <Card key={pack.id} className="flex flex-col gap-3">
+            {pack.kind === 'url' && pack.source_url ? (
+              <UrlPreview url={pack.source_url} title={pack.title} />
+            ) : null}
+
             <div className="space-y-1">
               <div className="flex items-start justify-between gap-2">
                 <h2 className="font-bold">{pack.title}</h2>
-                {pack.is_mine ? <Badge tone="accent">{t.community.mine}</Badge> : null}
+                <div className="flex shrink-0 gap-1">
+                  <Badge tone={pack.kind === 'url' ? 'neutral' : 'warn'}>
+                    {pack.kind === 'url' ? t.community.kindRecipe : t.community.kindMedia}
+                  </Badge>
+                  {pack.is_mine ? (
+                    <Badge tone="accent">{t.community.mine}</Badge>
+                  ) : null}
+                </div>
               </div>
               <p className="text-xs text-text-faint">
                 {formatDuration(pack.duration_ms)} ·{' '}
                 {t.community.characterCount(pack.character_count)} ·{' '}
-                {t.community.lineCount(pack.line_count)} ·{' '}
-                {formatBytes(pack.size_bytes)}
+                {t.community.lineCount(pack.line_count)}
+                {pack.kind === 'media' ? ` · ${formatBytes(pack.size_bytes)}` : ''}
+              </p>
+              <p className="text-xs text-text-faint">
+                {pack.kind === 'url' ? t.community.recipeHelp : t.community.mediaHelp}
               </p>
             </div>
 

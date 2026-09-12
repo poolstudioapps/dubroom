@@ -18,6 +18,9 @@ export interface PackCharacter {
 export interface Pack {
   id: string;
   title: string;
+  /** 'media' = fichiers conserves ; 'url' = recette, tout est refait. */
+  kind: 'media' | 'url';
+  source_url: string | null;
   description: string | null;
   duration_ms: number;
   character_count: number;
@@ -69,11 +72,14 @@ export async function startFromPack(
 /** Retire un pack : les fichiers d'abord, la fiche ensuite. */
 export async function deletePack(pack: Pack): Promise<void> {
   const db = supabaseBrowser();
-  const folder = `packs/${pack.id}`;
 
-  const { data } = await db.storage.from(BUCKET_SOURCES).list(folder, { limit: 100 });
-  const files = (data ?? []).map((file) => `${folder}/${file.name}`);
-  if (files.length > 0) await db.storage.from(BUCKET_SOURCES).remove(files);
+  // Une recette n'a rien dans Storage : seule la fiche est a retirer.
+  if (pack.kind === 'media') {
+    const folder = `packs/${pack.id}`;
+    const { data } = await db.storage.from(BUCKET_SOURCES).list(folder, { limit: 100 });
+    const files = (data ?? []).map((file) => `${folder}/${file.name}`);
+    if (files.length > 0) await db.storage.from(BUCKET_SOURCES).remove(files);
+  }
 
   await rpc('delete_pack', { p_pack_id: pack.id });
 }

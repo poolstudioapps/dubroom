@@ -124,6 +124,36 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
   });
   logger.info('stems produits', { step: 'separate' });
 
+  // ── Scene issue d'une recette ───────────────────────────────────────
+  //
+  // Les personnages et les repliques ont deja ete copies depuis le pack
+  // au moment de la creation de la session. On ne rappelle donc pas
+  // Scribe : c'est la partie payante, et surtout c'est le texte que
+  // l'hote d'origine avait corrige a la main. Le refaire le perdrait.
+  if (session.from_pack_id) {
+    await setJobStep(job.id, 'transcribe', 100);
+    await setJobStep(job.id, 'segment', 0);
+
+    const { data: clipCount, error: clipError } = await db.rpc('recompute_clips', {
+      p_session_id: session.id,
+      p_gap_ms: CLIP_MERGE_GAP_MS,
+      p_margin_ms: CLIP_MARGIN_MS,
+    });
+    if (clipError) {
+      throw new SystemError(`Découpage en clips impossible : ${clipError.message}`);
+    }
+    await setJobStep(job.id, 'segment', 100);
+
+    // La preparation a deja ete faite une fois : on va droit au lobby.
+    await updateSession(session.id, { status: 'lobby' });
+    logger.info('scène reconstituée depuis une recette', {
+      step: 'segment',
+      packId: session.from_pack_id,
+      clips: Number(clipCount ?? 0),
+    });
+    return;
+  }
+
   // ── 5. Transcription et diarisation ─────────────────────────────────
   await setJobStep(job.id, 'transcribe', 10);
   // Scribe tourne sur le stem voix, pas sur l'audio complet : le taux de
