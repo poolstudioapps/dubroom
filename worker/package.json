@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "selftest": "tsx scripts/selftest-mix.ts",
     "probe:scribe": "tsx scripts/probe-scribe.ts",
-    "backfill:envelope": "tsx scripts/backfill-envelope.ts"
+    "backfill:envelope": "tsx scripts/backfill-envelope.ts",
+    "invite": "tsx scripts/invite.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0",
