@@ -95,6 +95,7 @@ cd worker
 npm run check        # vérifie l'environnement sans rien installer
 npm run setup        # installe ce qui manque
 npm run selftest     # auto-test du moteur de mixage, avec ffmpeg réel
+npm run probe:scribe # confronte l'adaptateur Scribe à la vraie réponse de l'API
 npm run typecheck    # TypeScript strict, worker
 ```
 
@@ -137,9 +138,15 @@ de déduire la syntaxe d'un numéro de version qui ne dit rien des builds systè
 
 ## Points de vigilance
 
-- **Python 3.13 et au-delà** : PyTorch publie ses roues avec plusieurs mois de
-  retard. Si l'installation de PyTorch échoue, installe Python 3.11 et renseigne
-  `PYTHON_PATH` dans `worker/.env`. Le bootstrap prévient avant d'essayer.
+- **La roue PyTorch se choisit, elle ne se code pas en dur.** Les index CUDA
+  abandonnent les anciens à chaque sortie de torch, et tous ne publient pas pour
+  toutes les versions de Python. Le bootstrap interroge `cu130`, `cu128` puis
+  `cu126` et garde le premier qui propose vraiment une roue CUDA. S'il n'en
+  trouve aucune, il le dit au lieu d'installer une version CPU en silence, et il
+  remplace une version CPU déjà présente sur une machine à GPU.
+- **Demucs ne déclare pas numpy**, et torch a cessé de le tirer. Sans lui,
+  `pip install demucs` réussit et le premier appel meurt. Le bootstrap installe
+  `numpy` et `soundfile` explicitement.
 - **yt-dlp casse régulièrement.** C'est dans la nature de l'outil. Mets-le à jour
   avec `worker\bin\yt-dlp.exe -U`. Ne l'automatise pas au démarrage du worker :
   une mise à jour ratée bloquerait tout. L'import de fichier reste le chemin

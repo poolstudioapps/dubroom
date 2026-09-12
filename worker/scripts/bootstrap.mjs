@@ -335,14 +335,6 @@ async function stepPython() {
 
   if (python && (python.major > 3 || python.minor >= 10)) {
     ok(`Python ${python.label}`);
-    if (python.minor >= 13) {
-      // PyTorch publie ses roues avec plusieurs mois de retard sur les
-      // nouvelles versions de Python : le dire maintenant evite un echec
-      // opaque a l'etape suivante.
-      warn(
-        `Python ${python.label} est très récent : PyTorch n’a pas toujours de version compatible.\n    En cas d’échec, installe Python 3.11 et renseigne PYTHON_PATH dans worker/.env.`,
-      );
-    }
     return python;
   }
 
@@ -387,63 +379,108 @@ async function stepPython() {
 
 // ── 5. PyTorch ──────────────────────────────────────────────────────────
 
-async function stepTorch(python) {
-  const hasTorch = execOk(python.command, ['-c', 'import torch']);
+/** Version installee et disponibilite reelle de CUDA. */
+function torchState(python) {
+  const result = exec(python.command, [
+    '-c',
+    'import torch; print(torch.__version__, torch.cuda.is_available())',
+  ]);
+  if (result.status !== 0) return { installed: false, version: null, cuda: false };
+  const [version, cuda] = (result.stdout ?? '').trim().split(' ');
+  return { installed: true, version, cuda: cuda === 'True' };
+}
 
-  if (hasTorch && !FORCE) {
-    const version = exec(python.command, [
-      '-c',
-      'import torch; print(torch.__version__, torch.cuda.is_available())',
+/**
+ * Choisit l'index PyTorch a utiliser.
+ *
+ * Les index CUDA ne publient pas de roue pour toutes les versions de
+ * Python, et les plus anciens sont abandonnes a chaque sortie de torch.
+ * Coder `cu121` en dur revient a installer silencieusement une version
+ * CPU des que l'un ou l'autre bouge — exactement le piege que le PRD
+ * signale. On interroge donc les index, du plus recent au plus ancien, et
+ * on garde le premier qui propose vraiment une roue CUDA. La resolution
+ * se fait a vide : rien n'est telecharge a ce stade.
+ */
+function pickCudaIndex(python) {
+  for (const tag of ['cu130', 'cu128', 'cu126']) {
+    const url = `https://download.pytorch.org/whl/${tag}`;
+    const result = exec(python.command, [
+      '-m', 'pip', 'install', '--dry-run', '--no-deps', '--ignore-installed',
+      'torch', '--index-url', url,
     ]);
-    const [torchVersion, cuda] = (version.stdout ?? '').trim().split(' ');
-    ok(`PyTorch ${torchVersion} (${cuda === 'True' ? 'CUDA disponible' : 'CPU'})`);
-    return cuda === 'True';
+    const match = /Would install torch-(\S+)/.exec(result.stdout ?? '');
+    if (match && match[1].includes('+cu')) return { url, tag, version: match[1] };
   }
-  if (CHECK_ONLY) {
+  return null;
+}
+
+async function stepTorch(python) {
+  const hasNvidia = execOk('nvidia-smi', []);
+  const state = torchState(python);
+
+  if (state.installed && !FORCE) {
+    // Le cas qui coute le plus cher : une roue CPU sur une machine a GPU.
+    // Demucs tourne alors dix fois plus lentement sans que rien ne le dise.
+    if (!(hasNvidia && !state.cuda)) {
+      ok(`PyTorch ${state.version} (${state.cuda ? 'CUDA disponible' : 'CPU'})`);
+      return state.cuda;
+    }
+    if (CHECK_ONLY) {
+      warn(
+        `PyTorch ${state.version} est une version CPU alors qu'un GPU NVIDIA est présent.`,
+      );
+      console.log('    Demucs sera très lent. Relance start.bat pour corriger.');
+      return false;
+    }
+    work('PyTorch est en version CPU sur une machine à GPU : remplacement');
+  } else if (CHECK_ONLY) {
     fail('PyTorch absent', 'Lance start.bat pour l’installer automatiquement.');
     return false;
   }
 
-  // Une erreur de roue ici, et Demucs tourne dix fois plus lentement
-  // sans que rien ne le signale.
-  const hasNvidia = execOk('nvidia-smi', []);
+  const cuda = hasNvidia ? pickCudaIndex(python) : null;
+  if (hasNvidia && !cuda) {
+    warn(`Aucune roue CUDA pour Python ${python.label} : PyTorch sera en version CPU.`);
+    console.log('    Demucs fonctionnera, mais lentement. Python 3.11 ou 3.12 a plus de choix.');
+  }
+
+  // pip considere une version CPU deja presente comme satisfaisante et ne
+  // la remplacerait pas : il faut la retirer avant.
+  if (state.installed && cuda) {
+    work('désinstallation de la version CPU');
+    await stream(python.command, ['-m', 'pip', 'uninstall', '-y', 'torch']);
+  }
+
   work(
-    hasNvidia
-      ? 'installation de PyTorch CUDA (~2,5 Go)'
+    cuda
+      ? `installation de PyTorch ${cuda.version} (~3 Go, une seule fois)`
       : 'installation de PyTorch CPU (~200 Mo)',
   );
 
-  const installArgs = hasNvidia
-    ? ['-m', 'pip', 'install', '--upgrade', 'torch', '--index-url', 'https://download.pytorch.org/whl/cu121']
+  const installArgs = cuda
+    ? ['-m', 'pip', 'install', '--upgrade', 'torch', '--index-url', cuda.url]
     : ['-m', 'pip', 'install', '--upgrade', 'torch'];
 
   const code = await stream(python.command, installArgs);
   if (code !== 0) {
     fail(
       'installation de PyTorch impossible',
-      'Passe SEPARATION_MODE=elevenlabs dans worker/.env pour te passer de Demucs,\nou installe PyTorch à la main depuis https://pytorch.org/get-started/locally/.',
+      'Passe SEPARATION_MODE=elevenlabs dans worker/.env pour te passer de Demucs.',
     );
     return false;
   }
 
   // La seule verification qui compte vraiment.
-  const check = exec(python.command, [
-    '-c',
-    'import torch; print(torch.__version__, torch.cuda.is_available())',
-  ]);
-  const [torchVersion, cuda] = (check.stdout ?? '').trim().split(' ');
-  const cudaReady = cuda === 'True';
-
-  if (hasNvidia && !cudaReady) {
-    warn(
-      'GPU NVIDIA détecté mais PyTorch ne voit pas CUDA.\n    Une version CPU est probablement déjà installée. Désinstalle-la :\n    pip uninstall torch, puis relance avec --force.',
-    );
-  } else if (cudaReady) {
-    ok(`GPU NVIDIA détecté → PyTorch CUDA ${torchVersion}`);
+  const after = torchState(python);
+  if (hasNvidia && !after.cuda) {
+    warn('GPU NVIDIA détecté mais PyTorch ne voit toujours pas CUDA.');
+    console.log('    Vérifie le pilote avec nvidia-smi, puis relance avec --force.');
+  } else if (after.cuda) {
+    ok(`GPU NVIDIA détecté → PyTorch ${after.version}, CUDA disponible`);
   } else {
-    ok(`PyTorch ${torchVersion} (CPU)`);
+    ok(`PyTorch ${after.version} (CPU)`);
   }
-  return cudaReady;
+  return after.cuda;
 }
 
 // ── 6. Demucs ───────────────────────────────────────────────────────────
@@ -463,7 +500,12 @@ async function stepDemucs(python) {
   }
 
   work('installation de Demucs');
-  const code = await stream(python.command, ['-m', 'pip', 'install', '-U', 'demucs']);
+  // numpy et soundfile sont explicites : Demucs 4.1 ne les declare pas,
+  // et torch a cesse de tirer numpy. Sans eux, pip reussit mais le
+  // premier appel meurt sur un ModuleNotFoundError.
+  const code = await stream(python.command, [
+    '-m', 'pip', 'install', '-U', 'demucs', 'numpy', 'soundfile',
+  ]);
   if (code !== 0 || !execOk(python.command, ['-m', 'demucs', '--help'])) {
     fail(
       'installation de Demucs impossible',
@@ -477,20 +519,48 @@ async function stepDemucs(python) {
 
 // ── 7. Poids du modele ──────────────────────────────────────────────────
 
-async function stepWeights(python, model) {
-  const cache = path.join(os.homedir(), '.cache', 'torch', 'hub', 'checkpoints');
+/**
+ * Emplacements possibles des poids.
+ *
+ * Demucs 4.1 telecharge ses modeles depuis le Hub Hugging Face ; les
+ * versions anterieures passaient par le cache torch.hub. Les deux
+ * existent dans la nature, on regarde donc les deux plutot que de
+ * supposer. Se tromper d'emplacement ne casse rien de visible : le
+ * bootstrap re-telecharge simplement 300 Mo a chaque lancement, ou
+ * pire, refuse de demarrer le worker.
+ */
+async function weightsCached() {
+  const home = os.homedir();
+  const hfRoot =
+    process.env.HF_HOME ??
+    process.env.HUGGINGFACE_HUB_CACHE ??
+    path.join(home, '.cache', 'huggingface');
 
-  let cached = false;
-  try {
-    const entries = await fs.readdir(cache);
-    // On teste la presence d'un .th plutot que de deviner le nom exact,
-    // qui contient un hash.
-    cached = entries.some((name) => name.endsWith('.th'));
-  } catch {
-    cached = false;
+  // Hub HF : un dossier models--<org>--<nom> par modele.
+  for (const base of [path.join(hfRoot, 'hub'), hfRoot]) {
+    try {
+      const entries = await fs.readdir(base);
+      if (entries.some((name) => /^models--.*demucs/i.test(name))) return true;
+    } catch {
+      // Dossier absent : on essaie le suivant.
+    }
   }
 
-  if (cached && !FORCE) {
+  // Cache torch.hub des versions plus anciennes. On teste la presence
+  // d'un .th plutot que de deviner un nom de fichier qui porte un hash.
+  try {
+    const checkpoints = path.join(home, '.cache', 'torch', 'hub', 'checkpoints');
+    const entries = await fs.readdir(checkpoints);
+    if (entries.some((name) => name.endsWith('.th'))) return true;
+  } catch {
+    // Absent aussi.
+  }
+
+  return false;
+}
+
+async function stepWeights(python, model) {
+  if ((await weightsCached()) && !FORCE) {
     ok(`poids ${model} en cache`);
     return;
   }
@@ -528,8 +598,20 @@ async function stepWeights(python, model) {
       '-o', path.join(temp, 'out'),
       silence,
     ]);
-    if (code === 0) ok(`poids ${model} en cache`);
-    else warn('préchargement des poids échoué : il se fera au premier import');
+
+    // On re-verifie le cache : un demucs qui sort en 0 ne prouve pas que
+    // les poids sont la ou on les cherchera au prochain lancement, et
+    // c'est exactement ce qui ferait echouer `--check` ensuite.
+    if (code === 0 && (await weightsCached())) {
+      ok(`poids ${model} en cache`);
+    } else if (code === 0) {
+      warn(
+        `Demucs fonctionne mais ses poids ne sont pas la ou ${path.basename(process.argv[1])} les cherche.`,
+      );
+      console.log('    Sans conséquence sur le rendu ; signale-le si --check le répète.');
+    } else {
+      warn('préchargement des poids échoué : il se fera au premier import');
+    }
   } finally {
     await fs.rm(temp, { recursive: true, force: true });
   }
