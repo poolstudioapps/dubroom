@@ -16,6 +16,7 @@ import { SystemError, UserError } from '../errors.ts';
 import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
 import {
   downmixForStt,
+  encodeBackingPreview,
   extractAudio,
   normalize,
   probe,
@@ -102,9 +103,17 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
   const musicRemote = `${session.id}/music.wav`;
   await storage.upload(BUCKET_SOURCES, voiceRemote, voicePath, 'audio/wav');
   await storage.upload(BUCKET_SOURCES, musicRemote, musicPath, 'audio/wav');
+
+  // Le studio consomme la preview, jamais le WAV.
+  const previewLocal = path.join(sepDir, 'music-preview.m4a');
+  const previewRemote = `${session.id}/music-preview.m4a`;
+  await encodeBackingPreview(musicPath, previewLocal);
+  await storage.upload(BUCKET_SOURCES, previewRemote, previewLocal, 'audio/mp4');
+
   await updateSession(session.id, {
     stem_voice_path: voiceRemote,
     stem_music_path: musicRemote,
+    stem_music_preview_path: previewRemote,
   });
   logger.info('stems produits', { step: 'separate' });
 

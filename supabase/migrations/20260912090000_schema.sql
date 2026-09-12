@@ -44,6 +44,10 @@ create table sessions (
   video_path text,                            -- work.mp4 normalise (Storage)
   stem_voice_path text,
   stem_music_path text,
+  -- Version compressee du stem de fond, servie au studio uniquement.
+  -- Le WAV 48 kHz reste la reference du mixage ; le streamer a chaque
+  -- prise de chaque joueur epuiserait le quota de bande passante (§13.3).
+  stem_music_preview_path text,
   duration_ms int,
 
   render_path text,                           -- MP4 final

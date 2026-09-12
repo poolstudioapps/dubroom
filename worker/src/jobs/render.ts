@@ -217,6 +217,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     video_path: null,
     stem_voice_path: null,
     stem_music_path: null,
+    stem_music_preview_path: null,
     upload_path: null,
     purged_at: new Date().toISOString(),
     status: 'done',

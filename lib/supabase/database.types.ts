@@ -42,6 +42,7 @@ export interface SessionRow {
   video_path: string | null;
   stem_voice_path: string | null;
   stem_music_path: string | null;
+  stem_music_preview_path: string | null;
   duration_ms: number | null;
   render_path: string | null;
   render_size_bytes: number | null;

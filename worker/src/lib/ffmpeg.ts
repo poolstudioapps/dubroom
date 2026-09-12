@@ -176,6 +176,27 @@ export async function downmixForStt(input: string, output: string): Promise<void
   });
 }
 
+/**
+ * Version compressee du stem de fond, pour le studio.
+ *
+ * Le navigateur rejoue ce fichier a chaque prise et a chaque reecoute,
+ * pour chaque joueur. Servir le WAV 48 kHz (~35 Mo par minute) viderait
+ * les 2 Go de bande passante mensuels en une soiree (PRD §13.3) — alors
+ * que l'AAC 96 kbps est indistinguable comme simple repere rythmique.
+ * Le WAV reste la reference du mixage.
+ */
+export async function encodeBackingPreview(
+  input: string,
+  output: string,
+): Promise<void> {
+  await ffmpeg(
+    ['-i', input, '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', '-ac', '2',
+     '-movflags', '+faststart'],
+    output,
+    { timeoutMs: TIMEOUTS.extract },
+  );
+}
+
 /** Reechantillonne un stem en 48 kHz stereo (PRD §20.7). */
 export async function resample48k(input: string, output: string): Promise<void> {
   await ffmpeg(['-i', input, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le'], output, {
@@ -183,14 +204,6 @@ export async function resample48k(input: string, output: string): Promise<void> 
   });
 }
 
-/**
- * Mixage a partir d'un filtergraph ecrit dans un fichier (PRD §20.5).
- *
- * Avec une vingtaine de clips et autant de segments VO, la ligne de
- * commande depasse les 8191 caracteres de cmd.exe. Le fichier est
- * conserve dans WORK_DIR : c'est la seule piece a conviction exploitable
- * quand un mixage part de travers.
- */
 /**
  * Deux orthographes pour la meme chose, selon l'age de ffmpeg :
  * `-filter_complex_script` a ete remplace par `-/filter_complex` et
@@ -211,6 +224,14 @@ function isUnknownOption(error: unknown): boolean {
   );
 }
 
+/**
+ * Mixage a partir d'un filtergraph ecrit dans un fichier (PRD §20.5).
+ *
+ * Avec une vingtaine de clips et autant de segments VO, la ligne de
+ * commande depasse les 8191 caracteres de cmd.exe. Le fichier est
+ * conserve dans WORK_DIR : c'est la seule piece a conviction exploitable
+ * quand un mixage part de travers.
+ */
 export async function mixWithGraph(
   inputs: string[],
   graph: string,

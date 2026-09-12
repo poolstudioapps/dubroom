@@ -123,6 +123,9 @@ export function useScene(sessionId: string, userId: string) {
 
   return useQuery({
     queryKey: keys.scene(sessionId),
+    // Le code n'est pas encore resolu en identifiant : interroger la base
+    // avec une chaine vide provoquerait une erreur de cast uuid.
+    enabled: !!sessionId,
     queryFn: () => fetchScene(sessionId, userId),
   });
 }
@@ -217,7 +220,6 @@ export function useTakes(sessionId: string, clipIds: string[]) {
 
 export interface MediaUrls {
   video: string | null;
-  voice: string | null;
   music: string | null;
 }
 
@@ -230,11 +232,14 @@ export function useMediaUrls(session: SessionRow | undefined) {
     refetchInterval: (SIGNED_URL_TTL_S - 120) * 1000,
     queryFn: async (): Promise<MediaUrls> => {
       const db = supabaseBrowser();
-      const paths = [
-        session!.video_path,
-        session!.stem_voice_path,
-        session!.stem_music_path,
-      ].filter(Boolean) as string[];
+      // Le fond servi au navigateur est la version compressee : le WAV
+      // de reference ne quitte jamais Supabase que vers le worker.
+      const musicPath =
+        session!.stem_music_preview_path ?? session!.stem_music_path;
+
+      const paths = [session!.video_path, musicPath].filter(
+        Boolean,
+      ) as string[];
 
       const { data, error } = await db.storage
         .from(BUCKET_SOURCES)
@@ -246,8 +251,7 @@ export function useMediaUrls(session: SessionRow | undefined) {
       );
       return {
         video: byPath.get(session!.video_path ?? '') ?? null,
-        voice: byPath.get(session!.stem_voice_path ?? '') ?? null,
-        music: byPath.get(session!.stem_music_path ?? '') ?? null,
+        music: byPath.get(musicPath ?? '') ?? null,
       };
     },
   });
