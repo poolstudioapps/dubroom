@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'];
+// /auth/callback/hash est couvert par le prefixe /auth/callback.
 
 /**
  * Rafraichit la session Supabase a chaque navigation et ferme le site
