@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const it = {
   nav: {
@@ -356,15 +355,9 @@ export const it = {
     retry: 'Rilancia l’importazione',
     neverStarted:
       'L’importazione non è mai partita: probabilmente è fallito l’invio del file. Rilanciala, oppure riparti da una scena nuova.',
+    hostPreparing:
+      'L’ospite sta sistemando i personaggi. La lobby si apre tra poco.',
     startOver: 'Nuova scena',
-    steps: {
-      download: 'Recupero del video',
-      encode: 'Normalizzazione',
-      extract: 'Estrazione dell’audio',
-      separate: 'Separazione di voci e sottofondo',
-      transcribe: 'Trascrizione e riconoscimento dei personaggi',
-      segment: 'Taglio delle battute',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -507,19 +500,23 @@ export const it = {
       'L’allineamento non ha trovato nulla di netto su questa presa. Resta com’è.',
   },
 
+
+  progress: {
+    preparing: 'Preparazione della scena',
+    rendering: 'Montaggio in corso',
+    queued: 'In coda. Parte da solo tra un attimo.',
+    working:
+      'Conta qualche minuto. Puoi lasciare la scheda aperta e tornare più tardi.',
+    almost: 'Ci siamo quasi.',
+    longer:
+      'Ci sta mettendo più del solito, ma sta ancora girando. Lascialo finire.',
+  },
   render: {
     title: 'Montaggio in corso',
     queued: 'In attesa del worker. Lancia lo script sul tuo PC.',
     frozen: 'La scena è congelata: le prese non si possono più cambiare.',
     failed: 'Il montaggio è fallito.',
     retry: 'Rilancia il montaggio',
-    steps: {
-      fetch: 'Recupero delle prese',
-      mix: 'Missaggio audio',
-      mux: 'Assemblaggio del video',
-      upload: 'Invio del risultato',
-      purge: 'Pulizia della fonte',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

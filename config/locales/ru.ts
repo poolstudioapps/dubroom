@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 /** Русский счёт: один, два-четыре, пять и дальше. */
 function plural(n: number, one: string, few: string, many: string): string {
@@ -362,15 +361,9 @@ export const ru = {
     retry: 'Запустить загрузку заново',
     neverStarted:
       'Загрузка так и не началась: скорее всего, не прошла отправка файла. Запусти заново или начни новую сцену.',
+    hostPreparing:
+      'Хозяин разбирается с персонажами. Лобби откроется через минуту.',
     startOver: 'Новая сцена',
-    steps: {
-      download: 'Забираем видео',
-      encode: 'Приводим к норме',
-      extract: 'Достаём звук',
-      separate: 'Разделяем голоса и фон',
-      transcribe: 'Расшифровка и распознавание персонажей',
-      segment: 'Режем реплики',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -507,19 +500,23 @@ export const ru = {
     alignUnsure: 'Подгонка не нашла на этом дубле ничего внятного. Он лежит как записан.',
   },
 
+
+  progress: {
+    preparing: 'Готовим сцену',
+    rendering: 'Собираем результат',
+    queued: 'В очереди. Скоро начнётся само.',
+    working:
+      'Займёт несколько минут. Вкладку можно оставить открытой и вернуться позже.',
+    almost: 'Почти готово.',
+    longer:
+      'Идёт дольше обычного, но работа не остановилась. Дай ей закончить.',
+  },
   render: {
     title: 'Идёт сборка',
     queued: 'Ждём воркер. Запусти скрипт на своём компьютере.',
     frozen: 'Сцена зафиксирована: дубли больше не меняются.',
     failed: 'Сборка не удалась.',
     retry: 'Запустить сборку заново',
-    steps: {
-      fetch: 'Забираем дубли',
-      mix: 'Сводим звук',
-      mux: 'Собираем видео',
-      upload: 'Отправляем результат',
-      purge: 'Убираем исходники',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

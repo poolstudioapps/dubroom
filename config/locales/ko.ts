@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const ko = {
   nav: {
@@ -348,15 +347,9 @@ export const ko = {
     retry: '가져오기 다시 실행',
     neverStarted:
       '가져오기가 시작되지 않았습니다. 파일 전송이 실패했을 가능성이 큽니다. 다시 실행하거나 새 장면으로 시작하세요.',
+    hostPreparing:
+      '호스트가 등장인물을 정리하는 중입니다. 곧 로비가 열립니다.',
     startOver: '새 장면',
-    steps: {
-      download: '영상 받아오는 중',
-      encode: '정규화 중',
-      extract: '오디오 추출 중',
-      separate: '목소리와 배경음 분리 중',
-      transcribe: '받아쓰기와 화자 판별',
-      segment: '대사 나누는 중',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -490,19 +483,23 @@ export const ko = {
     alignUnsure: '이 테이크에서는 뚜렷한 기준을 찾지 못했습니다. 그대로 놓습니다.',
   },
 
+
+  progress: {
+    preparing: '장면을 준비하는 중',
+    rendering: '결과물을 만드는 중',
+    queued: '대기 중입니다. 곧 알아서 시작됩니다.',
+    working:
+      '몇 분 걸립니다. 탭을 열어 둔 채 나중에 돌아와도 됩니다.',
+    almost: '거의 다 됐습니다.',
+    longer:
+      '평소보다 오래 걸리고 있지만 계속 돌아가는 중입니다. 그대로 두세요.',
+  },
   render: {
     title: '렌더링 중',
     queued: '워커를 기다리는 중입니다. PC에서 스크립트를 실행하세요.',
     frozen: '장면이 확정됐습니다. 테이크는 더 이상 바꿀 수 없습니다.',
     failed: '렌더링에 실패했습니다.',
     retry: '렌더링 다시 실행',
-    steps: {
-      fetch: '테이크 가져오는 중',
-      mix: '오디오 믹싱 중',
-      mux: '영상 합치는 중',
-      upload: '결과 보내는 중',
-      purge: '소재 정리 중',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

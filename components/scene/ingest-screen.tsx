@@ -35,9 +35,7 @@ export function IngestScreen() {
         <h1 className="signage text-2xl" style={{ textShadow: 'none' }}>
           {session.title ?? t.ingest.title}
         </h1>
-        <p className="text-sm text-text-muted">
-          L’hôte met au point les personnages. Le lobby s’ouvrira dans un instant.
-        </p>
+        <p className="text-sm text-text-muted">{t.ingest.hostPreparing}</p>
       </Card>
     );
   }
@@ -46,7 +44,6 @@ export function IngestScreen() {
     <Card className="mx-auto max-w-lg space-y-5">
       <header>
         <h1 className="text-lg font-semibold">{session.title ?? t.ingest.title}</h1>
-        <p className="text-sm text-text-faint">{t.ingest.subtitle}</p>
       </header>
 
       <JobProgress state={jobState.data} kind="ingest" />

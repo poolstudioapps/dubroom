@@ -8,7 +8,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const en = {
   nav: {
@@ -358,15 +357,9 @@ export const en = {
     retry: 'Restart the import',
     neverStarted:
       'The import never started: the file upload probably failed. Start it again, or begin a new scene.',
+    hostPreparing:
+      'The host is sorting out the characters. The lobby opens in a moment.',
     startOver: 'New scene',
-    steps: {
-      download: 'Fetching the video',
-      encode: 'Normalising',
-      extract: 'Extracting the audio',
-      separate: 'Separating voices and background',
-      transcribe: 'Transcribing and detecting characters',
-      segment: 'Cutting the lines',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -509,19 +502,23 @@ export const en = {
       'Alignment found nothing clear on this take. It is placed as recorded.',
   },
 
+
+  progress: {
+    preparing: 'Preparing the scene',
+    rendering: 'Putting it together',
+    queued: 'In the queue. It starts on its own in a moment.',
+    working:
+      'Count a few minutes. You can leave the tab open and come back later.',
+    almost: 'Nearly there.',
+    longer:
+      'This is taking longer than usual, but it is still running. Let it finish.',
+  },
   render: {
     title: 'Rendering',
     queued: 'Waiting for the worker. Start the script on your PC.',
     frozen: 'The scene is frozen: takes can no longer be changed.',
     failed: 'The render failed.',
     retry: 'Restart the render',
-    steps: {
-      fetch: 'Fetching the takes',
-      mix: 'Mixing the audio',
-      mux: 'Assembling the video',
-      upload: 'Uploading the result',
-      purge: 'Cleaning up the source',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

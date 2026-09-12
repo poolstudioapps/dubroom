@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const es = {
   nav: {
@@ -356,15 +355,9 @@ export const es = {
     retry: 'Reintentar la importación',
     neverStarted:
       'La importación nunca arrancó: probablemente falló la subida del archivo. Vuelve a lanzarla, o empieza una escena nueva.',
+    hostPreparing:
+      'El anfitrión está ajustando los personajes. La sala se abre enseguida.',
     startOver: 'Nueva escena',
-    steps: {
-      download: 'Obteniendo el vídeo',
-      encode: 'Normalizando',
-      extract: 'Extrayendo el audio',
-      separate: 'Separando voces y fondo',
-      transcribe: 'Transcribiendo y detectando personajes',
-      segment: 'Cortando las frases',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -507,19 +500,23 @@ export const es = {
       'El ajuste no ha encontrado nada claro en esta toma. Se coloca tal cual.',
   },
 
+
+  progress: {
+    preparing: 'Preparando la escena',
+    rendering: 'Montando el resultado',
+    queued: 'En la cola. Arranca solo en un momento.',
+    working:
+      'Cuenta unos minutos. Puedes dejar la pestaña abierta y volver más tarde.',
+    almost: 'Casi está.',
+    longer:
+      'Está tardando más de lo normal, pero sigue en marcha. Déjalo terminar.',
+  },
   render: {
     title: 'Montaje en curso',
     queued: 'Esperando al worker. Lanza el script en tu PC.',
     frozen: 'La escena está congelada: las tomas ya no se pueden cambiar.',
     failed: 'El montaje ha fallado.',
     retry: 'Reintentar el montaje',
-    steps: {
-      fetch: 'Recogiendo las tomas',
-      mix: 'Mezclando el audio',
-      mux: 'Montando el vídeo',
-      upload: 'Subiendo el resultado',
-      purge: 'Limpiando la fuente',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

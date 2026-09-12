@@ -7,7 +7,6 @@
  * mieux qu'une phrase francaise surgissant au milieu d'une page anglaise.
  */
 
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const fr = {
   nav: {
@@ -376,15 +375,9 @@ export const fr = {
     retry: 'Relancer l’import',
     neverStarted:
       'L’import n’a jamais démarré : l’envoi du fichier a probablement échoué. Relance-le, ou repars d’une nouvelle scène.',
+    hostPreparing:
+      'L’hôte met au point les personnages. Le lobby s’ouvrira dans un instant.',
     startOver: 'Nouvelle scène',
-    steps: {
-      download: 'Récupération de la vidéo',
-      encode: 'Normalisation',
-      extract: 'Extraction de l’audio',
-      separate: 'Séparation des voix et du fond',
-      transcribe: 'Transcription et détection des personnages',
-      segment: 'Découpage des répliques',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -527,19 +520,23 @@ export const fr = {
       'Le calage n’a rien trouvé de net sur cette prise. Elle est posée telle quelle.',
   },
 
+
+  progress: {
+    preparing: 'Préparation de la scène',
+    rendering: 'Montage en cours',
+    queued: 'En file d’attente. Ça démarre tout seul dans un instant.',
+    working:
+      'Compte quelques minutes. Tu peux laisser l’onglet ouvert et revenir plus tard.',
+    almost: 'Presque fini.',
+    longer:
+      'C’est plus long que d’habitude, mais ça tourne toujours. Laisse faire.',
+  },
   render: {
     title: 'Rendu en cours',
     queued: 'En attente du worker. Lance le script sur ton PC.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
     failed: 'Le rendu a échoué.',
     retry: 'Relancer le rendu',
-    steps: {
-      fetch: 'Récupération des prises',
-      mix: 'Mixage audio',
-      mux: 'Assemblage de la vidéo',
-      upload: 'Envoi du résultat',
-      purge: 'Nettoyage de la source',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

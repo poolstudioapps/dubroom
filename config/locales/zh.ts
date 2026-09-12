@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const zh = {
   nav: {
@@ -346,15 +345,9 @@ export const zh = {
     retry: '重新导入',
     neverStarted:
       '导入根本没开始：多半是文件上传失败了。重来一次，或者从新片段开始。',
+    hostPreparing:
+      '房主正在理角色，大厅马上就开。',
     startOver: '新片段',
-    steps: {
-      download: '正在取视频',
-      encode: '正在归一化',
-      extract: '正在提取音频',
-      separate: '正在分离人声和背景',
-      transcribe: '转写并识别角色',
-      segment: '正在切分台词',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -487,19 +480,23 @@ export const zh = {
     alignUnsure: '这一条没找到明确的对位点，就按原样放着。',
   },
 
+
+  progress: {
+    preparing: '正在准备片段',
+    rendering: '正在合成',
+    queued: '排队中，马上会自己开始。',
+    working:
+      '要几分钟。可以让标签页开着，晚点再回来。',
+    almost: '快好了。',
+    longer:
+      '比平时久一些，但还在跑。让它跑完就行。',
+  },
   render: {
     title: '正在出片',
     queued: '等 worker。在你的电脑上把脚本跑起来。',
     frozen: '片段已经定下来了：录音不能再改。',
     failed: '出片失败了。',
     retry: '重新出片',
-    steps: {
-      fetch: '正在取录音',
-      mix: '正在混音',
-      mux: '正在合成视频',
-      upload: '正在上传结果',
-      purge: '正在清理源文件',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

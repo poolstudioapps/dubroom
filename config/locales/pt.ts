@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const pt = {
   nav: {
@@ -356,15 +355,9 @@ export const pt = {
     retry: 'Rodar a importação de novo',
     neverStarted:
       'A importação nunca começou: o envio do arquivo provavelmente falhou. Rode de novo, ou comece uma cena nova.',
+    hostPreparing:
+      'O anfitrião está acertando os personagens. O lobby abre já já.',
     startOver: 'Nova cena',
-    steps: {
-      download: 'Buscando o vídeo',
-      encode: 'Normalizando',
-      extract: 'Extraindo o áudio',
-      separate: 'Separando vozes e fundo',
-      transcribe: 'Transcrevendo e detectando personagens',
-      segment: 'Cortando as falas',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -507,19 +500,23 @@ export const pt = {
       'O ajuste não achou nada claro nesta tomada. Ela fica como está.',
   },
 
+
+  progress: {
+    preparing: 'Preparando a cena',
+    rendering: 'Montando o resultado',
+    queued: 'Na fila. Começa sozinho daqui a pouco.',
+    working:
+      'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
+    almost: 'Quase lá.',
+    longer:
+      'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',
+  },
   render: {
     title: 'Renderizando',
     queued: 'Esperando o worker. Rode o script no seu PC.',
     frozen: 'A cena está congelada: as tomadas não mudam mais.',
     failed: 'A renderização falhou.',
     retry: 'Rodar a renderização de novo',
-    steps: {
-      fetch: 'Buscando as tomadas',
-      mix: 'Mixando o áudio',
-      mux: 'Montando o vídeo',
-      upload: 'Enviando o resultado',
-      purge: 'Limpando a fonte',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

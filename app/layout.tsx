@@ -46,6 +46,14 @@ const body = Nunito({
  * mais une page ajoutee demain nait fermee, et c'est le bon sens du
  * refus quand on heberge des extraits d'oeuvres protegees.
  */
+/** L'image qu'affichent les messageries et les reseaux quand on colle le lien. */
+const OG_IMAGE = {
+  url: '/illustrations/og-card.webp',
+  width: 1200,
+  height: 675,
+  alt: APP_NAME,
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await currentLocale();
   const t = await getDictionary(locale);
@@ -75,11 +83,15 @@ export async function generateMetadata(): Promise<Metadata> {
       url: SITE_URL,
       title: `${APP_NAME} · ${t.home.kicker}`,
       description: t.home.heroBody,
+      images: [OG_IMAGE],
     },
     twitter: {
+      // `summary_large_image` sans image affiche un cadre vide : les deux
+      // vont ensemble ou ne vont pas du tout.
       card: 'summary_large_image',
       title: `${APP_NAME} · ${t.home.kicker}`,
       description: t.home.heroBody,
+      images: [OG_IMAGE.url],
     },
     category: 'technology',
   };

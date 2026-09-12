@@ -76,6 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: SITE_URL,
       title: `${t.home.seoTitle} · ${APP_NAME}`,
       description: t.home.heroBody,
+      images: [{ url: '/illustrations/og-card.webp', width: 1200, height: 675 }],
     },
   };
 }

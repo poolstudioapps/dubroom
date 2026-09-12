@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const ja = {
   nav: {
@@ -349,15 +348,9 @@ export const ja = {
     retry: '取り込みをやり直す',
     neverStarted:
       '取り込みが始まっていません。ファイルの送信で失敗した可能性が高いです。やり直すか、新しいシーンから始めてください。',
+    hostPreparing:
+      'ホストが登場人物を整理しています。まもなくロビーが開きます。',
     startOver: '新しいシーン',
-    steps: {
-      download: '動画を取得中',
-      encode: '正規化中',
-      extract: '音声を抽出中',
-      separate: '声と背景音を分離中',
-      transcribe: '文字起こしと話者の判定',
-      segment: 'せりふを切り分け中',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -492,19 +485,23 @@ export const ja = {
     alignUnsure: 'このテイクでは合わせどころが見つかりませんでした。そのまま置いています。',
   },
 
+
+  progress: {
+    preparing: 'シーンを準備しています',
+    rendering: '仕上げています',
+    queued: '順番待ちです。まもなく自動で始まります。',
+    working:
+      '数分かかります。タブを開いたままにして、あとで戻ってきても大丈夫です。',
+    almost: 'もうすぐ終わります。',
+    longer:
+      'いつもより時間がかかっていますが、処理は続いています。そのままお待ちください。',
+  },
   render: {
     title: '書き出し中',
     queued: 'ワーカー待ちです。パソコンでスクリプトを起動してください。',
     frozen: 'シーンは確定しました。テイクは変更できません。',
     failed: '書き出しに失敗しました。',
     retry: '書き出しをやり直す',
-    steps: {
-      fetch: 'テイクを取得中',
-      mix: '音声をミックス中',
-      mux: '映像を組み立て中',
-      upload: '結果を送信中',
-      purge: '素材を片付け中',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {

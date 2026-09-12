@@ -6,7 +6,6 @@
  */
 
 import type { Dictionary } from '../i18n';
-import { INGEST_STEPS, RENDER_STEPS } from '../constants';
 
 export const de = {
   nav: {
@@ -356,15 +355,9 @@ export const de = {
     retry: 'Import neu starten',
     neverStarted:
       'Der Import ist nie gestartet: vermutlich ist das Hochladen der Datei fehlgeschlagen. Starte ihn neu, oder fang mit einer neuen Szene an.',
+    hostPreparing:
+      'Der Gastgeber sortiert gerade die Figuren. Die Lobby öffnet gleich.',
     startOver: 'Neue Szene',
-    steps: {
-      download: 'Video wird geholt',
-      encode: 'Normalisierung',
-      extract: 'Ton wird extrahiert',
-      separate: 'Stimmen und Hintergrund werden getrennt',
-      transcribe: 'Transkription und Figurenerkennung',
-      segment: 'Sätze werden geschnitten',
-    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
   },
 
   prepare: {
@@ -507,19 +500,23 @@ export const de = {
       'Die Ausrichtung hat bei dieser Aufnahme nichts Eindeutiges gefunden. Sie bleibt, wie sie ist.',
   },
 
+
+  progress: {
+    preparing: 'Szene wird vorbereitet',
+    rendering: 'Wird zusammengesetzt',
+    queued: 'In der Warteschlange. Es startet gleich von selbst.',
+    working:
+      'Rechne mit ein paar Minuten. Du kannst den Tab offen lassen und später zurückkommen.',
+    almost: 'Fast fertig.',
+    longer:
+      'Es dauert länger als sonst, läuft aber weiter. Lass es zu Ende laufen.',
+  },
   render: {
     title: 'Ausgabe läuft',
     queued: 'Warte auf den Worker. Starte das Skript auf deinem PC.',
     frozen: 'Die Szene ist eingefroren: Aufnahmen lassen sich nicht mehr ändern.',
     failed: 'Die Ausgabe ist fehlgeschlagen.',
     retry: 'Ausgabe neu starten',
-    steps: {
-      fetch: 'Aufnahmen werden geholt',
-      mix: 'Ton wird gemischt',
-      mux: 'Video wird zusammengesetzt',
-      upload: 'Ergebnis wird hochgeladen',
-      purge: 'Quelle wird aufgeräumt',
-    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
   },
 
   result: {
