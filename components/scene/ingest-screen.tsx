@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { JobProgress } from '@/components/scene/job-progress';
@@ -13,6 +14,7 @@ import { humanizeError } from '@/lib/errors';
 
 export function IngestScreen() {
   const { session, isHost, refetch } = useSceneCtx();
+  const router = useRouter();
   const jobState = useJobState(session.id);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,6 +60,32 @@ export function IngestScreen() {
             >
               {t.ingest.retry}
             </Button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* Une scene restee en brouillon sans job en file est un cul-de-sac :
+          l'envoi du fichier a echoue avant la mise en file, et l'ecran
+          tournait indefiniment sans rien proposer. */}
+      {session.status === 'draft' && !jobState.data?.job ? (
+        <div className="space-y-2">
+          <Alert tone="warn">{t.ingest.neverStarted}</Alert>
+          {isHost ? (
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="primary"
+                loading={retry.isPending}
+                onClick={() => {
+                  setError(null);
+                  retry.mutate();
+                }}
+              >
+                {t.ingest.retry}
+              </Button>
+              <Button variant="secondary" onClick={() => router.push('/sessions/new')}>
+                {t.ingest.startOver}
+              </Button>
+            </div>
           ) : null}
         </div>
       ) : null}

@@ -35,6 +35,7 @@ import {
 import { t } from '@/config/strings';
 import { uploadTake } from '@/lib/actions';
 import { MicRecorder } from '@/lib/audio/recorder';
+import { seekAll } from '@/lib/audio/media';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
 import { useMediaUrls, useTakes } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
@@ -60,6 +61,7 @@ export function StudioScreen() {
   const [micOffset, setMicOffset] = useState(me?.mic_offset_ms ?? 0);
   const [analysis, setAnalysis] = useState<TakeAnalysis | null>(null);
   const [takeUrl, setTakeUrl] = useState<string | null>(null);
+  const localTakeUrl = useRef<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [micReady, setMicReady] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
@@ -179,12 +181,11 @@ export function StudioScreen() {
   }, [currentTake]);
 
   async function seekToWindow() {
-    const video = videoRef.current;
-    const music = musicRef.current;
-    if (!video || !clip) return;
-    const at = clip.window_start_ms / 1000;
-    video.currentTime = at;
-    if (music) music.currentTime = at;
+    if (!clip) return;
+    // seekAll attend les metadonnees puis la fin reelle du saut. Sans
+    // cela, la lecture demarre a l'ancienne position et la prise est
+    // calee a cote — un defaut qui ne se voit qu'au rendu final.
+    await seekAll([videoRef.current, musicRef.current], clip.window_start_ms / 1000);
   }
 
   /** Mode VO : mix original complet, micro coupe (PRD §11.2). */
@@ -261,7 +262,12 @@ export function StudioScreen() {
     const blob = await recorderRef.current.stop();
     stopAll();
 
-    setTakeUrl(URL.createObjectURL(blob));
+    // Une URL d'objet retient le blob en memoire tant qu'elle n'est pas
+    // revoquee : sur une soiree de doublage, cela fait vite plusieurs
+    // dizaines de prises conservees pour rien.
+    if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
+    localTakeUrl.current = URL.createObjectURL(blob);
+    setTakeUrl(localTakeUrl.current);
     let durationMs = clip ? clip.window_end_ms - clip.window_start_ms : 0;
     try {
       const result = await analyzeTake(blob);
@@ -302,7 +308,10 @@ export function StudioScreen() {
 
   useEffect(() => {
     const recorder = recorderRef.current;
-    return () => recorder.release();
+    return () => {
+      recorder.release();
+      if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
+    };
   }, []);
 
   if (!me) {

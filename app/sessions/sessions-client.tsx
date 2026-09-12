@@ -20,6 +20,7 @@ import type { SessionRow } from '@/lib/supabase/database.types';
 import { normalizeSessionCode } from '@/lib/utils';
 
 export function SessionsClient({
+  userId,
   displayName,
 }: {
   userId: string;
@@ -153,14 +154,16 @@ export function SessionsClient({
               <Button size="sm" onClick={() => router.push(`/s/${session.code}`)}>
                 {t.sessions.open}
               </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                aria-label={t.common.delete}
-                onClick={() => setPendingDelete(session)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {session.host_id === userId ? (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label={t.common.delete}
+                  onClick={() => setPendingDelete(session)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              ) : null}
             </div>
           </Card>
         ))}

@@ -150,6 +150,10 @@ export function PrepareScreen() {
                     aria-hidden
                   />
                   <Input
+                    // Champ non controle : sans cle, React garde le noeud
+                    // existant et l'ancien texte reste affiche apres une
+                    // fusion ou un renommage venu du serveur.
+                    key={character.name}
                     defaultValue={character.name}
                     className="h-8 flex-1"
                     aria-label={t.prepare.rename}
@@ -196,13 +200,17 @@ export function PrepareScreen() {
             <Button
               className="w-full"
               onClick={() => {
+                // Le premier selectionne est celui qui survit : on le dit
+                // sur le bouton, sinon la fusion est un coup de des.
                 const [target, ...sources] = selectedCharIds;
                 if (!target) return;
                 run(() => mergeCharacters(sources, target));
               }}
             >
               <Combine className="h-4 w-4" aria-hidden />
-              {t.prepare.merge}
+              {t.prepare.mergeInto(
+                charById.get(selectedCharIds[0] ?? '')?.name ?? '',
+              )}
             </Button>
           ) : (
             <p className="text-xs text-text-faint">{t.prepare.mergeHint}</p>
@@ -316,6 +324,7 @@ export function PrepareScreen() {
                   </span>
 
                   <input
+                    key={line.text}
                     defaultValue={line.text}
                     aria-label="Texte de la réplique"
                     title={line.is_deleted ? t.prepare.deleteLineHint : undefined}

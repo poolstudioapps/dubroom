@@ -111,6 +111,9 @@ export const t = {
       'Le traitement tourne sur la machine de l’hôte. Double-clique sur start.bat, le job démarrera tout seul.',
     failed: 'L’import a échoué.',
     retry: 'Relancer l’import',
+    neverStarted:
+      'L’import n’a jamais démarré : l’envoi du fichier a probablement échoué. Relance-le, ou repars d’une nouvelle scène.',
+    startOver: 'Nouvelle scène',
     steps: {
       download: 'Récupération de la vidéo',
       encode: 'Normalisation',
@@ -132,6 +135,7 @@ export const t = {
     playLongest: 'Écouter l’extrait le plus long',
     rename: 'Renommer',
     merge: 'Fusionner',
+    mergeInto: (name: string) => `Fusionner vers ${name}`,
     mergeHint: 'Sélectionne au moins deux personnages pour les fusionner.',
     mergeConfirm: (from: string, to: string) =>
       `Toutes les répliques de ${from} passeront sur ${to}. ${from} sera supprimé.`,
