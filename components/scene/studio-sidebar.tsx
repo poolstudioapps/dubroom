@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Clapperboard, UserMinus, Wand2 } from 'lucide-react';
 
 import { useSceneCtx } from '@/components/scene-page';
-import { Alert, Badge, Button, Card, Dialog, Progress } from '@/components/ui';
+import { Alert, Badge, Button, Card, Dialog, Progress, Toggle } from '@/components/ui';
 import {
   MIC_OFFSET_MAX_MS,
   MIC_OFFSET_MIN_MS,
@@ -20,6 +20,7 @@ import {
   setMicOffset,
 } from '@/lib/actions';
 import { calibrateMicOffset } from '@/lib/audio/calibration';
+import { setKeepAsPack } from '@/lib/packs';
 import { useSessionProgress } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import type { ParticipantRow } from '@/lib/supabase/database.types';
@@ -211,7 +212,20 @@ export function StudioSidebar({
       </Card>
 
       {isHost ? (
-        <Card className="space-y-2">
+        <Card className="space-y-3">
+          <div className="flex items-start gap-3">
+            <Toggle
+              checked={session.keep_as_pack}
+              onChange={(next) => act.mutate(() => setKeepAsPack(session.id, next))}
+              label={t.community.keepLabel}
+              disabled={!!session.from_pack_id}
+            />
+            <div className="space-y-0.5">
+              <p className="text-sm font-bold">{t.community.keepLabel}</p>
+              <p className="text-xs text-text-faint">{t.community.keepHelp}</p>
+            </div>
+          </div>
+
           <Button
             variant="primary"
             className="w-full"

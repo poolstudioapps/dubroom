@@ -197,6 +197,28 @@ export async function encodeBackingPreview(
   );
 }
 
+/**
+ * Stem compresse, pour archivage dans un pack.
+ *
+ * Un pack conserve la scene preparee pour qu'un autre groupe la rejoue.
+ * Garder les stems en WAV coute 59 Mo pour deux minutes, soit dix-sept
+ * packs dans le gigaoctet gratuit ; en AAC 128 kbps on tombe a treize, ce
+ * qui en met soixante-quinze. Le mixage final reencode de toute facon en
+ * AAC : la difference ne s'entend pas sur une piste de fond destinee a
+ * etre recouverte de voix.
+ */
+export async function encodeStemForPack(
+  input: string,
+  output: string,
+): Promise<void> {
+  await ffmpeg(
+    ['-i', input, '-c:a', 'aac', '-b:a', '128k', '-ar', '48000', '-ac', '2',
+     '-movflags', '+faststart'],
+    output,
+    { timeoutMs: TIMEOUTS.extract },
+  );
+}
+
 /** Reechantillonne un stem en 48 kHz stereo (PRD §20.7). */
 export async function resample48k(input: string, output: string): Promise<void> {
   await ffmpeg(['-i', input, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le'], output, {

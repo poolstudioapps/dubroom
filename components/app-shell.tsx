@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
+import { Footer } from '@/components/footer';
+import { SiteNav } from '@/components/site-nav';
 import { Button } from '@/components/ui';
 import { APP_NAME, t } from '@/config/strings';
 import { supabaseBrowser } from '@/lib/supabase/client';
@@ -41,16 +43,19 @@ export function AppShell({
     <div className="flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
       <header
         className={cn(
-          'mb-3 flex w-full items-center justify-between gap-3',
+          'mb-3 flex w-full flex-wrap items-end justify-between gap-3',
           wide ? 'max-w-[110rem]' : 'max-w-5xl',
         )}
       >
-        <Link
-          href="/sessions"
-          className="signage text-2xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
-        >
-          {APP_NAME}
-        </Link>
+        <div className="flex flex-wrap items-end gap-4">
+          <Link
+            href="/"
+            className="signage text-2xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
+          >
+            {APP_NAME}
+          </Link>
+          <SiteNav />
+        </div>
         <Button variant="secondary" size="sm" onClick={signOut}>
           <LogOut className="h-4 w-4" aria-hidden />
           <span className="hidden sm:inline">{t.auth.signOut}</span>
@@ -61,6 +66,7 @@ export function AppShell({
         <TvSet slim={wide}>
           <main className={cn('min-h-[26rem]', className)}>{children}</main>
         </TvSet>
+        <Footer />
       </div>
     </div>
   );

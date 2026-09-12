@@ -1,7 +1,18 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'];
+const PUBLIC_PATHS = [
+  '/login',
+  '/auth/callback',
+  '/auth/confirm',
+  '/auth/error',
+  '/mentions-legales',
+  '/confidentialite',
+];
+
+// L'accueil se visite sans compte : il n'expose aucune scene, aucun
+// participant, aucun rendu — seulement le principe du produit.
+const PUBLIC_EXACT = ['/'];
 // /auth/callback/hash est couvert par le prefixe /auth/callback.
 
 /**
@@ -70,7 +81,9 @@ export async function middleware(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-  const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+  const isPublic =
+    PUBLIC_EXACT.includes(pathname) ||
+    PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();

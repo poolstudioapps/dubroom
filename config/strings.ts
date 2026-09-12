@@ -9,6 +9,66 @@ export const APP_NAME = 'DubRoom';
 export const APP_TAGLINE = 'Le studio de doublage entre amis.';
 
 export const t = {
+  nav: {
+    home: 'Accueil',
+    sessions: 'Mes scènes',
+    community: 'Communauté',
+  },
+
+  home: {
+    heroTitle: 'Redoublez vos scènes préférées',
+    heroBody:
+      'Vous choisissez une scène, chacun prend un personnage, et vous l’enregistrez chacun de votre côté. La musique et l’ambiance d’origine restent en place : seules les voix changent. Le résultat se découvre à la fin, tous ensemble.',
+    cta: 'Entrer dans le studio',
+    ctaSessions: 'Voir mes scènes',
+    ctaCommunity: 'Parcourir les scènes prêtes',
+    howTitle: 'Comment ça marche',
+    privateTitle: 'Un salon privé, pas un réseau',
+    privateBody:
+      'DubRoom est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
+    slides: {
+      importTitle: 'On importe une scène',
+      importBody:
+        'Un fichier vidéo, ou un lien. La bande-son est séparée en deux : les voix d’un côté, la musique et l’ambiance de l’autre. Cette séparation vient de la scène elle-même, elle est donc calée à l’image au millième de seconde près.',
+      charactersTitle: 'On repère les personnages',
+      charactersBody:
+        'Les répliques sont transcrites et attribuées automatiquement. L’hôte corrige en quelques clics : renommer, fusionner deux voix confondues, réassigner une réplique. Puis il ouvre le lobby et chacun choisit son rôle.',
+      rythmoTitle: 'On double à la bande rythmo',
+      rythmoBody:
+        'Le texte défile sous une tête de lecture, comme dans un vrai studio de doublage. Pendant l’enregistrement vous n’entendez que la musique, jamais les voix d’origine : l’image et le texte suffisent à tomber juste.',
+      renderTitle: 'On découvre le résultat',
+      renderBody:
+        'Tout est remixé : l’image d’origine, la musique d’origine, et vos voix à la place des leurs. Un MP4 qui se lit partout, sans sous-titres incrustés, et qui se garde.',
+    },
+  },
+
+  community: {
+    title: 'Scènes prêtes à doubler',
+    subtitle:
+      'Des scènes déjà importées, séparées et découpées par le groupe. Il ne reste qu’à choisir les rôles : pas d’attente, pas de préparation à refaire.',
+    play: 'Doubler cette scène',
+    mine: 'La tienne',
+    characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
+    lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
+    emptyTitle: 'Aucune scène conservée pour l’instant',
+    emptyBody:
+      'Pendant une partie, l’hôte peut cocher « garder cette scène » avant de lancer le rendu. Elle atterrira ici, prête à être rejouée par un autre groupe.',
+    remove: 'Retirer du catalogue',
+    removeTitle: 'Retirer cette scène ?',
+    removeBody:
+      'La vidéo, les pistes séparées et le découpage seront supprimés. Les scènes déjà lancées à partir d’elle cesseront de fonctionner. C’est irréversible.',
+    keepLabel: 'Garder cette scène pour la rejouer',
+    keepHelp:
+      'Elle rejoindra l’onglet Communauté après le rendu, avec son découpage et ses personnages. Vos enregistrements, eux, ne sont jamais conservés.',
+  },
+
+  legal: {
+    mentions: 'Mentions légales',
+    privacy: 'Confidentialité',
+    usageNotice:
+      'Usage strictement privé, entre personnes invitées. Aucun contenu n’est diffusé publiquement ni indexé.',
+  },
+
   common: {
     loading: 'Chargement…',
     save: 'Enregistrer',

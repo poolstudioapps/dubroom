@@ -10,6 +10,7 @@ import { SystemError, UserError } from '../errors.ts';
 import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
 import { graphPathFor, mixWithGraph, muxFinal } from '../lib/ffmpeg.ts';
 import { buildMixGraph, placeTake, type VoSegment } from '../lib/mixgraph.ts';
+import { buildPack } from './pack.ts';
 import * as storage from '../lib/storage.ts';
 import type { ScopedLog } from '../log.ts';
 
@@ -207,9 +208,30 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
   await setJobStep(job.id, 'upload', 100);
   logger.info('rendu envoyé', { step: 'upload', bytes: size });
 
-  // ── 5. Purge (PRD §13.1) ────────────────────────────────────────────
-  // Seulement maintenant : l'upload est confirme, taille non nulle.
+  // ── 5. Conservation puis purge (PRD §13.1, §16.2) ───────────────────
+  // Seulement maintenant : l'upload du rendu est confirme, taille non nulle.
   await setJobStep(job.id, 'purge', 0);
+
+  // Si l'hote a demande a garder la scene, on la depose sous `packs/`
+  // AVANT de purger — les fichiers sont encore la, sur le disque local.
+  // Une scene deja issue d'un pack n'en refabrique pas un second.
+  if (session.keep_as_pack && !session.from_pack_id) {
+    try {
+      await buildPack(
+        session,
+        { video: videoLocal, voice: voiceLocal, music: musicLocal },
+        workDir,
+        logger,
+      );
+    } catch (error) {
+      // Le rendu est deja en securite : rater la conservation ne doit pas
+      // faire echouer un job qui a abouti.
+      logger.warn('conservation en communauté échouée', {
+        step: 'purge',
+        detail: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
   const removedSources = await storage.removeSessionFolder(BUCKET_SOURCES, session.id);
   const removedTakes = await storage.removeSessionFolder(BUCKET_TAKES, session.id);
 

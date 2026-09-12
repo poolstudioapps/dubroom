@@ -27,6 +27,8 @@ const MESSAGES: Record<string, string> = {
   CROSS_SESSION: 'Ces éléments n’appartiennent pas à la même scène.',
   INVALID_EMAIL: 'Cette adresse ne ressemble pas à une adresse e-mail.',
   CANNOT_REVOKE_SELF: 'Tu ne peux pas te retirer toi-même de la liste.',
+  PACK_NOT_FOUND: 'Cette scène n’est plus disponible.',
+  PACK_FORBIDDEN: 'Seule la personne qui a conservé cette scène peut la retirer.',
 };
 
 /** Erreur porteuse d'un message deja lisible par l'utilisateur. */

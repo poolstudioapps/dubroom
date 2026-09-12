@@ -28,6 +28,7 @@ export interface Job {
 export interface Session {
   id: string;
   code: string;
+  host_id: string;
   title: string | null;
   status: string;
   source_type: 'upload' | 'youtube';
@@ -39,6 +40,10 @@ export interface Session {
   duration_ms: number | null;
   render_path: string | null;
   render_size_bytes: number | null;
+  voice_peaks: string | null;
+  voice_peaks_hz: number | null;
+  keep_as_pack: boolean;
+  from_pack_id: string | null;
 }
 
 /** Reclame un job en file. `null` s'il n'y a rien a faire (PRD §7.2). */
