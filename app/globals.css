@@ -15,7 +15,15 @@
  * D'ou le jeu de jetons `stage-*`, qui ne suit pas l'inversion.
  */
 
-@theme {
+/*
+ * `static` n'est pas decoratif : sans lui, Tailwind 4 n'emet que les
+ * variables de theme qu'une classe utilise reellement. Nos couleurs de
+ * personnage ne sont lues qu'a l'execution, par le canvas et par des
+ * styles en ligne — donc invisibles de l'analyseur, donc elaguees. Sept
+ * des huit disparaissaient du CSS livre, et le texte de la bande rythmo
+ * retombait sur la couleur heritee : sombre sur fond sombre.
+ */
+@theme static {
   /* ── Le salon et le poste ─────────────────────────────────────────── */
   --color-room: oklch(0.26 0.09 305);
   --color-room-deep: oklch(0.19 0.07 305);
