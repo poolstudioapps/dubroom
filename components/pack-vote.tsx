@@ -93,7 +93,7 @@ function VoteButton({
       onClick={onClick}
       className={cn(
         'flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
-        'text-text-faint hover:bg-surface hover:text-text',
+        'text-text-muted hover:bg-surface-sunken hover:text-text',
         active && tone === 'up' && 'bg-ok/20 text-ok hover:text-ok',
         active && tone === 'down' && 'bg-danger/20 text-danger hover:text-danger',
       )}

@@ -110,7 +110,13 @@ export function CommunityClient({
         </Card>
       ) : null}
 
-      <ul className="grid gap-5 md:grid-cols-2">
+      {/* A un seul element, la grille a deux colonnes laisse une moitie
+          vide : elle ne se dedouble qu'a partir de deux. */}
+      <ul
+        className={
+          visible.length > 1 ? 'grid gap-5 md:grid-cols-2' : 'grid max-w-xl gap-5'
+        }
+      >
         {visible.map((pack) => (
           <li key={pack.id} className="panel flex flex-col overflow-hidden">
             {/*
