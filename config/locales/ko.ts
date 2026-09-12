@@ -89,6 +89,34 @@ export const ko = {
     packsCtaAction: '장면 준비하기',
 
     faqTitle: '자주 묻는 것',
+    seoTitle: '친구들과 영화 장면 더빙하기',
+    defineTitle: '영화 장면 더빙이란',
+    defineBody:
+      '영화 장면을 더빙한다는 것은 화면, 음악, 효과음, 리듬을 그대로 두고 원래 목소리만 내 목소리로 바꾸는 일입니다. 위에 해설을 얹는 게 아니라, 장면 자체를 다른 연기자로 다시 하는 것입니다. DubRoom은 그 작업을 브라우저에서 하는 온라인 더빙 소프트웨어입니다.',
+    defineHowTitle: '영화 장면을 직접 더빙하는 방법',
+    defineHowBody:
+      '집에는 없는 세 가지가 필요합니다. 목소리만 바꾸기 위해 목소리와 음악을 분리하는 것, 누가 언제 말하는지 밀리초 단위로 아는 것, 그리고 말하면서 타이밍을 맞추는 것. DubRoom은 앞의 두 가지를 장면에서 자동으로 처리하고, 세 번째는 리드미 밴드로 풉니다. 재생 헤드 아래로 글자가 흐르는 이 방식은 더빙 스튜디오가 팔십 년째 쓰고 있습니다.',
+    defineWhoTitle: '누구에게 쓸모가 있나',
+    defineWhoBody:
+      '명대사를 다시 해 보고 싶은 친구들, 편집 프로그램이 아닌 도구를 찾는 팬더빙 제작자, 학생들에게 한 대목을 더빙시키는 어학 교사, 그리고 스튜디오를 빌리지 않고 리드미 밴드로 연습하려는 성우 지망생에게.',
+    faqExtra: [
+      {
+        q: '무료인가요?',
+        a: '네. DubRoom은 개인 프로젝트이며 광고도, 구독료도, 장면 수 제한도 없습니다.',
+      },
+      {
+        q: '영상 편집 프로그램과 무엇이 다른가요?',
+        a: '편집 프로그램은 빈 타임라인을 주고 테이크 정렬을 손에 맡깁니다. DubRoom은 장면에서 출발합니다. 목소리를 분리하고, 대사를 찾고, 등장인물에 배정하고, 녹음을 원래 목소리에 자동으로 다시 맞춥니다.',
+      },
+      {
+        q: '한국어 화면으로 영어 장면을 더빙할 수 있나요?',
+        a: '가능합니다. 화면 언어와 장면 언어는 별개입니다. 받아쓴 글은 타이밍 안내이고, 그 위에 무엇을 말할지는 자유입니다.',
+      },
+      {
+        q: '목소리와 음악은 어떻게 분리하나요?',
+        a: '호스트 컴퓨터에서 도는 음원 분리 모델이 목소리와 음악·환경음 두 트랙을 돌려줍니다. 분리가 장면 자체에서 나오기 때문에 화면과 어긋나지 않습니다.',
+      },
+    ] as const,
     faq: [
       {
         q: '뭐가 필요한가요?',
@@ -153,6 +181,34 @@ export const ko = {
     voteHelp:
       '평가 대상은 영화가 아니라 구간 나누기입니다. 잘 나뉜 장면은 모두의 저녁 한 번을 아껴 줍니다.',
     sortedByScore: '평가 높은 순',
+    filterLang: '장면 언어',
+    filterGenre: '장르',
+    filterCast: '배역 수',
+    filterLength: '길이',
+    filterAll: '전체',
+    filterAllGenres: '모든 장르',
+    filterAnyCast: '상관없음',
+    filterAnyLength: '상관없음',
+    filterReset: '전부 보기',
+    filterNoMatch: '조건에 맞는 장면이 없습니다',
+    filterNoMatchBody:
+      '조건을 넓히거나, 목록에 없는 장면을 직접 공개해 보세요.',
+    langUnknown: '언어 모름',
+    langNames: {
+      fr: '프랑스어', en: '영어', es: '스페인어', de: '독일어', it: '이탈리아어',
+      pt: '포르투갈어', ja: '일본어', ko: '한국어', zh: '중국어', ru: '러시아어',
+    } as Record<string, string>,
+    genreNames: {
+      action: '액션', comedie: '코미디', drame: '드라마', animation: '애니메이션',
+      science_fiction: 'SF', horreur: '공포', documentaire: '다큐멘터리',
+      autre: '기타',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 배역', duo: '2 배역', small: '3~4 배역', large: '5 배역 이상',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: '1분 미만', medium: '1~3분', long: '3분 이상',
+    } as Record<string, string>,
     sceneCount: (n: number) => `이용할 수 있는 장면 ${n}개`,
     characterCount: (n: number) => `등장인물 ${n}명`,
     lineCount: (n: number) => `대사 ${n}개`,

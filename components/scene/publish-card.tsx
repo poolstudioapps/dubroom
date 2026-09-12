@@ -7,10 +7,10 @@ import { Library, Share2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
-import { Alert, Button, Card, Input } from '@/components/ui';
+import { Alert, Button, Card, Input, Select } from '@/components/ui';
 
 import { humanizeError } from '@/lib/errors';
-import { publishRecipePack } from '@/lib/packs';
+import { PACK_GENRES, PACK_LANGS, publishRecipePack, type PackGenre } from '@/lib/packs';
 
 /**
  * Publier une scene terminee.
@@ -23,16 +23,27 @@ import { publishRecipePack } from '@/lib/packs';
  *    purge de fin de rendu ;
  *  - scene venue d'un FICHIER : les medias ont ete effaces, il n'y a plus
  *    rien a partager. La decision devait etre prise avant le rendu.
+ *
+ * La langue et le genre sont demandes ici et pas ailleurs : c'est le
+ * seul moment ou la personne qui publie a la scene en tete. Les demander
+ * plus tard revient a ne jamais les obtenir, et un catalogue sans
+ * criteres ne se trie pas.
  */
 export function PublishCard() {
   const t = useT();
-
   const { session, isHost, refetch } = useSceneCtx();
   const [title, setTitle] = useState(session.title ?? '');
+  const [sourceLang, setSourceLang] = useState('');
+  const [genre, setGenre] = useState<PackGenre>('autre');
   const [error, setError] = useState<string | null>(null);
 
   const publish = useMutation({
-    mutationFn: () => publishRecipePack(session.id, title),
+    mutationFn: () =>
+      publishRecipePack(session.id, {
+        title,
+        sourceLang: sourceLang || undefined,
+        genre,
+      }),
     onSuccess: () => refetch(),
     onError: (e) => setError(humanizeError(e)),
   });
@@ -71,26 +82,55 @@ export function PublishCard() {
         <Share2 className="h-4 w-4 text-text-muted" aria-hidden />
         <h2 className="text-sm font-bold">{t.community.publish}</h2>
       </div>
-      <p className="text-xs text-text-faint">{t.community.publishRecipeHelp}</p>
+      <p className="text-xs leading-relaxed text-text-faint">
+        {t.community.publishRecipeHelp}
+      </p>
 
-      <div className="flex flex-wrap gap-2">
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={t.create.titlePlaceholder}
-          className="min-w-48 flex-1"
-        />
-        <Button
-          variant="primary"
-          loading={publish.isPending}
-          onClick={() => {
-            setError(null);
-            publish.mutate();
-          }}
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder={t.create.titlePlaceholder}
+        aria-label={t.create.titleLabel}
+      />
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Select
+          value={sourceLang}
+          aria-label={t.community.filterLang}
+          onChange={(e) => setSourceLang(e.target.value)}
         >
-          {t.community.publish}
-        </Button>
+          <option value="">{t.community.langUnknown}</option>
+          {PACK_LANGS.map((code) => (
+            <option key={code} value={code}>
+              {t.community.langNames[code]}
+            </option>
+          ))}
+        </Select>
+
+        <Select
+          value={genre}
+          aria-label={t.community.filterGenre}
+          onChange={(e) => setGenre(e.target.value as PackGenre)}
+        >
+          {PACK_GENRES.map((value) => (
+            <option key={value} value={value}>
+              {t.community.genreNames[value]}
+            </option>
+          ))}
+        </Select>
       </div>
+
+      <Button
+        variant="primary"
+        className="w-full"
+        loading={publish.isPending}
+        onClick={() => {
+          setError(null);
+          publish.mutate();
+        }}
+      >
+        {t.community.publish}
+      </Button>
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
     </Card>

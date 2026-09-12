@@ -92,6 +92,34 @@ export const es = {
     packsCtaAction: 'Preparar una escena',
 
     faqTitle: 'Lo que nos preguntan',
+    seoTitle: 'Doblar una escena de película entre amigos',
+    defineTitle: '¿Qué es doblar una escena de película?',
+    defineBody:
+      'Doblar una escena de película es sustituir las voces originales por las tuyas conservando todo lo demás: la imagen, la música, los efectos, el ritmo. El resultado no es un comentario encima, es la escena misma con otros actores. DubRoom es un software de doblaje en línea que hace ese trabajo en el navegador, sin instalar nada.',
+    defineHowTitle: 'Cómo doblar una escena de película por tu cuenta',
+    defineHowBody:
+      'Hacen falta tres cosas que nadie tiene en casa: separar las voces de la música para sustituir solo las voces, saber quién habla y cuándo al milisegundo, y mantener la sincronía al hablar. DubRoom hace las dos primeras automáticamente a partir de la escena, y resuelve la tercera con una banda rítmica, el texto que pasa bajo un cabezal de lectura que los estudios de doblaje usan desde hace ochenta años.',
+    defineWhoTitle: 'Para quién es',
+    defineWhoBody:
+      'Para grupos de amigos que quieren rehacer una frase mítica, para aficionados al fandub que buscan una herramienta sin montaje, para profesores de idiomas que hacen doblar un fragmento a su clase, y para quien aprende doblaje y quiere practicar sobre banda rítmica sin alquilar un estudio.',
+    faqExtra: [
+      {
+        q: '¿Es gratis?',
+        a: 'Sí. DubRoom es un proyecto personal, sin publicidad, sin suscripción y sin límite de escenas.',
+      },
+      {
+        q: '¿En qué se diferencia de un editor de vídeo?',
+        a: 'Un editor te da una línea de tiempo vacía y te deja cuadrar las tomas a mano. DubRoom parte de la escena: separa las voces, localiza las frases, las asigna a los personajes y recoloca tus tomas sobre la voz original.',
+      },
+      {
+        q: '¿Puedo doblar una escena en inglés desde una interfaz en español?',
+        a: 'Sí. El idioma de la interfaz y el de la escena son independientes. El texto transcrito sirve de guía de ritmo, tú dices lo que quieras encima.',
+      },
+      {
+        q: '¿Cómo se separan las voces de la música?',
+        a: 'Con un modelo de separación de fuentes que corre en la máquina del anfitrión y devuelve dos pistas: las voces por un lado, la música y el ambiente por otro. Como la separación sale de la propia escena, sigue cuadrada con la imagen.',
+      },
+    ] as const,
     faq: [
       {
         q: '¿Qué necesito exactamente?',
@@ -156,6 +184,34 @@ export const es = {
     voteHelp:
       'El voto es sobre el corte, no sobre la película. Una escena bien cortada le ahorra una tarde a todo el mundo.',
     sortedByScore: 'Las mejor valoradas primero',
+    filterLang: 'Idioma de la escena',
+    filterGenre: 'Género',
+    filterCast: 'Número de papeles',
+    filterLength: 'Duración',
+    filterAll: 'Todos',
+    filterAllGenres: 'Todos los géneros',
+    filterAnyCast: 'Da igual',
+    filterAnyLength: 'Da igual',
+    filterReset: 'Mostrar todo',
+    filterNoMatch: 'Ninguna escena coincide',
+    filterNoMatchBody:
+      'Amplía los criterios, o publica la escena que le falta al catálogo.',
+    langUnknown: 'Idioma desconocido',
+    langNames: {
+      fr: 'Francés', en: 'Inglés', es: 'Español', de: 'Alemán', it: 'Italiano',
+      pt: 'Portugués', ja: 'Japonés', ko: 'Coreano', zh: 'Chino', ru: 'Ruso',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Acción', comedie: 'Comedia', drame: 'Drama', animation: 'Animación',
+      science_fiction: 'Ciencia ficción', horreur: 'Terror', documentaire: 'Documental',
+      autre: 'Otro',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 papel', duo: '2 papeles', small: '3 o 4 papeles', large: '5 papeles o más',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Menos de un minuto', medium: 'De 1 a 3 minutos', long: 'Más de 3 minutos',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 escena disponible' : `${n} escenas disponibles`),
     characterCount: (n: number) => (n === 1 ? '1 personaje' : `${n} personajes`),
     lineCount: (n: number) => (n === 1 ? '1 frase' : `${n} frases`),

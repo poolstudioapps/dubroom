@@ -94,6 +94,34 @@ export const en = {
     packsCtaAction: 'Prepare a scene',
 
     faqTitle: 'Questions we get',
+    seoTitle: 'Dub a film scene with friends',
+    defineTitle: 'What is dubbing a film scene?',
+    defineBody:
+      'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. DubRoom is online dubbing software that does this work in the browser, with nothing to install.',
+    defineHowTitle: 'How to dub a film scene yourself',
+    defineHowBody:
+      'It takes three things nobody has at home: separating the voices from the music so that only the voices are replaced, knowing who speaks and when to the millisecond, and staying in sync while talking. DubRoom does the first two automatically from the scene, and solves the third with a rythmo band, the scrolling text under a playhead that professional dubbing studios have used for eighty years.',
+    defineWhoTitle: 'Who it is for',
+    defineWhoBody:
+      'Groups of friends who want to redo a famous line, fandub makers looking for a tool that is not a video editor, language teachers having a class dub an extract, and anyone learning voice acting who wants to practise on a rythmo band without renting a studio.',
+    faqExtra: [
+      {
+        q: 'Is it free?',
+        a: 'Yes. DubRoom is a personal project, with no ads, no subscription and no limit on scenes.',
+      },
+      {
+        q: 'How is this different from a normal video editor?',
+        a: 'A video editor hands you an empty timeline and leaves you to line up your takes by hand. DubRoom starts from the scene: it separates the voices, finds the lines, assigns them to characters and automatically realigns your takes on the original voice.',
+      },
+      {
+        q: 'Can I dub an English scene from a French interface?',
+        a: 'Yes. The interface language and the scene language are independent. The transcribed text is a timing guide, you say whatever you like over it.',
+      },
+      {
+        q: 'How are voices separated from the music?',
+        a: 'By a source separation model running on the host machine, which returns two tracks: the voices on one side, the music and atmosphere on the other. Because the split comes from the scene itself, it stays locked to the picture.',
+      },
+    ] as const,
     faq: [
       {
         q: 'What do I actually need?',
@@ -158,6 +186,34 @@ export const en = {
     voteHelp:
       'The vote is about the cut, not the film. A well cut scene saves everyone an evening.',
     sortedByScore: 'Best rated first',
+    filterLang: 'Scene language',
+    filterGenre: 'Genre',
+    filterCast: 'Number of roles',
+    filterLength: 'Length',
+    filterAll: 'All',
+    filterAllGenres: 'All genres',
+    filterAnyCast: 'Any',
+    filterAnyLength: 'Any',
+    filterReset: 'Show everything',
+    filterNoMatch: 'No scene matches',
+    filterNoMatchBody:
+      'Widen the filters, or publish the scene the catalogue is missing.',
+    langUnknown: 'Language unknown',
+    langNames: {
+      fr: 'French', en: 'English', es: 'Spanish', de: 'German', it: 'Italian',
+      pt: 'Portuguese', ja: 'Japanese', ko: 'Korean', zh: 'Chinese', ru: 'Russian',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Action', comedie: 'Comedy', drame: 'Drama', animation: 'Animation',
+      science_fiction: 'Science fiction', horreur: 'Horror', documentaire: 'Documentary',
+      autre: 'Other',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 role', duo: '2 roles', small: '3 or 4 roles', large: '5 roles or more',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Under a minute', medium: '1 to 3 minutes', long: 'Over 3 minutes',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 scene available' : `${n} scenes available`),
     characterCount: (n: number) => (n === 1 ? '1 character' : `${n} characters`),
     lineCount: (n: number) => (n === 1 ? '1 line' : `${n} lines`),

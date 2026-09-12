@@ -21,13 +21,13 @@ export function LocalePicker() {
   const locale = useLocale();
 
   return (
-    <label className="inline-flex items-center gap-1.5 text-[oklch(0.82_0.03_300)]">
-      <Languages className="h-3.5 w-3.5" aria-hidden />
+    <label className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-bezel-dark/70 bg-bezel/40 px-3 text-[oklch(0.88_0.06_200)]">
+      <Languages className="h-4 w-4 shrink-0" aria-hidden />
       <span className="sr-only">Langue</span>
       <select
         value={locale}
         onChange={(e) => setLocale(e.target.value as Locale)}
-        className="cursor-pointer rounded-sm bg-transparent py-1 text-xs font-bold text-[oklch(0.88_0.06_200)] underline underline-offset-4 outline-none"
+        className="cursor-pointer bg-transparent py-1 pr-1 text-sm font-bold text-[oklch(0.92_0.06_200)] outline-none"
       >
         {Object.entries(LOCALES).map(([code, name]) => (
           <option key={code} value={code} className="bg-surface-raised text-text">

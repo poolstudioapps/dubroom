@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { AUTH_COOKIE_OPTIONS, withAuthCookieOptions } from './cookies';
 import type { Database } from './database.types';
 
 /**
@@ -16,6 +17,7 @@ export async function supabaseServer() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: AUTH_COOKIE_OPTIONS,
       cookies: {
         getAll() {
           return cookieStore.getAll();
@@ -23,7 +25,7 @@ export async function supabaseServer() {
         setAll(cookiesToSet) {
           try {
             for (const { name, value, options } of cookiesToSet) {
-              cookieStore.set(name, value, options);
+              cookieStore.set(name, value, withAuthCookieOptions(options));
             }
           } catch {
             // Appel depuis un Server Component : le refresh de session est

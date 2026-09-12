@@ -92,6 +92,34 @@ export const it = {
     packsCtaAction: 'Preparare una scena',
 
     faqTitle: 'Quello che ci chiedono',
+    seoTitle: 'Doppiare una scena di film tra amici',
+    defineTitle: 'Che cosa vuol dire doppiare una scena di film?',
+    defineBody:
+      'Doppiare una scena di film vuol dire sostituire le voci originali con le proprie tenendo tutto il resto: l’immagine, la musica, i rumori, il ritmo. Il risultato non è un commento sopra, è la scena stessa con altri attori. DubRoom è un software di doppiaggio online che fa questo lavoro nel browser, senza installare niente.',
+    defineHowTitle: 'Come doppiare una scena di film da soli',
+    defineHowBody:
+      'Servono tre cose che nessuno ha in casa: separare le voci dalla musica per sostituire solo le voci, sapere chi parla e quando al millesimo, e restare in sincrono mentre si parla. DubRoom fa le prime due in automatico a partire dalla scena, e risolve la terza con una banda ritmica, il testo che scorre sotto una testina di lettura usata dagli studi di doppiaggio da ottant’anni.',
+    defineWhoTitle: 'A chi serve',
+    defineWhoBody:
+      'A gruppi di amici che vogliono rifare una battuta celebre, agli appassionati di fandub che cercano uno strumento che non sia un programma di montaggio, ai professori di lingue che fanno doppiare un estratto alla classe, e a chi studia doppiaggio e vuole esercitarsi su banda ritmica senza affittare uno studio.',
+    faqExtra: [
+      {
+        q: 'È gratis?',
+        a: 'Sì. DubRoom è un progetto personale, senza pubblicità, senza abbonamento e senza limiti di scene.',
+      },
+      {
+        q: 'Che differenza c’è con un programma di montaggio?',
+        a: 'Un programma di montaggio ti dà una timeline vuota e ti lascia allineare le prese a mano. DubRoom parte dalla scena: separa le voci, trova le battute, le assegna ai personaggi e rimette le tue prese in linea con la voce originale.',
+      },
+      {
+        q: 'Posso doppiare una scena in inglese da un’interfaccia in italiano?',
+        a: 'Sì. La lingua dell’interfaccia e quella della scena sono indipendenti. Il testo trascritto serve da guida per i tempi, sopra ci dici quello che vuoi.',
+      },
+      {
+        q: 'Come vengono separate le voci dalla musica?',
+        a: 'Con un modello di separazione delle sorgenti che gira sulla macchina dell’ospite e restituisce due tracce: le voci da una parte, musica e ambiente dall’altra. Siccome la separazione viene dalla scena stessa, resta agganciata all’immagine.',
+      },
+    ] as const,
     faq: [
       {
         q: 'Cosa mi serve, esattamente?',
@@ -156,6 +184,34 @@ export const it = {
     voteHelp:
       'Il voto riguarda il taglio, non il film. Una scena tagliata bene fa risparmiare una serata a tutti.',
     sortedByScore: 'Prima le più votate',
+    filterLang: 'Lingua della scena',
+    filterGenre: 'Genere',
+    filterCast: 'Numero di ruoli',
+    filterLength: 'Durata',
+    filterAll: 'Tutte',
+    filterAllGenres: 'Tutti i generi',
+    filterAnyCast: 'Indifferente',
+    filterAnyLength: 'Indifferente',
+    filterReset: 'Mostra tutto',
+    filterNoMatch: 'Nessuna scena corrisponde',
+    filterNoMatchBody:
+      'Allarga i criteri, oppure pubblica la scena che manca al catalogo.',
+    langUnknown: 'Lingua sconosciuta',
+    langNames: {
+      fr: 'Francese', en: 'Inglese', es: 'Spagnolo', de: 'Tedesco', it: 'Italiano',
+      pt: 'Portoghese', ja: 'Giapponese', ko: 'Coreano', zh: 'Cinese', ru: 'Russo',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Azione', comedie: 'Commedia', drame: 'Dramma', animation: 'Animazione',
+      science_fiction: 'Fantascienza', horreur: 'Horror', documentaire: 'Documentario',
+      autre: 'Altro',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 ruolo', duo: '2 ruoli', small: '3 o 4 ruoli', large: '5 ruoli o più',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Meno di un minuto', medium: 'Da 1 a 3 minuti', long: 'Più di 3 minuti',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 scena disponibile' : `${n} scene disponibili`),
     characterCount: (n: number) => (n === 1 ? '1 personaggio' : `${n} personaggi`),
     lineCount: (n: number) => (n === 1 ? '1 battuta' : `${n} battute`),

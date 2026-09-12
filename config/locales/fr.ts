@@ -93,6 +93,34 @@ export const fr = {
     packsCtaAction: 'Préparer une scène',
 
     faqTitle: 'Les questions qu’on nous pose',
+    seoTitle: 'Doubler une scène de film entre amis',
+    defineTitle: 'Qu’est-ce que le doublage d’une scène de film ?',
+    defineBody:
+      'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. DubRoom est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
+    defineHowTitle: 'Comment doubler une scène de film soi-même',
+    defineHowBody:
+      'Il faut trois choses que personne n’a chez soi : séparer les voix de la musique pour ne remplacer que les voix, savoir qui parle et quand à la milliseconde, et se synchroniser en parlant. DubRoom fait les deux premières automatiquement à partir de la scène, et résout la troisième avec une bande rythmo, le texte défilant sous une tête de lecture qu’utilisent les studios de doublage professionnels depuis quatre-vingts ans.',
+    defineWhoTitle: 'À qui ça sert',
+    defineWhoBody:
+      'Aux groupes d’amis qui veulent refaire une réplique culte, aux amateurs de fandub qui cherchent un outil sans montage, aux professeurs de langue qui font doubler un extrait à leur classe, et à ceux qui apprennent le doublage et veulent s’entraîner sur une bande rythmo sans louer un studio.',
+    faqExtra: [
+      {
+        q: 'Est-ce que c’est gratuit ?',
+        a: 'Oui. DubRoom est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
+      },
+      {
+        q: 'Quelle différence avec un montage vidéo classique ?',
+        a: 'Un logiciel de montage vous donne une timeline vide et vous laisse caler vos prises à la main. DubRoom part de la scène : il en sépare les voix, repère les répliques, les attribue aux personnages et recale automatiquement vos prises sur la voix d’origine.',
+      },
+      {
+        q: 'Peut-on doubler une scène en anglais depuis le français ?',
+        a: 'Oui. La langue de l’interface et celle de la scène sont indépendantes. Le texte transcrit sert de guide de rythme, vous dites ce que vous voulez par-dessus.',
+      },
+      {
+        q: 'Comment les voix sont-elles séparées de la musique ?',
+        a: 'Par un modèle de séparation de sources qui tourne sur la machine de l’hôte et rend deux pistes : les voix d’un côté, la musique et l’ambiance de l’autre. Comme la séparation vient de la scène elle-même, elle reste calée à l’image.',
+      },
+    ] as const,
     faq: [
       {
         q: 'Il me faut quoi, exactement ?',
@@ -157,6 +185,53 @@ export const fr = {
     voteHelp:
       'Le vote porte sur le découpage, pas sur le film. Une scène bien découpée fait gagner une soirée à tout le monde.',
     sortedByScore: 'Les mieux notées en premier',
+
+    filterLang: 'Langue de la scène',
+    filterGenre: 'Genre',
+    filterCast: 'Nombre de rôles',
+    filterLength: 'Durée',
+    filterAll: 'Toutes',
+    filterAllGenres: 'Tous les genres',
+    filterAnyCast: 'Peu importe',
+    filterAnyLength: 'Peu importe',
+    filterReset: 'Tout afficher',
+    filterNoMatch: 'Aucune scène ne correspond',
+    filterNoMatchBody:
+      'Élargis les critères, ou publie la première scène qui manque au catalogue.',
+    langUnknown: 'Langue inconnue',
+    langNames: {
+      fr: 'Français',
+      en: 'Anglais',
+      es: 'Espagnol',
+      de: 'Allemand',
+      it: 'Italien',
+      pt: 'Portugais',
+      ja: 'Japonais',
+      ko: 'Coréen',
+      zh: 'Chinois',
+      ru: 'Russe',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Action',
+      comedie: 'Comédie',
+      drame: 'Drame',
+      animation: 'Animation',
+      science_fiction: 'Science-fiction',
+      horreur: 'Horreur',
+      documentaire: 'Documentaire',
+      autre: 'Autre',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 rôle',
+      duo: '2 rôles',
+      small: '3 ou 4 rôles',
+      large: '5 rôles ou plus',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Moins d’une minute',
+      medium: '1 à 3 minutes',
+      long: 'Plus de 3 minutes',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 scène disponible' : `${n} scènes disponibles`),
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),

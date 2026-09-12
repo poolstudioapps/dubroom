@@ -34,8 +34,36 @@ export interface Pack {
   down_count: number;
   /** Mon propre avis : 1, -1, ou 0 si je n'ai pas vote. */
   my_vote: number;
+  /** Langue parlee dans l'extrait, code ISO 639-1, ou `null` si inconnue. */
+  source_lang: string | null;
+  genre: PackGenre;
   characters: PackCharacter[];
 }
+
+/** Les genres du catalogue. L'ordre est celui des listes deroulantes. */
+export const PACK_GENRES = [
+  'action',
+  'comedie',
+  'drame',
+  'animation',
+  'science_fiction',
+  'horreur',
+  'documentaire',
+  'autre',
+] as const;
+
+export type PackGenre = (typeof PACK_GENRES)[number];
+
+/**
+ * Les langues qu'on propose a la publication.
+ *
+ * Celles des dialogues, pas celles de l'interface : ce sont deux
+ * questions differentes, et on double un extrait anglais depuis une
+ * interface francaise tous les jours.
+ */
+export const PACK_LANGS = [
+  'fr', 'en', 'es', 'de', 'it', 'pt', 'ja', 'ko', 'zh', 'ru',
+] as const;
 
 async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +118,18 @@ export async function deletePack(pack: Pack): Promise<void> {
   await rpc('delete_pack', { p_pack_id: pack.id });
 }
 
+/** Renseigner les criteres d'une scene publiee. */
+export function setPackFacets(
+  packId: string,
+  facets: { sourceLang?: string | null; genre?: PackGenre },
+) {
+  return rpc('set_pack_facets', {
+    p_pack_id: packId,
+    p_source_lang: facets.sourceLang === undefined ? null : (facets.sourceLang ?? ''),
+    p_genre: facets.genre ?? null,
+  });
+}
+
 /** Voter sur une scene. Revoter la meme valeur retire le vote. */
 export function votePack(packId: string, value: 1 | -1) {
   return rpc<number>('vote_pack', { p_pack_id: packId, p_value: value });
@@ -105,9 +145,14 @@ export function setKeepAsPack(sessionId: string, keep: boolean) {
  * Possible meme une fois le rendu produit : une recette ne contient que
  * le lien et la preparation, et tous deux survivent a la purge.
  */
-export function publishRecipePack(sessionId: string, title?: string) {
+export function publishRecipePack(
+  sessionId: string,
+  input: { title?: string; sourceLang?: string; genre?: PackGenre } = {},
+) {
   return rpc<string>('publish_recipe_pack', {
     p_session_id: sessionId,
-    p_title: title ?? null,
+    p_title: input.title ?? null,
+    p_source_lang: input.sourceLang ?? null,
+    p_genre: input.genre ?? null,
   });
 }

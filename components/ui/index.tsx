@@ -122,6 +122,31 @@ export function MenuLabel({
   );
 }
 
+/**
+ * Liste deroulante.
+ *
+ * Le `select` du systeme plutot qu'un menu maison : il sait deja se
+ * comporter au clavier, au doigt et au lecteur d'ecran, et sur telephone
+ * il ouvre la roulette native, qu'aucun menu dessine a la main n'egale.
+ */
+export const Select = React.forwardRef<
+  HTMLSelectElement,
+  React.SelectHTMLAttributes<HTMLSelectElement>
+>(function Select({ className, ...props }, ref) {
+  return (
+    <select
+      ref={ref}
+      className={cn(
+        'h-10 w-full min-w-0 rounded-lg border-2 border-border-strong bg-surface-raised px-3 text-sm font-bold',
+        'shadow-[inset_0_2px_3px_0_rgb(0_0_0/0.12)] outline-none',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+
 // ── Card ──────────────────────────────────────────────────────────────
 // La plaque metallique vissee aux quatre coins.
 

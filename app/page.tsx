@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -20,9 +21,13 @@ import {
   ArtRythmo,
 } from '@/components/home-art';
 import { SiteHeader } from '@/components/site-header';
+import { StructuredData } from '@/components/structured-data';
 import { TvSet } from '@/components/tv-set';
 import { Card } from '@/components/ui';
-import { getDictionary } from '@/lib/i18n-server';
+import { currentLocale, getDictionary } from '@/lib/i18n-server';
+import { LOCALES, type Locale } from '@/config/i18n';
+import { SITE_URL } from '@/config/site';
+import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
 
 /**
@@ -40,8 +45,47 @@ import { currentUser } from '@/lib/supabase/server';
  * temoignage. Un produit prive sur invitation n'en a pas, et en fabriquer
  * serait mentir a la premiere personne qu'on invite.
  */
+/**
+ * L'accueil est la seule page du produit qui a vocation a etre trouvee.
+ *
+ * Elle ne montre aucune oeuvre : c'est une page de presentation. Le
+ * `robots` global ferme tout ; cette page-ci rouvre pour elle-meme.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return {
+    // `absolute` : le gabarit ajoute « · DubRoom » a tout titre de page,
+    // et le nom du produit y figure deja.
+    title: { absolute: `${t.home.seoTitle} · ${APP_NAME}` },
+    description: t.home.heroBody,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large' },
+    },
+    /*
+     * Pas d'`hreflang` : les dix langues partagent une seule adresse,
+     * et declarer dix variantes pointant toutes au meme endroit est une
+     * erreur que Google signale. Tant qu'une langue n'a pas d'adresse a
+     * elle — `/en/`, `/es/` — il n'y a rien a declarer. C'est le
+     * prochain pas si le referencement multilingue compte.
+     */
+    alternates: { canonical: '/' },
+    openGraph: {
+      type: 'website',
+      url: SITE_URL,
+      title: `${t.home.seoTitle} · ${APP_NAME}`,
+      description: t.home.heroBody,
+    },
+  };
+}
+
 export default async function HomePage() {
-  const [user, t] = await Promise.all([currentUser(), getDictionary()]);
+  const [user, t, locale] = await Promise.all([
+    currentUser(),
+    getDictionary(),
+    currentLocale(),
+  ]);
   const primaryHref = user ? '/sessions' : '/login';
 
   const slides: Slide[] = [
@@ -153,13 +197,52 @@ export default async function HomePage() {
                 n'existe pas tant qu'il serait vide. */}
             {user ? <HomePacksCta /> : null}
 
+            {/*
+              Les sections de fond.
+
+              Elles ne sont pas la pour remplir : ce sont les trois
+              questions que quelqu'un tape avant de connaitre le produit
+              — ce que c'est, comment on fait, a qui ca sert. Un moteur
+              de reponse qui cite cette page citera ces paragraphes,
+              parce que ce sont les seuls qui repondent sans supposer
+              qu'on sait deja de quoi on parle.
+            */}
+            <section className="space-y-6">
+              <article className="space-y-2">
+                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                  {t.home.defineTitle}
+                </h2>
+                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
+                  {t.home.defineBody}
+                </p>
+              </article>
+
+              <article className="space-y-2">
+                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                  {t.home.defineHowTitle}
+                </h2>
+                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
+                  {t.home.defineHowBody}
+                </p>
+              </article>
+
+              <article className="space-y-2">
+                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                  {t.home.defineWhoTitle}
+                </h2>
+                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
+                  {t.home.defineWhoBody}
+                </p>
+              </article>
+            </section>
+
             {/* ── Les questions qui restent ──────────────────────────── */}
             <section className="space-y-4">
               <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
                 {t.home.faqTitle}
               </h2>
               <div className="grid gap-3 sm:grid-cols-2">
-                {t.home.faq.map((item) => (
+                {[...t.home.faq, ...t.home.faqExtra].map((item) => (
                   <Card key={item.q} className="space-y-1.5">
                     <h3 className="text-sm font-bold">{item.q}</h3>
                     <p className="text-sm leading-relaxed text-text-muted">{item.a}</p>
@@ -179,6 +262,8 @@ export default async function HomePage() {
 
         <Footer />
       </div>
+
+      <StructuredData t={t} locale={locale} />
     </div>
   );
 }

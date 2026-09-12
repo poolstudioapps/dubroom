@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { APP_NAME } from '@/config/strings';
 import { LegalShell, LegalSection } from '@/components/legal-shell';
 
-export const metadata = { title: `Mentions légales · ${APP_NAME}` };
+export const metadata = {
+  robots: { index: true, follow: true }, title: `Mentions légales · ${APP_NAME}` };
 
 export default function MentionsPage() {
   return (

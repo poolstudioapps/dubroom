@@ -89,6 +89,34 @@ export const ja = {
     packsCtaAction: 'シーンを用意する',
 
     faqTitle: 'よくある質問',
+    seoTitle: '映画のシーンを友だちと吹き替える',
+    defineTitle: '映画のシーンを吹き替えるとは',
+    defineBody:
+      '映画のシーンを吹き替えるとは、映像も音楽も効果音もリズムもそのままに、もとの声だけを自分の声に差し替えることです。上から解説をかぶせるのではなく、シーンそのものを別の演者でやり直します。DubRoom は、その作業をブラウザだけで行うオンラインの吹き替えソフトです。',
+    defineHowTitle: '映画のシーンを自分で吹き替える方法',
+    defineHowBody:
+      '家庭にはない三つのものが要ります。声だけを差し替えるために声と音楽を分けること、誰がいつ話すかをミリ秒単位で知ること、そして話しながらタイミングを合わせること。DubRoom は最初の二つをシーンから自動で行い、三つ目をリズモバンドで解きます。再生ヘッドの下を文字が流れるこの仕組みは、professional な吹き替えスタジオが八十年使ってきたものです。',
+    defineWhoTitle: 'どんな人のためのものか',
+    defineWhoBody:
+      '名台詞をやり直したい友人どうし、編集ソフトではない道具を探している fandub の作り手、クラスに抜粋を吹き替えさせる語学教師、そしてスタジオを借りずにリズモバンドで練習したい吹き替えの学習者のためのものです。',
+    faqExtra: [
+      {
+        q: '無料ですか？',
+        a: 'はい。DubRoom は個人のプロジェクトで、広告も、定額課金も、シーン数の上限もありません。',
+      },
+      {
+        q: '動画編集ソフトとの違いは？',
+        a: '編集ソフトは空のタイムラインを渡し、テイクの位置合わせは手作業に任せます。DubRoom はシーンから始めます。声を分離し、せりふを見つけ、登場人物に割り当て、録音をもとの声に自動で合わせ直します。',
+      },
+      {
+        q: '日本語の画面で英語のシーンを吹き替えられますか？',
+        a: 'できます。画面の言語とシーンの言語は別物です。文字起こしはタイミングの目安で、その上で何を話すかは自由です。',
+      },
+      {
+        q: '声と音楽はどうやって分けているのですか？',
+        a: 'ホストのパソコンで動く音源分離のモデルが、声と、音楽・環境音の二つのトラックを返します。分離はシーン自体から取るので、映像とずれません。',
+      },
+    ] as const,
     faq: [
       {
         q: '必要なものは？',
@@ -153,6 +181,34 @@ export const ja = {
     voteHelp:
       '評価の対象は映画ではなく、区切りです。区切りのよいシーンは、全員の一晩を節約します。',
     sortedByScore: '評価の高い順',
+    filterLang: 'シーンの言語',
+    filterGenre: 'ジャンル',
+    filterCast: '役の数',
+    filterLength: '長さ',
+    filterAll: 'すべて',
+    filterAllGenres: 'すべてのジャンル',
+    filterAnyCast: '指定なし',
+    filterAnyLength: '指定なし',
+    filterReset: 'すべて表示',
+    filterNoMatch: '条件に合うシーンがありません',
+    filterNoMatchBody:
+      '条件を広げるか、まだ誰も出していないシーンを公開してみてください。',
+    langUnknown: '言語不明',
+    langNames: {
+      fr: 'フランス語', en: '英語', es: 'スペイン語', de: 'ドイツ語', it: 'イタリア語',
+      pt: 'ポルトガル語', ja: '日本語', ko: '韓国語', zh: '中国語', ru: 'ロシア語',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'アクション', comedie: 'コメディ', drame: 'ドラマ', animation: 'アニメ',
+      science_fiction: 'SF', horreur: 'ホラー', documentaire: 'ドキュメンタリー',
+      autre: 'その他',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 役', duo: '2 役', small: '3〜4 役', large: '5 役以上',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: '1 分未満', medium: '1〜3 分', long: '3 分以上',
+    } as Record<string, string>,
     sceneCount: (n: number) => `利用できるシーン ${n} 件`,
     characterCount: (n: number) => `登場人物 ${n} 人`,
     lineCount: (n: number) => `せりふ ${n} 件`,

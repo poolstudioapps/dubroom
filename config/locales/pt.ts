@@ -92,6 +92,34 @@ export const pt = {
     packsCtaAction: 'Preparar uma cena',
 
     faqTitle: 'O que perguntam para a gente',
+    seoTitle: 'Dublar uma cena de filme entre amigos',
+    defineTitle: 'O que é dublar uma cena de filme?',
+    defineBody:
+      'Dublar uma cena de filme é trocar as vozes originais pelas suas mantendo todo o resto: a imagem, a música, os efeitos, o ritmo. O resultado não é um comentário por cima, é a própria cena com outros atores. O DubRoom é um software de dublagem online que faz esse trabalho no navegador, sem instalar nada.',
+    defineHowTitle: 'Como dublar uma cena de filme por conta própria',
+    defineHowBody:
+      'São precisas três coisas que ninguém tem em casa: separar as vozes da música para trocar só as vozes, saber quem fala e quando ao milissegundo, e manter a sincronia enquanto se fala. O DubRoom faz as duas primeiras automaticamente a partir da cena, e resolve a terceira com uma faixa rítmica, o texto que passa sob uma cabeça de leitura usada pelos estúdios de dublagem há oitenta anos.',
+    defineWhoTitle: 'Para quem serve',
+    defineWhoBody:
+      'Para grupos de amigos que querem refazer uma fala clássica, para quem faz fandub e procura uma ferramenta que não seja um editor, para professores de idiomas que põem a turma a dublar um trecho, e para quem estuda dublagem e quer treinar em faixa rítmica sem alugar estúdio.',
+    faqExtra: [
+      {
+        q: 'É de graça?',
+        a: 'É. O DubRoom é um projeto pessoal, sem anúncios, sem assinatura e sem limite de cenas.',
+      },
+      {
+        q: 'Qual a diferença para um editor de vídeo?',
+        a: 'Um editor entrega uma linha do tempo vazia e deixa você encaixar as tomadas na mão. O DubRoom parte da cena: separa as vozes, acha as falas, atribui aos personagens e reposiciona suas tomadas sobre a voz original.',
+      },
+      {
+        q: 'Dá para dublar uma cena em inglês com a interface em português?',
+        a: 'Dá. O idioma da interface e o da cena são independentes. O texto transcrito serve de guia de tempo, e você fala o que quiser por cima.',
+      },
+      {
+        q: 'Como as vozes são separadas da música?',
+        a: 'Por um modelo de separação de fontes que roda na máquina do anfitrião e devolve duas faixas: as vozes de um lado, música e ambiente do outro. Como a separação vem da própria cena, continua grudada na imagem.',
+      },
+    ] as const,
     faq: [
       {
         q: 'Do que eu preciso, exatamente?',
@@ -156,6 +184,34 @@ export const pt = {
     voteHelp:
       'O voto é sobre o corte, não sobre o filme. Uma cena bem cortada economiza uma noite de todo mundo.',
     sortedByScore: 'As mais bem avaliadas primeiro',
+    filterLang: 'Idioma da cena',
+    filterGenre: 'Gênero',
+    filterCast: 'Número de papéis',
+    filterLength: 'Duração',
+    filterAll: 'Todos',
+    filterAllGenres: 'Todos os gêneros',
+    filterAnyCast: 'Tanto faz',
+    filterAnyLength: 'Tanto faz',
+    filterReset: 'Mostrar tudo',
+    filterNoMatch: 'Nenhuma cena corresponde',
+    filterNoMatchBody:
+      'Abra mais os critérios, ou publique a cena que falta no catálogo.',
+    langUnknown: 'Idioma desconhecido',
+    langNames: {
+      fr: 'Francês', en: 'Inglês', es: 'Espanhol', de: 'Alemão', it: 'Italiano',
+      pt: 'Português', ja: 'Japonês', ko: 'Coreano', zh: 'Chinês', ru: 'Russo',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Ação', comedie: 'Comédia', drame: 'Drama', animation: 'Animação',
+      science_fiction: 'Ficção científica', horreur: 'Terror', documentaire: 'Documentário',
+      autre: 'Outro',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 papel', duo: '2 papéis', small: '3 ou 4 papéis', large: '5 papéis ou mais',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Menos de um minuto', medium: 'De 1 a 3 minutos', long: 'Mais de 3 minutos',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 cena disponível' : `${n} cenas disponíveis`),
     characterCount: (n: number) => (n === 1 ? '1 personagem' : `${n} personagens`),
     lineCount: (n: number) => (n === 1 ? '1 fala' : `${n} falas`),

@@ -92,6 +92,34 @@ export const de = {
     packsCtaAction: 'Eine Szene vorbereiten',
 
     faqTitle: 'Was man uns fragt',
+    seoTitle: 'Eine Filmszene unter Freunden synchronisieren',
+    defineTitle: 'Was heißt eine Filmszene synchronisieren?',
+    defineBody:
+      'Eine Filmszene zu synchronisieren heißt, die Originalstimmen durch die eigenen zu ersetzen und alles andere zu behalten: Bild, Musik, Geräusche, Rhythmus. Das Ergebnis ist kein Kommentar darüber, es ist die Szene selbst, mit anderen Sprechern. DubRoom ist eine Synchronsoftware im Browser, ohne Installation.',
+    defineHowTitle: 'Wie man eine Filmszene selbst synchronisiert',
+    defineHowBody:
+      'Es braucht drei Dinge, die zu Hause niemand hat: die Stimmen von der Musik trennen, damit nur die Stimmen ersetzt werden, auf die Millisekunde wissen, wer wann spricht, und beim Sprechen synchron bleiben. DubRoom erledigt die ersten beiden automatisch aus der Szene und löst das dritte mit einem Laufband, dem unter einem Abspielkopf durchlaufenden Text, den Synchronstudios seit achtzig Jahren benutzen.',
+    defineWhoTitle: 'Für wen das ist',
+    defineWhoBody:
+      'Für Freundesgruppen, die eine berühmte Zeile nachsprechen wollen, für Fandub-Leute, die kein Schnittprogramm suchen, für Sprachlehrer, die eine Klasse einen Ausschnitt synchronisieren lassen, und für alle, die Sprechen lernen und am Laufband üben wollen, ohne ein Studio zu mieten.',
+    faqExtra: [
+      {
+        q: 'Ist das kostenlos?',
+        a: 'Ja. DubRoom ist ein privates Projekt, ohne Werbung, ohne Abo und ohne Begrenzung der Szenen.',
+      },
+      {
+        q: 'Was ist der Unterschied zu einem Schnittprogramm?',
+        a: 'Ein Schnittprogramm gibt dir eine leere Zeitleiste und lässt dich deine Aufnahmen von Hand ausrichten. DubRoom geht von der Szene aus: es trennt die Stimmen, findet die Sätze, ordnet sie den Figuren zu und rückt deine Aufnahmen automatisch auf die Originalstimme.',
+      },
+      {
+        q: 'Kann ich eine englische Szene aus einer deutschen Oberfläche synchronisieren?',
+        a: 'Ja. Sprache der Oberfläche und Sprache der Szene sind unabhängig. Der transkribierte Text ist eine Zeitvorgabe, sprechen kannst du darüber, was du willst.',
+      },
+      {
+        q: 'Wie werden Stimmen von der Musik getrennt?',
+        a: 'Durch ein Quellentrennungsmodell auf der Rechnermaschine des Gastgebers, das zwei Spuren liefert: die Stimmen auf der einen, Musik und Atmosphäre auf der anderen. Da die Trennung aus der Szene selbst stammt, bleibt sie bildgenau.',
+      },
+    ] as const,
     faq: [
       {
         q: 'Was brauche ich genau?',
@@ -156,6 +184,34 @@ export const de = {
     voteHelp:
       'Bewertet wird der Schnitt, nicht der Film. Eine gut geschnittene Szene erspart allen einen Abend.',
     sortedByScore: 'Bestbewertete zuerst',
+    filterLang: 'Sprache der Szene',
+    filterGenre: 'Genre',
+    filterCast: 'Anzahl Rollen',
+    filterLength: 'Länge',
+    filterAll: 'Alle',
+    filterAllGenres: 'Alle Genres',
+    filterAnyCast: 'Egal',
+    filterAnyLength: 'Egal',
+    filterReset: 'Alles anzeigen',
+    filterNoMatch: 'Keine Szene passt',
+    filterNoMatchBody:
+      'Mach die Auswahl breiter, oder veröffentliche die Szene, die dem Katalog fehlt.',
+    langUnknown: 'Sprache unbekannt',
+    langNames: {
+      fr: 'Französisch', en: 'Englisch', es: 'Spanisch', de: 'Deutsch', it: 'Italienisch',
+      pt: 'Portugiesisch', ja: 'Japanisch', ko: 'Koreanisch', zh: 'Chinesisch', ru: 'Russisch',
+    } as Record<string, string>,
+    genreNames: {
+      action: 'Action', comedie: 'Komödie', drame: 'Drama', animation: 'Animation',
+      science_fiction: 'Science-Fiction', horreur: 'Horror', documentaire: 'Dokumentation',
+      autre: 'Sonstiges',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 Rolle', duo: '2 Rollen', small: '3 oder 4 Rollen', large: '5 Rollen oder mehr',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: 'Unter einer Minute', medium: '1 bis 3 Minuten', long: 'Über 3 Minuten',
+    } as Record<string, string>,
     sceneCount: (n: number) => (n === 1 ? '1 Szene verfügbar' : `${n} Szenen verfügbar`),
     characterCount: (n: number) => (n === 1 ? '1 Figur' : `${n} Figuren`),
     lineCount: (n: number) => (n === 1 ? '1 Satz' : `${n} Sätze`),

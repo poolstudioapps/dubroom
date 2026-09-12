@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import { AUTH_COOKIE_OPTIONS, withAuthCookieOptions } from '@/lib/supabase/cookies';
+
 const PUBLIC_PATHS = [
   '/login',
   '/auth/callback',
@@ -11,8 +13,10 @@ const PUBLIC_PATHS = [
 ];
 
 // L'accueil se visite sans compte : il n'expose aucune scene, aucun
-// participant, aucun rendu — seulement le principe du produit.
-const PUBLIC_EXACT = ['/'];
+// participant, aucun rendu, seulement le principe du produit. Les trois
+// fichiers destines aux robots suivent, sans quoi ils repondraient par
+// une redirection vers la connexion et ne serviraient a rien.
+const PUBLIC_EXACT = ['/', '/robots.txt', '/sitemap.xml', '/llms.txt'];
 // /auth/callback/hash est couvert par le prefixe /auth/callback.
 
 /**
@@ -47,6 +51,7 @@ export async function middleware(request: NextRequest) {
     supabaseUrl,
     supabaseKey,
     {
+      cookieOptions: AUTH_COOKIE_OPTIONS,
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -57,7 +62,9 @@ export async function middleware(request: NextRequest) {
           }
           response = NextResponse.next({ request });
           for (const { name, value, options } of cookiesToSet) {
-            response.cookies.set(name, value, options);
+            // Chaque navigation repousse l'echeance : quelqu'un qui
+            // revient une fois par mois ne se reconnecte jamais.
+            response.cookies.set(name, value, withAuthCookieOptions(options));
           }
         },
       },

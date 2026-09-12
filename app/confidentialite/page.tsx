@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { LegalShell, LegalSection } from '@/components/legal-shell';
 import { APP_NAME } from '@/config/strings';
 
-export const metadata = { title: `Confidentialité · ${APP_NAME}` };
+export const metadata = {
+  robots: { index: true, follow: true }, title: `Confidentialité · ${APP_NAME}` };
 
 export default function PrivacyPage() {
   return (

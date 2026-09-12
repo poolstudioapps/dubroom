@@ -7,6 +7,12 @@ import { Clapperboard, Trash2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import {
+  EMPTY_FILTER,
+  PackFilters,
+  matchesFilter,
+  type PackFilter,
+} from '@/components/pack-filters';
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
 import { Alert, Badge, Button, Card, Dialog, Spinner } from '@/components/ui';
@@ -49,6 +55,7 @@ export function CommunityClient({
    * faisait tourner les dix boutons pour un seul clic.
    */
   const [startingId, setStartingId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
 
   const packs = useQuery({ queryKey: ['packs'], queryFn: listPacks });
 
@@ -71,9 +78,11 @@ export function CommunityClient({
     onError: (e) => setError(humanizeError(e)),
   });
 
-  const visible = (packs.data ?? []).filter(
-    (pack) => scope === 'all' || pack.is_mine,
-  );
+  // Deux etages : ce que la page montre par principe, puis ce que les
+  // criteres laissent passer. Le premier decide si le catalogue est vide,
+  // le second s'il faut elargir les criteres. Les deux messages different.
+  const mine = (packs.data ?? []).filter((pack) => scope === 'all' || pack.is_mine);
+  const visible = mine.filter((pack) => matchesFilter(pack, filter));
   const strings = scope === 'mine' ? t.myPacks : t.community;
 
   return (
@@ -101,11 +110,24 @@ export function CommunityClient({
         </div>
       ) : null}
 
-      {packs.isSuccess && visible.length === 0 ? (
+      {mine.length > 1 ? (
+        <PackFilters packs={mine} value={filter} onChange={setFilter} />
+      ) : null}
+
+      {packs.isSuccess && mine.length === 0 ? (
         <Card className="space-y-2 py-8 text-center">
           <h2 className="text-sm font-bold">{strings.emptyTitle}</h2>
           <p className="mx-auto max-w-md text-sm leading-relaxed text-text-muted">
             {strings.emptyBody}
+          </p>
+        </Card>
+      ) : null}
+
+      {mine.length > 0 && visible.length === 0 ? (
+        <Card className="space-y-2 py-8 text-center">
+          <h2 className="text-sm font-bold">{t.community.filterNoMatch}</h2>
+          <p className="mx-auto max-w-md text-sm leading-relaxed text-text-muted">
+            {t.community.filterNoMatchBody}
           </p>
         </Card>
       ) : null}
@@ -156,9 +178,14 @@ export function CommunityClient({
                     {character.name}
                   </li>
                 ))}
-                {pack.kind === 'url' ? (
+                <li>
+                  <Badge>{t.community.genreNames[pack.genre]}</Badge>
+                </li>
+                {pack.source_lang ? (
                   <li>
-                    <Badge>{t.community.kindRecipe}</Badge>
+                    <Badge>
+                      {t.community.langNames[pack.source_lang] ?? pack.source_lang}
+                    </Badge>
                   </li>
                 ) : null}
                 {pack.is_mine && scope === 'all' ? (

@@ -51,11 +51,19 @@ export function Footer() {
           >
             {t.legal.contact}
           </a>
-          <LocalePicker />
           <span className="py-1 text-[oklch(0.7_0.03_300)]">
             © {year} {APP_NAME}
           </span>
         </nav>
+
+        {/*
+          Le choix de la langue sur sa propre ligne, avec un cadre.
+          Glisse entre les liens legaux, il se lisait comme l'un d'eux et
+          personne ne le voyait.
+        */}
+        <div className="flex justify-center pt-1">
+          <LocalePicker />
+        </div>
       </div>
     </footer>
   );

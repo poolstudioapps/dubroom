@@ -89,6 +89,34 @@ export const zh = {
     packsCtaAction: '准备一个片段',
 
     faqTitle: '常被问到的',
+    seoTitle: '和朋友一起给电影片段配音',
+    defineTitle: '什么叫给电影片段配音',
+    defineBody:
+      '给电影片段配音，就是画面、音乐、音效、节奏全都留着，只把原来的人声换成自己的。它不是在上面加一层解说，而是同一个片段换一批演员重做一遍。DubRoom 是一个在浏览器里完成这件事的在线配音软件，什么都不用装。',
+    defineHowTitle: '怎么自己给电影片段配音',
+    defineHowBody:
+      '需要三样家里没有的东西：把人声和音乐分开，好只换人声；精确到毫秒地知道谁在什么时候说话；以及一边说一边对上口型。前两样 DubRoom 从片段里自动做掉，第三样用字带解决，文字在播放头下面走过，这是专业配音棚用了八十年的办法。',
+    defineWhoTitle: '给谁用的',
+    defineWhoBody:
+      '给想重演经典台词的朋友们，给不想用剪辑软件的同人配音作者，给让学生配一段的语言老师，也给想在字带上练习又不想租棚的配音学习者。',
+    faqExtra: [
+      {
+        q: '免费吗？',
+        a: '免费。DubRoom 是个人项目，没有广告，没有订阅，片段数量也不设上限。',
+      },
+      {
+        q: '跟视频剪辑软件有什么不一样？',
+        a: '剪辑软件给你一条空时间轴，对齐录音得自己来。DubRoom 从片段出发：分离人声、找出台词、分配角色，再把你的录音自动对回原声的位置。',
+      },
+      {
+        q: '能用中文界面配英文片段吗？',
+        a: '能。界面语言和片段语言互不相干。转写出来的文字只是节奏提示，你在上面说什么都行。',
+      },
+      {
+        q: '人声是怎么和音乐分开的？',
+        a: '由跑在房主电脑上的音源分离模型完成，返回两条轨：人声一条，音乐和环境声一条。因为分离取自片段本身，所以和画面不会错位。',
+      },
+    ] as const,
     faq: [
       {
         q: '到底需要什么？',
@@ -152,6 +180,34 @@ export const zh = {
     voteScore: (n: number) => `社区评分：${n}`,
     voteHelp: '投的是切分，不是电影。切得好的片段能给所有人省下一个晚上。',
     sortedByScore: '评分高的在前',
+    filterLang: '片段语言',
+    filterGenre: '类型',
+    filterCast: '角色数',
+    filterLength: '时长',
+    filterAll: '全部',
+    filterAllGenres: '所有类型',
+    filterAnyCast: '不限',
+    filterAnyLength: '不限',
+    filterReset: '全部显示',
+    filterNoMatch: '没有符合条件的片段',
+    filterNoMatchBody:
+      '把条件放宽一点，或者把目录里还缺的那个片段发出来。',
+    langUnknown: '语言未知',
+    langNames: {
+      fr: '法语', en: '英语', es: '西班牙语', de: '德语', it: '意大利语',
+      pt: '葡萄牙语', ja: '日语', ko: '韩语', zh: '中文', ru: '俄语',
+    } as Record<string, string>,
+    genreNames: {
+      action: '动作', comedie: '喜剧', drame: '剧情', animation: '动画',
+      science_fiction: '科幻', horreur: '恐怖', documentaire: '纪录片',
+      autre: '其他',
+    } as Record<string, string>,
+    castBuckets: {
+      solo: '1 个角色', duo: '2 个角色', small: '3 到 4 个角色', large: '5 个角色以上',
+    } as Record<string, string>,
+    lengthBuckets: {
+      short: '不到一分钟', medium: '1 到 3 分钟', long: '超过 3 分钟',
+    } as Record<string, string>,
     sceneCount: (n: number) => `可用片段 ${n} 个`,
     characterCount: (n: number) => `${n} 个角色`,
     lineCount: (n: number) => `${n} 句台词`,
