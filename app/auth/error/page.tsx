@@ -1,8 +1,14 @@
 import Link from 'next/link';
-import { t } from '@/config/strings';
+import { getDictionary } from '@/lib/i18n-server';
 
+/**
+ * Les raisons qui ne dependent pas du dictionnaire.
+ *
+ * Elles restent en francais pour l'instant : ce sont des messages
+ * d'echec d'authentification, lus avant meme qu'une langue ait pu etre
+ * choisie dans un compte.
+ */
 const REASONS: Record<string, string> = {
-  not_allowed: t.auth.notAllowed,
   expired:
     'Ce lien a expiré ou a déjà servi. Les liens de connexion ne valent qu’une heure et qu’une fois. Demandes-en un nouveau.',
   exchange: 'Ce lien a expiré ou a déjà servi. Demande-en un nouveau.',
@@ -15,9 +21,12 @@ export default async function AuthErrorPage({
   searchParams: Promise<{ reason?: string; email?: string }>;
 }) {
   const { reason, email } = await searchParams;
+  const t = await getDictionary();
   const message =
-    reason === 'not_allowed' && email
-      ? t.auth.notAllowedWith(email)
+    reason === 'not_allowed'
+      ? email
+        ? t.auth.notAllowedWith(email)
+        : t.auth.notAllowed
       : (REASONS[reason ?? ''] ?? t.common.unknownError);
 
   return (

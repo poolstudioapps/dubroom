@@ -4,9 +4,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { Alert, Button, Card, Input, Label, Spinner } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { joinSession } from '@/lib/actions';
 import { useScene, type SceneData } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
@@ -51,6 +52,8 @@ export function ScenePage({
   fill?: boolean;
   children: React.ReactNode;
 }) {
+  const t = useT();
+
   const router = useRouter();
   const qc = useQueryClient();
 

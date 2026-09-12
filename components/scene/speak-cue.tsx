@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type RefObject } from 'react';
 
-import { t } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 import { characterColorVar } from '@/config/constants';
 import type { CharacterRow, ClipRow } from '@/lib/supabase/database.types';
 import { cn } from '@/lib/utils';
@@ -29,6 +29,8 @@ export function SpeakCue({
   videoRef: RefObject<HTMLVideoElement | null>;
   active: boolean;
 }) {
+  const t = useT();
+
   const [phase, setPhase] = useState<Phase>('idle');
   const [countdownMs, setCountdownMs] = useState(0);
   const lastPhase = useRef<Phase>('idle');

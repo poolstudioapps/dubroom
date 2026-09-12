@@ -4,8 +4,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { KeyRound } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Alert, Button, Card, Input, Label } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -23,6 +24,8 @@ const MIN_LENGTH = 8;
  * reste verifiee a chaque connexion, quel que soit le chemin.
  */
 export function PasswordCard({ bare }: { bare?: boolean } = {}) {
+  const t = useT();
+
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);

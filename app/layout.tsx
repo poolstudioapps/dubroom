@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Anton, Nunito } from 'next/font/google';
 
 import { APP_NAME, APP_TAGLINE } from '@/config/strings';
+import { currentLocale } from '@/lib/i18n-server';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -43,13 +44,20 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // La langue est choisie ici, une fois par requete, puis descendue a
+  // tout l'arbre. Le `lang` de la page suit : c'est lui qui fait la
+  // cesure et la synthese vocale correctes.
+  const locale = await currentLocale();
+
   return (
-    <html lang="fr" className={`${display.variable} ${body.variable}`}>
+    <html lang={locale} className={`${display.variable} ${body.variable}`}>
       <body className="min-h-dvh antialiased">
-        <Providers>{children}</Providers>
+        <Providers locale={locale}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

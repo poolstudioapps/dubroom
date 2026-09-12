@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, type RefObject } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { WAVEFORM_BUCKETS } from '@/config/constants';
-import { t } from '@/config/strings';
+
 import { decodeEnvelope, sliceEnvelope } from '@/lib/audio/envelope';
 import type { TakeAnalysis } from '@/lib/audio/waveform';
 import { resolveCharacterColor, resolveCssColor } from '@/lib/canvas-colors';
@@ -40,6 +41,8 @@ export function WaveformView({
   characterColor: string;
   height?: number;
 }) {
+  const t = useT();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

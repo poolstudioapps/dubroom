@@ -3,9 +3,10 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { DiscordButton } from '@/components/discord-button';
 import { Alert, Button, Input, Label } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -16,6 +17,8 @@ const MODE_KEY = 'dubroom.loginMode';
 const EMAIL_KEY = 'dubroom.lastEmail';
 
 export function LoginForm() {
+  const t = useT();
+
   const params = useSearchParams();
   const next = params.get('next') ?? '/sessions';
 

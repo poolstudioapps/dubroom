@@ -3,8 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { Spinner } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { supabaseBrowser } from '@/lib/supabase/client';
 
 /**
@@ -16,6 +17,8 @@ import { supabaseBrowser } from '@/lib/supabase/client';
  * finissaient sur le meme message trompeur, « ce lien est incomplet ».
  */
 export function HashSessionFallback({ landing }: { landing: string }) {
+  const t = useT();
+
   const router = useRouter();
 
   useEffect(() => {

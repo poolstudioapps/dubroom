@@ -2,9 +2,10 @@
 
 import { Check, CircleDashed, Loader2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Alert, Progress } from '@/components/ui';
 import { INGEST_STEPS, RENDER_STEPS } from '@/config/constants';
-import { t } from '@/config/strings';
+
 import type { JobState } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
@@ -23,6 +24,8 @@ export function JobProgress({
   state: JobState | undefined;
   kind: 'ingest' | 'render';
 }) {
+  const t = useT();
+
   const job = state?.job ?? null;
   const steps = kind === 'ingest' ? INGEST_STEPS : RENDER_STEPS;
   const labels: Record<string, string> =

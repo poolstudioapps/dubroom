@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 
-import { t } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 import { votePack, type Pack } from '@/lib/packs';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils';
  * ailleurs, et il evite un troisieme bouton pour se dedire.
  */
 export function PackVote({ pack }: { pack: Pack }) {
+  const t = useT();
+
   const qc = useQueryClient();
   // Etat local : le compte doit bouger au clic, pas au retour du serveur.
   const [mine, setMine] = useState(pack.my_vote);

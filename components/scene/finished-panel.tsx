@@ -2,8 +2,9 @@
 
 import { ArrowLeft, PartyPopper } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Badge, Button, Card, Progress, Spinner } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { useSessionProgress } from '@/lib/data';
 
 /**
@@ -23,6 +24,8 @@ export function FinishedPanel({
   myParticipantId: string;
   onBack: () => void;
 }) {
+  const t = useT();
+
   const progress = useSessionProgress(sessionId);
 
   const rows = (progress.data ?? []).filter((row) => !row.is_kicked);

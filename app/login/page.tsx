@@ -1,9 +1,11 @@
 import { Suspense } from 'react';
-import { APP_NAME, APP_TAGLINE, t } from '@/config/strings';
+import { APP_NAME, APP_TAGLINE } from '@/config/strings';
+import { getDictionary } from '@/lib/i18n-server';
 import { LoginForm } from './login-form';
 
 /** Ecran-titre : le poste allume, le logo, et une seule chose a faire. */
-export default function LoginPage() {
+export default async function LoginPage() {
+  const t = await getDictionary();
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl">

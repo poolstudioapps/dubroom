@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 
-import { APP_NAME, t } from '@/config/strings';
+import { LocalePicker } from '@/components/locale-picker';
+import { APP_NAME } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 
 /**
  * Pied de page.
@@ -15,6 +19,7 @@ import { APP_NAME, t } from '@/config/strings';
  * page decale de ses propres contenus sur les pages legales.
  */
 export function Footer() {
+  const t = useT();
   const year = new Date().getFullYear();
 
   return (
@@ -46,6 +51,7 @@ export function Footer() {
           >
             {t.legal.contact}
           </a>
+          <LocalePicker />
           <span className="py-1 text-[oklch(0.7_0.03_300)]">
             © {year} {APP_NAME}
           </span>

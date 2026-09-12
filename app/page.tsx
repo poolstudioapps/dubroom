@@ -22,7 +22,7 @@ import {
 import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
 import { Card } from '@/components/ui';
-import { t } from '@/config/strings';
+import { getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 
 /**
@@ -41,7 +41,7 @@ import { currentUser } from '@/lib/supabase/server';
  * serait mentir a la premiere personne qu'on invite.
  */
 export default async function HomePage() {
-  const user = await currentUser();
+  const [user, t] = await Promise.all([currentUser(), getDictionary()]);
   const primaryHref = user ? '/sessions' : '/login';
 
   const slides: Slide[] = [

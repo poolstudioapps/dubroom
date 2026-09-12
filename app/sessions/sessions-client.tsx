@@ -6,11 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { StatusBadge } from '@/components/status-badge';
 import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES, STORAGE_WARN_RATIO } from '@/config/constants';
-import { formatBytes, formatDuration, t } from '@/config/strings';
+import { formatBytes, formatDuration } from '@/config/strings';
 import { useMyProfile } from '@/lib/profile';
 import { deleteSession, joinSession } from '@/lib/actions';
 import { queryKeys, useMySessions, useStorageUsage } from '@/lib/data';
@@ -32,6 +33,8 @@ export function SessionsClient({
   userId: string;
   displayName: string;
 }) {
+  const t = useT();
+
   const router = useRouter();
   const qc = useQueryClient();
   const sessions = useMySessions();

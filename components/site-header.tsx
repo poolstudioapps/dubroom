@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 
 import { SiteNav } from '@/components/site-nav';
-import { APP_NAME, t } from '@/config/strings';
+import { APP_NAME } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 
 /**
  * L'en-tete du site : l'enseigne, les onglets, et ce qu'on veut mettre a
@@ -21,6 +24,8 @@ export function SiteHeader({
   signedIn?: boolean;
   className?: string;
 }) {
+  const t = useT();
+
   return (
     <header
       className={[

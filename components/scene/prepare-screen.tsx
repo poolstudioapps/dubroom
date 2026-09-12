@@ -4,11 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { Combine, Pause, Play, RotateCcw, Scissors, Trash2, Users } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
 import { CharacterPicker } from '@/components/scene/character-picker';
 import { Alert, Badge, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
-import { formatDuration, formatTimecode, t } from '@/config/strings';
+import { formatDuration, formatTimecode } from '@/config/strings';
 import {
   deleteLines,
   mergeCharacters,
@@ -26,6 +27,8 @@ import { statsByCharacter } from '@/lib/scene-stats';
 import { cn } from '@/lib/utils';
 
 export function PrepareScreen() {
+  const t = useT();
+
   const { session, characters, lines, clips, refetch } = useSceneCtx();
   const media = useMediaUrls(session);
   const excerpt = useExcerpt(media.data?.video);

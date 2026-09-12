@@ -4,8 +4,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { UserPlus, X } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Alert, Badge, Button, Card, Input, Spinner } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -25,6 +26,8 @@ interface Guest {
  * soiree.
  */
 export function GuestListCard({ bare }: { bare?: boolean } = {}) {
+  const t = useT();
+
   const qc = useQueryClient();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);

@@ -2,15 +2,18 @@
 
 import { Download } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { PublishCard } from '@/components/scene/publish-card';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
-import { formatBytes, t } from '@/config/strings';
+import { formatBytes } from '@/config/strings';
 import { useRenderUrl } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
 export function ResultScreen() {
+  const t = useT();
+
   const { session, characters, participants } = useSceneCtx();
   const url = useRenderUrl(session);
 

@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Library, Share2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Button, Card, Input } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { humanizeError } from '@/lib/errors';
 import { publishRecipePack } from '@/lib/packs';
 
@@ -24,6 +25,8 @@ import { publishRecipePack } from '@/lib/packs';
  *    rien a partager. La decision devait etre prise avant le rendu.
  */
 export function PublishCard() {
+  const t = useT();
+
   const { session, isHost, refetch } = useSceneCtx();
   const [title, setTitle] = useState(session.title ?? '');
   const [error, setError] = useState<string | null>(null);

@@ -4,28 +4,23 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Library, Clapperboard, Package } from 'lucide-react';
 
-import { t } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 import { useMyPackCount } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 
-/**
- * Le libelle court n'est pas le premier mot du long : « Mes scènes »
- * donnait « Mes », qui ne designe rien. Il est ecrit a la main.
+/*
+ * Les destinations sont figees, les libelles non : ils dependent de la
+ * langue, donc du rendu. Seules les icones et les adresses vivent hors
+ * du composant.
  */
 const TABS = [
-  { href: '/', label: t.nav.home, short: t.nav.homeShort, icon: Home, exact: true },
-  { href: '/sessions', label: t.nav.sessions, short: t.nav.sessionsShort, icon: Clapperboard, exact: false },
-  { href: '/communaute', label: t.nav.community, short: t.nav.communityShort, icon: Library, exact: false },
+  { href: '/', icon: Home, exact: true },
+  { href: '/sessions', icon: Clapperboard, exact: false },
+  { href: '/communaute', icon: Library, exact: false },
 ] as const;
 
 /** Le dernier onglet, qui n'apparait que si on a quelque chose dedans. */
-const MY_PACKS = {
-  href: '/mes-packs',
-  label: t.nav.myPacks,
-  short: t.nav.myPacksShort,
-  icon: Package,
-  exact: false,
-} as const;
+const MY_PACKS = { href: '/mes-packs', icon: Package, exact: false } as const;
 
 /**
  * Onglets du site.
@@ -43,13 +38,20 @@ const MY_PACKS = {
  * deborder tout le site de soixante-quinze pixels.
  */
 export function SiteNav({ signedIn }: { signedIn?: boolean }) {
+  const t = useT();
   const pathname = usePathname();
   const packs = useMyPackCount(!!signedIn);
 
-  const tabs = [
-    ...TABS,
-    ...((packs.data ?? 0) > 0 ? [MY_PACKS] : []),
-  ];
+  /* Le libelle court n'est pas le premier mot du long : « Mes scènes »
+     donnait « Mes », qui ne designe rien. Il est ecrit a la main. */
+  const labels: Record<string, { label: string; short: string }> = {
+    '/': { label: t.nav.home, short: t.nav.homeShort },
+    '/sessions': { label: t.nav.sessions, short: t.nav.sessionsShort },
+    '/communaute': { label: t.nav.community, short: t.nav.communityShort },
+    '/mes-packs': { label: t.nav.myPacks, short: t.nav.myPacksShort },
+  };
+
+  const tabs = [...TABS, ...((packs.data ?? 0) > 0 ? [MY_PACKS] : [])];
 
   return (
     <nav className="flex flex-wrap gap-1" aria-label="Navigation principale">
@@ -72,8 +74,8 @@ export function SiteNav({ signedIn }: { signedIn?: boolean }) {
             )}
           >
             <Icon className="h-4 w-4" aria-hidden />
-            <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">{tab.short}</span>
+            <span className="hidden sm:inline">{labels[tab.href]?.label}</span>
+            <span className="sm:hidden">{labels[tab.href]?.short}</span>
           </Link>
         );
       })}

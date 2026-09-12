@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { ArrowRight, Package } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Card } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { useMyPackCount } from '@/lib/profile';
 
 /**
@@ -18,6 +19,8 @@ import { useMyPackCount } from '@/lib/profile';
  * deux fois la meme chose au meme endroit fatigue la page.
  */
 export function HomePacksCta() {
+  const t = useT();
+
   const packs = useMyPackCount();
 
   if (packs.isLoading || (packs.data ?? 0) > 0) return null;

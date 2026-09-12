@@ -1,0 +1,471 @@
+/**
+ * 한국어 사전.
+ *
+ * `fr`와 키가 일대일로 대응한다. 컴파일러가 검사한다.
+ * 원문과 같이 친구끼리 노는 말투에 맞춘 해요체.
+ */
+
+import type { Dictionary } from '../i18n';
+import { INGEST_STEPS, RENDER_STEPS } from '../constants';
+
+export const ko = {
+  nav: {
+    home: '홈',
+    homeShort: '홈',
+    sessions: '내 장면',
+    sessionsShort: '장면',
+    community: '커뮤니티',
+    communityShort: '커뮤니티',
+    myPacks: '내 팩',
+    myPacksShort: '내 팩',
+  },
+
+  account: {
+    title: '내 계정',
+    subtitle: '이름과 사진은 모든 장면에 따라갑니다. 다른 참가자에게도 보입니다.',
+    menuLabel: '내 계정과 로그아웃',
+    menuHint: '이름, 사진, 접속',
+    photo: '프로필 사진',
+    photoAdd: '사진 추가',
+    photoChange: '사진 변경',
+    photoRemove: '삭제',
+    photoHelp: 'PNG, JPEG, WebP로 최대 2 MB. 다른 초대된 사람에게도 보입니다.',
+    displayName: '표시 이름',
+    displayNameHelp: '로비와 완성본 크레딧에 나오는 이름입니다.',
+    saved: '저장했습니다.',
+    accessTitle: '내 접속',
+    email: '이메일 주소',
+    method: '로그인 방식',
+    methodEmail: '이메일 링크',
+    since: '가입일',
+    emailLocked:
+      '주소는 여기서 바꿀 수 없습니다. 초대 목록에 올라 있는 것이 이 주소이기 때문입니다. 변경은 운영자에게 문의하세요.',
+  },
+
+  myPacks: {
+    title: '내 팩',
+    subtitle: '공개한 장면입니다. 누구나 다시 할 수 있고, 내리는 건 본인만 할 수 있습니다.',
+    sceneCount: (n: number) => `공개한 장면 ${n}개`,
+    emptyTitle: '아직 공개한 것이 없습니다',
+    emptyBody:
+      '링크로 가져온 장면은 끝난 뒤에 공개할 수 있습니다. 링크와 구간만 커뮤니티로 넘어가고 영상은 넘어가지 않습니다.',
+  },
+
+  home: {
+    heroTitle: '좋아하는 장면을 다시 더빙하세요',
+    heroBody:
+      '장면을 고르고, 각자 배역을 하나씩 맡아, 각자 편한 때에 녹음합니다. 원래 음악과 현장음은 그대로 두고 목소리만 바뀝니다. 결과는 마지막에 다 같이 확인합니다.',
+    kicker: '친구끼리 하는 더빙 스튜디오',
+    cta: '스튜디오로',
+    ctaSessions: '내 장면 보기',
+    ctaCommunity: '준비된 장면 둘러보기',
+    howTitle: '진행 방식',
+    reassure1: '설치할 것 없음',
+    reassure2: '녹음은 각자 편할 때',
+    reassure3: '공개되지 않음',
+
+    valueTitle: '무엇이 나오나',
+    value1: {
+      title: '그들의 목소리 대신 당신의 목소리',
+      body:
+        '집에서 헤드셋 마이크로 녹음합니다. 원래 음악과 효과음은 그대로 두고 목소리만 바뀝니다.',
+    },
+    value2: {
+      title: '끝날 때까지 아무도 듣지 못합니다',
+      body:
+        '완성본이 나오기 전까지 내 녹음은 다른 사람에게 들리지 않습니다. 마지막에 다 같이 확인하는 것이 이 놀이의 전부입니다.',
+    },
+    value3: {
+      title: '남는 MP4 하나',
+      body:
+        '마지막에 어디서나 재생되는 파일이 남습니다. 자막은 입혀지지 않습니다. 원본 장면 쪽은 지워집니다.',
+    },
+
+    midCta: '장면을 고르고, 배역을 나누고, 어떻게 되는지 보세요.',
+
+    packsCtaTitle: '아직 공개한 팩이 없습니다',
+    packsCtaBody:
+      '링크로 가져온 장면은 커뮤니티에 공유할 수 있습니다. 링크와 구간이면 충분하고 영상은 보관되지 않습니다. 다른 사람은 배역만 고르면 됩니다.',
+    packsCtaAction: '장면 준비하기',
+
+    faqTitle: '자주 묻는 것',
+    faq: [
+      {
+        q: '뭐가 필요한가요?',
+        a: '마이크 달린 헤드셋과 브라우저입니다. 헤드셋은 사소한 게 아닙니다. 없으면 마이크가 원래 소리를 다시 녹음해서 믹스가 못 쓰게 됩니다.',
+      },
+      {
+        q: '다 같이 동시에 있어야 하나요?',
+        a: '아닙니다. 각자 편할 때 자기 대사를 녹음합니다. 모두 끝나면 렌더링이 시작됩니다.',
+      },
+      {
+        q: '더빙을 할 줄 알아야 하나요?',
+        a: '아닙니다. 실제 스튜디오처럼 텍스트가 재생 헤드 아래로 흐릅니다. 읽으면 타이밍이 맞습니다. 잘 안 된 테이크는 같은 조건으로 다시 하면 됩니다.',
+      },
+      {
+        q: '얼마나 걸리나요?',
+        a: '가져온 뒤 자동 준비에 몇 분, 그다음은 대사 분량만큼입니다. 2분짜리 장면이면 셋이서 30분쯤 걸립니다.',
+      },
+      {
+        q: '녹음은 보관되나요?',
+        a: '아닙니다. 완성본이 나오는 즉시 원본 영상과 함께 지워집니다.',
+      },
+      {
+        q: '아무나 초대할 수 있나요?',
+        a: '초대 목록에 추가된 주소만 들어올 수 있습니다. 주소 추가는 계정 화면에서 직접 합니다.',
+      },
+    ] as const,
+    privateTitle: '네트워크가 아니라 사적인 방',
+    privateBody:
+      'DubRoom은 초대된 사람만 쓸 수 있습니다. 공개 목록도, 바깥으로의 공유도, 검색 등록도 없습니다. 그래서 성립합니다. 보호받는 저작물의 일부를 친구끼리 더빙하되, 밖으로는 내보내지 않습니다.',
+    slides: {
+      importTitle: '장면을 가져옵니다',
+      importBody:
+        '영상 파일이나 링크로. 사운드는 목소리와 음악·현장음 둘로 나뉩니다. 이 분리는 장면 자체에서 뽑기 때문에 화면과 밀리초 단위로 맞습니다.',
+      charactersTitle: '등장인물을 정리합니다',
+      charactersBody:
+        '대사는 자동으로 받아쓰이고 화자가 배정됩니다. 호스트가 몇 번의 클릭으로 고칩니다. 이름 바꾸기, 잘못 합쳐진 두 목소리 합치기, 대사 다시 배정하기. 그다음 로비를 열면 각자 배역을 고릅니다.',
+      rythmoTitle: '리드미 밴드로 더빙합니다',
+      rythmoBody:
+        '실제 더빙 스튜디오처럼 텍스트가 재생 헤드 아래로 흐릅니다. 녹음 중에는 음악만 들리고 원래 목소리는 들리지 않습니다. 화면과 텍스트만으로 충분히 맞습니다.',
+      renderTitle: '결과를 확인합니다',
+      renderBody:
+        '전부 다시 섞입니다. 원래 화면, 원래 음악, 그리고 그들 대신 여러분의 목소리. 어디서나 재생되고 자막이 입혀지지 않으며 계속 남는 MP4입니다.',
+    },
+  },
+
+  community: {
+    title: '더빙할 수 있는 장면',
+    subtitle:
+      '이미 가져오고, 분리하고, 구간을 나눈 장면들입니다. 배역만 고르면 됩니다. 기다릴 것도, 준비를 다시 할 것도 없습니다.',
+    play: '이 장면 더빙하기',
+    preview: '미리보기',
+    openSource: '원본 열기',
+    kindRecipe: '레시피',
+    kindMedia: '파일 보관',
+    recipeHelp:
+      '이 장면은 여기 보관되지 않습니다. 링크와 구간만 저장돼 있습니다. 시작할 때 영상을 다시 받아오므로 몇 분 걸립니다.',
+    mediaHelp: '여기에 보관된 장면입니다. 바로 시작됩니다.',
+    mine: '내 것',
+    voteUp: '이 장면은 구간이 잘 나뉘어 있다',
+    voteDown: '이 장면은 구간이 잘못 나뉘어 있다',
+    voteScore: (n: number) => `커뮤니티 점수: ${n}`,
+    voteHelp:
+      '평가 대상은 영화가 아니라 구간 나누기입니다. 잘 나뉜 장면은 모두의 저녁 한 번을 아껴 줍니다.',
+    sortedByScore: '평가 높은 순',
+    sceneCount: (n: number) => `이용할 수 있는 장면 ${n}개`,
+    characterCount: (n: number) => `등장인물 ${n}명`,
+    lineCount: (n: number) => `대사 ${n}개`,
+    emptyTitle: '아직 보관된 장면이 없습니다',
+    emptyBody:
+      '게임 중에 호스트가 렌더링 전에 "이 장면 보관"을 선택할 수 있습니다. 그러면 여기 올라와서 다른 그룹이 할 수 있게 됩니다.',
+    remove: '목록에서 내리기',
+    removeTitle: '이 장면을 내릴까요?',
+    removeBody:
+      '영상, 분리한 트랙, 구간이 삭제됩니다. 이걸로 이미 시작한 장면은 작동을 멈춥니다. 되돌릴 수 없습니다.',
+    publish: '커뮤니티에 공개',
+    published: '이 장면은 커뮤니티에 있습니다',
+    seeInCommunity: '커뮤니티에서 보기',
+    publishRecipeHelp: '공유되는 것은 링크와 구간뿐입니다. 영상은 여기 보관되지 않습니다.',
+    publishTooLate:
+      '이 장면은 가져온 파일로 만들었고, 소재는 렌더링 뒤에 지워졌습니다. 공유하려면 그 전에 정했어야 합니다. 링크로 가져온 장면이라면 언제든 공개할 수 있습니다.',
+    keepLabel: '다시 할 수 있게 이 장면 보관',
+    keepHelp:
+      '렌더링이 끝나면 구간과 등장인물째로 커뮤니티 탭에 들어갑니다. 녹음 쪽은 절대 보관되지 않습니다.',
+  },
+
+  legal: {
+    mentions: '운영자 정보',
+    privacy: '개인정보',
+    usageNotice:
+      '초대된 사람들 사이의 엄격히 사적인 이용입니다. 어떤 내용도 공개 배포되거나 검색에 등록되지 않습니다.',
+    contact: '문의',
+    contactEmail: 'ienders.pro@gmail.com',
+  },
+
+  common: {
+    loading: '불러오는 중…',
+    save: '저장',
+    cancel: '취소',
+    confirm: '확인',
+    delete: '삭제',
+    back: '뒤로',
+    retry: '다시 시도',
+    close: '닫기',
+    copy: '복사',
+    copied: '복사했습니다',
+    unknownError: '예상치 못한 오류가 났습니다.',
+  },
+
+  auth: {
+    title: '로그인',
+    subtitle: '링크를 보내 드립니다. 누르면 끝입니다.',
+    emailLabel: '이메일 주소',
+    emailPlaceholder: 'name@example.kr',
+    send: '링크 보내기',
+    sending: '보내는 중…',
+    sent: '링크를 보냈습니다. 메일함을 확인하세요.',
+    notAllowed: '이 주소는 초대 목록에 없습니다. 호스트에게 추가를 부탁하세요.',
+    signOut: '로그아웃',
+
+    signIn: '로그인',
+    passwordLabel: '비밀번호',
+    badCredentials: '주소나 비밀번호가 맞지 않습니다.',
+    rateLimited:
+      '한 시간 안에 링크를 너무 많이 요청했습니다. 호스트에게 직접 보내 달라고 하거나, 비밀번호로 로그인하세요.',
+    switchToPassword: '비밀번호가 있어서 바로 로그인합니다',
+    switchToLink: '비밀번호가 없으니 링크를 보내 주세요',
+    inviteOnly: '초대된 주소만 이용할 수 있습니다.',
+    discord: 'Discord로 계속하기',
+    orSeparator: '또는 이메일로',
+    notAllowedWith: (email: string) =>
+      `${email}은(는) 초대 목록에 없습니다. 호스트에게 추가를 부탁하세요. Discord로 들어왔다면 Discord 계정 주소가 기준입니다.`,
+
+    passwordSectionTitle: '비밀번호',
+    passwordSectionHelp: '하나 정해 두면 메일을 거치지 않고 다시 들어올 수 있습니다.',
+    passwordNew: '새 비밀번호',
+    passwordSave: '비밀번호 저장',
+    passwordSaved: '비밀번호를 저장했습니다. 다음 로그인부터 쓸 수 있습니다.',
+    passwordTooShort: '최소 여덟 자입니다.',
+  },
+
+  guests: {
+    title: '초대된 사람',
+    help: '여기 있는 주소만 들어올 수 있습니다. Discord는 Discord 계정 주소가 기준이며, 늘 쓰는 주소와 다를 수 있습니다.',
+    add: '초대',
+    joined: '들어온 적 있음',
+    pending: '들어온 적 없음',
+    remove: '목록에서 빼기',
+  },
+
+  sessions: {
+    title: '내 장면',
+    empty: '아직 장면이 없습니다. 하나 가져와서 시작하세요.',
+    create: '새 장면',
+    open: '열기',
+    storageUsed: (used: string, total: string) => `${total} 중 ${used}`,
+    storageWarning: '저장 공간이 거의 찼습니다. 오래된 장면을 지워 자리를 만드세요.',
+    deleteConfirmTitle: '이 장면을 삭제할까요?',
+    deleteConfirmBody: '완성본, 테이크, 모든 메타데이터가 지워집니다. 되돌릴 수 없습니다.',
+    joinByCode: '코드로 참여',
+    join: '참여',
+    storageTitle: '사용 중인 공간',
+    storageHelp:
+      '원본 영상과 분리한 트랙은 렌더링이 끝나는 즉시 지워집니다. 오래 남는 것은 완성본뿐입니다. 장면을 지우면 그만큼 비워집니다.',
+    codePlaceholder: 'ABC234',
+    codeNotFound: '이 코드에 맞는 장면이 없습니다.',
+  },
+
+  create: {
+    title: '새 장면',
+    tabUpload: '파일 가져오기',
+    tabYoutube: 'YouTube 링크 붙여넣기',
+    titleLabel: '장면 제목',
+    titlePlaceholder: '다리 위의 결투',
+    dropzone: 'MP4를 여기에 놓거나, 눌러서 고르세요',
+    fileTooLarge: '파일이 너무 큽니다. 최대 2 GB입니다.',
+    wrongType: '영상 파일이 필요합니다(가능하면 MP4).',
+    youtubeLabel: '영상 링크',
+    youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
+    youtubeWarning:
+      'YouTube에서 받아오는 건 편의 기능이지 보장이 아닙니다. 자주 실패합니다. 안 되면 파일을 직접 가져오세요.',
+    multiTrackWarning:
+      '소스에 오디오 트랙이 여러 개면(더빙, 원어, 코멘터리 등) 첫 번째가 더빙 대상입니다.',
+    durationWarning: '장면은 10분 미만이어야 합니다.',
+    keepLabel: '공유 장면으로 만들기',
+    keepHelpUrl:
+      '커뮤니티 탭으로 들어갑니다. 링크에서 왔으므로 링크와 구간만 보관됩니다. 여기에는 아무것도 남지 않습니다.',
+    keepHelpUpload:
+      '렌더링 뒤 커뮤니티 탭으로 들어갑니다. 파일에서 왔으므로 영상과 분리한 트랙이 보관됩니다. 10메가바이트쯤입니다.',
+    submitUpload: '가져와서 준비',
+    submitYoutube: '받아와서 준비',
+    uploading: '파일 보내는 중…',
+  },
+
+  ingest: {
+    title: '장면 준비',
+    subtitle: '장면을 나누는 중입니다. 몇 분 걸립니다.',
+    queued: '워커를 기다리는 중입니다. PC에서 스크립트를 실행하세요.',
+    queuedHelp:
+      '처리는 호스트 컴퓨터에서 돕니다. start.bat을 두 번 누르면 작업이 알아서 시작됩니다.',
+    failed: '가져오기에 실패했습니다.',
+    retry: '가져오기 다시 실행',
+    neverStarted:
+      '가져오기가 시작되지 않았습니다. 파일 전송이 실패했을 가능성이 큽니다. 다시 실행하거나 새 장면으로 시작하세요.',
+    startOver: '새 장면',
+    steps: {
+      download: '영상 받아오는 중',
+      encode: '정규화 중',
+      extract: '오디오 추출 중',
+      separate: '목소리와 배경음 분리 중',
+      transcribe: '받아쓰기와 화자 판별',
+      segment: '대사 나누는 중',
+    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
+  },
+
+  prepare: {
+    title: '등장인물 정리',
+    subtitle:
+      '자동 판별은 화자를 자주 틀립니다. 지금이 고칠 때입니다. 로비를 열면 바꿀 수 없습니다.',
+    charactersHeading: '찾아낸 등장인물',
+    linesHeading: '대사',
+    lineCount: (n: number) => `대사 ${n}개`,
+    speakTime: '발화 시간',
+    playLongest: '가장 긴 부분 듣기',
+    rename: '이름 변경',
+    merge: '합치기',
+    mergeInto: (name: string) => `${name}(으)로 합치기`,
+    mergeHint: '합치려면 등장인물을 둘 이상 고르세요.',
+    mergeConfirm: (from: string, to: string) =>
+      `${from}의 대사가 모두 ${to}(으)로 넘어갑니다. ${from}은(는) 삭제됩니다.`,
+    splitToNew: '새 등장인물로 옮기기',
+    reassign: '다시 배정…',
+    assignedTo: '배정된 인물',
+    changeCharacter: '등장인물 바꾸기',
+    selectedCount: (n: number) => `대사 ${n}개 선택 →`,
+    howTitle: '누가 무슨 말을 하는지 확인하세요',
+    howBody:
+      '대사마다 배정된 등장인물의 이름이 붙어 있습니다. 그 이름을 누르면 다른 인물에게 넘길 수 있습니다. 왼쪽에서는 이름을 바꾸거나, 판별이 잘못 나눈 두 목소리를 합칠 수 있습니다.',
+    selectAll: '전체 선택',
+    selectNone: '선택 해제',
+    deleteLine: '대사 삭제',
+    deleteLineHint: '그 자리의 원래 음성은 남습니다.',
+    textIsAGuide: '텍스트는 타이밍 안내일 뿐입니다. 읽을 수 없을 때만 고치세요.',
+    openLobby: '로비 열기',
+    openLobbyConfirm: '로비를 열면 등장인물과 대사를 더 이상 바꿀 수 없습니다.',
+    lockedAfterLobby: '로비를 연 뒤로 준비 단계는 잠겨 있습니다.',
+    recalculating: '클립 다시 계산 중…',
+    noSelection: '옮길 대사를 고르세요.',
+    restoreLine: '대사 되돌리기',
+    deletedBadge: '삭제됨, 원래 음성 유지',
+  },
+
+  lobby: {
+    title: '로비',
+    shareLink: '공유 링크',
+    shareCode: '장면 코드',
+    watchOriginal: '원본 장면 보기',
+    characters: '등장인물',
+    takeCharacter: '이 인물 맡기',
+    dropCharacter: '이 인물 놓기',
+    releaseCharacter: '원래 음성으로 두기',
+    unrelease: '다시 비워 두기',
+    releasedBadge: '원래 음성 유지',
+    takenBy: (name: string) => `${name} 담당`,
+    free: '비어 있음',
+    ready: '준비됐습니다',
+    notReady: '준비 취소',
+    readyBadge: '준비 완료',
+    waitingBadge: '대기 중',
+    players: '참가자',
+    start: '시작하기',
+    startBlockedTitle: '아직 빠진 것이 있습니다:',
+    startBlockedCharacters: '담당자가 없는 인물, 맡거나 원래 음성으로 두세요:',
+    startBlockedReady: '아직 준비 완료를 누르지 않은 사람:',
+    clipCount: (n: number) => `클립 ${n}개`,
+    hostOnly: '시작은 호스트만 할 수 있습니다.',
+  },
+
+  studio: {
+    title: '스튜디오',
+    clipProgress: (current: number, total: number) => `클립 ${current} / ${total}`,
+    playOriginal: '원본 장면 재생',
+    record: '녹음',
+    stop: '정지',
+    playTake: '내 테이크',
+    redo: '다시 하기',
+    validate: '확정하고 다음',
+    finish: '끝냈습니다',
+    takeSaved: '테이크를 저장했습니다.',
+    backToClips: '내 클립으로 돌아가기',
+    allTakesSaved:
+      '테이크가 모두 저장됐습니다. 페이지를 닫아도 됩니다. 모두 끝나면 호스트가 렌더링합니다. 렌더링이 시작되기 전까지는 다시 녹음할 수도 있습니다.',
+    validated: '확정됨',
+    previous: '이전',
+    next: '다음',
+    backingVolume: '배경음',
+    micOffset: '마이크 지연',
+    micOffsetHelp: '테이크가 늘 늦게 들어가면 이 값을 낮추세요. 믹싱 때 적용됩니다.',
+    calibrate: '자동으로 맞추기',
+    calibrating: '측정 중… 조용히 있어 주세요.',
+    calibrationDone: (ms: number) => `측정된 지연: ${ms} ms.`,
+    calibrationFailed: '지연을 측정하지 못했습니다. 필요하면 손으로 맞추세요.',
+    micDenied: '브라우저가 마이크를 거부했습니다. 허용한 뒤 페이지를 새로고침하세요.',
+    headphonesRequired:
+      '헤드폰이 필요합니다. 녹음 중에는 음악만 들리고 원래 목소리는 들리지 않습니다.',
+    overflowWarning: '테이크가 구간을 넘어갑니다. 끝이 잘립니다. 더 짧게 다시 하세요.',
+    speechZone: '발화 구간',
+    margin: '여유',
+    noTake: '이 클립에는 테이크가 없습니다.',
+    uploading: '테이크 보내는 중…',
+    finishedTitle: '끝났습니다!',
+    finishedBody: '렌더링이 시작되기 전까지는 돌아와서 테이크를 다시 할 수 있습니다.',
+    waitingFor: '아직 기다리는 사람:',
+    playerProgress: (name: string, done: number, total: number) =>
+      `${name} (${done}/${total})`,
+    everyoneDone: '모두 끝냈습니다. 호스트가 렌더링할 수 있습니다.',
+    othersDone: '다른 사람들은 끝냈습니다. 이제 당신만 남았습니다.',
+    soloScene: '이 장면에는 당신 혼자입니다.',
+    soloHint: '등장인물이 모두 당신 담당입니다. 기다릴 사람이 없습니다.',
+    launchRender: '렌더링 시작',
+    renderBlocked: '테이크가 없는 클립이 남아 있습니다.',
+    kick: '이 참가자 내보내기',
+    kickConfirm: (name: string) =>
+      `${name}을(를) 내보내면 담당하던 인물은 원래 음성으로 돌아갑니다. 그 사람의 녹음은 쓰이지 않습니다.`,
+    reassignInstead: '담당 인물을 다른 사람에게 넘기기',
+    kicked: '호스트가 이 장면에서 당신을 내보냈습니다.',
+    myClips: '내 클립',
+    youAreDubbing: '담당',
+    cueIn: '차례까지',
+    cueNow: '당신 차례',
+    cueDone: '대사가 지나갔습니다',
+    cueIdle: '대기',
+    originalTrace: '색이 있는 파형은 원래 목소리가 말하는 지점을 보여 줍니다.',
+    micWindow: '마이크는 내 대사 구간에만 열립니다.',
+    autoAlign: '자동 위치 맞춤',
+    autoAlignHelp:
+      '테이크를 원래 목소리와 견주어 제자리에 다시 놓습니다. 내 타이밍을 그대로 두고 싶으면 끄세요.',
+    alignedBy: (ms: number) =>
+      ms === 0
+        ? '테이크가 이미 제자리였습니다.'
+        : ms > 0
+          ? `${ms} ms 늦었는데, 맞춰 놓았습니다.`
+          : `${-ms} ms 빨랐는데, 맞춰 놓았습니다.`,
+    alignUnsure: '이 테이크에서는 뚜렷한 기준을 찾지 못했습니다. 그대로 놓습니다.',
+  },
+
+  render: {
+    title: '렌더링 중',
+    queued: '워커를 기다리는 중입니다. PC에서 스크립트를 실행하세요.',
+    frozen: '장면이 확정됐습니다. 테이크는 더 이상 바꿀 수 없습니다.',
+    failed: '렌더링에 실패했습니다.',
+    retry: '렌더링 다시 실행',
+    steps: {
+      fetch: '테이크 가져오는 중',
+      mix: '오디오 믹싱 중',
+      mux: '영상 합치는 중',
+      upload: '결과 보내는 중',
+      purge: '소재 정리 중',
+    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
+  },
+
+  result: {
+    title: '완성',
+    download: 'MP4 내려받기',
+    cast: '배역',
+    voiceOriginal: '원래 음성',
+    shareHint: '이 링크는 이 장면의 참가자만 열 수 있습니다.',
+    sourcePurged: '원본은 삭제됐습니다. 남은 것은 완성본뿐입니다.',
+  },
+
+  errors: {
+    notFound: '찾을 수 없습니다.',
+    forbidden: '이 장면에 접근할 수 없습니다.',
+    sessionLocked: '이 장면은 더 이상 바꿀 수 없습니다.',
+    hostOnly: '호스트만 할 수 있습니다.',
+    noAudioTrack: '이 파일에는 오디오 트랙이 없습니다.',
+    noVideoTrack: '이 파일에는 영상이 없습니다.',
+    tooLong: '장면이 너무 깁니다. 최대 10분입니다.',
+    youtubeFailed: 'YouTube에서 받아오지 못했습니다. 영상 파일을 직접 가져오세요.',
+  },
+} satisfies Dictionary;

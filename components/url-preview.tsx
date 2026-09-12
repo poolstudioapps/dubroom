@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Play } from 'lucide-react';
 
-import { t } from '@/config/strings';
+import { useT } from '@/lib/i18n';
 
 /**
  * Apercu d'une scene conservee sous forme de recette.
@@ -26,6 +26,8 @@ export function UrlPreview({
   /** A fleur du conteneur : pas de cadre propre, pas de coins arrondis. */
   flush?: boolean;
 }) {
+  const t = useT();
+
   const frame = flush
     ? 'border-b border-border'
     : 'rounded-md border-2 border-bezel-dark';

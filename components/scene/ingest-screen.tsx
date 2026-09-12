@@ -4,15 +4,18 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { JobProgress } from '@/components/scene/job-progress';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Button, Card } from '@/components/ui';
-import { t } from '@/config/strings';
+
 import { enqueueIngest } from '@/lib/actions';
 import { useJobState } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 
 export function IngestScreen() {
+  const t = useT();
+
   const { session, isHost, refetch } = useSceneCtx();
   const router = useRouter();
   const jobState = useJobState(session.id);

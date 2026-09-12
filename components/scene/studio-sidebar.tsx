@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Clapperboard, UserMinus, Wand2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Dialog, Progress, Toggle } from '@/components/ui';
 import {
@@ -12,7 +13,7 @@ import {
   MIC_OFFSET_STEP_MS,
   MIC_OFFSET_STORAGE_KEY,
 } from '@/config/constants';
-import { t } from '@/config/strings';
+
 import {
   enqueueRender,
   kickParticipant,
@@ -44,6 +45,8 @@ export function StudioSidebar({
   done: number;
   total: number;
 }) {
+  const t = useT();
+
   const { session, characters, participants, me, isHost, refetch } = useSceneCtx();
   const progress = useSessionProgress(session.id);
 

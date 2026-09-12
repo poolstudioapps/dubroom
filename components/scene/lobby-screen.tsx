@@ -4,11 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { Check, Copy, Play } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Avatar } from '@/components/avatar';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
-import { formatDuration, t } from '@/config/strings';
+import { formatDuration } from '@/config/strings';
 import {
   assignCharacter,
   setCharacterReleased,
@@ -22,6 +23,8 @@ import { useProfilesOf } from '@/lib/profile';
 import { statsByCharacter } from '@/lib/scene-stats';
 
 export function LobbyScreen() {
+  const t = useT();
+
   const { session, characters, lines, clips, participants, me, isHost, refetch } =
     useSceneCtx();
   const media = useMediaUrls(session);

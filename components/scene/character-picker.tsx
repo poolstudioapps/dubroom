@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { characterColorVar } from '@/config/constants';
-import { t } from '@/config/strings';
+
 import { cn } from '@/lib/utils';
 
 interface Choice {
@@ -40,6 +41,8 @@ export function CharacterPicker({
   /** Ce qu'on lit quand rien n'est choisi : le libelle d'une action. */
   placeholder?: string;
 }) {
+  const t = useT();
+
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
 

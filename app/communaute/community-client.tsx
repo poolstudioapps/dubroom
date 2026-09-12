@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Clapperboard, Trash2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
 import { Alert, Badge, Button, Card, Dialog, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
-import { formatBytes, formatDuration, t } from '@/config/strings';
+import { formatBytes, formatDuration } from '@/config/strings';
 import { deletePack, listPacks, startFromPack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
 import { useMyProfile } from '@/lib/profile';
@@ -34,6 +35,8 @@ export function CommunityClient({
   displayName: string;
   scope?: 'all' | 'mine';
 }) {
+  const t = useT();
+
   const router = useRouter();
   const qc = useQueryClient();
   const profile = useMyProfile();

@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Check, ChevronLeft, ChevronRight, Circle, Play, Square } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { FinishedPanel } from '@/components/scene/finished-panel';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
@@ -22,7 +23,7 @@ import {
   SIGNED_URL_TTL_S,
   characterColorVar,
 } from '@/config/constants';
-import { t } from '@/config/strings';
+
 import { uploadTake } from '@/lib/actions';
 import { MicRecorder } from '@/lib/audio/recorder';
 import { seekAll } from '@/lib/audio/media';
@@ -39,6 +40,8 @@ import { useShortViewport } from '@/lib/viewport';
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
 export function StudioScreen() {
+  const t = useT();
+
   const compact = useShortViewport();
   const { session, characters, clips, lines, me, refetch } = useSceneCtx();
   const media = useMediaUrls(session);

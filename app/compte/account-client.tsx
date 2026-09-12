@@ -13,6 +13,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
 import { GuestListCard } from '@/components/guest-list-card';
@@ -29,7 +30,7 @@ import {
   Spinner,
 } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES } from '@/config/constants';
-import { formatBytes, t } from '@/config/strings';
+import { formatBytes } from '@/config/strings';
 import { useStorageUsage } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import {
@@ -62,6 +63,8 @@ export function AccountClient({
   providers: string[];
   createdAt?: string;
 }) {
+  const t = useT();
+
   const router = useRouter();
   const qc = useQueryClient();
   const profile = useMyProfile();

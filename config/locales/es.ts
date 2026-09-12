@@ -1,0 +1,490 @@
+/**
+ * Diccionario español.
+ *
+ * Refleja `fr` clave por clave; el compilador lo verifica.
+ * Tuteo, como en el original: es un juego entre amigos.
+ */
+
+import type { Dictionary } from '../i18n';
+import { INGEST_STEPS, RENDER_STEPS } from '../constants';
+
+export const es = {
+  nav: {
+    home: 'Inicio',
+    homeShort: 'Inicio',
+    sessions: 'Mis escenas',
+    sessionsShort: 'Escenas',
+    community: 'Comunidad',
+    communityShort: 'Comunidad',
+    myPacks: 'Mis packs',
+    myPacksShort: 'Mis packs',
+  },
+
+  account: {
+    title: 'Mi cuenta',
+    subtitle:
+      'Tu nombre y tu foto te acompañan en todas las escenas. Los demás jugadores ven los dos.',
+    menuLabel: 'Mi cuenta y cerrar sesión',
+    menuHint: 'Nombre, foto, acceso',
+    photo: 'Foto de perfil',
+    photoAdd: 'Añadir una foto',
+    photoChange: 'Cambiar la foto',
+    photoRemove: 'Quitar',
+    photoHelp: 'PNG, JPEG o WebP, 2 MB como máximo. Los demás invitados la ven.',
+    displayName: 'Nombre',
+    displayNameHelp:
+      'Es el nombre que los demás leen en la sala y en los créditos del resultado.',
+    saved: 'Guardado.',
+    accessTitle: 'Mi acceso',
+    email: 'Correo electrónico',
+    method: 'Entras con',
+    methodEmail: 'Enlace por correo',
+    since: 'Miembro desde',
+    emailLocked:
+      'La dirección no se cambia aquí: es la que figura en la lista de invitados. Escribe al editor para modificarla.',
+  },
+
+  myPacks: {
+    title: 'Mis packs',
+    subtitle:
+      'Las escenas que has publicado. Cualquiera puede jugarlas y solo tú puedes retirarlas.',
+    sceneCount: (n: number) => (n === 1 ? '1 escena publicada' : `${n} escenas publicadas`),
+    emptyTitle: 'Todavía no has publicado nada',
+    emptyBody:
+      'Al final de una escena importada por enlace puedes publicarla: el enlace y el corte pasan a la comunidad, sin el vídeo.',
+  },
+
+  home: {
+    heroTitle: 'Redobla tus escenas favoritas',
+    heroBody:
+      'Elegís una escena, cada uno se queda con un personaje y lo grabáis por vuestra cuenta. La música y el ambiente originales siguen ahí: solo cambian las voces. El resultado se descubre al final, todos juntos.',
+    kicker: 'El estudio de doblaje entre amigos',
+    cta: 'Entrar en el estudio',
+    ctaSessions: 'Ver mis escenas',
+    ctaCommunity: 'Ver escenas listas',
+    howTitle: 'Cómo funciona',
+    reassure1: 'Sin instalar nada',
+    reassure2: 'Cada uno graba cuando quiere',
+    reassure3: 'Nada se publica',
+
+    valueTitle: 'Lo que sale',
+    value1: {
+      title: 'Tu voz en lugar de la suya',
+      body:
+        'Grabas con el micrófono de tus auriculares, en casa. La música y los efectos originales quedan intactos: solo se sustituyen las voces.',
+    },
+    value2: {
+      title: 'Nadie oye nada hasta el final',
+      body:
+        'Tus tomas son inaudibles para los demás mientras no exista la mezcla final. Descubrirlo juntos al final es todo el juego.',
+    },
+    value3: {
+      title: 'Un MP4 que te quedas',
+      body:
+        'Al final, un archivo que se reproduce en cualquier sitio, sin subtítulos incrustados. La escena original, en cambio, se borra.',
+    },
+
+    midCta: 'Elige una escena, reparte los papeles y mira lo que sale.',
+
+    packsCtaTitle: 'Todavía no has publicado ningún pack',
+    packsCtaBody:
+      'Una escena importada por enlace se puede compartir con la comunidad: bastan el enlace y el corte, el vídeo no se aloja. A los demás solo les queda elegir sus papeles.',
+    packsCtaAction: 'Preparar una escena',
+
+    faqTitle: 'Lo que nos preguntan',
+    faq: [
+      {
+        q: '¿Qué necesito exactamente?',
+        a: 'Unos auriculares con micrófono y un navegador. Los auriculares no son un detalle: sin ellos tu micrófono vuelve a grabar la banda sonora y la mezcla queda inservible.',
+      },
+      {
+        q: '¿Tenemos que estar todos a la vez?',
+        a: 'No. Cada uno graba sus frases cuando quiere. El montaje arranca cuando todos han terminado.',
+      },
+      {
+        q: '¿Hay que saber doblar?',
+        a: 'No. El texto pasa bajo un cabezal de lectura, como en un estudio de verdad: lees y caes a tiempo. Una toma mala se repite igual.',
+      },
+      {
+        q: '¿Cuánto se tarda?',
+        a: 'Cuenta unos minutos de preparación automática tras la importación y luego lo que duren las frases. Una escena de dos minutos se dobla en media hora entre tres.',
+      },
+      {
+        q: '¿Se guardan mis grabaciones?',
+        a: 'No. Se borran junto con el vídeo original en cuanto existe la mezcla final.',
+      },
+      {
+        q: '¿Puedo invitar a quien quiera?',
+        a: 'Solo entran las direcciones añadidas a la lista de invitados. Tú mismo añades una dirección desde tu cuenta.',
+      },
+    ] as const,
+    privateTitle: 'Un salón privado, no una red',
+    privateBody:
+      'DubRoom es solo para personas invitadas. Sin catálogo público, sin compartir fuera del círculo, sin indexación. Eso es lo que lo hace sostenible: doblamos fragmentos de obras protegidas, entre amigos, sin difundir nada.',
+    slides: {
+      importTitle: 'Se importa una escena',
+      importBody:
+        'Un archivo de vídeo o un enlace. La banda sonora se separa en dos: las voces por un lado, la música y el ambiente por otro. Esa separación sale de la escena misma, así que encaja con la imagen al milisegundo.',
+      charactersTitle: 'Se identifican los personajes',
+      charactersBody:
+        'Las frases se transcriben y se asignan de forma automática. El anfitrión corrige en unos clics: renombrar, fusionar dos voces confundidas, reasignar una frase. Luego abre la sala y cada uno elige su papel.',
+      rythmoTitle: 'Se dobla con la banda rítmica',
+      rythmoBody:
+        'El texto pasa bajo un cabezal de lectura, como en un estudio de doblaje de verdad. Mientras grabas solo oyes la música, nunca las voces originales: la imagen y el texto bastan para caer a tiempo.',
+      renderTitle: 'Se descubre el resultado',
+      renderBody:
+        'Todo se vuelve a mezclar: la imagen original, la música original y vuestras voces en lugar de las suyas. Un MP4 que se reproduce en cualquier sitio, sin subtítulos incrustados, y que se queda.',
+    },
+  },
+
+  community: {
+    title: 'Escenas listas para doblar',
+    subtitle:
+      'Escenas ya importadas, separadas y cortadas por el grupo. Solo queda elegir los papeles: sin esperas, sin repetir la preparación.',
+    play: 'Doblar esta escena',
+    preview: 'Vista previa',
+    openSource: 'Abrir la fuente',
+    kindRecipe: 'Receta',
+    kindMedia: 'Archivos guardados',
+    recipeHelp:
+      'Esta escena no está alojada aquí: solo se guardan el enlace y el corte. El vídeo se vuelve a descargar al empezar, lo que tarda unos minutos.',
+    mediaHelp: 'Escena alojada aquí: arranca al instante.',
+    mine: 'Tuya',
+    voteUp: 'Esta escena está bien cortada',
+    voteDown: 'Esta escena está mal cortada',
+    voteScore: (n: number) => `Puntuación de la comunidad: ${n}`,
+    voteHelp:
+      'El voto es sobre el corte, no sobre la película. Una escena bien cortada le ahorra una tarde a todo el mundo.',
+    sortedByScore: 'Las mejor valoradas primero',
+    sceneCount: (n: number) => (n === 1 ? '1 escena disponible' : `${n} escenas disponibles`),
+    characterCount: (n: number) => (n === 1 ? '1 personaje' : `${n} personajes`),
+    lineCount: (n: number) => (n === 1 ? '1 frase' : `${n} frases`),
+    emptyTitle: 'Ninguna escena guardada por ahora',
+    emptyBody:
+      'Durante una partida, el anfitrión puede marcar «guardar esta escena» antes de lanzar el montaje. Aterrizará aquí, lista para que otro grupo la juegue.',
+    remove: 'Quitar del catálogo',
+    removeTitle: '¿Quitar esta escena?',
+    removeBody:
+      'Se borrarán el vídeo, las pistas separadas y el corte. Las escenas ya empezadas a partir de ella dejarán de funcionar. No hay vuelta atrás.',
+    publish: 'Publicar en la comunidad',
+    published: 'Esta escena está en la comunidad',
+    seeInCommunity: 'Verla en la comunidad',
+    publishRecipeHelp:
+      'Solo se comparten el enlace y el corte. El vídeo no se aloja aquí.',
+    publishTooLate:
+      'Esta escena venía de un archivo importado y sus medios se purgaron tras el montaje. Compartirla había que decidirlo antes. Una escena importada por enlace, en cambio, se puede publicar en cualquier momento.',
+    keepLabel: 'Guardar esta escena para volver a jugarla',
+    keepHelp:
+      'Pasará a la pestaña Comunidad después del montaje, con su corte y sus personajes. Vuestras grabaciones no se guardan nunca.',
+  },
+
+  legal: {
+    mentions: 'Aviso legal',
+    privacy: 'Privacidad',
+    usageNotice:
+      'Uso estrictamente privado, entre personas invitadas. Ningún contenido se difunde públicamente ni se indexa.',
+    contact: 'Contacto',
+    contactEmail: 'ienders.pro@gmail.com',
+  },
+
+  common: {
+    loading: 'Cargando…',
+    save: 'Guardar',
+    cancel: 'Cancelar',
+    confirm: 'Confirmar',
+    delete: 'Eliminar',
+    back: 'Volver',
+    retry: 'Reintentar',
+    close: 'Cerrar',
+    copy: 'Copiar',
+    copied: 'Copiado',
+    unknownError: 'Ha ocurrido un error inesperado.',
+  },
+
+  auth: {
+    title: 'Entrar',
+    subtitle: 'Te enviamos un enlace, haces clic y ya está.',
+    emailLabel: 'Tu correo electrónico',
+    emailPlaceholder: 'nombre@ejemplo.es',
+    send: 'Enviarme un enlace',
+    sending: 'Enviando…',
+    sent: 'Enlace enviado. Mira tu correo.',
+    notAllowed:
+      'Esta dirección no está en la lista de invitados. Pide al anfitrión que te añada.',
+    signOut: 'Cerrar sesión',
+
+    signIn: 'Entrar',
+    passwordLabel: 'Tu contraseña',
+    badCredentials: 'Dirección o contraseña incorrectas.',
+    rateLimited:
+      'Demasiados enlaces pedidos esta hora. Pide al anfitrión que te envíe uno directamente, o entra con tu contraseña.',
+    switchToPassword: 'Tengo contraseña, quiero entrar directamente',
+    switchToLink: 'No tengo contraseña, enviadme un enlace',
+    inviteOnly: 'El acceso está reservado a las direcciones invitadas.',
+    discord: 'Continuar con Discord',
+    orSeparator: 'o por correo',
+    notAllowedWith: (email: string) =>
+      `La dirección ${email} no está en la lista de invitados. Pide al anfitrión que la añada. Si has entrado por Discord, cuenta la dirección de tu cuenta de Discord.`,
+
+    passwordSectionTitle: 'Contraseña',
+    passwordSectionHelp:
+      'Define una para volver sin pasar por tu correo.',
+    passwordNew: 'Nueva contraseña',
+    passwordSave: 'Guardar la contraseña',
+    passwordSaved: 'Contraseña guardada. Puedes usarla desde la próxima vez.',
+    passwordTooShort: 'Ocho caracteres como mínimo.',
+  },
+
+  guests: {
+    title: 'Invitados',
+    help: 'Solo estas direcciones pueden entrar. Para Discord cuenta la dirección de la cuenta de Discord, que no siempre es la habitual.',
+    add: 'Invitar',
+    joined: 'Ya ha venido',
+    pending: 'Nunca ha venido',
+    remove: 'Quitar de la lista',
+  },
+
+  sessions: {
+    title: 'Mis escenas',
+    empty: 'Ninguna escena por ahora. Importa una para empezar.',
+    create: 'Nueva escena',
+    open: 'Abrir',
+    storageUsed: (used: string, total: string) => `${used} de ${total}`,
+    storageWarning:
+      'El almacenamiento se está llenando. Elimina escenas antiguas para hacer sitio.',
+    deleteConfirmTitle: '¿Eliminar esta escena?',
+    deleteConfirmBody:
+      'Se borrarán el montaje final, las tomas y todos los metadatos. No hay vuelta atrás.',
+    joinByCode: 'Entrar con un código',
+    join: 'Entrar',
+    storageTitle: 'Espacio usado',
+    storageHelp:
+      'El vídeo original y las pistas separadas se borran en cuanto existe un montaje: solo el resultado final ocupa sitio de forma duradera. Eliminar una escena libera el suyo.',
+    codePlaceholder: 'ABC234',
+    codeNotFound: 'Ninguna escena coincide con ese código.',
+  },
+
+  create: {
+    title: 'Nueva escena',
+    tabUpload: 'Importar un archivo',
+    tabYoutube: 'Pegar un enlace de YouTube',
+    titleLabel: 'Título de la escena',
+    titlePlaceholder: 'El duelo del puente',
+    dropzone: 'Suelta aquí tu MP4, o haz clic para elegirlo',
+    fileTooLarge: 'Archivo demasiado pesado: 2 GB como máximo.',
+    wrongType: 'Hace falta un archivo de vídeo (MP4 preferiblemente).',
+    youtubeLabel: 'Enlace del vídeo',
+    youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
+    youtubeWarning:
+      'La descarga de YouTube es una comodidad, no una garantía: falla con frecuencia. Si no funciona, importa el archivo directamente.',
+    multiTrackWarning:
+      'Si tu fuente tiene varias pistas de audio (doblada, original, comentarios), se dobla la primera.',
+    durationWarning: 'La escena debe durar menos de 10 minutos.',
+    keepLabel: 'Convertirla en escena compartida',
+    keepHelpUrl:
+      'Pasará a la pestaña Comunidad. Como viene de un enlace, solo se guardan el enlace y el corte: aquí no se aloja nada.',
+    keepHelpUpload:
+      'Pasará a la pestaña Comunidad tras el montaje. Como viene de un archivo, se guardan el vídeo y las pistas separadas, unos diez megabytes.',
+    submitUpload: 'Importar y preparar',
+    submitYoutube: 'Descargar y preparar',
+    uploading: 'Subiendo el archivo…',
+  },
+
+  ingest: {
+    title: 'Preparando la escena',
+    subtitle: 'Estamos cortando la escena. Tarda unos minutos.',
+    queued: 'Esperando al worker. Lanza el script en tu PC.',
+    queuedHelp:
+      'El procesado corre en la máquina del anfitrión. Haz doble clic en start.bat y el trabajo arrancará solo.',
+    failed: 'La importación ha fallado.',
+    retry: 'Reintentar la importación',
+    neverStarted:
+      'La importación nunca arrancó: probablemente falló la subida del archivo. Vuelve a lanzarla, o empieza una escena nueva.',
+    startOver: 'Nueva escena',
+    steps: {
+      download: 'Obteniendo el vídeo',
+      encode: 'Normalizando',
+      extract: 'Extrayendo el audio',
+      separate: 'Separando voces y fondo',
+      transcribe: 'Transcribiendo y detectando personajes',
+      segment: 'Cortando las frases',
+    } satisfies Record<(typeof INGEST_STEPS)[number], string>,
+  },
+
+  prepare: {
+    title: 'Preparar los personajes',
+    subtitle:
+      'La detección automática se equivoca de personaje a menudo. Es el momento de corregir: cuando se abra la sala, ya no se podrá cambiar.',
+    charactersHeading: 'Personajes detectados',
+    linesHeading: 'Frases',
+    lineCount: (n: number) => (n === 1 ? '1 frase' : `${n} frases`),
+    speakTime: 'Tiempo de habla',
+    playLongest: 'Escuchar el fragmento más largo',
+    rename: 'Renombrar',
+    merge: 'Fusionar',
+    mergeInto: (name: string) => `Fusionar en ${name}`,
+    mergeHint: 'Selecciona al menos dos personajes para fusionarlos.',
+    mergeConfirm: (from: string, to: string) =>
+      `Todas las frases de ${from} pasarán a ${to}. ${from} se eliminará.`,
+    splitToNew: 'Mover a un personaje nuevo',
+    reassign: 'Reasignar a…',
+    assignedTo: 'Asignada a',
+    changeCharacter: 'Cambiar de personaje',
+    selectedCount: (n: number) =>
+      n === 1 ? '1 frase seleccionada →' : `${n} frases seleccionadas →`,
+    howTitle: 'Comprueba quién dice qué',
+    howBody:
+      'Cada frase lleva el nombre del personaje al que pertenece. Haz clic en ese nombre para dársela a otro. A la izquierda, renombra un personaje o fusiona dos voces que la detección separó por error.',
+    selectAll: 'Seleccionar todo',
+    selectNone: 'Quitar la selección',
+    deleteLine: 'Eliminar la frase',
+    deleteLineHint: 'El audio original se conservará en ese punto.',
+    textIsAGuide:
+      'El texto es solo una guía de sincronía. Corrígelo únicamente si es ilegible.',
+    openLobby: 'Abrir la sala',
+    openLobbyConfirm:
+      'Una vez abierta la sala, los personajes y las frases ya no se pueden cambiar.',
+    lockedAfterLobby: 'La preparación está bloqueada desde que se abrió la sala.',
+    recalculating: 'Recalculando los clips…',
+    noSelection: 'Selecciona frases para moverlas.',
+    restoreLine: 'Restaurar la frase',
+    deletedBadge: 'Eliminada, audio original guardado',
+  },
+
+  lobby: {
+    title: 'Sala',
+    shareLink: 'Enlace para compartir',
+    shareCode: 'Código de la escena',
+    watchOriginal: 'Ver la escena original',
+    characters: 'Personajes',
+    takeCharacter: 'Coger este personaje',
+    dropCharacter: 'Dejar este personaje',
+    releaseCharacter: 'Dejar en versión original',
+    unrelease: 'Volver a dejarlo libre',
+    releasedBadge: 'Original guardado',
+    takenBy: (name: string) => `Lo tiene ${name}`,
+    free: 'Libre',
+    ready: 'Estoy listo',
+    notReady: 'Ya no estoy listo',
+    readyBadge: 'Listo',
+    waitingBadge: 'Esperando',
+    players: 'Jugadores',
+    start: 'Empezar la partida',
+    startBlockedTitle: 'Todavía falta algo:',
+    startBlockedCharacters: 'personajes sin jugador, para coger o dejar en versión original:',
+    startBlockedReady: 'jugadores que no se han declarado listos:',
+    clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
+    hostOnly: 'Solo el anfitrión puede empezar la partida.',
+  },
+
+  studio: {
+    title: 'Estudio',
+    clipProgress: (current: number, total: number) => `Clip ${current} / ${total}`,
+    playOriginal: 'Ver la escena (original)',
+    record: 'Grabar',
+    stop: 'Parar',
+    playTake: 'Mi toma',
+    redo: 'Repetir',
+    validate: 'Guardar y siguiente',
+    finish: 'He terminado',
+    takeSaved: 'Toma guardada.',
+    backToClips: 'Volver a mis clips',
+    allTakesSaved:
+      'Todas tus tomas están guardadas. Puedes cerrar la página: el anfitrión lanzará el montaje cuando todos hayan terminado. También puedes repetir alguna mientras no empiece el montaje.',
+    validated: 'Guardada',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    backingVolume: 'Fondo sonoro',
+    micOffset: 'Desfase del micrófono',
+    micOffsetHelp:
+      'Si tus tomas caen siempre tarde, baja este valor. Se aplica en la mezcla.',
+    calibrate: 'Calibrar automáticamente',
+    calibrating: 'Calibrando… no hagas ruido.',
+    calibrationDone: (ms: number) => `Desfase medido: ${ms} ms.`,
+    calibrationFailed:
+      'No se ha podido medir el desfase. Ajústalo a mano si hace falta.',
+    micDenied:
+      'El navegador ha rechazado el micrófono. Permítelo y recarga la página.',
+    headphonesRequired:
+      'Auriculares obligatorios. Mientras grabas solo oyes la música, nunca las voces originales.',
+    overflowWarning:
+      'Tu toma se sale de la ventana y se cortará el final. Hazla más corta.',
+    speechZone: 'Zona de habla',
+    margin: 'Margen',
+    noTake: 'Ninguna toma para este clip.',
+    uploading: 'Subiendo la toma…',
+    finishedTitle: '¡Has terminado!',
+    finishedBody:
+      'Todavía puedes volver y repetir una toma mientras no empiece el montaje.',
+    waitingFor: 'Aún se espera a:',
+    playerProgress: (name: string, done: number, total: number) =>
+      `${name} (${done}/${total})`,
+    everyoneDone: 'Todos han terminado. El anfitrión puede lanzar el montaje.',
+    othersDone: 'Los demás han terminado. Solo faltas tú.',
+    soloScene: 'Estás solo en esta escena.',
+    soloHint: 'Todos los personajes son tuyos: no hay a quién esperar.',
+    launchRender: 'Lanzar el montaje',
+    renderBlocked: 'Quedan clips sin ninguna toma.',
+    kick: 'Expulsar a este jugador',
+    kickConfirm: (name: string) =>
+      `${name} será expulsado y sus personajes volverán a la versión original. Sus tomas se ignorarán.`,
+    reassignInstead: 'Reasignar su personaje a otra persona',
+    kicked: 'El anfitrión te ha expulsado de esta escena.',
+    myClips: 'Mis clips',
+    youAreDubbing: 'Estás doblando a',
+    cueIn: 'Te toca en',
+    cueNow: 'TE TOCA',
+    cueDone: 'Frase pasada',
+    cueIdle: 'Listo',
+    originalTrace: 'El trazo de color muestra cuándo habla la voz original.',
+    micWindow: 'El micrófono solo se abre en tu frase.',
+    autoAlign: 'Ajuste automático',
+    autoAlignHelp:
+      'Tu toma se compara con la voz original y se recoloca en su sitio. Desactívalo si prefieres conservar tu sincronía exacta.',
+    alignedBy: (ms: number) =>
+      ms === 0
+        ? 'Tu toma ya caía a tiempo.'
+        : ms > 0
+          ? `Ibas ${ms} ms tarde, ya está corregido.`
+          : `Ibas ${-ms} ms adelantado, ya está corregido.`,
+    alignUnsure:
+      'El ajuste no ha encontrado nada claro en esta toma. Se coloca tal cual.',
+  },
+
+  render: {
+    title: 'Montaje en curso',
+    queued: 'Esperando al worker. Lanza el script en tu PC.',
+    frozen: 'La escena está congelada: las tomas ya no se pueden cambiar.',
+    failed: 'El montaje ha fallado.',
+    retry: 'Reintentar el montaje',
+    steps: {
+      fetch: 'Recogiendo las tomas',
+      mix: 'Mezclando el audio',
+      mux: 'Montando el vídeo',
+      upload: 'Subiendo el resultado',
+      purge: 'Limpiando la fuente',
+    } satisfies Record<(typeof RENDER_STEPS)[number], string>,
+  },
+
+  result: {
+    title: 'El resultado',
+    download: 'Descargar el MP4',
+    cast: 'El reparto',
+    voiceOriginal: 'Original guardado',
+    shareHint: 'El enlace solo funciona para quienes participan en esta escena.',
+    sourcePurged:
+      'La fuente se ha eliminado: solo se conserva la mezcla final.',
+  },
+
+  errors: {
+    notFound: 'No encontrado.',
+    forbidden: 'No tienes acceso a esta escena.',
+    sessionLocked: 'Esta escena ya no se puede modificar.',
+    hostOnly: 'Solo el anfitrión puede hacerlo.',
+    noAudioTrack: 'Este archivo no tiene pista de audio.',
+    noVideoTrack: 'Este archivo no tiene vídeo.',
+    tooLong: 'Escena demasiado larga: 10 minutos como máximo.',
+    youtubeFailed:
+      'La descarga de YouTube ha fallado. Importa el archivo de vídeo directamente.',
+  },
+} satisfies Dictionary;

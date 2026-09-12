@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { LogOut, Package, Settings, User } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { Avatar } from '@/components/avatar';
-import { t } from '@/config/strings';
+
 import { useMyPackCount, useMyProfile } from '@/lib/profile';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -19,6 +20,8 @@ import { supabaseBrowser } from '@/lib/supabase/client';
  * visibles nulle part.
  */
 export function AccountMenu() {
+  const t = useT();
+
   const router = useRouter();
   const profile = useMyProfile();
   const packs = useMyPackCount();

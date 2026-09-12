@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { FileVideo, Link2 } from 'lucide-react';
 
+import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
 import { MAX_UPLOAD_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants';
-import { formatBytes, t } from '@/config/strings';
+import { formatBytes } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
 import { humanizeError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
@@ -34,6 +35,8 @@ function probeDurationMs(file: File): Promise<number | null> {
 }
 
 export function NewSessionForm({ displayName }: { displayName: string }) {
+  const t = useT();
+
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
 
