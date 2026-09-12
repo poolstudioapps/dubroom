@@ -48,7 +48,13 @@ export async function claimJob(): Promise<Job | null> {
     p_max_attempts: config.maxAttempts,
   });
   if (error) throw new SystemError(`claim_job a échoué : ${error.message}`);
-  return (data as Job | null) ?? null;
+
+  // `RETURNS jobs` qui rend NULL arrive ici en objet dont tous les champs
+  // sont nuls, pas en `null` : PostgREST serialise la ligne composite
+  // avant de constater qu'elle est vide. Sans ce test, une file vide
+  // ressemblerait a un job et la boucle partirait en vrille.
+  const job = data as Job | null;
+  return job?.id ? job : null;
 }
 
 /** Heartbeat hors reclamation, pour que le front sache qu'on est la. */
