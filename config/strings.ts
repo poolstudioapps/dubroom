@@ -57,6 +57,15 @@ export const t = {
     passwordTooShort: 'Huit caractères au minimum.',
   },
 
+  guests: {
+    title: 'Les invités',
+    help: 'Seules ces adresses peuvent entrer. Pour Discord, c’est l’adresse du compte Discord qui compte, pas forcément celle d’habitude.',
+    add: 'Inviter',
+    joined: 'Déjà venu',
+    pending: 'Jamais venu',
+    remove: 'Retirer de la liste',
+  },
+
   sessions: {
     title: 'Mes scènes',
     empty: 'Aucune scène pour l’instant. Importes-en une pour commencer.',

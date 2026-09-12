@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
+import { GuestListCard } from '@/components/guest-list-card';
 import { PasswordCard } from '@/components/password-card';
 import { StatusBadge } from '@/components/status-badge';
 import { Alert, Button, Card, Dialog, Input, Progress, Spinner } from '@/components/ui';
@@ -109,6 +110,8 @@ export function SessionsClient({
 
         <PasswordCard />
       </div>
+
+      <GuestListCard />
 
       <section className="space-y-2">
         {sessions.isLoading ? (

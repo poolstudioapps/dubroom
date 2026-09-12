@@ -25,6 +25,8 @@ const MESSAGES: Record<string, string> = {
   PARTICIPANT_NOT_FOUND: t.errors.notFound,
   EMPTY_NAME: 'Le nom ne peut pas être vide.',
   CROSS_SESSION: 'Ces éléments n’appartiennent pas à la même scène.',
+  INVALID_EMAIL: 'Cette adresse ne ressemble pas à une adresse e-mail.',
+  CANNOT_REVOKE_SELF: 'Tu ne peux pas te retirer toi-même de la liste.',
 };
 
 /** Erreur porteuse d'un message deja lisible par l'utilisateur. */
