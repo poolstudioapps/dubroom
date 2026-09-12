@@ -1,78 +1,156 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
+import { WAVEFORM_BUCKETS } from '@/config/constants';
 import { t } from '@/config/strings';
+import { decodeEnvelope, sliceEnvelope } from '@/lib/audio/envelope';
 import type { TakeAnalysis } from '@/lib/audio/waveform';
+import { resolveCharacterColor, resolveCssColor } from '@/lib/canvas-colors';
 import type { ClipRow } from '@/lib/supabase/database.types';
 
 /**
- * Forme d'onde de la prise, avec la zone de parole en surbrillance et les
- * marges en grise (PRD §11.5). Le joueur doit voir qu'il deborde, pas le
- * decouvrir au rendu.
+ * Forme d'onde du clip (PRD §11.5).
+ *
+ * Elle repond a deux questions differentes, d'ou les deux traces :
+ *
+ * - « quand dois-je parler ? » — l'enveloppe de la voix d'origine, en
+ *   creux derriere, montre le debit de l'acteur avant meme d'avoir
+ *   enregistre quoi que ce soit ;
+ * - « ai-je deborde ? » — la prise, par-dessus, avec la zone de parole
+ *   en surbrillance et les marges en grise.
+ *
+ * La tete de lecture suit `video.currentTime`, comme la bande rythmo :
+ * une seule source de temps pour tout le studio.
  */
 export function WaveformView({
   analysis,
   clip,
-  height = 72,
+  videoRef,
+  voicePeaks,
+  voicePeaksHz,
+  characterColor,
+  height = 96,
 }: {
   analysis: TakeAnalysis | null;
   clip: ClipRow;
+  videoRef: RefObject<HTMLVideoElement | null>;
+  voicePeaks: string | null;
+  voicePeaksHz: number | null;
+  characterColor: string;
   height?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const windowMs = clip.window_end_ms - clip.window_start_ms;
-  const speechStartRatio = (clip.speech_start_ms - clip.window_start_ms) / windowMs;
-  const speechEndRatio = (clip.speech_end_ms - clip.window_start_ms) / windowMs;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.clientWidth;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, width, height);
+    const windowMs = clip.window_end_ms - clip.window_start_ms;
+    const speechStartRatio =
+      (clip.speech_start_ms - clip.window_start_ms) / windowMs;
+    const speechEndRatio = (clip.speech_end_ms - clip.window_start_ms) / windowMs;
 
-    // Marges : tout ce qui n'est pas la zone de parole.
-    ctx.fillStyle = 'rgba(255,255,255,0.04)';
-    ctx.fillRect(0, 0, width * speechStartRatio, height);
-    ctx.fillRect(
-      width * speechEndRatio,
-      0,
-      width * (1 - speechEndRatio),
-      height,
-    );
+    const envelope = decodeEnvelope(voicePeaks);
+    const original =
+      envelope && voicePeaksHz
+        ? sliceEnvelope(
+            envelope,
+            voicePeaksHz,
+            clip.window_start_ms,
+            clip.window_end_ms,
+            WAVEFORM_BUCKETS,
+          )
+        : null;
 
-    ctx.fillStyle = 'rgba(255,255,255,0.09)';
-    ctx.fillRect(
-      width * speechStartRatio,
-      0,
-      width * (speechEndRatio - speechStartRatio),
-      height,
-    );
+    const charColor = resolveCharacterColor(characterColor);
+    const takeColor = resolveCssColor('var(--color-text)', '#f2f2f5');
+    const zoneColor = resolveCssColor('var(--color-surface-raised)', '#2a2a35');
+    const playheadColor = resolveCssColor('var(--color-accent)', '#ff8159');
 
-    if (!analysis) return;
+    let frame = 0;
 
-    const middle = height / 2;
-    const buckets = analysis.peaks.length;
-    const barWidth = width / buckets;
-    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    const draw = () => {
+      frame = requestAnimationFrame(draw);
 
-    for (let i = 0; i < buckets; i += 1) {
-      const amplitude = (analysis.peaks[i] ?? 0) * (height / 2 - 2);
+      const dpr = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth;
+      if (width === 0) return;
+
+      if (canvas.width !== Math.round(width * dpr)) {
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const middle = height / 2;
+
+      // Zone de parole en clair, marges laissees sombres.
+      ctx.fillStyle = zoneColor;
+      ctx.globalAlpha = 0.5;
       ctx.fillRect(
-        i * barWidth,
-        middle - amplitude,
-        Math.max(1, barWidth - 0.5),
-        amplitude * 2,
+        width * speechStartRatio,
+        0,
+        width * (speechEndRatio - speechStartRatio),
+        height,
       );
-    }
-  }, [analysis, height, speechStartRatio, speechEndRatio]);
+      ctx.globalAlpha = 1;
+
+      // Voix d'origine, en aplat derriere : le repere de timing.
+      if (original) {
+        ctx.fillStyle = charColor;
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath();
+        ctx.moveTo(0, middle);
+        for (let i = 0; i < original.length; i += 1) {
+          const x = (i / original.length) * width;
+          ctx.lineTo(x, middle - (original[i] ?? 0) * (middle - 3));
+        }
+        for (let i = original.length - 1; i >= 0; i -= 1) {
+          const x = (i / original.length) * width;
+          ctx.lineTo(x, middle + (original[i] ?? 0) * (middle - 3));
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      // Prise du joueur, par-dessus, en barres.
+      if (analysis) {
+        const buckets = analysis.peaks.length;
+        const barWidth = width / buckets;
+        ctx.fillStyle = takeColor;
+        ctx.globalAlpha = 0.9;
+        for (let i = 0; i < buckets; i += 1) {
+          const amplitude = (analysis.peaks[i] ?? 0) * (middle - 3);
+          ctx.fillRect(
+            i * barWidth,
+            middle - amplitude,
+            Math.max(1, barWidth - 0.5),
+            amplitude * 2,
+          );
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Tete de lecture, uniquement quand on est dans la fenetre du clip.
+      const nowMs = (videoRef.current?.currentTime ?? 0) * 1000;
+      const ratio = (nowMs - clip.window_start_ms) / windowMs;
+      if (ratio >= 0 && ratio <= 1) {
+        ctx.strokeStyle = playheadColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(width * ratio, 0);
+        ctx.lineTo(width * ratio, height);
+        ctx.stroke();
+      }
+    };
+
+    frame = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(frame);
+  }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor]);
 
   return (
     <div className="space-y-1">

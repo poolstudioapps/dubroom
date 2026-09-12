@@ -12,6 +12,7 @@ import {
   speakersInOrder,
 } from '../../../lib/segmentation.ts';
 import { config } from '../config.ts';
+import { computeEnvelope } from '../lib/envelope.ts';
 import { SystemError, UserError } from '../errors.ts';
 import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
 import {
@@ -110,10 +111,16 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
   await encodeBackingPreview(musicPath, previewLocal);
   await storage.upload(BUCKET_SOURCES, previewRemote, previewLocal, 'audio/mp4');
 
+  // Enveloppe de la voix d'origine : elle dit au joueur quand l'acteur
+  // parle, sans lui faire telecharger le stem (PRD §13.3).
+  const envelope = await computeEnvelope(voicePath, workDir);
+
   await updateSession(session.id, {
     stem_voice_path: voiceRemote,
     stem_music_path: musicRemote,
     stem_music_preview_path: previewRemote,
+    voice_peaks: envelope.peaks,
+    voice_peaks_hz: envelope.hz,
   });
   logger.info('stems produits', { step: 'separate' });
 

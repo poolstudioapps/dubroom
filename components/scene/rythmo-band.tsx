@@ -2,12 +2,9 @@
 
 import { useEffect, useRef, type RefObject } from 'react';
 
-import {
-  RYTHMO_PLAYHEAD_RATIO,
-  RYTHMO_WINDOW_MS,
-  characterColorVar,
-} from '@/config/constants';
-import type { CharacterRow, LineRow } from '@/lib/supabase/database.types';
+import { RYTHMO_PLAYHEAD_RATIO, RYTHMO_WINDOW_MS } from '@/config/constants';
+import { resolveCharacterColor, resolveCssColor } from '@/lib/canvas-colors';
+import type { CharacterRow, ClipRow, LineRow } from '@/lib/supabase/database.types';
 
 /**
  * Bande rythmo (PRD §11.3).
@@ -24,12 +21,14 @@ export function RythmoBand({
   lines,
   characters,
   activeCharacterId,
-  height = 96,
+  clip,
+  height = 132,
 }: {
   videoRef: RefObject<HTMLVideoElement | null>;
   lines: LineRow[];
   characters: CharacterRow[];
   activeCharacterId: string | null;
+  clip?: ClipRow | null;
   height?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,10 +39,15 @@ export function RythmoBand({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Les couleurs sont resolues une fois : le canvas n'accepte pas les
+    // variables CSS, il les ignore silencieusement et dessine en noir.
     const colorOf = new Map(
-      characters.map((c) => [c.id, characterColorVar(c.color)]),
+      characters.map((c) => [c.id, resolveCharacterColor(c.color)]),
     );
+    const guideColor = resolveCssColor('var(--color-text-faint)', '#8a8a99');
+    const playheadColor = resolveCssColor('var(--color-accent)', '#ff8159');
 
+    const visible = lines.filter((line) => !line.is_deleted);
     let frame = 0;
 
     const draw = () => {
@@ -53,6 +57,7 @@ export function RythmoBand({
       const dpr = window.devicePixelRatio || 1;
       const cssWidth = canvas.clientWidth;
       const cssHeight = height;
+      if (cssWidth === 0) return;
 
       if (canvas.width !== Math.round(cssWidth * dpr)) {
         canvas.width = Math.round(cssWidth * dpr);
@@ -70,20 +75,45 @@ export function RythmoBand({
       const startMs = nowMs - playheadX / pxPerMs;
       const endMs = nowMs + (cssWidth - playheadX) / pxPerMs;
 
-      const activeRowY = cssHeight * 0.4;
-      const otherRowY = cssHeight * 0.78;
+      const activeRowY = cssHeight * 0.46;
+      const otherRowY = cssHeight * 0.84;
 
-      for (const line of lines) {
-        if (line.is_deleted) continue;
+      // Zone de parole du clip : une bande claire derriere le texte, pour
+      // qu'on voie arriver son tour avant d'avoir a lire les mots.
+      if (clip) {
+        const zoneStart = toX(clip.speech_start_ms);
+        const zoneEnd = toX(clip.speech_end_ms);
+        if (zoneEnd > 0 && zoneStart < cssWidth) {
+          ctx.fillStyle = resolveCssColor('var(--color-surface-raised)', '#2a2a35');
+          ctx.globalAlpha = 0.55;
+          ctx.fillRect(zoneStart, 0, Math.max(2, zoneEnd - zoneStart), cssHeight);
+          ctx.globalAlpha = 1;
+
+          ctx.strokeStyle = guideColor;
+          ctx.globalAlpha = 0.5;
+          ctx.lineWidth = 1;
+          for (const x of [zoneStart, zoneEnd]) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, cssHeight);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      ctx.textBaseline = 'alphabetic';
+
+      for (const line of visible) {
         if (line.end_ms < startMs || line.start_ms > endMs) continue;
 
         const isActive = line.character_id === activeCharacterId;
         const y = isActive ? activeRowY : otherRowY;
-        const color = colorOf.get(line.character_id) ?? 'currentColor';
+        const color = colorOf.get(line.character_id) ?? guideColor;
 
         ctx.font = isActive
-          ? '600 22px ui-sans-serif, system-ui, sans-serif'
-          : '400 14px ui-sans-serif, system-ui, sans-serif';
+          ? '700 30px ui-sans-serif, system-ui, sans-serif'
+          : '500 15px ui-sans-serif, system-ui, sans-serif';
 
         const words =
           line.words.length > 0
@@ -106,11 +136,11 @@ export function RythmoBand({
             ? isCurrent
               ? 1
               : isPast
-                ? 0.35
-                : 0.85
+                ? 0.4
+                : 0.9
             : isPast
-              ? 0.15
-              : 0.3;
+              ? 0.2
+              : 0.38;
 
           // Le mot est comprime pour tenir dans sa duree : c'est ce qui
           // fait qu'on peut lire au rythme du texte sans le devancer.
@@ -120,21 +150,30 @@ export function RythmoBand({
           ctx.scale(scale, 1);
           ctx.fillText(word.w, 0, 0);
           ctx.restore();
+
+          // Le mot sous la tete de lecture est souligne : c'est le repere
+          // qu'on suit des yeux quand on parle.
+          if (isActive && isCurrent) {
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y + 7, Math.min(slot, natural * scale), 3);
+            ctx.restore();
+          }
         }
       }
 
       // Tete de lecture.
-      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.strokeStyle = playheadColor;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(playheadX, 6);
-      ctx.lineTo(playheadX, cssHeight - 6);
+      ctx.moveTo(playheadX, 4);
+      ctx.lineTo(playheadX, cssHeight - 4);
       ctx.stroke();
     };
 
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [videoRef, lines, characters, activeCharacterId, height]);
+  }, [videoRef, lines, characters, activeCharacterId, clip, height]);
 
   return (
     <canvas

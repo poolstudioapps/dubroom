@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import { RythmoBand } from '@/components/scene/rythmo-band';
+import { SpeakCue } from '@/components/scene/speak-cue';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
 import { WaveformView } from '@/components/scene/waveform-view';
 import { useSceneCtx } from '@/components/scene-page';
@@ -377,14 +378,30 @@ export function StudioScreen() {
           )}
         </div>
 
+        <SpeakCue
+          character={character}
+          clip={clip}
+          videoRef={videoRef}
+          active={mode !== 'idle'}
+        />
+
         <RythmoBand
           videoRef={videoRef}
           lines={lines}
           characters={characters}
           activeCharacterId={character.id}
+          clip={clip}
         />
 
-        <WaveformView analysis={analysis} clip={clip} />
+        <WaveformView
+          analysis={analysis}
+          clip={clip}
+          videoRef={videoRef}
+          voicePeaks={session.voice_peaks}
+          voicePeaksHz={session.voice_peaks_hz}
+          characterColor={character.color}
+        />
+        <p className="text-xs text-text-faint">{t.studio.originalTrace}</p>
 
         {analysis?.truncated ? (
           <Alert tone="warn">{t.studio.overflowWarning}</Alert>

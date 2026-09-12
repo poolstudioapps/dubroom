@@ -193,6 +193,12 @@ export const t = {
     reassignInstead: 'Réassigner son personnage à quelqu’un d’autre',
     kicked: 'Tu as été exclu de cette scène par l’hôte.',
     myClips: 'Mes clips',
+    youAreDubbing: 'Tu doubles',
+    cueIn: 'À toi dans',
+    cueNow: 'À TOI',
+    cueDone: 'Réplique passée',
+    cueIdle: 'Prêt',
+    originalTrace: 'Le tracé coloré montre quand la voix d’origine parle.',
   },
 
   render: {

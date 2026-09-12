@@ -43,6 +43,9 @@ export interface SessionRow {
   stem_voice_path: string | null;
   stem_music_path: string | null;
   stem_music_preview_path: string | null;
+  /** Enveloppe du stem voix, un octet par intervalle, en base64. */
+  voice_peaks: string | null;
+  voice_peaks_hz: number | null;
   duration_ms: number | null;
   render_path: string | null;
   render_size_bytes: number | null;
