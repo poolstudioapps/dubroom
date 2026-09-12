@@ -41,7 +41,10 @@ insert into allowed_emails (email) values ('toi@exemple.fr') on conflict do noth
 ```
 
 Dans **Authentication → URL Configuration**, renseigne l'URL du site et ajoute
-`https://<ton-domaine>/auth/callback` aux redirections autorisées.
+`https://<ton-domaine>/auth/callback` aux redirections autorisées. L'adresse de
+retour du magic link est déduite de `window.location.origin`, donc si tu veux que
+les déploiements de prévisualisation Vercel fonctionnent aussi, ajoute le motif
+correspondant.
 
 Les trois buckets (`sources`, `takes`, `renders`) sont créés par la migration,
 en privé. Rien n'est jamais accessible sans URL signée.
@@ -49,7 +52,7 @@ en privé. Rien n'est jamais accessible sans URL signée.
 ### 2. Front
 
 ```bash
-cp .env.example .env.local     # remplis les trois variables
+cp .env.example .env.local     # remplis les deux variables
 npm run dev
 ```
 
@@ -57,7 +60,6 @@ npm run dev
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | idem |
-| `NEXT_PUBLIC_APP_URL` | l'URL publique du site |
 
 La clé service Supabase et la clé ElevenLabs **ne doivent jamais** arriver ici.
 
