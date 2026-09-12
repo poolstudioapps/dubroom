@@ -89,7 +89,7 @@ export function CharacterPicker({
             aria-hidden
           />
         ) : null}
-        <span className="truncate">{value?.name ?? placeholder ?? '—'}</span>
+        <span className="truncate">{value?.name ?? placeholder ?? '…'}</span>
         <ChevronDown className="h-3 w-3 shrink-0 text-text-faint" aria-hidden />
       </button>
 

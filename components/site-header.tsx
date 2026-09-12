@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { SiteNav } from '@/components/site-nav';
-import { APP_NAME } from '@/config/strings';
+import { APP_NAME, t } from '@/config/strings';
 
 /**
  * L'en-tete du site : l'enseigne, les onglets, et ce qu'on veut mettre a
@@ -42,7 +42,22 @@ export function SiteHeader({
       <div className="order-3 w-full sm:order-2 sm:w-auto">
         <SiteNav signedIn={signedIn} />
       </div>
-      <div className="order-2 ml-auto sm:order-3">{right}</div>
+      {/*
+        Sans compte, la place de droite porte l'entree : c'est la qu'on la
+        cherche. La facade se visite librement ; c'est jouer qui demande un
+        compte, et le dire au moment ou l'on clique vaut mieux que de
+        fermer la porte d'emblee.
+      */}
+      <div className="order-2 ml-auto sm:order-3">
+        {right ?? (
+          <Link
+            href="/login"
+            className="btn-3d inline-flex h-11 items-center gap-2 bg-accent px-5 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
+          >
+            {t.auth.signIn}
+          </Link>
+        )}
+      </div>
     </header>
   );
 }

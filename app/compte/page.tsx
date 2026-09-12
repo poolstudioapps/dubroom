@@ -4,7 +4,7 @@ import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
 import { AccountClient } from './account-client';
 
-export const metadata = { title: `Mon compte — ${APP_NAME}` };
+export const metadata = { title: `Mon compte · ${APP_NAME}` };
 
 export default async function AccountPage() {
   const user = await currentUser();

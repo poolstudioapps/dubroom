@@ -12,10 +12,13 @@ import { WaveformView } from '@/components/scene/waveform-view';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
 import {
+  ALIGN_HISTORY,
   AUDIO_SYNC_TOLERANCE_MS,
   BUCKET_TAKES,
   DEFAULT_BACKING_VOLUME,
   MIC_OFFSET_STORAGE_KEY,
+  REC_LEAD_IN_MS,
+  REC_TAIL_MS,
   SIGNED_URL_TTL_S,
   characterColorVar,
 } from '@/config/constants';
@@ -23,6 +26,8 @@ import { t } from '@/config/strings';
 import { uploadTake } from '@/lib/actions';
 import { MicRecorder } from '@/lib/audio/recorder';
 import { seekAll } from '@/lib/audio/media';
+import { alignTake, envelopeFromBlob, type Alignment } from '@/lib/audio/align';
+import { decodeEnvelope } from '@/lib/audio/envelope';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
 import { useMediaUrls, useTakes } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
@@ -54,6 +59,18 @@ export function StudioScreen() {
   const [error, setError] = useState<string | null>(null);
   const [micReady, setMicReady] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
+  /** Calage de la derniere prise, et memoire des precedentes. */
+  const [alignment, setAlignment] = useState<Alignment | null>(null);
+  const [autoAlign, setAutoAlign] = useState(true);
+  const lagHistory = useRef<number[]>([]);
+  /**
+   * Instant de la scene ou le micro s'est reellement ouvert.
+   *
+   * Il n'est pas connu d'avance : on arme le micro quand la lecture
+   * atteint la zone de parole, et la lecture n'a pas une precision a la
+   * milliseconde. On releve donc l'heure exacte a l'ouverture.
+   */
+  const recStartedAtMs = useRef<number | null>(null);
 
   const myClips = useMemo(
     () => (me ? clipsForParticipant(me.id, characters, clips) : []),
@@ -105,13 +122,34 @@ export function StudioScreen() {
     if (mode === 'idle' || !clip) return;
     let frame = 0;
 
+    // Bornes du micro : on ouvre un peu avant la replique et on ferme un
+    // peu apres, jamais sur toute la fenetre.
+    const micOpenMs = Math.max(clip.window_start_ms, clip.speech_start_ms - REC_LEAD_IN_MS);
+    const micCloseMs = Math.min(clip.window_end_ms, clip.speech_end_ms + REC_TAIL_MS);
+
     const tick = () => {
       frame = requestAnimationFrame(tick);
       const video = videoRef.current;
       const music = musicRef.current;
       if (!video) return;
 
-      if (video.currentTime * 1000 >= clip.window_end_ms) {
+      const nowMs = video.currentTime * 1000;
+
+      if (mode === 'recording') {
+        const recorder = recorderRef.current;
+        if (!recorder.recording && recStartedAtMs.current === null && nowMs >= micOpenMs) {
+          // On releve l'heure reelle : c'est elle qui servira a replacer
+          // la prise au mixage, pas la valeur theorique.
+          recStartedAtMs.current = nowMs;
+          recorder.start();
+        }
+        if (recorder.recording && nowMs >= micCloseMs) {
+          void finishRecording();
+          return;
+        }
+      }
+
+      if (nowMs >= clip.window_end_ms) {
         if (mode === 'recording') void finishRecording();
         else stopAll();
         return;
@@ -217,16 +255,23 @@ export function StudioScreen() {
 
     setAnalysis(null);
     setTakeUrl(null);
+    setAlignment(null);
+    recStartedAtMs.current = null;
     setMode('recording');
 
     // Pas de decompte : les deux secondes de marge tiennent ce role
-    // (PRD §11.4). Micro et lecture demarrent au meme instant.
-    recorderRef.current.start();
+    // (PRD §11.4). La lecture demarre ici ; le micro, lui, ne s'ouvre
+    // qu'a l'entree de la zone de parole, ouvert par la boucle de
+    // transport. On ne capte donc que ce qu'il y a a doubler.
     await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
   }
 
   const upload = useMutation({
-    mutationFn: async (input: { blob: Blob; durationMs: number }) => {
+    mutationFn: async (input: {
+      blob: Blob;
+      durationMs: number;
+      offsetMs: number;
+    }) => {
       if (!clip || !me) throw new Error('Clip introuvable');
       return uploadTake({
         sessionId: session.id,
@@ -234,6 +279,7 @@ export function StudioScreen() {
         clipId: clip.id,
         blob: input.blob,
         durationMs: input.durationMs,
+        offsetMs: input.offsetMs,
       });
     },
     onSuccess: () => {
@@ -246,9 +292,12 @@ export function StudioScreen() {
   async function finishRecording() {
     if (!recorderRef.current.recording) {
       stopAll();
+      recStartedAtMs.current = null;
       return;
     }
     const blob = await recorderRef.current.stop();
+    const openedAtMs = recStartedAtMs.current;
+    recStartedAtMs.current = null;
     stopAll();
 
     // Une URL d'objet retient le blob en memoire tant qu'elle n'est pas
@@ -257,7 +306,7 @@ export function StudioScreen() {
     if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
     localTakeUrl.current = URL.createObjectURL(blob);
     setTakeUrl(localTakeUrl.current);
-    let durationMs = clip ? clip.window_end_ms - clip.window_start_ms : 0;
+    let durationMs = clip ? clip.speech_end_ms - clip.speech_start_ms : 0;
     try {
       const result = await analyzeTake(blob);
       setAnalysis(result);
@@ -265,7 +314,38 @@ export function StudioScreen() {
     } catch {
       setAnalysis(null);
     }
-    upload.mutate({ blob, durationMs });
+
+    // Ou poser la prise : la ou le micro s'est ouvert, et non au debut de
+    // la fenetre, puis corrige du retard mesure sur la voix d'origine.
+    const placedAtMs = openedAtMs ?? clip?.window_start_ms ?? 0;
+    let offsetMs = clip ? placedAtMs - clip.window_start_ms : 0;
+
+    const measured = await measureLag(blob, placedAtMs);
+    setAlignment(measured);
+
+    if (measured?.reliable && autoAlign) {
+      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(-ALIGN_HISTORY);
+      offsetMs -= measured.lagMs;
+    }
+
+    upload.mutate({ blob, durationMs, offsetMs });
+  }
+
+  /**
+   * De combien cette prise est-elle en retard sur la voix d'origine ?
+   *
+   * Un echec ne coute rien : la prise est simplement posee la ou le micro
+   * s'est ouvert, ce qui est deja bien plus juste qu'avant.
+   */
+  async function measureLag(blob: Blob, placedAtMs: number): Promise<Alignment | null> {
+    const original = decodeEnvelope(session.voice_peaks);
+    if (!original || !session.voice_peaks_hz) return null;
+    try {
+      const envelope = await envelopeFromBlob(blob);
+      return alignTake(envelope, original, session.voice_peaks_hz, placedAtMs);
+    } catch {
+      return null;
+    }
   }
 
   /** Reecoute : fond + la prise, posee comme au mixage. */
@@ -281,15 +361,22 @@ export function StudioScreen() {
     await seekToWindow();
     setMode('playback');
 
-    // Le decalage micro est applique au mixage : on le simule ici pour
-    // que ce qu'on entend soit ce qu'on obtiendra.
-    take.currentTime = micOffset < 0 ? -micOffset / 1000 : 0;
+    /*
+     * Reproduire exactement ce que fera le mixage.
+     *
+     * Une prise ne commence plus au debut de la fenetre : le micro
+     * s'ouvre a l'entree de la zone de parole, et le calage automatique
+     * la deplace encore. Le retard a simuler est donc celui de la prise,
+     * plus le decalage micro, compte depuis le debut de la fenetre.
+     */
+    const delayMs = (currentTake?.offset_ms ?? 0) + micOffset;
+    take.currentTime = delayMs < 0 ? -delayMs / 1000 : 0;
     await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
 
-    if (micOffset > 0) {
+    if (delayMs > 0) {
       takeTimer.current = window.setTimeout(() => {
         void take.play();
-      }, micOffset);
+      }, delayMs);
     } else {
       await take.play();
     }
@@ -310,7 +397,7 @@ export function StudioScreen() {
   if (myClips.length === 0) {
     return (
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[1fr_22rem]">
-        <Card className="space-y-2">
+        <Card variant="plate" className="space-y-2">
           <h1 className="text-lg font-semibold">{t.studio.title}</h1>
           <p className="text-sm text-text-muted">
             Aucun personnage ne t’a été attribué sur cette scène.
@@ -321,6 +408,8 @@ export function StudioScreen() {
           onBacking={setBacking}
           micOffset={micOffset}
           onMicOffset={setMicOffset}
+          autoAlign={autoAlign}
+          onAutoAlign={setAutoAlign}
           done={0}
           total={0}
         />
@@ -345,6 +434,8 @@ export function StudioScreen() {
           onBacking={setBacking}
           micOffset={micOffset}
           onMicOffset={setMicOffset}
+          autoAlign={autoAlign}
+          onAutoAlign={setAutoAlign}
           done={doneCount}
           total={myClips.length}
         />
@@ -439,6 +530,21 @@ export function StudioScreen() {
             characterColor={character.color}
             height={compact ? 68 : 96}
           />
+
+          {/*
+            Une seule ligne d'etat sous les courbes : la place est
+            comptee, et c'est la qu'on regarde deja.
+          */}
+          <p className="flex flex-wrap items-center gap-x-3 text-xs text-text-faint">
+            <span>{t.studio.micWindow}</span>
+            {alignment ? (
+              <span className={alignment.reliable ? 'font-bold text-ok' : undefined}>
+                {alignment.reliable && autoAlign
+                  ? t.studio.alignedBy(alignment.lagMs)
+                  : t.studio.alignUnsure}
+              </span>
+            ) : null}
+          </p>
         </div>
 
         <div className="shrink-0 space-y-2">
@@ -541,6 +647,8 @@ export function StudioScreen() {
           onBacking={setBacking}
           micOffset={micOffset}
           onMicOffset={setMicOffset}
+          autoAlign={autoAlign}
+          onAutoAlign={setAutoAlign}
           done={doneCount}
           total={myClips.length}
         />

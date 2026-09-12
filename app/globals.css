@@ -220,6 +220,36 @@
       inset 0 -2px 4px 0 oklch(0 0 0 / 0.08);
   }
 
+  /* ── Panneau ──────────────────────────────────────────────────────
+     La surface ordinaire : un fond a peine detache, un filet fin, rien
+     d'autre.
+
+     La plaque vissee reste, mais elle ne convenait qu'aux panneaux de
+     commande. Empilee — une plaque dans une plaque dans l'ecran du
+     poste — elle donnait quatre encadrements pour une seule information,
+     et ses quatre vis sur une liste de dix elements font quarante points
+     gris qui ne disent rien. Ici, c'est l'espace qui separe, pas le
+     trait. */
+  .panel {
+    background-color: color-mix(in oklch, var(--color-surface) 55%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
+    border-radius: 0.875rem;
+  }
+
+  /* Une rangee de liste : le filet est sous elle, pas autour. */
+  .row {
+    border-bottom: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+    transition: background-color 120ms ease-out;
+  }
+
+  .row:last-child {
+    border-bottom: 0;
+  }
+
+  .row:hover {
+    background-color: color-mix(in oklch, var(--color-surface) 45%, transparent);
+  }
+
   /* ── Diode ────────────────────────────────────────────────────────
      Le petit temoin rouge a gauche de chaque libelle du menu. */
   .led {

@@ -28,6 +28,12 @@ export interface Pack {
   size_bytes: number;
   created_at: string;
   is_mine: boolean;
+  /** Somme des avis. C'est elle qui ordonne le catalogue. */
+  score: number;
+  up_count: number;
+  down_count: number;
+  /** Mon propre avis : 1, -1, ou 0 si je n'ai pas vote. */
+  my_vote: number;
   characters: PackCharacter[];
 }
 
@@ -82,6 +88,11 @@ export async function deletePack(pack: Pack): Promise<void> {
   }
 
   await rpc('delete_pack', { p_pack_id: pack.id });
+}
+
+/** Voter sur une scene. Revoter la meme valeur retire le vote. */
+export function votePack(packId: string, value: 1 | -1) {
+  return rpc<number>('vote_pack', { p_pack_id: packId, p_value: value });
 }
 
 export function setKeepAsPack(sessionId: string, keep: boolean) {

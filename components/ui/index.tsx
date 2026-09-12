@@ -125,13 +125,29 @@ export function MenuLabel({
 // ── Card ──────────────────────────────────────────────────────────────
 // La plaque metallique vissee aux quatre coins.
 
+/**
+ * Une surface.
+ *
+ * Trois variantes, et le defaut a change : `panel`, sobre, est ce dont on
+ * a besoin quatre-vingt-dix pour cent du temps. La plaque vissee est
+ * reservee aux panneaux de commande — le studio, les reglages — ou son
+ * cote appareil a un sens. Empilee partout, elle encadrait chaque
+ * information trois fois.
+ */
 export function Card({
   className,
+  variant = 'panel',
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn('plate rounded-card p-4', className)} {...props} />
-  );
+}: React.HTMLAttributes<HTMLDivElement> & {
+  variant?: 'panel' | 'plate' | 'bare';
+}) {
+  const surfaces = {
+    panel: 'panel p-4',
+    plate: 'plate rounded-card p-4',
+    bare: '',
+  } as const;
+
+  return <div className={cn(surfaces[variant], className)} {...props} />;
 }
 
 // ── Badge ─────────────────────────────────────────────────────────────

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { APP_NAME } from '@/config/strings';
 import { LegalShell, LegalSection } from '@/components/legal-shell';
 
-export const metadata = { title: `Mentions légales — ${APP_NAME}` };
+export const metadata = { title: `Mentions légales · ${APP_NAME}` };
 
 export default function MentionsPage() {
   return (
@@ -54,6 +54,29 @@ export default function MentionsPage() {
         <p>
           Pour signaler un contenu, écrivez à l’adresse ci-dessus : il sera
           supprimé sans délai.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Ce que produisent les participants">
+        <p>
+          Les enregistrements de voix réalisés par les participants sont leurs
+          créations. Chacun conserve ses droits sur sa propre interprétation et
+          reste libre de demander son retrait à tout moment.
+        </p>
+        <p>
+          Les scènes conservées dans l’onglet Communauté ne contiennent aucune
+          copie de l’œuvre d’origine. Elles ne retiennent qu’un lien vers la
+          source, les repères de temps du découpage et la répartition des
+          personnages. Ce travail de préparation est celui de la personne qui
+          l’a réalisé.
+        </p>
+        <p>
+          Cela ne retire rien aux droits de l’œuvre doublée. Un doublage est une
+          œuvre dérivée : les droits de l’auteur de la scène d’origine restent
+          entiers, et ce qui rend l’exercice possible ici est le cadre privé de
+          l’usage, sans diffusion ni public. Publier un rendu hors de ce cadre
+          sortirait de ce qui est permis, et relèverait de la seule
+          responsabilité de son auteur.
         </p>
       </LegalSection>
 

@@ -30,6 +30,8 @@ export function StudioSidebar({
   onBacking,
   micOffset,
   onMicOffset,
+  autoAlign,
+  onAutoAlign,
   done,
   total,
 }: {
@@ -37,6 +39,8 @@ export function StudioSidebar({
   onBacking: (value: number) => void;
   micOffset: number;
   onMicOffset: (value: number) => void;
+  autoAlign: boolean;
+  onAutoAlign: (value: boolean) => void;
   done: number;
   total: number;
 }) {
@@ -88,7 +92,7 @@ export function StudioSidebar({
 
   return (
     <aside className="space-y-4">
-      <Card className="space-y-4">
+      <Card variant="plate" className="space-y-4">
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-sm">
             <span>{t.studio.backingVolume}</span>
@@ -104,6 +108,25 @@ export function StudioSidebar({
             className="w-full"
             aria-label={t.studio.backingVolume}
           />
+        </div>
+
+        {/*
+          Le calage automatique passe avant le reglage manuel : il traite
+          le meme probleme, mieux et sans rien demander. Le curseur reste
+          pour qui veut reprendre la main.
+        */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm font-bold">{t.studio.autoAlign}</span>
+            <Toggle
+              checked={autoAlign}
+              onChange={onAutoAlign}
+              label={t.studio.autoAlign}
+            />
+          </div>
+          <p className="text-xs leading-relaxed text-text-faint">
+            {t.studio.autoAlignHelp}
+          </p>
         </div>
 
         <div className="space-y-1.5">
@@ -144,7 +167,7 @@ export function StudioSidebar({
         </div>
       </Card>
 
-      <Card className="space-y-2">
+      <Card variant="plate" className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span>{t.studio.myClips}</span>
           <span className="text-text-faint">
@@ -161,7 +184,7 @@ export function StudioSidebar({
         ) : null}
       </Card>
 
-      <Card className="space-y-2">
+      <Card variant="plate" className="space-y-2">
         <h2 className="text-sm font-bold">
           {others.length === 0
             ? t.studio.soloScene
@@ -212,7 +235,7 @@ export function StudioSidebar({
       </Card>
 
       {isHost ? (
-        <Card className="space-y-3">
+        <Card variant="plate" className="space-y-3">
           <div className="flex items-start gap-3">
             <Toggle
               checked={session.keep_as_pack}

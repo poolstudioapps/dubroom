@@ -16,7 +16,20 @@ import { t } from '@/config/strings';
  * sinon dix lecteurs tiers au premier affichage, avec ce que cela
  * suppose de requetes et de traceurs.
  */
-export function UrlPreview({ url, title }: { url: string; title: string }) {
+export function UrlPreview({
+  url,
+  title,
+  flush,
+}: {
+  url: string;
+  title: string;
+  /** A fleur du conteneur : pas de cadre propre, pas de coins arrondis. */
+  flush?: boolean;
+}) {
+  const frame = flush
+    ? 'border-b border-border'
+    : 'rounded-md border-2 border-bezel-dark';
+
   const [open, setOpen] = useState(false);
   const embed = toEmbedUrl(url);
 
@@ -26,7 +39,7 @@ export function UrlPreview({ url, title }: { url: string; title: string }) {
         href={url}
         target="_blank"
         rel="noreferrer noopener"
-        className="flex aspect-video items-center justify-center rounded-md border-2 border-bezel-dark bg-stage text-xs font-bold text-stage-faint hover:text-stage-text"
+        className={`flex aspect-video items-center justify-center bg-stage text-xs font-bold text-stage-faint hover:text-stage-text ${frame}`}
       >
         {t.community.openSource}
       </a>
@@ -38,8 +51,8 @@ export function UrlPreview({ url, title }: { url: string; title: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`${t.community.preview} — ${title}`}
-        className="group flex aspect-video w-full items-center justify-center rounded-md border-2 border-bezel-dark bg-stage"
+        aria-label={`${t.community.preview} : ${title}`}
+        className={`group flex aspect-video w-full items-center justify-center bg-stage ${frame}`}
       >
         <span className="flex flex-col items-center gap-2 text-stage-faint group-hover:text-stage-text">
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-ink">
@@ -61,7 +74,7 @@ export function UrlPreview({ url, title }: { url: string; title: string }) {
       allowFullScreen
       loading="lazy"
       referrerPolicy="strict-origin-when-cross-origin"
-      className="aspect-video w-full rounded-md border-2 border-bezel-dark bg-stage"
+      className={`aspect-video w-full bg-stage ${frame}`}
     />
   );
 }

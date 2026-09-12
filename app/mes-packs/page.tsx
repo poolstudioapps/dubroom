@@ -5,7 +5,7 @@ import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
 import { displayNameFromEmail } from '@/lib/utils';
 
-export const metadata = { title: `Mes packs — ${APP_NAME}` };
+export const metadata = { title: `Mes packs · ${APP_NAME}` };
 
 /**
  * Mes packs.

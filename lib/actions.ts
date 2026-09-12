@@ -220,6 +220,13 @@ export async function uploadTake(input: {
   clipId: string;
   blob: Blob;
   durationMs: number;
+  /**
+   * Ou poser la prise dans la fenetre du clip, en millisecondes depuis
+   * son debut. Le micro ne tourne plus sur toute la fenetre : sans cette
+   * valeur, le mixage placerait une prise qui commence au milieu comme si
+   * elle commencait au debut.
+   */
+  offsetMs?: number;
 }): Promise<TakeRow> {
   const db = supabaseBrowser();
   const name = `${crypto.randomUUID()}.webm`;
@@ -231,11 +238,20 @@ export async function uploadTake(input: {
   });
   if (error) throw new AppError('UPLOAD_FAILED', humanizeError(error));
 
-  return rpc<TakeRow>('save_take', {
+  const take = await rpc<TakeRow>('save_take', {
     p_clip_id: input.clipId,
     p_audio_path: path,
     p_duration_ms: Math.round(input.durationMs),
   });
+
+  const offset = Math.round(input.offsetMs ?? 0);
+  if (offset === 0) return take;
+
+  // Appel separe plutot qu'un parametre de plus a `save_take` : si
+  // celui-ci echoue, la prise existe quand meme, posee au debut de la
+  // fenetre. C'est le comportement d'avant, donc jamais pire.
+  await rpc('set_take_offset', { p_take_id: take.id, p_offset_ms: offset });
+  return { ...take, offset_ms: offset };
 }
 
 export function enqueueRender(sessionId: string) {

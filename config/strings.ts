@@ -150,6 +150,12 @@ export const t = {
       'Cette scène n’est pas hébergée ici : seuls le lien et le découpage sont conservés. La vidéo est retéléchargée au lancement, ce qui prend quelques minutes.',
     mediaHelp: 'Scène hébergée ici : elle démarre immédiatement.',
     mine: 'La tienne',
+    voteUp: 'Cette scène est bien découpée',
+    voteDown: 'Cette scène est mal découpée',
+    voteScore: (n: number) => `Score de la communauté : ${n}`,
+    voteHelp:
+      'Le vote porte sur le découpage, pas sur le film. Une scène bien découpée fait gagner une soirée à tout le monde.',
+    sortedByScore: 'Les mieux notées en premier',
     sceneCount: (n: number) => (n === 1 ? '1 scène disponible' : `${n} scènes disponibles`),
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
@@ -218,7 +224,7 @@ export const t = {
     discord: 'Continuer avec Discord',
     orSeparator: 'ou par e-mail',
     notAllowedWith: (email: string) =>
-      `L’adresse ${email} n’est pas sur la liste des invités. Demande à l’hôte de l’ajouter — c’est l’adresse de ton compte Discord si tu es passé par là.`,
+      `L’adresse ${email} n’est pas sur la liste des invités. Demande à l’hôte de l’ajouter. Si tu es passé par Discord, c’est l’adresse de ton compte Discord qui compte.`,
 
     passwordSectionTitle: 'Mot de passe',
     passwordSectionHelp:
@@ -287,7 +293,7 @@ export const t = {
   ingest: {
     title: 'Préparation de la scène',
     subtitle: 'On découpe la scène. Ça prend quelques minutes.',
-    queued: 'En attente du worker — lance le script sur ton PC.',
+    queued: 'En attente du worker. Lance le script sur ton PC.',
     queuedHelp:
       'Le traitement tourne sur la machine de l’hôte. Double-clique sur start.bat, le job démarrera tout seul.',
     failed: 'L’import a échoué.',
@@ -342,7 +348,7 @@ export const t = {
     recalculating: 'Recalcul des clips…',
     noSelection: 'Sélectionne des répliques pour les déplacer.',
     restoreLine: 'Rétablir la réplique',
-    deletedBadge: 'Supprimée — VO conservée',
+    deletedBadge: 'Supprimée, VO conservée',
   },
 
   lobby: {
@@ -365,8 +371,8 @@ export const t = {
     players: 'Joueurs',
     start: 'Lancer la partie',
     startBlockedTitle: 'Il manque encore quelque chose :',
-    startBlockedCharacters: 'personnages sans joueur, à prendre ou à laisser en VO —',
-    startBlockedReady: 'joueurs qui ne se sont pas déclarés prêts —',
+    startBlockedCharacters: 'personnages sans joueur, à prendre ou à laisser en VO :',
+    startBlockedReady: 'joueurs qui ne se sont pas déclarés prêts :',
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Seul l’hôte peut lancer la partie.',
   },
@@ -431,11 +437,23 @@ export const t = {
     cueDone: 'Réplique passée',
     cueIdle: 'Prêt',
     originalTrace: 'Le tracé coloré montre quand la voix d’origine parle.',
+    micWindow: 'Le micro ne s’ouvre que sur ta réplique.',
+    autoAlign: 'Calage automatique',
+    autoAlignHelp:
+      'Ta prise est comparée à la voix d’origine et repositionnée au bon endroit. Décoche si tu préfères garder ton timing exact.',
+    alignedBy: (ms: number) =>
+      ms === 0
+        ? 'Ta prise tombait déjà juste.'
+        : ms > 0
+          ? `Tu avais ${ms} ms de retard, c’est rattrapé.`
+          : `Tu avais ${-ms} ms d’avance, c’est rattrapé.`,
+    alignUnsure:
+      'Le calage n’a rien trouvé de net sur cette prise. Elle est posée telle quelle.',
   },
 
   render: {
     title: 'Rendu en cours',
-    queued: 'En attente du worker — lance le script sur ton PC.',
+    queued: 'En attente du worker. Lance le script sur ton PC.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
     failed: 'Le rendu a échoué.',
     retry: 'Relancer le rendu',

@@ -41,6 +41,38 @@ export const WAVEFORM_BUCKETS = 480;
 export const TAKE_TAIL_CHECK_MS = 250;
 /** Au-dessus de ce niveau RMS, on considere qu'il y a du signal. */
 export const TAKE_SILENCE_RMS = 0.02;
+
+/* ── Enregistrement borne a la replique ──────────────────────────────
+ *
+ * Le micro ne tourne pas sur toute la fenetre du clip. Les deux secondes
+ * de marge servent a voir venir la replique et a l'anticiper ; y capter
+ * du son ne sert a rien et rapporte tout ce qu'on ne veut pas : une
+ * respiration, un raclement de gorge, la fin d'une phrase dite a la
+ * personne d'a cote.
+ *
+ * On garde quand meme un peu d'air des deux cotes : quelqu'un qui
+ * anticipe ne doit pas etre coupe, et la correlation a besoin de
+ * contexte pour trouver son pic.
+ */
+export const REC_LEAD_IN_MS = 700;
+export const REC_TAIL_MS = 900;
+
+/* ── Calage automatique ──────────────────────────────────────────────── */
+
+/** Pas de travail des enveloppes, en hertz. Vingt-cinq pas de 40 ms. */
+export const ALIGN_HZ = 25;
+
+/** Amplitude de recherche. Au-dela, ce n'est plus un retard, c'est une erreur. */
+export const ALIGN_MAX_LAG_MS = 900;
+
+/** En deca, le pic de correlation ne se detache pas assez pour decider. */
+export const ALIGN_MIN_CORRELATION = 0.42;
+
+/** Une prise plus faible que ca n'est pas une voix. */
+export const ALIGN_MIN_ENERGY = 0.008;
+
+/** Nombre de prises retenues pour lisser la mesure du decalage. */
+export const ALIGN_HISTORY = 5;
 /**
  * Derive toleree entre la video et le stem de fond avant resynchronisation.
  * La bande rythmo, elle, suit `video.currentTime` sans intermediaire.

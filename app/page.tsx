@@ -54,7 +54,7 @@ export default async function HomePage() {
   return (
     <div className="flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
       <div className="w-full max-w-5xl">
-        <SiteHeader signedIn={!!user} right={user ? <AccountMenu /> : null} />
+        <SiteHeader signedIn={!!user} right={user ? <AccountMenu /> : undefined} />
 
         <TvSet>
           <main className="space-y-12 sm:space-y-16">

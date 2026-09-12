@@ -80,7 +80,7 @@ export function SessionsClient({
       {crowded ? <Alert tone="warn">{t.sessions.storageWarning}</Alert> : null}
 
       {/* Les scenes, d'abord : c'est pour elles qu'on vient. */}
-      <section className="space-y-2">
+      <section className="space-y-3">
         {sessions.isLoading ? (
           <div className="flex items-center gap-2 text-sm text-text-faint">
             <Spinner />
@@ -89,7 +89,7 @@ export function SessionsClient({
         ) : null}
 
         {sessions.isSuccess && sessions.data.length === 0 ? (
-          <Card className="space-y-2 text-center">
+          <Card className="space-y-3 py-8 text-center">
             <p className="text-sm text-text-muted">{t.sessions.empty}</p>
             <Button variant="primary" onClick={() => router.push('/sessions/new')}>
               <Plus className="h-4 w-4" aria-hidden />
@@ -98,47 +98,53 @@ export function SessionsClient({
           </Card>
         ) : null}
 
-        {sessions.data?.map((session) => (
-          <Card
-            key={session.id}
-            className="flex flex-wrap items-center justify-between gap-3"
-          >
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href={`/s/${session.code}`}
-                  className="truncate font-bold hover:text-link hover:underline"
-                >
-                  {session.title ?? 'Scène sans titre'}
-                </Link>
-                <StatusBadge status={session.status} />
+        {/* Une liste, pas une pile de cadres : un filet sous chaque
+            rangee suffit a les separer. */}
+        <div className={sessions.data?.length ? 'panel px-4' : undefined}>
+          {sessions.data?.map((session) => (
+            <div
+              key={session.id}
+              className="row flex flex-wrap items-center justify-between gap-3 px-1 py-3"
+            >
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    href={`/s/${session.code}`}
+                    className="truncate font-bold hover:text-link hover:underline"
+                  >
+                    {session.title ?? 'Scène sans titre'}
+                  </Link>
+                  <StatusBadge status={session.status} />
+                </div>
+                <p className="mt-0.5 text-xs text-text-faint">
+                  <span className="font-mono uppercase">{session.code}</span>
+                  {session.duration_ms
+                    ? ` · ${formatDuration(session.duration_ms)}`
+                    : ''}
+                  {session.render_size_bytes
+                    ? ` · ${formatBytes(session.render_size_bytes)}`
+                    : ''}
+                </p>
               </div>
-              <p className="mt-0.5 text-xs text-text-faint">
-                <span className="font-mono uppercase">{session.code}</span>
-                {session.duration_ms ? ` · ${formatDuration(session.duration_ms)}` : ''}
-                {session.render_size_bytes
-                  ? ` · ${formatBytes(session.render_size_bytes)}`
-                  : ''}
-              </p>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <Button size="sm" onClick={() => router.push(`/s/${session.code}`)}>
-                {t.sessions.open}
-              </Button>
-              {session.host_id === userId ? (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label={`${t.common.delete} — ${session.title ?? session.code}`}
-                  onClick={() => setPendingDelete(session)}
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden />
+              <div className="flex items-center gap-2">
+                <Button size="sm" onClick={() => router.push(`/s/${session.code}`)}>
+                  {t.sessions.open}
                 </Button>
-              ) : null}
+                {session.host_id === userId ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`${t.common.delete} : ${session.title ?? session.code}`}
+                    onClick={() => setPendingDelete(session)}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden />
+                  </Button>
+                ) : null}
+              </div>
             </div>
-          </Card>
-        ))}
+          ))}
+        </div>
       </section>
 
       {/* Rejoindre : c'est une action, pas un reglage. Elle reste visible. */}
