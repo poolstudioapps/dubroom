@@ -3,6 +3,8 @@ import { t } from '@/config/strings';
 
 const REASONS: Record<string, string> = {
   not_allowed: t.auth.notAllowed,
+  expired:
+    'Ce lien a expiré ou a déjà servi. Les liens de connexion ne valent qu’une heure et qu’une fois. Demandes-en un nouveau.',
   exchange: 'Ce lien a expiré ou a déjà servi. Demande-en un nouveau.',
   missing_code: 'Ce lien est incomplet. Demande-en un nouveau.',
 };

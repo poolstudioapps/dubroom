@@ -23,13 +23,23 @@ import { HashSessionFallback } from './hash-fallback';
 export default async function AuthCallbackPage({
   searchParams,
 }: {
-  searchParams: Promise<{ code?: string; next?: string; error_description?: string }>;
+  searchParams: Promise<{
+    code?: string;
+    next?: string;
+    error?: string;
+    error_code?: string;
+    error_description?: string;
+  }>;
 }) {
   const params = await searchParams;
   const landing = safeLanding(params.next);
 
-  if (params.error_description) {
-    redirect('/auth/error?reason=exchange');
+  const failure = params.error_code ?? params.error;
+  if (failure || params.error_description) {
+    const expired = `${failure ?? ''} ${params.error_description ?? ''}`
+      .toLowerCase()
+      .includes('expired');
+    redirect(`/auth/error?reason=${expired ? 'expired' : 'exchange'}`);
   }
 
   if (params.code) {

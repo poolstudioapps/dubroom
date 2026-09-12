@@ -8,22 +8,31 @@ import { t } from '@/config/strings';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
 /**
- * Rattrape les liens en flot implicite.
+ * Rattrape ce que le serveur ne peut pas voir.
  *
- * Le jeton est dans le fragment de l'URL, donc invisible du serveur. On
- * le lit ici, on installe la session, on verifie la liste blanche, puis
- * on efface le fragment de l'historique pour qu'un jeton valide ne traine
- * pas dans la barre d'adresse ni dans un partage de lien.
+ * Supabase renvoie deux choses dans le FRAGMENT de l'URL, jamais transmis
+ * au serveur : le jeton quand tout va bien, et la raison de l'echec quand
+ * le lien a expire ou a deja servi. Sans ce composant, les deux cas
+ * finissaient sur le meme message trompeur, « ce lien est incomplet ».
  */
 export function HashSessionFallback({ landing }: { landing: string }) {
   const router = useRouter();
 
   useEffect(() => {
-    const hash = window.location.hash.replace(/^#/, '');
-    const params = new URLSearchParams(hash);
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+    // Echec annonce par Supabase : on rend la vraie raison.
+    const errorCode = params.get('error_code') ?? params.get('error');
+    if (errorCode) {
+      const expired =
+        errorCode.includes('expired') ||
+        (params.get('error_description') ?? '').toLowerCase().includes('expired');
+      router.replace(`/auth/error?reason=${expired ? 'expired' : 'exchange'}`);
+      return;
+    }
+
     const accessToken = params.get('access_token');
     const refreshToken = params.get('refresh_token');
-
     if (!accessToken || !refreshToken) {
       router.replace('/auth/error?reason=missing_code');
       return;

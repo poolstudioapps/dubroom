@@ -27,7 +27,15 @@ export async function GET(request: NextRequest) {
   const supabase = await supabaseServer();
   const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
   if (error) {
-    return NextResponse.redirect(`${origin}/auth/error?reason=exchange`);
+    // Un jeton perime est le cas courant, pas une panne : on le nomme.
+    const message = error.message.toLowerCase();
+    const expired =
+      message.includes('expired') ||
+      message.includes('invalid') ||
+      message.includes('not found');
+    return NextResponse.redirect(
+      `${origin}/auth/error?reason=${expired ? 'expired' : 'exchange'}`,
+    );
   }
 
   const { data: allowed } = await supabase.rpc('app_is_allowed');

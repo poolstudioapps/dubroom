@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
+import { PasswordCard } from '@/components/password-card';
 import { StatusBadge } from '@/components/status-badge';
 import { Alert, Button, Card, Dialog, Input, Progress, Spinner } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES, STORAGE_WARN_RATIO } from '@/config/constants';
@@ -78,28 +79,36 @@ export function SessionsClient({
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
 
-      <Card className="space-y-3">
-        <h2 className="text-sm font-medium">{t.sessions.joinByCode}</h2>
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setError(null);
-            join.mutate();
-          }}
-        >
-          <Input
-            value={code}
-            onChange={(e) => setCode(normalizeSessionCode(e.target.value))}
-            placeholder={t.sessions.codePlaceholder}
-            maxLength={6}
-            className="max-w-40 font-mono tracking-[0.3em] uppercase"
-          />
-          <Button type="submit" loading={join.isPending} disabled={code.length < 6}>
-            Rejoindre
-          </Button>
-        </form>
-      </Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="space-y-3">
+          <h2 className="text-sm font-bold">{t.sessions.joinByCode}</h2>
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setError(null);
+              join.mutate();
+            }}
+          >
+            <Input
+              value={code}
+              onChange={(e) => setCode(normalizeSessionCode(e.target.value))}
+              placeholder={t.sessions.codePlaceholder}
+              maxLength={6}
+              className="max-w-40 font-mono tracking-[0.3em] uppercase"
+            />
+            <Button
+              type="submit"
+              loading={join.isPending}
+              disabled={code.length < 6}
+            >
+              Rejoindre
+            </Button>
+          </form>
+        </Card>
+
+        <PasswordCard />
+      </div>
 
       <section className="space-y-2">
         {sessions.isLoading ? (

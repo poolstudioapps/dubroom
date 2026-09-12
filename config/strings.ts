@@ -34,6 +34,23 @@ export const t = {
     notAllowed:
       'Cette adresse n’est pas sur la liste des invités. Demande à l’hôte de t’ajouter.',
     signOut: 'Se déconnecter',
+
+    signIn: 'Se connecter',
+    passwordLabel: 'Ton mot de passe',
+    badCredentials: 'Adresse ou mot de passe incorrect.',
+    rateLimited:
+      'Trop de liens demandés dans l’heure. Demande à l’hôte de t’en envoyer un directement, ou connecte-toi avec ton mot de passe.',
+    switchToPassword: 'J’ai un mot de passe, je me connecte directement',
+    switchToLink: 'Je n’ai pas de mot de passe, envoyez-moi un lien',
+    inviteOnly: 'L’accès est réservé aux adresses invitées.',
+
+    passwordSectionTitle: 'Mot de passe',
+    passwordSectionHelp:
+      'Définis-en un pour te reconnecter sans passer par ta boîte mail.',
+    passwordNew: 'Nouveau mot de passe',
+    passwordSave: 'Enregistrer le mot de passe',
+    passwordSaved: 'Mot de passe enregistré. Tu peux l’utiliser dès la prochaine connexion.',
+    passwordTooShort: 'Huit caractères au minimum.',
   },
 
   sessions: {
