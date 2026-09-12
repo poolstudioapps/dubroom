@@ -365,7 +365,7 @@ export function StudioScreen() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <header className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span
@@ -398,17 +398,20 @@ export function StudioScreen() {
           </div>
         </header>
 
-        <div className="overflow-hidden rounded-card border border-border bg-black">
+        {/* Hauteur bornee : pendant une prise il faut voir l'image ET la
+            bande rythmo ET les commandes. Une video pleine hauteur
+            repoussait tout le reste sous la ligne de flottaison. */}
+        <div className="flex max-h-[42vh] items-center justify-center overflow-hidden rounded-card border-2 border-bezel-dark bg-black">
           {media.data?.video ? (
             <video
               ref={videoRef}
               src={media.data.video}
               playsInline
               preload="auto"
-              className="aspect-video w-full"
+              className="max-h-[42vh] w-full object-contain"
             />
           ) : (
-            <div className="flex aspect-video items-center justify-center">
+            <div className="flex aspect-video w-full items-center justify-center">
               <Spinner />
             </div>
           )}

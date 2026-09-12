@@ -160,7 +160,7 @@ export function LobbyScreen() {
         </section>
       </div>
 
-      <aside className="space-y-4">
+      <aside className="order-first space-y-4 lg:order-none">
         <Card className="space-y-3">
           <div className="space-y-1">
             <p className="text-xs text-text-faint">{t.lobby.shareCode}</p>

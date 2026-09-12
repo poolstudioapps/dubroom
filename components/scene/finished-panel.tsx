@@ -28,6 +28,7 @@ export function FinishedPanel({
   const rows = (progress.data ?? []).filter((row) => !row.is_kicked);
   const others = rows.filter((row) => row.participant_id !== myParticipantId);
   const waiting = others.filter((row) => row.done < row.total);
+  const everyoneDone = rows.length > 0 && rows.every((row) => row.done >= row.total);
 
   return (
     <Card className="space-y-5 py-8 text-center">
@@ -44,7 +45,11 @@ export function FinishedPanel({
 
       <div className="mx-auto max-w-md space-y-2 text-left">
         <h3 className="text-sm font-bold">
-          {waiting.length > 0 ? t.studio.waitingFor : t.studio.everyoneDone}
+          {waiting.length > 0
+            ? t.studio.waitingFor
+            : everyoneDone
+              ? t.studio.everyoneDone
+              : t.studio.othersDone}
         </h3>
 
         {progress.isLoading ? <Spinner /> : null}

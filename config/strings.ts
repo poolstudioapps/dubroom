@@ -224,6 +224,7 @@ export const t = {
     playerProgress: (name: string, done: number, total: number) =>
       `${name} (${done}/${total})`,
     everyoneDone: 'Tout le monde a fini. L’hôte peut lancer le rendu.',
+    othersDone: 'Les autres ont fini. Il ne manque plus que toi.',
     launchRender: 'Lancer le rendu',
     renderBlocked: 'Il reste des clips sans prise validée.',
     kick: 'Exclure ce joueur',
