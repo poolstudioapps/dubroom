@@ -1,0 +1,282 @@
+'use client';
+
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Clapperboard, UserMinus, Wand2 } from 'lucide-react';
+
+import { useSceneCtx } from '@/components/scene-page';
+import { Alert, Badge, Button, Card, Dialog, Progress } from '@/components/ui';
+import {
+  MIC_OFFSET_MAX_MS,
+  MIC_OFFSET_MIN_MS,
+  MIC_OFFSET_STEP_MS,
+  MIC_OFFSET_STORAGE_KEY,
+} from '@/config/constants';
+import { t } from '@/config/strings';
+import {
+  enqueueRender,
+  kickParticipant,
+  reassignCharacter,
+  setMicOffset,
+} from '@/lib/actions';
+import { calibrateMicOffset } from '@/lib/audio/calibration';
+import { useSessionProgress } from '@/lib/data';
+import { humanizeError } from '@/lib/errors';
+import type { ParticipantRow } from '@/lib/supabase/database.types';
+
+export function StudioSidebar({
+  backing,
+  onBacking,
+  micOffset,
+  onMicOffset,
+  done,
+  total,
+}: {
+  backing: number;
+  onBacking: (value: number) => void;
+  micOffset: number;
+  onMicOffset: (value: number) => void;
+  done: number;
+  total: number;
+}) {
+  const { session, characters, participants, me, isHost, refetch } = useSceneCtx();
+  const progress = useSessionProgress(session.id);
+
+  const [error, setError] = useState<string | null>(null);
+  const [calibrationMsg, setCalibrationMsg] = useState<string | null>(null);
+  const [pendingKick, setPendingKick] = useState<ParticipantRow | null>(null);
+
+  const persistOffset = useMutation({
+    mutationFn: (value: number) => setMicOffset(session.id, value),
+    onError: (e) => setError(humanizeError(e)),
+  });
+
+  const calibrate = useMutation({
+    mutationFn: calibrateMicOffset,
+    onSuccess: (value) => {
+      applyOffset(value);
+      setCalibrationMsg(t.studio.calibrationDone(value));
+    },
+    onError: () => setCalibrationMsg(t.studio.calibrationFailed),
+  });
+
+  const act = useMutation({
+    mutationFn: (fn: () => Promise<unknown>) => fn(),
+    onSuccess: () => {
+      setPendingKick(null);
+      refetch();
+      void progress.refetch();
+    },
+    onError: (e) => setError(humanizeError(e)),
+  });
+
+  function applyOffset(value: number) {
+    onMicOffset(value);
+    window.localStorage.setItem(MIC_OFFSET_STORAGE_KEY, String(value));
+    persistOffset.mutate(value);
+  }
+
+  const rows = (progress.data ?? []).filter((row) => !row.is_kicked);
+  const others = rows.filter((row) => row.participant_id !== me?.id);
+  const waiting = others.filter((row) => row.done < row.total);
+  const missing = rows.reduce((sum, row) => sum + (row.total - row.done), 0);
+  const iAmDone = total > 0 && done === total;
+
+  return (
+    <aside className="space-y-4">
+      <Card className="space-y-4">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-sm">
+            <span>{t.studio.backingVolume}</span>
+            <span className="text-text-faint">{Math.round(backing * 100)} %</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={backing}
+            onChange={(e) => onBacking(Number(e.target.value))}
+            className="w-full"
+            aria-label={t.studio.backingVolume}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-sm">
+            <span>{t.studio.micOffset}</span>
+            <span className="text-text-faint">{micOffset} ms</span>
+          </div>
+          <input
+            type="range"
+            min={MIC_OFFSET_MIN_MS}
+            max={MIC_OFFSET_MAX_MS}
+            step={MIC_OFFSET_STEP_MS}
+            value={micOffset}
+            onChange={(e) => onMicOffset(Number(e.target.value))}
+            onPointerUp={(e) => applyOffset(Number(e.currentTarget.value))}
+            onKeyUp={(e) => applyOffset(Number(e.currentTarget.value))}
+            className="w-full"
+            aria-label={t.studio.micOffset}
+          />
+          <p className="text-xs text-text-faint">{t.studio.micOffsetHelp}</p>
+
+          <Button
+            size="sm"
+            variant="ghost"
+            className="w-full"
+            loading={calibrate.isPending}
+            onClick={() => {
+              setCalibrationMsg(null);
+              calibrate.mutate();
+            }}
+          >
+            <Wand2 className="h-3.5 w-3.5" aria-hidden />
+            {calibrate.isPending ? t.studio.calibrating : t.studio.calibrate}
+          </Button>
+          {calibrationMsg ? (
+            <p className="text-xs text-text-muted">{calibrationMsg}</p>
+          ) : null}
+        </div>
+      </Card>
+
+      <Card className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span>{t.studio.myClips}</span>
+          <span className="text-text-faint">
+            {done} / {total}
+          </span>
+        </div>
+        <Progress value={total > 0 ? (done / total) * 100 : 0} />
+
+        {iAmDone ? (
+          <div className="space-y-1 pt-1">
+            <p className="text-sm font-medium">{t.studio.finishedTitle}</p>
+            <p className="text-xs text-text-faint">{t.studio.finishedBody}</p>
+          </div>
+        ) : null}
+      </Card>
+
+      <Card className="space-y-2">
+        <h2 className="text-sm font-medium">
+          {waiting.length > 0 ? t.studio.waitingFor : t.studio.everyoneDone}
+        </h2>
+        <ul className="space-y-1.5">
+          {others.map((row) => (
+            <li
+              key={row.participant_id}
+              className="flex items-center justify-between gap-2 text-sm"
+            >
+              <span className="truncate">
+                {t.studio.playerProgress(row.display_name, row.done, row.total)}
+              </span>
+              <div className="flex items-center gap-1">
+                <Badge tone={row.done >= row.total ? 'ok' : 'neutral'}>
+                  {row.done >= row.total ? 'Fini' : 'En cours'}
+                </Badge>
+                {isHost && row.done < row.total ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={t.studio.kick}
+                    title={t.studio.kick}
+                    onClick={() =>
+                      setPendingKick(
+                        participants.find((p) => p.id === row.participant_id) ??
+                          null,
+                      )
+                    }
+                  >
+                    <UserMinus className="h-4 w-4" />
+                  </Button>
+                ) : null}
+              </div>
+            </li>
+          ))}
+          {others.length === 0 ? (
+            <li className="text-xs text-text-faint">
+              Tu es seul sur cette scène.
+            </li>
+          ) : null}
+        </ul>
+      </Card>
+
+      {isHost ? (
+        <Card className="space-y-2">
+          <Button
+            variant="primary"
+            className="w-full"
+            disabled={missing > 0}
+            loading={act.isPending}
+            onClick={() => {
+              setError(null);
+              act.mutate(() => enqueueRender(session.id));
+            }}
+          >
+            <Clapperboard className="h-4 w-4" aria-hidden />
+            {t.studio.launchRender}
+          </Button>
+          {missing > 0 ? <Alert tone="warn">{t.studio.renderBlocked}</Alert> : null}
+        </Card>
+      ) : null}
+
+      {error ? <Alert tone="danger">{error}</Alert> : null}
+
+      <Dialog
+        open={!!pendingKick}
+        onClose={() => setPendingKick(null)}
+        title={t.studio.kick}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setPendingKick(null)}>
+              {t.common.cancel}
+            </Button>
+            <Button
+              variant="danger"
+              loading={act.isPending}
+              onClick={() =>
+                pendingKick && act.mutate(() => kickParticipant(pendingKick.id))
+              }
+            >
+              {t.studio.kick}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <p>{pendingKick ? t.studio.kickConfirm(pendingKick.display_name) : ''}</p>
+
+          <div className="space-y-1.5">
+            <p className="text-xs text-text-faint">{t.studio.reassignInstead}</p>
+            {characters
+              .filter((c) => c.assigned_to === pendingKick?.id)
+              .map((character) => (
+                <div key={character.id} className="flex items-center gap-2">
+                  <span className="flex-1 truncate text-sm">{character.name}</span>
+                  <select
+                    className="h-8 rounded-lg border border-border bg-surface-sunken px-2 text-xs"
+                    defaultValue=""
+                    aria-label={`Réassigner ${character.name}`}
+                    onChange={(e) => {
+                      const target = e.target.value;
+                      if (!target) return;
+                      act.mutate(() => reassignCharacter(character.id, target));
+                    }}
+                  >
+                    <option value="">Choisir un joueur…</option>
+                    {participants
+                      .filter((p) => !p.is_kicked && p.id !== pendingKick?.id)
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.display_name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              ))}
+          </div>
+        </div>
+      </Dialog>
+    </aside>
+  );
+}

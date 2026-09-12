@@ -1,0 +1,76 @@
+import { t } from '@/config/strings';
+
+/**
+ * Les fonctions Postgres levent des codes stables (`HOST_ONLY`,
+ * `CHARACTER_TAKEN`…). On les traduit ici, une fois, plutot que de
+ * laisser fuiter un message SQL dans l'interface.
+ */
+const MESSAGES: Record<string, string> = {
+  NOT_ALLOWED: t.auth.notAllowed,
+  SESSION_NOT_FOUND: t.sessions.codeNotFound,
+  SESSION_LOCKED: t.errors.sessionLocked,
+  HOST_ONLY: t.errors.hostOnly,
+  FORBIDDEN: t.errors.forbidden,
+  NOT_A_PARTICIPANT: t.errors.forbidden,
+  NOT_YOUR_CHARACTER: t.errors.forbidden,
+  CHARACTER_NOT_FOUND: t.errors.notFound,
+  CHARACTER_TAKEN: 'Ce personnage vient d’être pris par quelqu’un d’autre.',
+  CHARACTERS_UNASSIGNED: t.lobby.startBlockedCharacters,
+  PLAYERS_NOT_READY: t.lobby.startBlockedReady,
+  TAKES_MISSING: t.studio.renderBlocked,
+  CANNOT_KICK_HOST: 'L’hôte ne peut pas être exclu.',
+  CLIP_NOT_FOUND: t.errors.notFound,
+  LINE_NOT_FOUND: t.errors.notFound,
+  TAKE_NOT_FOUND: t.errors.notFound,
+  PARTICIPANT_NOT_FOUND: t.errors.notFound,
+  EMPTY_NAME: 'Le nom ne peut pas être vide.',
+  CROSS_SESSION: 'Ces éléments n’appartiennent pas à la même scène.',
+};
+
+/** Erreur porteuse d'un message deja lisible par l'utilisateur. */
+export class AppError extends Error {
+  readonly code: string;
+  readonly status: number;
+
+  constructor(code: string, message?: string, status = 400) {
+    super(message ?? MESSAGES[code] ?? t.common.unknownError);
+    this.code = code;
+    this.status = status;
+  }
+}
+
+/** Traduit une erreur Postgres/PostgREST en message francais. */
+export function humanizeError(error: unknown): string {
+  if (error instanceof AppError) return error.message;
+
+  const raw =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? String((error as { message: unknown }).message)
+      : String(error);
+
+  // Les exceptions plpgsql arrivent sous la forme `CODE: details`.
+  const code = raw.split(':')[0]?.trim() ?? '';
+  if (MESSAGES[code]) return MESSAGES[code];
+
+  // Violation d'unicite du code de session.
+  if (raw.includes('sessions_code_key')) {
+    return 'Ce code est déjà pris, réessaie.';
+  }
+
+  return raw || t.common.unknownError;
+}
+
+/** Statut HTTP a renvoyer pour une erreur donnee. */
+export function errorStatus(error: unknown): number {
+  if (error instanceof AppError) return error.status;
+  const raw =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? String((error as { message: unknown }).message)
+      : '';
+  const code = raw.split(':')[0]?.trim() ?? '';
+  if (['HOST_ONLY', 'FORBIDDEN', 'NOT_A_PARTICIPANT', 'NOT_YOUR_CHARACTER', 'NOT_ALLOWED'].includes(code)) {
+    return 403;
+  }
+  if (code.endsWith('_NOT_FOUND')) return 404;
+  return 400;
+}

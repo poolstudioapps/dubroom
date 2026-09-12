@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+/*
+ * DubRoom — jetons de theme.
+ * Aucune couleur n'est ecrite en dur dans un composant : tout passe par
+ * ces variables (PRD §18). Les couleurs de personnage sont nommees
+ * `character-1..8` et referencees en base par leur token, jamais par un hex.
+ */
+
+@theme {
+  --color-ink: oklch(0.16 0.012 275);
+  --color-surface: oklch(0.2 0.014 275);
+  --color-surface-raised: oklch(0.25 0.016 275);
+  --color-surface-sunken: oklch(0.13 0.012 275);
+  --color-border: oklch(0.32 0.018 275);
+  --color-border-strong: oklch(0.42 0.022 275);
+
+  --color-text: oklch(0.96 0.004 275);
+  --color-text-muted: oklch(0.72 0.012 275);
+  --color-text-faint: oklch(0.55 0.012 275);
+
+  --color-accent: oklch(0.72 0.17 22);
+  --color-accent-hover: oklch(0.66 0.18 22);
+  --color-accent-ink: oklch(0.15 0.02 22);
+
+  --color-record: oklch(0.63 0.23 25);
+  --color-ok: oklch(0.72 0.15 155);
+  --color-warn: oklch(0.8 0.15 78);
+  --color-danger: oklch(0.63 0.22 20);
+
+  --color-character-1: oklch(0.74 0.15 250);
+  --color-character-2: oklch(0.76 0.16 145);
+  --color-character-3: oklch(0.8 0.15 75);
+  --color-character-4: oklch(0.72 0.17 340);
+  --color-character-5: oklch(0.78 0.13 195);
+  --color-character-6: oklch(0.74 0.16 30);
+  --color-character-7: oklch(0.76 0.14 290);
+  --color-character-8: oklch(0.8 0.12 110);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, monospace;
+
+  --radius-card: 0.75rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklch, var(--color-accent) 40%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Le studio se joue au clavier autant qu'a la souris : les curseurs
+     de volume et de decalage doivent rester saisissables. */
+  input[type='range'] {
+    accent-color: var(--color-accent);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

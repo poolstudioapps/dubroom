@@ -1,0 +1,99 @@
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+
+export const WORKER_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
+
+dotenv.config({ path: path.join(WORKER_ROOT, '.env'), quiet: true });
+
+const isWindows = process.platform === 'win32';
+
+function str(name: string, fallback = ''): string {
+  return process.env[name]?.trim() || fallback;
+}
+
+function int(name: string, fallback: number): number {
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+/**
+ * Resout un chemin de binaire. Tout passe par les variables
+ * d'environnement : `.exe` n'apparait nulle part ailleurs que dans le
+ * bootstrap et le `.env`, pour que le meme code tourne sur un VPS Linux
+ * sans modification (PRD §20.1.10).
+ */
+function binary(name: string, fallbackName: string): string {
+  const configured = str(name);
+  if (configured) {
+    return path.isAbsolute(configured)
+      ? configured
+      : path.resolve(WORKER_ROOT, configured);
+  }
+  return path.join(WORKER_ROOT, 'bin', isWindows ? `${fallbackName}.exe` : fallbackName);
+}
+
+export const config = {
+  supabaseUrl: str('SUPABASE_URL'),
+  supabaseServiceKey: str('SUPABASE_SERVICE_ROLE_KEY'),
+  elevenLabsKey: str('ELEVENLABS_API_KEY'),
+
+  separationMode: str('SEPARATION_MODE', 'demucs') as 'demucs' | 'elevenlabs',
+
+  workerId: str('WORKER_ID', os.hostname()),
+  workDir: path.isAbsolute(str('WORK_DIR', './work'))
+    ? str('WORK_DIR')
+    : path.resolve(WORKER_ROOT, str('WORK_DIR', './work')),
+
+  ffmpeg: binary('FFMPEG_PATH', 'ffmpeg'),
+  ffprobe: binary('FFPROBE_PATH', 'ffprobe'),
+  ytdlp: binary('YTDLP_PATH', 'yt-dlp'),
+
+  python: str('PYTHON_PATH', isWindows ? 'python' : 'python3'),
+  demucsModel: str('DEMUCS_MODEL', 'htdemucs'),
+  demucsDevice: str('DEMUCS_DEVICE', 'cpu'),
+  demucsJobs: str('DEMUCS_JOBS', '2'),
+  demucsSegment: str('DEMUCS_SEGMENT', '7'),
+
+  maxVideoDurationMs: int('MAX_VIDEO_DURATION_MS', 600_000),
+  maxUploadBytes: int('MAX_UPLOAD_BYTES', 2_147_483_648),
+  pollIntervalMs: int('JOB_POLL_INTERVAL_MS', 2_000),
+  maxAttempts: int('JOB_MAX_ATTEMPTS', 3),
+  staleMinutes: int('JOB_STALE_MINUTES', 10),
+  maxConcurrentJobs: int('MAX_CONCURRENT_JOBS', 1),
+  workRetentionDays: int('WORK_RETENTION_DAYS', 7),
+} as const;
+
+/** Timeouts par outil (PRD §20.2). */
+export const TIMEOUTS = {
+  ffprobe: 60_000,
+  encode: 15 * 60_000,
+  extract: 10 * 60_000,
+  mix: 20 * 60_000,
+  mux: 10 * 60_000,
+  ytdlp: 5 * 60_000,
+  demucs: 30 * 60_000,
+  api: 10 * 60_000,
+} as const;
+
+export function assertConfig(): void {
+  const required: [string, string][] = [
+    ['SUPABASE_URL', config.supabaseUrl],
+    ['SUPABASE_SERVICE_ROLE_KEY', config.supabaseServiceKey],
+    // Scribe est utilise quel que soit le mode de separation, la cle
+    // ElevenLabs est donc toujours requise.
+    ['ELEVENLABS_API_KEY', config.elevenLabsKey],
+  ];
+
+  const missing = required.filter(([, value]) => !value).map(([name]) => name);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Configuration incomplete. Renseigne ${[...new Set(missing)].join(', ')} dans worker/.env`,
+    );
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "dubroom-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Worker local DubRoom : ingestion, separation, transcription, rendu.",
+  "scripts": {
+    "start": "node worker.js",
+    "check": "node scripts/bootstrap.mjs --check",
+    "setup": "node scripts/bootstrap.mjs",
+    "typecheck": "tsc --noEmit",
+    "selftest": "tsx scripts/selftest-mix.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
+    "dotenv": "^17.2.2",
+    "tsx": "^4.20.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.2"
+  }
+}
