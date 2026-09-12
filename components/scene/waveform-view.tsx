@@ -101,7 +101,7 @@ export function WaveformView({
       // Voix d'origine, en aplat derriere : le repere de timing.
       if (original) {
         ctx.fillStyle = charColor;
-        ctx.globalAlpha = 0.35;
+        ctx.globalAlpha = 0.5;
         ctx.beginPath();
         ctx.moveTo(0, middle);
         for (let i = 0; i < original.length; i += 1) {

@@ -60,16 +60,20 @@
   --color-led: oklch(0.6 0.24 27);
 
   /* ── Personnages ──────────────────────────────────────────────────── */
-  /* Choisies pour rester lisibles sur la plaque claire ET sur la scene
-     noire : la bande rythmo et les pastilles partagent ces valeurs. */
-  --color-character-1: oklch(0.6 0.19 255);
-  --color-character-2: oklch(0.62 0.17 155);
-  --color-character-3: oklch(0.66 0.17 60);
-  --color-character-4: oklch(0.6 0.22 350);
-  --color-character-5: oklch(0.63 0.14 205);
-  --color-character-6: oklch(0.62 0.2 35);
-  --color-character-7: oklch(0.58 0.2 295);
-  --color-character-8: oklch(0.64 0.16 120);
+  /* Vives, et calibrees pour la SCENE NOIRE : c'est la que le texte
+     defile et qu'il faut le reconnaitre d'un coup d'oeil. Sur les
+     plaques claires, ces memes couleurs ne servent qu'a des pastilles et
+     des filets ; la ou elles portent du texte, on les assombrit sur
+     place avec un color-mix plutot que d'entretenir deux palettes qui
+     finiraient par diverger. */
+  --color-character-1: #4da3ff;
+  --color-character-2: #3ddc84;
+  --color-character-3: #ffd23f;
+  --color-character-4: #ff5cb8;
+  --color-character-5: #35e0e0;
+  --color-character-6: #ff8a3d;
+  --color-character-7: #b07cff;
+  --color-character-8: #b8e534;
 
   --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;

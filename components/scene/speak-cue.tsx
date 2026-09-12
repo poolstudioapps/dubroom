@@ -64,6 +64,8 @@ export function SpeakCue({
   }, [active, clip.speech_start_ms, clip.speech_end_ms, videoRef]);
 
   const color = characterColorVar(character.color);
+  // Meme couleur, assombrie : vive sur la scene noire, lisible ici.
+  const inkColor = `color-mix(in oklch, ${color} 72%, black)`;
 
   return (
     <div
@@ -87,8 +89,8 @@ export function SpeakCue({
           {t.studio.youAreDubbing}
         </p>
         <p
-          className="truncate text-xl leading-tight font-semibold"
-          style={{ color }}
+          className="truncate text-xl leading-tight font-bold"
+          style={{ color: inkColor }}
         >
           {character.name}
         </p>

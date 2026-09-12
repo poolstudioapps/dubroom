@@ -131,16 +131,17 @@ export function RythmoBand({
           const isCurrent = word.start_ms <= nowMs && word.end_ms >= nowMs;
 
           ctx.save();
-          ctx.fillStyle = color;
+          // Le texte reste franchement lisible meme quand il est passe :
+          // c'est un repere de lecture, pas une decoration.
           ctx.globalAlpha = isActive
             ? isCurrent
               ? 1
               : isPast
-                ? 0.4
-                : 0.9
+                ? 0.55
+                : 0.95
             : isPast
-              ? 0.2
-              : 0.38;
+              ? 0.35
+              : 0.55;
 
           // Le mot est comprime pour tenir dans sa duree : c'est ce qui
           // fait qu'on peut lire au rythme du texte sans le devancer.
@@ -148,6 +149,16 @@ export function RythmoBand({
           const scale = natural > slot ? slot / natural : 1;
           ctx.translate(x, y);
           ctx.scale(scale, 1);
+
+          // Liseré sombre sous la lettre : une couleur claire sur une
+          // image claire resterait sinon illisible par endroits, et la
+          // bande passe devant la video.
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = isActive ? 5 : 3;
+          ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+          ctx.strokeText(word.w, 0, 0);
+
+          ctx.fillStyle = color;
           ctx.fillText(word.w, 0, 0);
           ctx.restore();
 

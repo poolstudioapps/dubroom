@@ -13,6 +13,8 @@
  * resultat est memorise, la resolution coute un reflow.
  */
 
+import { CHARACTER_COLOR_FALLBACK } from '@/config/constants';
+
 const cache = new Map<string, string>();
 
 export function resolveCssColor(value: string, fallback = '#ffffff'): string {
@@ -34,9 +36,17 @@ export function resolveCssColor(value: string, fallback = '#ffffff'): string {
   return result;
 }
 
-/** Couleur concrete d'un personnage, prete pour le canvas. */
+/**
+ * Couleur concrete d'un personnage, prete pour le canvas.
+ *
+ * Le repli est propre a chaque personnage, et non commun : si la
+ * resolution echoue, mieux vaut huit couleurs correctes qu'une seule
+ * couleur pour tout le monde — ou pire, le noir par defaut du canvas sur
+ * un fond noir.
+ */
 export function resolveCharacterColor(token: string): string {
-  return resolveCssColor(`var(--color-${token})`, '#9aa4ff');
+  const fallback = CHARACTER_COLOR_FALLBACK[token] ?? '#4da3ff';
+  return resolveCssColor(`var(--color-${token})`, fallback);
 }
 
 /** Vide le cache si le theme change en cours de session. */

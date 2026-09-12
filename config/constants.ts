@@ -89,6 +89,27 @@ export const CHARACTER_COLOR_TOKENS = [
 
 export type CharacterColorToken = (typeof CHARACTER_COLOR_TOKENS)[number];
 
+/**
+ * Les memes couleurs, en dur.
+ *
+ * Le canvas ne comprend pas les variables CSS : il faut les resoudre, et
+ * cette resolution peut echouer — feuille pas encore appliquee, contexte
+ * detache, navigateur recalcitrant. Sans repli par personnage, tout le
+ * monde retombait sur une seule couleur, voire sur le noir par defaut du
+ * canvas : le texte disparaissait. Ces valeurs doivent rester identiques
+ * a celles de globals.css.
+ */
+export const CHARACTER_COLOR_FALLBACK: Record<string, string> = {
+  'character-1': '#4da3ff',
+  'character-2': '#3ddc84',
+  'character-3': '#ffd23f',
+  'character-4': '#ff5cb8',
+  'character-5': '#35e0e0',
+  'character-6': '#ff8a3d',
+  'character-7': '#b07cff',
+  'character-8': '#b8e534',
+};
+
 export function characterColorToken(index: number): CharacterColorToken {
   const token = CHARACTER_COLOR_TOKENS[index % CHARACTER_COLOR_TOKENS.length];
   // CHARACTER_COLOR_TOKENS n'est jamais vide : le fallback n'existe que pour le typage.
