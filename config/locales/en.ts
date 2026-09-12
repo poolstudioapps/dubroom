@@ -151,18 +151,18 @@ export const en = {
     privateBody:
       'DubRoom is for invited people only. No public catalogue, no sharing outside the circle, no search indexing. That is what makes it workable: we dub extracts of protected works, among friends, without publishing anything.',
     slides: {
-      importTitle: 'Import a scene',
+      importTitle: 'Pick the scene you know by heart',
       importBody:
-        'A video file, or a link. The soundtrack is split in two: the voices on one side, the music and atmosphere on the other. That split comes from the scene itself, so it lines up with the picture to the millisecond.',
-      charactersTitle: 'Sort out the characters',
+        'A link, or a file. By the time you have agreed on the roles, the scene is already cut up, the voices split from the music, every line pinned to the millisecond. The thankless part is done before you have finished choosing.',
+      charactersTitle: 'Hand out the parts like a real casting session',
       charactersBody:
-        'The lines are transcribed and assigned automatically. The host corrects it in a few clicks: rename, merge two voices that were confused, reassign a line. Then the lobby opens and everyone picks a role.',
-      rythmoTitle: 'Dub along the scrolling band',
+        'The characters are already detected and named. Each of you claims one with a click. Any part nobody wants keeps its original voice, and the mix will not give it away.',
+      rythmoTitle: 'The text scrolls past, you just play',
       rythmoBody:
-        'The text scrolls under a playhead, the way it does in a real dubbing studio. While recording you only hear the music, never the original voices: the picture and the text are enough to land on time.',
-      renderTitle: 'Discover the result',
+        'Like a real studio, the lines run under a playhead. No timing to manage, no editing to learn: you read, and you land on time. A bad take is redone in two seconds, as many times as you like.',
+      renderTitle: 'And then comes the moment you press play',
       renderBody:
-        'Everything is mixed back together: the original picture, the original music, and your voices in place of theirs. An MP4 that plays anywhere, with no burnt-in subtitles, and that you keep.',
+        'Nobody has heard the others. The scene rolls again, the original picture and music untouched, and it is your voices coming out of the characters. That one minute is what everything else is for.',
     },
   },
 

@@ -149,18 +149,18 @@ export const de = {
     privateBody:
       'DubRoom ist nur für eingeladene Personen. Kein öffentlicher Katalog, kein Teilen außerhalb des Kreises, keine Indexierung. Genau das macht die Sache tragfähig: wir synchronisieren Ausschnitte geschützter Werke, unter Freunden, ohne etwas zu verbreiten.',
     slides: {
-      importTitle: 'Eine Szene importieren',
+      importTitle: 'Nehmt die Szene, die ihr auswendig könnt',
       importBody:
-        'Eine Videodatei oder ein Link. Der Ton wird in zwei Teile getrennt: die Stimmen auf der einen Seite, Musik und Atmosphäre auf der anderen. Diese Trennung stammt aus der Szene selbst und sitzt deshalb bildgenau.',
-      charactersTitle: 'Die Figuren sortieren',
+        'Ein Link oder eine Datei. Bis ihr euch über die Rollen einig seid, ist die Szene längst zerlegt, die Stimmen von der Musik getrennt, jeder Satz auf die Millisekunde festgenagelt. Die undankbare Arbeit ist erledigt, bevor ihr fertig ausgewählt habt.',
+      charactersTitle: 'Verteilt die Rollen wie bei einem echten Casting',
       charactersBody:
-        'Die Sätze werden transkribiert und automatisch zugeordnet. Der Gastgeber korrigiert mit wenigen Klicks: umbenennen, zwei verwechselte Stimmen zusammenführen, einen Satz neu zuordnen. Dann öffnet er die Lobby und jeder wählt seine Rolle.',
-      rythmoTitle: 'Am Laufband synchronisieren',
+        'Die Figuren sind schon erkannt und benannt. Jeder schnappt sich seine mit einem Klick. Was niemand will, behält die Originalstimme, und im Mix fällt es nicht auf.',
+      rythmoTitle: 'Der Text läuft durch, ihr spielt einfach',
       rythmoBody:
-        'Der Text läuft unter einem Abspielkopf durch, wie in einem echten Synchronstudio. Beim Aufnehmen hörst du nur die Musik, nie die Originalstimmen: Bild und Text reichen, um zu treffen.',
-      renderTitle: 'Das Ergebnis entdecken',
+        'Wie in einem echten Studio ziehen die Sätze unter einem Abspielkopf vorbei. Nichts auszurichten, kein Schnittprogramm zu lernen: du liest, und du triffst. Eine misslungene Aufnahme ist in zwei Sekunden wiederholt, so oft du willst.',
+      renderTitle: 'Und dann kommt der Moment, in dem ihr auf Play drückt',
       renderBody:
-        'Alles wird wieder zusammengemischt: das Originalbild, die Originalmusik und eure Stimmen statt ihrer. Eine MP4, die überall läuft, ohne eingebrannte Untertitel, und die bleibt.',
+        'Keiner hat die anderen gehört. Die Szene läuft noch einmal, Bild und Musik unangetastet, und aus den Mündern der Figuren kommen eure Stimmen. Für diese eine Minute ist alles andere da.',
     },
   },
 

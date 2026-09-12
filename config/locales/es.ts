@@ -149,18 +149,18 @@ export const es = {
     privateBody:
       'DubRoom es solo para personas invitadas. Sin catálogo público, sin compartir fuera del círculo, sin indexación. Eso es lo que lo hace sostenible: doblamos fragmentos de obras protegidas, entre amigos, sin difundir nada.',
     slides: {
-      importTitle: 'Se importa una escena',
+      importTitle: 'Elegid la escena que os sabéis de memoria',
       importBody:
-        'Un archivo de vídeo o un enlace. La banda sonora se separa en dos: las voces por un lado, la música y el ambiente por otro. Esa separación sale de la escena misma, así que encaja con la imagen al milisegundo.',
-      charactersTitle: 'Se identifican los personajes',
+        'Un enlace, o un archivo. En lo que os ponéis de acuerdo con los papeles, la escena ya está cortada, las voces separadas de la música, cada frase fijada al milisegundo. Lo ingrato está hecho antes de que acabéis de elegir.',
+      charactersTitle: 'Repartid los papeles como en un casting de verdad',
       charactersBody:
-        'Las frases se transcriben y se asignan de forma automática. El anfitrión corrige en unos clics: renombrar, fusionar dos voces confundidas, reasignar una frase. Luego abre la sala y cada uno elige su papel.',
-      rythmoTitle: 'Se dobla con la banda rítmica',
+        'Los personajes ya están detectados y con nombre. Cada uno reclama el suyo con un clic. El que nadie quiere conserva su voz original, y en la mezcla no se nota.',
+      rythmoTitle: 'El texto pasa, vosotros solo actuáis',
       rythmoBody:
-        'El texto pasa bajo un cabezal de lectura, como en un estudio de doblaje de verdad. Mientras grabas solo oyes la música, nunca las voces originales: la imagen y el texto bastan para caer a tiempo.',
-      renderTitle: 'Se descubre el resultado',
+        'Como en un estudio de verdad, las frases corren bajo un cabezal de lectura. Nada que cuadrar, nada de montaje que aprender: lees y caes a tiempo. Una toma mala se repite en dos segundos, tantas veces como quieras.',
+      renderTitle: 'Y llega el momento de darle al play',
       renderBody:
-        'Todo se vuelve a mezclar: la imagen original, la música original y vuestras voces en lugar de las suyas. Un MP4 que se reproduce en cualquier sitio, sin subtítulos incrustados, y que se queda.',
+        'Nadie ha oído a los demás. La escena vuelve a rodar, con su imagen y su música intactas, y son vuestras voces las que salen de la boca de los personajes. Todo lo demás existe por ese minuto.',
     },
   },
 

@@ -149,18 +149,18 @@ export const pt = {
     privateBody:
       'O DubRoom é só para quem foi convidado. Sem catálogo público, sem compartilhar fora do círculo, sem indexação. É isso que torna a coisa sustentável: dublamos trechos de obras protegidas, entre amigos, sem divulgar nada.',
     slides: {
-      importTitle: 'Importa-se uma cena',
+      importTitle: 'Escolham a cena que vocês sabem de cor',
       importBody:
-        'Um arquivo de vídeo, ou um link. A trilha é separada em duas: as vozes de um lado, a música e o ambiente do outro. Essa separação vem da própria cena, então bate com a imagem no milésimo de segundo.',
-      charactersTitle: 'Acertam-se os personagens',
+        'Um link, ou um arquivo. No tempo de vocês combinarem os papéis, a cena já está cortada, as vozes separadas da música, cada fala presa ao milissegundo. A parte chata fica pronta antes de vocês terminarem de escolher.',
+      charactersTitle: 'Distribuam os papéis como num casting de verdade',
       charactersBody:
-        'As falas são transcritas e atribuídas automaticamente. O anfitrião corrige em alguns cliques: renomear, juntar duas vozes confundidas, reatribuir uma fala. Depois abre o lobby e cada um escolhe seu papel.',
-      rythmoTitle: 'Dubla-se pela faixa rítmica',
+        'Os personagens já estão identificados e com nome. Cada um pega o seu com um clique. O que ninguém quer fica com a voz original, e na mixagem não dá para notar.',
+      rythmoTitle: 'O texto passa, vocês só atuam',
       rythmoBody:
-        'O texto passa sob uma cabeça de leitura, como num estúdio de dublagem de verdade. Enquanto grava você só ouve a música, nunca as vozes originais: a imagem e o texto bastam para cair no tempo.',
-      renderTitle: 'Descobre-se o resultado',
+        'Como num estúdio de verdade, as falas correm sob uma cabeça de leitura. Nada para encaixar, nenhum editor para aprender: você lê e cai no tempo. Uma tomada ruim se refaz em dois segundos, quantas vezes quiser.',
+      renderTitle: 'E aí chega a hora de apertar o play',
       renderBody:
-        'Tudo é remixado: a imagem original, a música original, e as vozes de vocês no lugar das deles. Um MP4 que roda em qualquer lugar, sem legendas gravadas, e que fica.',
+        'Ninguém ouviu os outros. A cena roda de novo, com a imagem e a música originais intactas, e são as vozes de vocês saindo da boca dos personagens. Todo o resto existe por causa desse minuto.',
     },
   },
 

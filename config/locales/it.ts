@@ -149,18 +149,18 @@ export const it = {
     privateBody:
       'DubRoom è riservato alle persone invitate. Nessun catalogo pubblico, nessuna condivisione fuori dalla cerchia, nessuna indicizzazione. È questo che rende la cosa sostenibile: si doppiano estratti di opere protette, tra amici, senza diffondere niente.',
     slides: {
-      importTitle: 'Si importa una scena',
+      importTitle: 'Scegliete la scena che sapete a memoria',
       importBody:
-        'Un file video, o un link. La colonna sonora viene separata in due: le voci da una parte, la musica e l’ambiente dall’altra. Questa separazione viene dalla scena stessa, quindi combacia con l’immagine al millesimo di secondo.',
-      charactersTitle: 'Si sistemano i personaggi',
+        'Un link, o un file. Nel tempo che vi mettete d’accordo sulle parti, la scena è già tagliata, le voci separate dalla musica, ogni battuta fissata al millesimo. Il lavoro ingrato è fatto prima che abbiate finito di scegliere.',
+      charactersTitle: 'Distribuite le parti come a un vero casting',
       charactersBody:
-        'Le battute vengono trascritte e attribuite in automatico. L’ospite corregge in pochi clic: rinominare, unire due voci confuse, riassegnare una battuta. Poi apre la lobby e ognuno sceglie la sua parte.',
-      rythmoTitle: 'Si doppia sulla banda ritmica',
+        'I personaggi sono già individuati e con un nome. Ognuno si prende il suo con un clic. Quello che nessuno vuole tiene la voce originale, e nel missaggio non si sente.',
+      rythmoTitle: 'Il testo scorre, a voi tocca solo recitare',
       rythmoBody:
-        'Il testo scorre sotto una testina di lettura, come in un vero studio di doppiaggio. Mentre registri senti solo la musica, mai le voci originali: l’immagine e il testo bastano per cadere in tempo.',
-      renderTitle: 'Si scopre il risultato',
+        'Come in uno studio vero, le battute passano sotto una testina di lettura. Niente da sincronizzare, nessun montaggio da imparare: leggi e cadi in tempo. Una presa venuta male si rifà in due secondi, quante volte vuoi.',
+      renderTitle: 'E poi arriva il momento in cui premete play',
       renderBody:
-        'Tutto viene rimissato: l’immagine originale, la musica originale, e le vostre voci al posto delle loro. Un MP4 che si legge ovunque, senza sottotitoli impressi, e che resta.',
+        'Nessuno ha sentito gli altri. La scena riparte, immagine e musica originali intatte, e dalla bocca dei personaggi escono le vostre voci. Tutto il resto esiste per quel minuto lì.',
     },
   },
 

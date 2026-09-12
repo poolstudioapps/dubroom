@@ -1,18 +1,17 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
 export interface Slide {
   title: string;
   body: string;
-  /** Illustration dessinee en SVG : rien a charger, tout suit le theme. */
   art: React.ReactNode;
 }
 
-const INTERVAL_MS = 6_000;
+const INTERVAL_MS = 5_500;
 
 /**
  * Carrousel de presentation.
@@ -20,18 +19,29 @@ const INTERVAL_MS = 6_000;
  * Sans dependance : une bibliotheque ferait ici dix fois le poids du
  * besoin.
  *
- * Il s'arrete des que quelqu'un le survole, le focalise ou y touche — un
- * defilement qui continue pendant qu'on lit est la premiere raison pour
- * laquelle on deteste les carrousels. Il respecte `prefers-reduced-motion`,
- * et le bouton de pause rend l'arret explicite : sur telephone, ni survol
- * ni focus ne permettent de le suspendre.
+ * Deux choses ont change, et la premiere explique la seconde.
+ *
+ * Il s'arretait au survol. C'est un reflexe de bon eleve — un defilement
+ * qui continue pendant qu'on lit agace — sauf qu'ici le carrousel occupe
+ * le milieu de la page : la souris s'y pose sans y penser, et le
+ * carrousel restait fige. Il ne defile donc plus que sur demande
+ * explicite : le bouton de pause, ou le fait de toucher l'ecran. Une
+ * personne qui veut lire tranquillement a un bouton pour ca, ce qui vaut
+ * mieux qu'un comportement qu'elle n'a pas demande et ne comprend pas.
+ *
+ * Et les vues sont desormais empilees sur une seule colonne, centrees,
+ * illustration puis texte. En deux colonnes, la partie gauche etait
+ * ancree et seule l'image changeait : on ne voyait pas que c'etait un
+ * carrousel.
+ *
+ * `prefers-reduced-motion` reste respecte : plus de defilement
+ * automatique, plus de glissement, on passe d'une vue a l'autre a la
+ * main.
  */
 export function Carousel({ slides }: { slides: Slide[] }) {
   const [index, setIndex] = useState(0);
-  /** Arret demande par l'utilisateur : il survit au depart de la souris. */
+  /** Arret demande : par le bouton, par un doigt, ou par le systeme. */
   const [stopped, setStopped] = useState(false);
-  /** Suspension passagere : survol, focus, doigt sur l'ecran. */
-  const [hovered, setHovered] = useState(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -45,7 +55,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
     [slides.length],
   );
 
-  const running = !stopped && !hovered && slides.length > 1;
+  const running = !stopped && slides.length > 1;
 
   useEffect(() => {
     if (!running) return;
@@ -60,56 +70,81 @@ export function Carousel({ slides }: { slides: Slide[] }) {
     <section
       aria-roledescription="carrousel"
       aria-label="Comment ça marche"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setHovered(true)}
-      onBlurCapture={() => setHovered(false)}
       onTouchStart={() => setStopped(true)}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight') go(index + 1);
         if (e.key === 'ArrowLeft') go(index - 1);
       }}
-      className="space-y-4"
+      className="mx-auto max-w-2xl space-y-5"
     >
       {/*
-        La region vivante porte le texte, pas l'illustration : c'est le
-        titre et le corps qui changent, et c'est eux qu'une synthese vocale
-        doit relire. Elle est atomique, sinon seule la phrase modifiee est
-        annoncee, hors de son titre.
+        Le glissement se joue sur une piste large de toutes les vues,
+        qu'on decale d'une largeur a chaque pas. C'est ce qui donne le
+        mouvement lateral qu'on attend d'un carrousel : un fondu sur
+        place ne se lit pas comme un defilement.
       */}
-      <div
-        className="grid items-center gap-6 md:grid-cols-[1fr_1.1fr]"
-        aria-live="polite"
-        aria-atomic
-      >
-        <div key={index} className={cn('space-y-3', !reduced && 'animate-fade-in')}>
-          <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
-            Étape {index + 1} sur {slides.length}
-          </p>
-          <h3 className="signage text-2xl sm:text-3xl" style={{ textShadow: 'none' }}>
-            {current.title}
-          </h3>
-          <p className="max-w-prose text-sm leading-relaxed text-text-muted">
-            {current.body}
-          </p>
-        </div>
-
+      <div className="overflow-hidden rounded-card border-2 border-bezel-dark bg-stage">
         <div
-          key={`art-${index}`}
           className={cn(
-            'overflow-hidden rounded-card border-2 border-bezel-dark bg-stage',
-            !reduced && 'animate-fade-in',
+            'flex',
+            !reduced && 'transition-transform duration-500 ease-out',
           )}
+          style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {current.art}
+          {slides.map((slide, i) => (
+            <div
+              key={slide.title}
+              className="w-full shrink-0"
+              // Les vues hors champ sont retirees du parcours au clavier
+              // et de la lecture d'ecran : sinon la tabulation traverse
+              // quatre illustrations invisibles.
+              aria-hidden={i !== index}
+              inert={i !== index ? true : undefined}
+            >
+              {slide.art}
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {/*
+        La region vivante porte le texte, pas l'illustration : c'est lui
+        qui change et qu'une synthese vocale doit relire. Atomique, sinon
+        seule la phrase modifiee est annoncee, hors de son titre.
+      */}
+      <div className="space-y-2 text-center" aria-live="polite" aria-atomic>
+        <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
+          Étape {index + 1} sur {slides.length}
+        </p>
+        <h3
+          key={index}
+          className={cn(
+            'signage text-2xl sm:text-3xl',
+            !reduced && 'animate-fade-in',
+          )}
+          style={{ textShadow: 'none' }}
+        >
+          {current.title}
+        </h3>
+        <p className="mx-auto max-w-prose text-sm leading-relaxed text-text-muted">
+          {current.body}
+        </p>
+      </div>
+
+      <div className="flex items-center justify-center gap-2">
+        <button
+          type="button"
+          aria-label="Étape précédente"
+          onClick={() => go(index - 1)}
+          className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden />
+        </button>
+
         {/*
           La pastille visible fait douze pixels, mais la zone cliquable en
-          fait trente : un point de six pixels de large est une cible qu'on
-          rate, au doigt comme a la souris.
+          fait trente-deux : un point de six pixels de large est une cible
+          qu'on rate, au doigt comme a la souris.
         */}
         <div className="flex">
           {slides.map((slide, i) => (
@@ -123,46 +158,37 @@ export function Carousel({ slides }: { slides: Slide[] }) {
             >
               <span
                 className={cn(
-                  'h-3 w-3 rounded-full border-2 border-border-strong transition-colors',
-                  i === index ? 'bg-accent' : 'bg-surface-sunken',
+                  'rounded-full border-2 border-border-strong transition-all',
+                  i === index ? 'h-3 w-6 bg-accent' : 'h-3 w-3 bg-surface-sunken',
                 )}
               />
             </button>
           ))}
         </div>
 
-        <div className="flex gap-2">
-          {slides.length > 1 ? (
-            <button
-              type="button"
-              aria-label={stopped ? 'Reprendre le défilement' : 'Arrêter le défilement'}
-              onClick={() => setStopped((value) => !value)}
-              className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
-            >
-              {stopped ? (
-                <Play className="h-4 w-4" aria-hidden />
-              ) : (
-                <Pause className="h-4 w-4" aria-hidden />
-              )}
-            </button>
-          ) : null}
+        <button
+          type="button"
+          aria-label="Étape suivante"
+          onClick={() => go(index + 1)}
+          className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
+        >
+          <ChevronRight className="h-4 w-4" aria-hidden />
+        </button>
+
+        {slides.length > 1 ? (
           <button
             type="button"
-            aria-label="Étape précédente"
-            onClick={() => go(index - 1)}
-            className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
+            aria-label={stopped ? 'Reprendre le défilement' : 'Arrêter le défilement'}
+            onClick={() => setStopped((value) => !value)}
+            className="ml-1 flex h-10 w-10 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-surface hover:text-text"
           >
-            <ChevronLeft className="h-4 w-4" aria-hidden />
+            {stopped ? (
+              <Play className="h-4 w-4" aria-hidden />
+            ) : (
+              <Pause className="h-4 w-4" aria-hidden />
+            )}
           </button>
-          <button
-            type="button"
-            aria-label="Étape suivante"
-            onClick={() => go(index + 1)}
-            className="btn-3d flex h-10 w-10 items-center justify-center bg-surface-raised [--btn-lip:var(--color-border-strong)]"
-          >
-            <ChevronRight className="h-4 w-4" aria-hidden />
-          </button>
-        </div>
+        ) : null}
       </div>
     </section>
   );

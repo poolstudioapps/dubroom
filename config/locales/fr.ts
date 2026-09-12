@@ -150,18 +150,18 @@ export const fr = {
     privateBody:
       'DubRoom est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
     slides: {
-      importTitle: 'On importe une scène',
+      importTitle: 'Choisissez la scène que vous connaissez par cœur',
       importBody:
-        'Un fichier vidéo, ou un lien. La bande-son est séparée en deux : les voix d’un côté, la musique et l’ambiance de l’autre. Cette séparation vient de la scène elle-même, elle est donc calée à l’image au millième de seconde près.',
-      charactersTitle: 'On repère les personnages',
+        'Un lien, ou un fichier. Le temps de vous mettre d’accord sur les rôles, la scène est déjà découpée, les voix séparées de la musique, chaque réplique repérée à la milliseconde. Le travail ingrat est fait avant que vous ayez fini de choisir.',
+      charactersTitle: 'Distribuez les rôles comme un vrai casting',
       charactersBody:
-        'Les répliques sont transcrites et attribuées automatiquement. L’hôte corrige en quelques clics : renommer, fusionner deux voix confondues, réassigner une réplique. Puis il ouvre le lobby et chacun choisit son rôle.',
-      rythmoTitle: 'On double à la bande rythmo',
+        'Les personnages sont déjà détectés et nommés. Chacun réclame le sien d’un clic. Celui que personne ne veut garde sa voix d’origine, et le mixage n’y verra que du feu.',
+      rythmoTitle: 'Le texte défile, vous n’avez qu’à jouer',
       rythmoBody:
-        'Le texte défile sous une tête de lecture, comme dans un vrai studio de doublage. Pendant l’enregistrement vous n’entendez que la musique, jamais les voix d’origine : l’image et le texte suffisent à tomber juste.',
-      renderTitle: 'On découvre le résultat',
+        'Comme dans un vrai studio, les répliques passent sous une tête de lecture. Aucun calage à gérer, aucun montage à apprendre : vous lisez, vous tombez juste. Une prise ratée se refait en deux secondes, autant de fois que vous voulez.',
+      renderTitle: 'Et puis vient le moment où vous appuyez sur lecture',
       renderBody:
-        'Tout est remixé : l’image d’origine, la musique d’origine, et vos voix à la place des leurs. Un MP4 qui se lit partout, sans sous-titres incrustés, et qui se garde.',
+        'Personne n’a entendu les autres. La scène repart, l’image et la musique d’origine intactes, et ce sont vos voix qui sortent de la bouche des personnages. C’est pour cette minute-là que tout le reste existe.',
     },
   },
 
