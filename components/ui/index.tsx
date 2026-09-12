@@ -182,10 +182,13 @@ const badgeVariants = cva(
   {
     variants: {
       tone: {
+        // L'encre des pastilles est toujours plus sombre que leur fond :
+        // ecrire en `text-ok` sur `bg-ok/20` donnait du vert sur du vert
+        // pale, soit 3.1 de contraste.
         neutral: 'border-border-strong bg-surface-raised text-text-muted',
-        ok: 'border-ok/50 bg-ok/20 text-ok',
-        warn: 'border-warn/50 bg-warn/25 text-[oklch(0.45_0.12_75)]',
-        danger: 'border-danger/50 bg-danger/20 text-danger',
+        ok: 'border-ok/50 bg-ok/20 text-[oklch(0.4_0.13_150)]',
+        warn: 'border-warn/50 bg-warn/25 text-[oklch(0.42_0.12_75)]',
+        danger: 'border-danger/50 bg-danger/20 text-[oklch(0.42_0.18_25)]',
         accent: 'border-accent-ink/40 bg-accent/35 text-accent-ink',
       },
     },

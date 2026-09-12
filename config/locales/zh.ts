@@ -259,6 +259,8 @@ export const zh = {
     sending: '发送中…',
     sent: '链接已发出，去邮箱看看。',
     notAllowed: '这个邮箱不在受邀名单里。让房主把你加上。',
+    errorTitle: '无法登录',
+    backToSignIn: '返回登录页',
     signOut: '退出',
 
     signIn: '登录',

@@ -5,7 +5,7 @@ import { Download } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { PublishCard } from '@/components/scene/publish-card';
 import { useSceneCtx } from '@/components/scene-page';
-import { Alert, Card, Spinner } from '@/components/ui';
+import { Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
 import { useRenderUrl } from '@/lib/data';
@@ -23,7 +23,7 @@ export function ResultScreen() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
           {session.title ?? t.result.title}
         </h1>
         <p className="text-sm text-text-faint">{t.result.shareHint}</p>
@@ -47,8 +47,8 @@ export function ResultScreen() {
           download
           aria-disabled={!url.data}
           className={cn(
-            'inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-accent-ink',
-            'hover:bg-accent-hover',
+            'btn-3d inline-flex h-12 items-center gap-2 bg-accent px-6 text-sm font-semibold uppercase',
+            'tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover',
             !url.data && 'pointer-events-none opacity-40',
           )}
         >
@@ -85,7 +85,11 @@ export function ResultScreen() {
 
       <PublishCard />
 
-      {session.purged_at ? <Alert>{t.result.sourcePurged}</Alert> : null}
+      {session.purged_at ? (
+        <p className="text-xs leading-relaxed text-text-faint">
+          {t.result.sourcePurged}
+        </p>
+      ) : null}
     </div>
   );
 }

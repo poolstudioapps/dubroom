@@ -286,6 +286,8 @@ export const fr = {
     sent: 'Lien envoyé. Va voir ta boîte mail.',
     notAllowed:
       'Cette adresse n’est pas sur la liste des invités. Demande à l’hôte de t’ajouter.',
+    errorTitle: 'Connexion impossible',
+    backToSignIn: 'Revenir à la connexion',
     signOut: 'Se déconnecter',
 
     signIn: 'Se connecter',

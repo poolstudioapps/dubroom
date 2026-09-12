@@ -131,13 +131,15 @@ export function PrepareScreen() {
                 )}
               >
                 <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => setSelectedChars((s) => toggle(s, character.id))}
-                    aria-label={`Sélectionner ${character.name}`}
-                    className="h-4 w-4 accent-[var(--color-accent)]"
-                  />
+                  <label className="-m-1.5 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => setSelectedChars((s) => toggle(s, character.id))}
+                      aria-label={`Sélectionner ${character.name}`}
+                      className="h-4 w-4 accent-[var(--color-accent)]"
+                    />
+                  </label>
                   <span
                     className="h-3 w-3 shrink-0 rounded-full"
                     style={{
@@ -290,13 +292,15 @@ export function PrepareScreen() {
                     line.is_deleted && 'opacity-45',
                   )}
                 >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => setSelectedLines((s) => toggle(s, line.id))}
-                    aria-label={`Sélectionner la réplique de ${formatTimecode(line.start_ms)}`}
-                    className="mt-1 h-4 w-4 accent-[var(--color-accent)]"
-                  />
+                  <label className="-my-1 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => setSelectedLines((s) => toggle(s, line.id))}
+                      aria-label={`Sélectionner la réplique de ${formatTimecode(line.start_ms)}`}
+                      className="h-4 w-4 accent-[var(--color-accent)]"
+                    />
+                  </label>
 
                   <Button
                     size="icon"
@@ -330,7 +334,8 @@ export function PrepareScreen() {
                     aria-label="Texte de la réplique"
                     title={line.is_deleted ? t.prepare.deleteLineHint : undefined}
                     className={cn(
-                      'min-w-0 flex-1 border-0 bg-transparent text-sm outline-none focus:text-text',
+                      'min-h-8 min-w-0 flex-1 rounded-md border-0 bg-transparent px-1.5 text-sm outline-none',
+                      'hover:bg-surface focus:bg-surface focus:text-text',
                       line.is_deleted && 'line-through',
                     )}
                     onBlur={(e) => {

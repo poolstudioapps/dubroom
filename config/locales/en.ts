@@ -268,6 +268,8 @@ export const en = {
     sent: 'Link sent. Go check your inbox.',
     notAllowed:
       'This address is not on the guest list. Ask the host to add you.',
+    errorTitle: 'Cannot sign you in',
+    backToSignIn: 'Back to sign in',
     signOut: 'Sign out',
 
     signIn: 'Sign in',

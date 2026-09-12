@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { FileVideo, Link2 } from 'lucide-react';
+import { FileVideo, Link2, Upload } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
@@ -152,21 +152,29 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
                 void pickFile(e.dataTransfer.files?.[0] ?? null);
               }}
               className={cn(
-                'flex h-32 w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-sm text-text-faint',
-                'hover:border-border-strong hover:text-text-muted',
+                'flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-strong text-sm text-text-muted transition-colors',
+                'hover:border-select hover:bg-select/5 hover:text-text',
                 file && 'border-select bg-select/10 text-text',
               )}
             >
               {file ? (
                 <>
-                  <span className="font-medium">{file.name}</span>
-                  <span className="text-xs">{formatBytes(file.size)}</span>
+                  <FileVideo className="h-7 w-7 text-select" aria-hidden />
+                  <span className="font-bold">{file.name}</span>
+                  <span className="text-xs text-text-faint">{formatBytes(file.size)}</span>
                 </>
               ) : (
-                t.create.dropzone
+                <>
+                  <Upload className="h-7 w-7 text-text-faint" aria-hidden />
+                  <span>{t.create.dropzone}</span>
+                </>
               )}
             </button>
-            <Alert>{t.create.multiTrackWarning}</Alert>
+            {/* Une precision, pas un avertissement : le cadre en tiretes
+                la faisait lire comme un probleme a regler. */}
+            <p className="text-xs leading-relaxed text-text-faint">
+              {t.create.multiTrackWarning}
+            </p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -186,7 +194,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
 
         {/* L'intention de partager se pose souvent des le depart : on
             prepare une scene pour le groupe, pas pour une seule soiree. */}
-        <div className="flex items-start gap-3 rounded-sm border-2 border-dashed border-border-strong p-3">
+        <div className="panel flex items-start gap-3 p-3">
           <Toggle
             checked={keepAsPack}
             onChange={setKeepAsPack}

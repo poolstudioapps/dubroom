@@ -157,7 +157,7 @@ export function LoginForm() {
 
         <button
           type="button"
-          className="w-full text-center text-xs font-bold text-link underline underline-offset-4"
+          className="flex min-h-11 w-full items-center justify-center text-center text-xs font-bold text-link underline underline-offset-4"
           onClick={() => {
             setError(null);
             setPassword('');

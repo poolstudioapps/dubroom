@@ -266,6 +266,8 @@ export const pt = {
     sent: 'Link enviado. Dá uma olhada no seu e-mail.',
     notAllowed:
       'Este endereço não está na lista de convidados. Peça ao anfitrião para adicionar você.',
+    errorTitle: 'Não deu para entrar',
+    backToSignIn: 'Voltar para a tela de acesso',
     signOut: 'Sair',
 
     signIn: 'Entrar',

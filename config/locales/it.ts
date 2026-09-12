@@ -266,6 +266,8 @@ export const it = {
     sent: 'Link inviato. Controlla la posta.',
     notAllowed:
       'Questo indirizzo non è nella lista degli invitati. Chiedi all’ospite di aggiungerti.',
+    errorTitle: 'Accesso impossibile',
+    backToSignIn: 'Torna alla schermata di accesso',
     signOut: 'Esci',
 
     signIn: 'Accedi',

@@ -266,6 +266,8 @@ export const de = {
     sent: 'Link verschickt. Schau in dein Postfach.',
     notAllowed:
       'Diese Adresse steht nicht auf der Gästeliste. Bitte den Gastgeber, dich einzutragen.',
+    errorTitle: 'Anmeldung nicht möglich',
+    backToSignIn: 'Zurück zur Anmeldung',
     signOut: 'Abmelden',
 
     signIn: 'Anmelden',

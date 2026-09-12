@@ -43,7 +43,11 @@
 
   --color-text: oklch(0.22 0.01 300);
   --color-text-muted: oklch(0.42 0.012 300);
-  --color-text-faint: oklch(0.55 0.012 300);
+  /* 0.55 donnait 4.49 sur l'ecran clair et 3.6 sur les plaques : sous la
+     barre des 4.5 dans les deux cas, donc illisible au soleil et refuse
+     par les outils. 0.47 passe a 5.9 et 4.8, en restant nettement plus
+     clair que `text-muted`. */
+  --color-text-faint: oklch(0.47 0.012 300);
 
   /* ── La scene : toujours sombre ───────────────────────────────────── */
   --color-stage: oklch(0.16 0.02 300);
@@ -148,8 +152,50 @@
     outline-offset: 2px;
   }
 
+  /* Les curseurs du studio faisaient seize pixels de haut : on les rate
+     au doigt, et on les regle pendant qu'on enregistre. Vingt-huit
+     pixels de zone saisissable, avec une poignee ronde assez large pour
+     etre attrapee sans viser. */
   input[type='range'] {
-    accent-color: var(--color-bezel);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1.75rem;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 1px 2px 0 oklch(0 0 0 / 0.25);
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-surface-sunken);
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-top: -0.375rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-border-strong);
+    background: var(--color-surface-raised);
+    box-shadow: 0 2px 0 0 var(--color-border-strong);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-border-strong);
+    background: var(--color-surface-raised);
   }
 
   /* Filet de securite global : quelqu'un qui a demande moins d'animation

@@ -1,14 +1,15 @@
 import { Suspense } from 'react';
 import { APP_NAME, APP_TAGLINE } from '@/config/strings';
 import { getDictionary } from '@/lib/i18n-server';
+import { Footer } from '@/components/footer';
 import { LoginForm } from './login-form';
 
 /** Ecran-titre : le poste allume, le logo, et une seule chose a faire. */
 export default async function LoginPage() {
   const t = await getDictionary();
   return (
-    <main className="flex min-h-dvh items-center justify-center px-4 py-8">
-      <div className="w-full max-w-2xl">
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-8">
+      <main className="w-full max-w-2xl">
         <div className="rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel p-4 shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)] sm:p-6">
           <div className="relative overflow-hidden rounded-[1.25rem] bg-screen px-6 py-10 shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)] sm:px-10 sm:py-14">
             <div
@@ -52,7 +53,11 @@ export default async function LoginPage() {
             <span className="h-4 w-4 rounded-full bg-warn shadow-[0_2px_0_oklch(0.5_0.12_75)]" />
           </div>
         </div>
-      </div>
-    </main>
+
+        {/* Page publique, et souvent la premiere vue : les mentions et le
+            choix de la langue doivent y etre. */}
+        <Footer />
+      </main>
+    </div>
   );
 }

@@ -266,6 +266,8 @@ export const es = {
     sent: 'Enlace enviado. Mira tu correo.',
     notAllowed:
       'Esta dirección no está en la lista de invitados. Pide al anfitrión que te añada.',
+    errorTitle: 'No podemos conectarte',
+    backToSignIn: 'Volver a la pantalla de acceso',
     signOut: 'Cerrar sesión',
 
     signIn: 'Entrar',

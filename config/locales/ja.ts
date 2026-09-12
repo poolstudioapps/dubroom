@@ -261,6 +261,8 @@ export const ja = {
     sending: '送信中…',
     sent: 'リンクを送りました。メールをご確認ください。',
     notAllowed: 'このアドレスは招待リストにありません。ホストに追加を頼んでください。',
+    errorTitle: 'ログインできませんでした',
+    backToSignIn: 'ログイン画面に戻る',
     signOut: 'ログアウト',
 
     signIn: 'ログイン',

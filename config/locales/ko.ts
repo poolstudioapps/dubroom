@@ -261,6 +261,8 @@ export const ko = {
     sending: '보내는 중…',
     sent: '링크를 보냈습니다. 메일함을 확인하세요.',
     notAllowed: '이 주소는 초대 목록에 없습니다. 호스트에게 추가를 부탁하세요.',
+    errorTitle: '로그인할 수 없습니다',
+    backToSignIn: '로그인 화면으로 돌아가기',
     signOut: '로그아웃',
 
     signIn: '로그인',
