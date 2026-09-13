@@ -4,7 +4,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { INDEXABLE_PATHS } from '@/config/site';
 import { AUTH_COOKIE_OPTIONS, withAuthCookieOptions } from '@/lib/supabase/cookies';
 
-const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'];
+// `/guide` : des pages d'aide, sans aucune donnee. Ouvertes pour que le
+// lien de l'accueil ne mene pas a la connexion, mais fermees aux moteurs :
+// robots.txt ferme tout ce qui n'est pas explicitement indexable, et
+// chaque page le redit dans ses metadonnees.
+const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error', '/guide'];
 
 // L'accueil et les pages legales se visitent sans compte : elles
 // n'exposent aucune scene, aucun participant, aucun rendu. Les trois

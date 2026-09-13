@@ -195,6 +195,14 @@ export async function runIngest(
     }
     await setJobStep(job.id, 'segment', 100);
 
+    // Une scene de pack peut arriver par un fichier importe, quand le
+    // joueur a fourni la video lui-meme : ce fichier a fait son office,
+    // comme pour n'importe quel import.
+    if (session.upload_path) {
+      await db.storage.from(BUCKET_SOURCES).remove([session.upload_path]);
+      await updateSession(session.id, { upload_path: null });
+    }
+
     // La preparation a deja ete faite une fois : on va droit au lobby.
     await updateSession(session.id, { status: 'lobby' });
     logger.info('scène reconstituée depuis une recette', {

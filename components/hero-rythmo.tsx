@@ -36,27 +36,27 @@ const PX_PAR_MS = 0.2;
 const AVANT_MS = 4500;
 const APRES_MS = 2500;
 
+/** La duree des fondus enchaines, a l'entree comme a la sortie. */
+const FONDU_MS = 1000;
 /**
- * La duree des fondus, a l'entree comme a la sortie.
- *
- * Le lecteur de YouTube affiche son ecran de fin dans les dernieres
- * secondes : la scene retourne au noir avant qu'il n'arrive.
- */
-const FONDU_MS = 2500;
-/**
- * Le noir tenu avant d'ouvrir.
+ * Ce que l'affiche couvre apres chaque depart.
  *
  * A chaque depart — l'arrivee sur la page comme chaque tour de boucle —
  * YouTube pose ses boutons precedent, pause et suivant au milieu de
- * l'image, et les retire au bout de quatre secondes environ. Mesure sur
- * le lecteur nu, image par image. Le fondu ne commence qu'apres.
+ * l'image. Mesure au quart de seconde sur le lecteur nu : ils restent un
+ * peu plus de quatre secondes. La video joue dessous, la bande avance
+ * avec elle, et l'image ne s'ouvre qu'apres.
+ *
+ * C'est l'affiche de la scene qui couvre, et non du noir : arriver sur
+ * une page et regarder quatre secondes d'ecran vide, c'est croire que
+ * rien ne charge.
  */
-const TENUE_MS = 3800;
+const TENUE_MS = 4200;
 /**
  * La boucle repart un quart de seconde avant la fin reelle.
  *
  * Laisser YouTube boucler lui-meme fait passer par son ecran de fin, meme
- * bref. On revient au debut nous-memes, dans le noir, juste avant.
+ * bref. On revient au debut nous-memes, sous l'affiche, juste avant.
  */
 const MARGE_FIN_MS = 250;
 
@@ -109,7 +109,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
   const t = useT();
   const cibleRef = useRef<HTMLDivElement>(null);
   const pisteRef = useRef<HTMLDivElement>(null);
-  const voileRef = useRef<HTMLDivElement>(null);
+  const afficheRef = useRef<HTMLImageElement>(null);
   const lecteurRef = useRef<LecteurYt | null>(null);
   /**
    * La derniere heure lue sur le lecteur, et l'instant ou on l'a lue.
@@ -118,8 +118,8 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
    * millisecondes : le texte sautait par a-coups. Entre deux paliers, on
    * prolonge donc a partir de l'horloge de l'ecran.
    *
-   * `demarre` : la video a joue au moins une fois. Avant, le voile reste
-   * noir. `retour` : l'instant du dernier retour au debut, pendant lequel
+   * `demarre` : la video a joue au moins une fois. Avant, l'affiche reste
+   * posee. `retour` : l'instant du dernier retour au debut, pendant lequel
    * le lecteur annonce encore l'ancienne heure.
    */
   const horloge = useRef({
@@ -132,6 +132,30 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
 
   const [fixe, setFixe] = useState(false);
   const [maintenant, setMaintenant] = useState(demo.lines[0]?.start ?? 0);
+
+  /*
+   * L'affiche : la plus grande image que YouTube publie, sinon la moyenne.
+   *
+   * `maxresdefault` n'existe pas pour toutes les videos, et son absence ne
+   * se signale pas toujours par une erreur : YouTube renvoie alors une
+   * vignette grise de cent vingt pixels. On la reconnait a sa largeur.
+   */
+  const grande = `https://i.ytimg.com/vi/${demo.videoId}/maxresdefault.jpg`;
+  const moyenne = `https://i.ytimg.com/vi/${demo.videoId}/hqdefault.jpg`;
+  const [affiche, setAffiche] = useState(grande);
+
+  const verifierAffiche = () => {
+    const img = afficheRef.current;
+    if (img?.complete && img.naturalWidth > 0 && img.naturalWidth < 400) {
+      setAffiche(moyenne);
+    }
+  };
+
+  // L'image a pu finir de charger avant que React ne branche `onLoad`.
+  useEffect(() => {
+    verifierAffiche();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [affiche]);
 
   const personnages = useMemo(
     () => new Map(demo.characters.map((c) => [c.key, c])),
@@ -238,10 +262,9 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
 
       let ms = h.lecture ? h.ms + (instant - h.a) : h.ms;
 
-      // ── La fin : retour au debut, dans le noir ───────────────────────
-      const duree = pret && typeof lecteur.getDuration === 'function'
-        ? lecteur.getDuration() * 1000
-        : 0;
+      // ── La fin : retour au debut, sous l'affiche ────────────────────
+      const duree =
+        pret && typeof lecteur.getDuration === 'function' ? lecteur.getDuration() * 1000 : 0;
       const fin = (duree > 0 ? duree : demo.durationMs) - MARGE_FIN_MS;
       const bouclable = fin > TENUE_MS + FONDU_MS * 2;
       if (pret && h.demarre && !enRetour && bouclable && ms >= fin) {
@@ -252,17 +275,17 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
         ms = 0;
       }
 
-      // ── Le voile ─────────────────────────────────────────────────────
-      // Noir tant que rien n'a joue et pendant que les boutons du lecteur
-      // sont affiches, puis il s'ouvre et se referme sur les dernieres
-      // secondes.
-      let voile = 1;
+      // ── L'affiche ────────────────────────────────────────────────────
+      // Posee tant que rien n'a joue et pendant que les boutons du lecteur
+      // sont affiches, puis elle s'efface en une seconde et revient de
+      // meme sur la derniere seconde.
+      let couverture = 1;
       if (h.demarre) {
         const entree = 1 - (ms - TENUE_MS) / FONDU_MS;
         const sortie = bouclable ? (ms - (fin - FONDU_MS)) / FONDU_MS : 0;
-        voile = Math.min(1, Math.max(0, entree, sortie));
+        couverture = Math.min(1, Math.max(0, entree, sortie));
       }
-      if (voileRef.current) voileRef.current.style.opacity = voile.toFixed(3);
+      if (afficheRef.current) afficheRef.current.style.opacity = couverture.toFixed(3);
 
       if (pisteRef.current) {
         pisteRef.current.style.transform = `translate3d(${-ms * PX_PAR_MS}px, 0, 0)`;
@@ -296,30 +319,28 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       {/* La scene. Le cadre est plus large que la video : les bandes noires
           du film tombent hors champ. */}
       <div className="demo-video aspect-[21/9]">
-        {fixe ? (
-          // Sans lecture — moins d'animation demande, economie de donnees,
-          // ou lecteur injoignable — l'affiche tient la place.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`https://i.ytimg.com/vi/${demo.videoId}/hqdefault.jpg`}
-            alt=""
-            referrerPolicy="no-referrer"
-            className="demo-affiche"
-          />
-        ) : (
-          <>
-            <div ref={cibleRef} />
-            {/* Le voile : son opacite est reglee a chaque image par
-                l'horloge, jamais par une transition, pour suivre la video
-                exactement. */}
-            <div
-              ref={voileRef}
-              className="pointer-events-none absolute inset-0 bg-black"
-              style={{ opacity: 1 }}
-              aria-hidden
-            />
-          </>
-        )}
+        {!fixe ? <div ref={cibleRef} /> : null}
+        {/*
+          L'affiche, par-dessus le lecteur. Son opacite est reglee a chaque
+          image par l'horloge, jamais par une transition, pour suivre la
+          video exactement. Sans lecture — moins d'animation demande,
+          economie de donnees, lecteur injoignable — elle reste posee.
+          Agrandie comme la video, pour que le passage de l'une a l'autre
+          ne fasse pas sauter le cadrage.
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={afficheRef}
+          src={affiche}
+          alt=""
+          referrerPolicy="no-referrer"
+          decoding="async"
+          onLoad={verifierAffiche}
+          onError={() => setAffiche(moyenne)}
+          className="pointer-events-none absolute inset-0 h-full w-full scale-[1.08] object-cover"
+          style={{ opacity: 1 }}
+          aria-hidden
+        />
       </div>
 
       {/* La bande. La tete de lecture est fixe, c'est le texte qui passe. */}

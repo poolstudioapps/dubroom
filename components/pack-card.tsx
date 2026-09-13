@@ -36,26 +36,29 @@ export function packGridClass(count: number): string {
  * Tout ce qui se lit d'un coup d'oeil est sur l'image — la duree, et si
  * la scene est la sienne — comme sur n'importe quel catalogue de videos.
  * Le corps ne garde que le titre, une ligne de details et la
- * distribution. Les etiquettes qui disaient la meme chose sur chaque
- * carte (« Recette », « Autre ») ont disparu : elles ne distinguaient
- * rien.
+ * distribution.
+ *
+ * Le bouton reste en retrait et ne prend la couleur d'action qu'au
+ * survol : douze boutons pleins dans une grille criaient ensemble, et
+ * plus aucun ne ressortait.
  */
 export function PackCard({
   pack,
-  starting,
-  locked,
   onPlay,
   onDelete,
+  starting = false,
+  locked = false,
   showMine = true,
   showVote = true,
 }: {
   pack: Pack;
-  /** Cette scene est en train de demarrer. */
-  starting: boolean;
-  /** Une autre scene demarre : on ne lance pas deux parties a la fois. */
-  locked: boolean;
   onPlay: () => void;
+  /** Absent : pas de corbeille. Seul « Mes packs » la propose. */
   onDelete?: () => void;
+  /** Cette scene est en train de demarrer. */
+  starting?: boolean;
+  /** Une autre scene demarre : on ne lance pas deux parties a la fois. */
+  locked?: boolean;
   showMine?: boolean;
   showVote?: boolean;
 }) {
@@ -133,8 +136,8 @@ export function PackCard({
 
         <div className="mt-auto flex items-center gap-2 pt-1">
           <Button
-            variant="primary"
-            className="flex-1"
+            variant="secondary"
+            className="btn-bascule flex-1"
             loading={starting}
             disabled={locked}
             onClick={onPlay}

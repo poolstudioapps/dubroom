@@ -25,6 +25,18 @@ export const CLIP_MAX_MS = 15_000;
 export const MAX_VIDEO_DURATION_MS = 600_000; // 10 min
 export const MAX_UPLOAD_BYTES = 2_147_483_648; // 2 Go
 
+/**
+ * Le plus gros fichier source que le stockage accepte.
+ *
+ * Supabase refuse tout objet de plus de 50 Mo sur l'offre du projet : un
+ * import plus lourd partait, puis echouait a la fin de l'envoi avec un
+ * message technique. On le dit avant d'envoyer, et on dit quoi faire.
+ */
+export const MAX_SOURCE_FILE_BYTES = 50 * 1024 * 1024;
+
+/** Le guide pour doubler une scene du catalogue avec sa propre video. */
+export const GUIDE_VIDEO_HREF = '/guide/video-youtube';
+
 // ── Studio (PRD §11) ───────────────────────────────────────────────────
 /** Bornes du reglage de latence micro, en ms. */
 export const MIC_OFFSET_MIN_MS = -300;

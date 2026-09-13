@@ -1,7 +1,6 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { PackCard, packGridClass } from '@/components/pack-card';
@@ -14,11 +13,10 @@ import {
   type PackFilter,
   type PackSort,
 } from '@/components/pack-filters';
-import { Alert, Card, Spinner } from '@/components/ui';
-import { humanizeError } from '@/lib/errors';
+import { PackStartDialog } from '@/components/pack-start-dialog';
+import { Card, Spinner } from '@/components/ui';
 import { useT } from '@/lib/i18n';
-import { PACKS_QUERY, startFromPack, type Pack } from '@/lib/packs';
-import { useMyProfile } from '@/lib/profile';
+import { PACKS_QUERY, type Pack } from '@/lib/packs';
 import { cn } from '@/lib/utils';
 
 /**
@@ -32,28 +30,16 @@ import { cn } from '@/lib/utils';
  *
  * Les cartes sont celles du catalogue, sans le vote, la suppression ni
  * la marque « La tienne » : ici on choisit une scene, on ne juge ni ne
- * range le catalogue.
+ * range le catalogue. Le choix de la source de la video est le meme que
+ * dans le catalogue.
  */
 export function PackSourcePicker({ displayName }: { displayName: string }) {
   const t = useT();
-  const router = useRouter();
-  const profile = useMyProfile();
   const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
   const [sort, setSort] = useState<PackSort>(DEFAULT_SORT);
-  const [startingId, setStartingId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [aDoubler, setADoubler] = useState<Pack | null>(null);
 
   const packs = useQuery(PACKS_QUERY);
-
-  const start = useMutation({
-    mutationFn: (pack: Pack) =>
-      startFromPack(pack.id, profile.data?.display_name ?? displayName),
-    onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
-    onError: (e) => {
-      setStartingId(null);
-      setError(humanizeError(e));
-    },
-  });
 
   const tous = packs.data ?? [];
   const visibles = sortPacks(
@@ -83,8 +69,6 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
 
   return (
     <div className="space-y-5">
-      {error ? <Alert tone="danger">{error}</Alert> : null}
-
       {tous.length > 1 ? (
         <PackFilters
           packs={tous}
@@ -108,13 +92,7 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
             pack={pack}
             showVote={false}
             showMine={false}
-            starting={startingId === pack.id}
-            locked={startingId !== null && startingId !== pack.id}
-            onPlay={() => {
-              setError(null);
-              setStartingId(pack.id);
-              start.mutate(pack);
-            }}
+            onPlay={() => setADoubler(pack)}
           />
         ))}
       </ul>
@@ -122,6 +100,12 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
       <p className="mx-auto max-w-2xl text-center text-xs leading-relaxed text-text-faint">
         {t.create.packHelp}
       </p>
+
+      <PackStartDialog
+        pack={aDoubler}
+        displayName={displayName}
+        onClose={() => setADoubler(null)}
+      />
     </div>
   );
 }

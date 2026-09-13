@@ -141,7 +141,8 @@ export function LobbyScreen() {
                     ) : !character.assigned_to && !character.is_released ? (
                       <Button
                         size="sm"
-                        variant="primary"
+                        variant="secondary"
+                        className="btn-bascule"
                         onClick={() => run(() => assignCharacter(character.id))}
                       >
                         {t.lobby.takeCharacter}

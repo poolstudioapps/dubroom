@@ -3,38 +3,22 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { FileVideo, Library, Link2, Upload } from 'lucide-react';
+import Link from 'next/link';
+import { CircleHelp, FileVideo, Library, Link2, Upload } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { PackMatch } from '@/components/pack-match';
 import { PackSourcePicker } from '@/components/pack-source-picker';
 import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
-import { MAX_UPLOAD_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants';
+import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
 import { humanizeError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
+import { checkVideoFile } from '@/lib/video-file';
 
 type Mode = 'upload' | 'youtube';
-
-/** Lit la duree d'un fichier video sans le televerser (PRD §6.2). */
-function probeDurationMs(file: File): Promise<number | null> {
-  return new Promise((resolve) => {
-    const url = URL.createObjectURL(file);
-    const video = document.createElement('video');
-    video.preload = 'metadata';
-    video.onloadedmetadata = () => {
-      URL.revokeObjectURL(url);
-      resolve(Number.isFinite(video.duration) ? video.duration * 1000 : null);
-    };
-    video.onerror = () => {
-      URL.revokeObjectURL(url);
-      resolve(null);
-    };
-    video.src = url;
-  });
-}
 
 export function NewSessionForm({ displayName }: { displayName: string }) {
   const t = useT();
@@ -65,20 +49,18 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
       setFile(null);
       return;
     }
-    if (
-      !picked.type.startsWith('video/') &&
-      !picked.name.match(/\.(mp4|mkv|mov|webm|avi)$/i)
-    ) {
-      setError(t.create.wrongType);
-      return;
-    }
-    if (picked.size > MAX_UPLOAD_BYTES) {
-      setError(t.create.fileTooLarge);
-      return;
-    }
-    const duration = await probeDurationMs(picked);
-    if (duration && duration > MAX_VIDEO_DURATION_MS) {
-      setError(t.create.durationWarning);
+    // Les memes controles que le depart d'un pack avec sa propre video,
+    // dont la limite de taille du stockage : un fichier trop lourd partait,
+    // puis echouait a la fin de l'envoi.
+    const { problem } = await checkVideoFile(picked);
+    if (problem) {
+      setError(
+        problem === 'wrongType'
+          ? t.create.wrongType
+          : problem === 'tooLarge'
+            ? t.create.fileTooLarge
+            : t.create.durationWarning,
+      );
       return;
     }
     setFile(picked);
@@ -242,6 +224,14 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
               ) : null}
 
               <Alert tone="warn">{t.create.youtubeWarning}</Alert>
+              <Link
+                href={GUIDE_VIDEO_HREF}
+                target="_blank"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-link hover:underline"
+              >
+                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                {t.guide.createLink}
+              </Link>
             </div>
           )}
 

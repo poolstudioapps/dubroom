@@ -1,17 +1,15 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Clapperboard, Sparkles } from 'lucide-react';
 
-import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
+import { PackStartDialog } from '@/components/pack-start-dialog';
+import { Badge, Button, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatDuration, formatTimecode } from '@/config/strings';
-import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
-import { PACKS_QUERY, listPackLines, startFromPack } from '@/lib/packs';
-import { useMyProfile } from '@/lib/profile';
+import { PACKS_QUERY, listPackLines } from '@/lib/packs';
 import { videoId } from '@/components/url-preview';
 
 /**
@@ -27,6 +25,9 @@ import { videoId } from '@/components/url-preview';
  * fusionner deux personnages, ou ecrire n'importe quoi. On propose donc,
  * on n'impose pas — et pour choisir en connaissance de cause, on montre
  * d'abord les repliques telles qu'il faudra les dire.
+ *
+ * Reprendre la scene ouvre le meme choix que le catalogue : importer la
+ * video soi-meme, ou la laisser telecharger par le PC de l'hote.
  */
 export function PackMatch({
   url,
@@ -38,9 +39,7 @@ export function PackMatch({
   onDismiss: () => void;
 }) {
   const t = useT();
-  const router = useRouter();
-  const profile = useMyProfile();
-  const [error, setError] = useState<string | null>(null);
+  const [ouvert, setOuvert] = useState(false);
 
   /*
    * Le meme cache que le catalogue, et donc la meme fonction.
@@ -61,13 +60,6 @@ export function PackMatch({
     queryKey: ['pack-lines', pack?.id],
     enabled: !!pack,
     queryFn: () => listPackLines(pack!.id),
-  });
-
-  const start = useMutation({
-    mutationFn: () =>
-      startFromPack(pack!.id, profile.data?.display_name ?? displayName),
-    onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
-    onError: (e) => setError(humanizeError(e)),
   });
 
   if (!pack) return null;
@@ -146,18 +138,8 @@ export function PackMatch({
         )}
       </div>
 
-      {error ? <Alert tone="danger">{error}</Alert> : null}
-
       <div className="flex flex-wrap gap-2">
-        <Button
-          variant="primary"
-          className="flex-1"
-          loading={start.isPending}
-          onClick={() => {
-            setError(null);
-            start.mutate();
-          }}
-        >
+        <Button variant="primary" className="flex-1" onClick={() => setOuvert(true)}>
           <Clapperboard className="h-4 w-4" aria-hidden />
           {t.create.matchUse}
         </Button>
@@ -165,6 +147,12 @@ export function PackMatch({
           {t.create.matchScratch}
         </Button>
       </div>
+
+      <PackStartDialog
+        pack={ouvert ? pack : null}
+        displayName={displayName}
+        onClose={() => setOuvert(false)}
+      />
     </Card>
   );
 }

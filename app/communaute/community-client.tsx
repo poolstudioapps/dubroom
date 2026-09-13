@@ -1,7 +1,6 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { useT } from '@/lib/i18n';
@@ -16,10 +15,10 @@ import {
   type PackFilter,
   type PackSort,
 } from '@/components/pack-filters';
+import { PackStartDialog } from '@/components/pack-start-dialog';
 import { Alert, Button, Card, Dialog, Spinner } from '@/components/ui';
-import { PACKS_QUERY, deletePack, startFromPack, type Pack } from '@/lib/packs';
+import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
-import { useMyProfile } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 
 /**
@@ -33,6 +32,10 @@ import { cn } from '@/lib/utils';
  * La meme page sert « Mes packs », restreinte a ce que j'ai publie :
  * deux listes dessinees separement auraient diverge des la premiere
  * retouche.
+ *
+ * La suppression ne vit que dans « Mes packs ». Dans le catalogue, une
+ * corbeille sous ses propres scenes se trouvait a un doigt du bouton pour
+ * jouer, sur une page ou l'on vient choisir, pas ranger.
  */
 export function CommunityClient({
   displayName,
@@ -43,32 +46,15 @@ export function CommunityClient({
 }) {
   const t = useT();
 
-  const router = useRouter();
   const qc = useQueryClient();
-  const profile = useMyProfile();
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Pack | null>(null);
-  /**
-   * Quelle scene demarre.
-   *
-   * L'etat de la mutation est commun a toutes les cartes : s'y fier
-   * faisait tourner les dix boutons pour un seul clic.
-   */
-  const [startingId, setStartingId] = useState<string | null>(null);
+  /** La scene dont on choisit comment recuperer la video. */
+  const [aDoubler, setADoubler] = useState<Pack | null>(null);
   const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
   const [sort, setSort] = useState<PackSort>(DEFAULT_SORT);
 
   const packs = useQuery(PACKS_QUERY);
-
-  const start = useMutation({
-    mutationFn: (pack: Pack) =>
-      startFromPack(pack.id, profile.data?.display_name ?? displayName),
-    onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
-    onError: (e) => {
-      setStartingId(null);
-      setError(humanizeError(e));
-    },
-  });
 
   const remove = useMutation({
     mutationFn: (pack: Pack) => deletePack(pack),
@@ -147,14 +133,10 @@ export function CommunityClient({
             key={pack.id}
             pack={pack}
             showMine={scope === 'all'}
-            starting={startingId === pack.id}
-            locked={startingId !== null && startingId !== pack.id}
-            onPlay={() => {
-              setError(null);
-              setStartingId(pack.id);
-              start.mutate(pack);
-            }}
-            onDelete={pack.is_mine ? () => setPendingDelete(pack) : undefined}
+            onPlay={() => setADoubler(pack)}
+            onDelete={
+              scope === 'mine' && pack.is_mine ? () => setPendingDelete(pack) : undefined
+            }
           />
         ))}
       </ul>
@@ -187,6 +169,12 @@ export function CommunityClient({
       >
         {t.community.removeBody}
       </Dialog>
+
+      <PackStartDialog
+        pack={aDoubler}
+        displayName={displayName}
+        onClose={() => setADoubler(null)}
+      />
     </AppShell>
   );
 }

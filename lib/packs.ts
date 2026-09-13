@@ -1,6 +1,12 @@
 'use client';
 
-import { BUCKET_SOURCES, CLIP_MARGIN_MS, CLIP_MERGE_GAP_MS } from '@/config/constants';
+import {
+  BUCKET_SOURCES,
+  CLIP_MARGIN_MS,
+  CLIP_MAX_MS,
+  CLIP_MERGE_GAP_MS,
+} from '@/config/constants';
+import { deleteSession, uploadSourceAndEnqueue } from '@/lib/actions';
 import { AppError, humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import type { SessionRow } from '@/lib/supabase/database.types';
@@ -186,6 +192,53 @@ export async function startFromPack(
     }
   }
   throw new AppError('CODE_COLLISION', 'Impossible de générer un code libre.');
+}
+
+/**
+ * Demarre une scene depuis un pack, avec la video apportee par le joueur.
+ *
+ * Une recette ne garde que le lien : il faut retrouver la video. Le
+ * telechargement automatique passe par le PC de l'hote, parce que YouTube
+ * refuse les serveurs. Ici, le joueur apporte le fichier : la scene part
+ * en import ordinaire, que le worker en ligne traite sans attendre
+ * personne, et la preparation du pack — personnages, repliques corrigees
+ * — est reprise telle quelle.
+ *
+ * La scene nait en brouillon, sans tache : la tache n'entre en file
+ * qu'une fois le fichier arrive, sinon le worker partirait chercher un
+ * fichier absent. Si l'envoi echoue, le brouillon est retire plutot que
+ * de trainer dans « Mes scenes ».
+ */
+export async function startFromPackWithFile(
+  pack: Pack,
+  file: File,
+  displayName: string,
+  onProgress?: (pct: number) => void,
+): Promise<SessionRow> {
+  let session: SessionRow | null = null;
+  for (let attempt = 0; attempt < 5 && !session; attempt += 1) {
+    try {
+      session = await rpc<SessionRow>('start_from_pack_file', {
+        p_pack_id: pack.id,
+        p_code: generateSessionCode(),
+        p_display_name: displayName,
+        p_gap_ms: CLIP_MERGE_GAP_MS,
+        p_margin_ms: CLIP_MARGIN_MS,
+        p_max_ms: CLIP_MAX_MS,
+      });
+    } catch (error) {
+      if (!humanizeError(error).includes('déjà pris')) throw error;
+    }
+  }
+  if (!session) throw new AppError('CODE_COLLISION', 'Impossible de générer un code libre.');
+
+  try {
+    await uploadSourceAndEnqueue(session, file, onProgress);
+  } catch (error) {
+    await deleteSession(session).catch(() => undefined);
+    throw error;
+  }
+  return session;
 }
 
 /** Retire un pack : les fichiers d'abord, la fiche ensuite. */

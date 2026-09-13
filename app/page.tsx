@@ -19,6 +19,7 @@ import { Card } from '@/components/ui';
 import { currentLocale, getDictionary } from '@/lib/i18n-server';
 import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
+import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
 
@@ -220,6 +221,20 @@ export default async function HomePage() {
                     ),
                   )}
                 </ul>
+
+                {/* Le second chemin des scenes du catalogue, dit la ou l'on
+                    decide : sans lui, une scene qui ne se telecharge pas
+                    ressemble a une scene cassee. */}
+                <p
+                  data-reveal suppressHydrationWarning
+                  style={delai(450)}
+                  className="text-sm text-text-muted"
+                >
+                  {t.guide.homeLead}{' '}
+                  <Link href={GUIDE_VIDEO_HREF} className="lien-surligne font-bold text-text">
+                    {t.guide.homeAction}&nbsp;→
+                  </Link>
+                </p>
               </div>
 
               <div data-reveal suppressHydrationWarning style={delai(240)}>
