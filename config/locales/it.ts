@@ -579,7 +579,7 @@ export const it = {
       'Il download da YouTube è una comodità, non una garanzia: si guasta di frequente. Se non funziona, importa direttamente il file.',
     multiTrackWarning:
       'Se la tua fonte ha più tracce audio (doppiata, originale, commenti), viene doppiata la prima.',
-    durationWarning: 'La scena deve durare meno di 5 minuti.',
+    durationWarning: 'La scena deve durare meno di 10 minuti.',
     submitUpload: 'Importa e prepara',
     submitYoutube: 'Scarica e prepara',
     uploading: 'Invio del file…',
@@ -587,7 +587,7 @@ export const it = {
     introUpload: 'Una scena nuova, preparata da zero dal tuo video, da qualunque fonte arrivi: un film, una serie, una clip di YouTube o TikTok, una registrazione dello schermo…',
     introPack: 'Personaggi, battute e audio sono già pronti: porti il video e la lobby si apre in circa un minuto.',
     introYoutube: 'Solo per gli amministratori: il video viene scaricato dal computer dell’host, che deve essere acceso.',
-    limits: 'Qualsiasi formato video · al massimo 50 MB e 5 minuti',
+    limits: 'Qualsiasi formato video · al massimo 50 MB e 10 minuti',
     uploadStepsTitle: 'Come funziona',
     uploadSteps: [
       'Scegli il tuo video e gli dai un titolo.',
@@ -970,7 +970,7 @@ export const it = {
       'Lo stesso spezzone della scena del pack, senza tagli',
       'Qualsiasi formato video',
       'Al massimo 50 MB: bastano 720p o 480p',
-      'Al massimo 5 minuti',
+      'Al massimo 10 minuti',
     ],
     whyTitle: 'Perché questo passaggio?',
     whyBody: 'Dubblers non ospita video: il catalogo conserva i tagli e l’audio, mai l’immagine. E la maggior parte delle piattaforme rifiuta i download che provengono dai server. Porti quindi tu il file, e tutto il resto avviene online.',
@@ -1296,7 +1296,7 @@ export const it = {
     hostOnly: 'Può farlo solo l’ospite.',
     noAudioTrack: 'Questo file non ha traccia audio.',
     noVideoTrack: 'Questo file non ha video.',
-    tooLong: 'Scena troppo lunga: 5 minuti al massimo.',
+    tooLong: 'Scena troppo lunga: 10 minuti al massimo.',
     youtubeFailed:
       'Il download da YouTube è fallito. Importa direttamente il file video.',
     pageNotFoundTitle: 'Questa pagina non esiste',
