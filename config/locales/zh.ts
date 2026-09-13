@@ -17,6 +17,11 @@ export const zh = {
     communityShort: '社区',
     myPacks: '我的包',
     myPacksShort: '我的包',
+    guides: '指南',
+    guidesShort: '指南',
+    create: '创建',
+    join: '加入',
+    joinHelp: '输入主持人给你的六位代码。',
   },
 
   account: {
@@ -146,9 +151,6 @@ export const zh = {
         a: '只有加进受邀名单的邮箱能进来。在账号页面你可以自己加。',
       },
     ] as const,
-    privateTitle: '一个私人客厅，不是社交网络',
-    privateBody:
-      'Dub’Up 只给受邀请的人用。没有公开目录，不往圈子外分享，不被搜索收录。正因为这样才站得住：我们在朋友之间给受保护作品的片段配音，什么也不往外传。',
     slides: {
       importTitle: '挑一段你们台词都背得出来的戏',
       importBody:
@@ -391,7 +393,7 @@ export const zh = {
 
   create: {
     title: '新片段',
-    tabUpload: '导入文件',
+    tabUpload: '导入视频',
     tabYoutube: '粘贴 YouTube 链接',
     songLabel: '这是一首歌',
     songHelp: '不做转写，歌词你本来就会。断句跟着歌里的人声走，只告诉你什么时候进。',
@@ -401,7 +403,7 @@ export const zh = {
     matchLines: '要念的台词',
     matchUse: '用这个片段',
     matchScratch: '从头重做',
-    tabPack: '从现成的包开始',
+    tabPack: '从现成场景开始',
     packHelp: '不用准备：片段已经切好，挑好角色就能录。完整目录在社区页。',
     titleLabel: '片段标题',
     titlePlaceholder: '桥上的决斗',
@@ -421,6 +423,18 @@ export const zh = {
     submitUpload: '导入并准备',
     submitYoutube: '下载并准备',
     uploading: '正在上传文件…',
+    subtitle: '两种开始方式：导入你的视频创建全新场景，或者接着用小组已经准备好的场景。',
+    introUpload: '用你的视频从零开始准备的全新场景。',
+    introPack: '角色和台词都已就绪：你提供视频，大约两分钟后大厅就会打开。',
+    introYoutube: '仅限管理员：视频由主持人电脑上的 worker 下载，worker 需要处于运行状态。',
+    limits: 'MP4 · 最大 50 MB、最长 10 分钟',
+    uploadStepsTitle: '流程',
+    uploadSteps: [
+      '选择视频并起个标题。',
+      '我们在线准备好一切：声音、人声、对白。大约两到三分钟。',
+      '检查角色，然后邀请朋友进入大厅。',
+    ],
+    adminBadge: '管理员',
   },
 
   ingest: {
@@ -610,6 +624,22 @@ export const zh = {
     working: '要几分钟。可以让标签页开着，晚点再回来。',
     almost: '快好了。',
     longer: '比平时久一些，但还在跑。让它跑完就行。',
+    phases: {
+      upload: '正在上传视频',
+      queued: '正在开始处理',
+      download: '正在获取视频',
+      encode: '正在准备画面',
+      extract: '正在处理音频',
+      separate: '正在分离人声与音乐',
+      transcribe: '正在拆分对白',
+      segment: '正在把台词分配给角色',
+      renderQueued: '正在开始剪辑',
+      fetch: '正在获取录音',
+      mix: '正在混合人声',
+      mux: '正在剪辑视频',
+      uploadRender: '正在上传成品',
+      purge: '正在收尾',
+    },
   },
   render: {
     title: '正在出片',
@@ -636,6 +666,10 @@ export const zh = {
     voiceOriginal: '保留原声',
     shareHint: '这条链接只有这个片段的参与者打得开。',
     sourcePurged: '源文件已经删除，留下的只有成片。',
+    expiresIn: (m: string) => `这个视频将在 ${m} 后删除。想保留的话，请现在下载。`,
+    expiresSoon: '这个视频马上就会被删除。想保留的话，请现在下载。',
+    expiredTitle: '视频已删除',
+    expiredBody: '完成的场景会在剪辑一小时后删除，我们的服务器上不保留任何内容。想保留场景，请在此之前下载。',
   },
 
   packStart: {
@@ -655,6 +689,7 @@ export const zh = {
     autoBody: '由主持人的电脑从 YouTube 下载视频。那台电脑上需要运行 start.bat。',
     autoSubmit: '开始下载',
     mediaBody: '这个场景保存在这里，可以立即开始。',
+    introMember: '这个场景以链接形式保存：提供它的视频，就会用素材包的台词和角色在线准备。',
   },
 
   guide: {
@@ -691,11 +726,9 @@ export const zh = {
       '最长 10 分钟',
     ],
     whyTitle: '为什么需要这一步？',
-    whyBody: 'YouTube 会拒绝来自服务器的下载，所以 Dub’Up 无法在线获取视频：要么由主持人的电脑通过自己的网络下载，要么由你提供文件。',
+    whyBody: 'YouTube 会拒绝来自服务器的下载，所以 Dub’Up 无法替你获取视频：由你提供视频，其余一切都在线完成。',
     wayFileTitle: '你导入文件',
     wayFileBody: '随时可用，即使没有人启动 start.bat。准备在线完成，约两分钟。',
-    wayAutoTitle: '主持人的电脑下载',
-    wayAutoBody: '无需处理文件，但下载期间主持人的电脑上必须运行 worker。',
     faqTitle: '常见问题',
     faq: [
       {
@@ -720,6 +753,26 @@ export const zh = {
     homeLead: '目录中的场景下载不了？',
     homeAction: '导入你自己的视频',
     createLink: '如何获取 YouTube 视频的文件？',
+  },
+
+  guideHub: {
+    title: '指南与帮助',
+    body: '准备场景、和朋友一起配音、拿到成品所需的一切。',
+    guidesTitle: '指南',
+    readGuide: '阅读指南',
+    videoGuideSummary: '获取目录中场景的视频，核对它与台词是否一致，然后导入。',
+    readingTime: '约 5 分钟',
+  },
+
+  admin: {
+    title: '管理员',
+    help: '管理员可以通过 YouTube 链接创建场景：视频由其电脑上的 worker 下载。其他成员导入自己的视频，在线完成准备。',
+    roleOwner: '所有者',
+    roleAdmin: '管理员',
+    roleUser: '成员',
+    promote: '设为管理员',
+    demote: '取消管理员',
+    noAccount: '尚未登录',
   },
 
   errors: {

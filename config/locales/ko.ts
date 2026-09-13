@@ -17,6 +17,11 @@ export const ko = {
     communityShort: '커뮤니티',
     myPacks: '내 팩',
     myPacksShort: '내 팩',
+    guides: '가이드',
+    guidesShort: '가이드',
+    create: '만들기',
+    join: '참여',
+    joinHelp: '호스트에게 받은 6자리 코드를 입력하세요.',
   },
 
   account: {
@@ -148,9 +153,6 @@ export const ko = {
         a: '초대 목록에 추가된 주소만 들어올 수 있습니다. 주소 추가는 계정 화면에서 직접 합니다.',
       },
     ] as const,
-    privateTitle: '네트워크가 아니라 사적인 방',
-    privateBody:
-      'Dub’Up은 초대된 사람만 쓸 수 있습니다. 공개 목록도, 바깥으로의 공유도, 검색 등록도 없습니다. 그래서 성립합니다. 보호받는 저작물의 일부를 친구끼리 더빙하되, 밖으로는 내보내지 않습니다.',
     slides: {
       importTitle: '대사까지 외우고 있는 그 장면을 고르세요',
       importBody:
@@ -399,7 +401,7 @@ export const ko = {
 
   create: {
     title: '새 장면',
-    tabUpload: '파일 가져오기',
+    tabUpload: '영상 가져오기',
     tabYoutube: 'YouTube 링크 붙여넣기',
     songLabel: '노래입니다',
     songHelp:
@@ -410,7 +412,7 @@ export const ko = {
     matchLines: '말할 대사',
     matchUse: '이 장면으로 시작하기',
     matchScratch: '처음부터 다시 만들기',
-    tabPack: '팩에서 시작하기',
+    tabPack: '준비된 장면으로 시작',
     packHelp:
       '준비할 게 없습니다. 장면은 이미 나뉘어 있으니 배역만 고르고 녹음하면 됩니다. 전체 목록은 커뮤니티 탭에 있습니다.',
     titleLabel: '장면 제목',
@@ -433,6 +435,18 @@ export const ko = {
     submitUpload: '가져와서 준비',
     submitYoutube: '받아와서 준비',
     uploading: '파일 보내는 중…',
+    subtitle: '시작하는 방법은 두 가지입니다. 영상을 가져와 새 장면을 만들거나, 그룹이 이미 준비한 장면을 이어받으세요.',
+    introUpload: '내 영상으로 처음부터 준비하는 새 장면.',
+    introPack: '캐릭터와 대사는 이미 준비되어 있습니다. 영상만 가져오면 약 2분 안에 로비가 열립니다.',
+    introYoutube: '관리자 전용: 영상은 호스트 PC의 worker가 내려받으며, worker가 실행 중이어야 합니다.',
+    limits: 'MP4 · 최대 50 MB, 10분',
+    uploadStepsTitle: '진행 방식',
+    uploadSteps: [
+      '영상을 고르고 제목을 붙입니다.',
+      '소리, 목소리, 대사까지 모두 온라인에서 준비합니다. 2~3분 걸립니다.',
+      '캐릭터를 확인한 뒤 친구들을 로비에 초대합니다.',
+    ],
+    adminBadge: '관리자',
   },
 
   ingest: {
@@ -628,6 +642,22 @@ export const ko = {
     working: '몇 분 걸립니다. 탭을 열어 둔 채 나중에 돌아와도 됩니다.',
     almost: '거의 다 됐습니다.',
     longer: '평소보다 오래 걸리고 있지만 계속 돌아가는 중입니다. 그대로 두세요.',
+    phases: {
+      upload: '영상 보내는 중',
+      queued: '처리 시작 중',
+      download: '영상 가져오는 중',
+      encode: '화면 준비 중',
+      extract: '오디오 처리 중',
+      separate: '목소리와 음악 분리 중',
+      transcribe: '대사 분해 중',
+      segment: '대사를 캐릭터에 배정하는 중',
+      renderQueued: '편집 시작 중',
+      fetch: '테이크 가져오는 중',
+      mix: '목소리 믹싱 중',
+      mux: '영상 편집 중',
+      uploadRender: '결과 보내는 중',
+      purge: '마무리 중',
+    },
   },
   render: {
     title: '렌더링 중',
@@ -657,6 +687,10 @@ export const ko = {
     voiceOriginal: '원래 음성',
     shareHint: '이 링크는 이 장면의 참가자만 열 수 있습니다.',
     sourcePurged: '원본은 삭제됐습니다. 남은 것은 완성본뿐입니다.',
+    expiresIn: (m: string) => `이 영상은 ${m} 후에 삭제됩니다. 보관하려면 지금 내려받으세요.`,
+    expiresSoon: '이 영상은 곧 삭제됩니다. 보관하려면 지금 내려받으세요.',
+    expiredTitle: '영상이 삭제되었습니다',
+    expiredBody: '완성된 장면은 편집 1시간 후에 지워지며, 서버에는 아무것도 남지 않습니다. 장면을 보관하려면 그 전에 내려받으세요.',
   },
 
   packStart: {
@@ -676,6 +710,7 @@ export const ko = {
     autoBody: '호스트 PC가 YouTube에서 영상을 내려받습니다. 그 PC에서 start.bat이 실행 중이어야 합니다.',
     autoSubmit: '다운로드 시작',
     mediaBody: '이 장면은 여기에 저장되어 있어 바로 시작됩니다.',
+    introMember: '이 장면은 링크로 저장되어 있습니다. 영상을 가져오면 팩의 대사와 캐릭터로 온라인에서 준비됩니다.',
   },
 
   guide: {
@@ -712,11 +747,9 @@ export const ko = {
       '최대 10분',
     ],
     whyTitle: '왜 이 단계가 필요한가요?',
-    whyBody: 'YouTube는 서버에서 오는 다운로드를 거부합니다. 그래서 Dub’Up은 온라인으로 영상을 가져올 수 없어요. 호스트 PC가 자기 인터넷으로 내려받거나, 여러분이 파일을 가져와야 합니다.',
+    whyBody: 'YouTube는 서버에서 오는 다운로드를 거부합니다. 그래서 Dub’Up이 대신 영상을 가져올 수 없어요. 영상은 여러분이 가져오고, 나머지는 모두 온라인에서 진행됩니다.',
     wayFileTitle: '파일을 직접 가져오기',
     wayFileBody: '아무도 start.bat을 실행하지 않았어도 언제든 됩니다. 준비는 온라인에서 약 2분 걸립니다.',
-    wayAutoTitle: '호스트 PC가 내려받기',
-    wayAutoBody: '파일을 다룰 필요는 없지만, 다운로드하는 동안 호스트 PC에서 worker가 실행 중이어야 합니다.',
     faqTitle: '자주 묻는 질문',
     faq: [
       {
@@ -741,6 +774,26 @@ export const ko = {
     homeLead: '카탈로그 장면이 내려받아지지 않나요?',
     homeAction: '내 영상 가져오기',
     createLink: 'YouTube 영상 파일은 어떻게 준비하나요?',
+  },
+
+  guideHub: {
+    title: '가이드와 도움말',
+    body: '장면 준비부터 친구들과 더빙하고 결과를 받기까지 필요한 모든 것.',
+    guidesTitle: '가이드',
+    readGuide: '가이드 읽기',
+    videoGuideSummary: '카탈로그 장면의 영상을 준비하고, 대사와 맞는지 확인한 뒤 가져오는 방법.',
+    readingTime: '5분 분량',
+  },
+
+  admin: {
+    title: '관리자',
+    help: '관리자는 YouTube 링크로 장면을 만들 수 있습니다. 영상은 본인 PC의 worker가 내려받습니다. 다른 멤버는 영상을 가져오고, 온라인에서 준비됩니다.',
+    roleOwner: '소유자',
+    roleAdmin: '관리자',
+    roleUser: '멤버',
+    promote: '관리자로 지정',
+    demote: '관리자 해제',
+    noAccount: '아직 로그인하지 않음',
   },
 
   errors: {

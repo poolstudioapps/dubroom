@@ -1268,36 +1268,12 @@
   }
 
   /* ── La scene de la vitrine ──────────────────────────────────────────
-     Le lecteur YouTube remplace une balise qu'il ne connait pas : on ne
-     peut donc le styler que par son parent. La video est plus haute que
-     le cadre, centree, et legerement agrandie, si bien que les bandes
-     noires du film et l'habillage du lecteur tombent hors champ. */
+     La video, servie par le site, est deja recadree en 21/9 : le cadre
+     la contient simplement, sur fond noir pendant qu'elle charge. */
   .demo-video {
     position: relative;
     overflow: hidden;
     background-color: #000;
-  }
-
-  .demo-video iframe {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    border: 0;
-    pointer-events: none;
-    transform: translateY(-50%) scale(1.08);
-  }
-
-  .demo-affiche {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-    transition: opacity 700ms ease-out;
   }
 
   /* Le grand numero des definitions : propre a la peau cinema. */
@@ -1482,6 +1458,127 @@
   .lien-surligne:hover,
   .lien-surligne:focus-visible {
     background-color: color-mix(in oklch, var(--color-accent) 30%, transparent);
+  }
+
+  /* ── Les menus deroulants ────────────────────────────────────────────
+     La liste d'un `select` natif se dessine avec les couleurs du systeme :
+     fond gris, surlignage bleu, quel que soit le theme. Celle-ci est a
+     nous, posee dans le corps du document pour echapper aux conteneurs
+     qui defilent, et habillee comme les panneaux de chaque peau. */
+  .menu-choix {
+    position: fixed;
+    /* Le navigateur centre un `popover` par defaut : la place est donnee
+       par le composant, en haut a gauche du bouton. */
+    inset: auto;
+    margin: 0;
+    z-index: 90;
+    overflow-y: auto;
+    padding: 0.375rem;
+    border: 2px solid var(--color-border-strong);
+    border-radius: 0.625rem;
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.55);
+    outline: none;
+    animation: menu-choix-entree 150ms ease-out;
+    transform-origin: top;
+  }
+
+  .menu-choix-haut {
+    transform-origin: bottom;
+  }
+
+  @keyframes menu-choix-entree {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+
+  .menu-choix-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .menu-choix-option[data-actif='true'] {
+    background-color: color-mix(in oklch, var(--color-select) 18%, transparent);
+  }
+
+  .menu-choix-option[aria-selected='true'] {
+    color: var(--color-link);
+  }
+
+  .filtre:focus-visible,
+  .menu-declencheur:focus-visible {
+    outline: 2px solid var(--color-select);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-choix {
+      animation: none;
+    }
+  }
+
+  [data-theme='modern'] .menu-choix {
+    border: 0;
+    border-radius: 1rem;
+    background-color: oklch(1 0 0);
+    color: oklch(0.22 0.04 300);
+    box-shadow:
+      0 5px 0 0 oklch(0.24 0.11 300 / 0.45),
+      0 22px 40px -18px oklch(0.1 0.08 300 / 0.8);
+  }
+
+  [data-theme='modern'] .menu-choix-option {
+    border-radius: 0.75rem;
+  }
+
+  [data-theme='modern'] .menu-choix-option[data-actif='true'] {
+    background-color: oklch(0.95 0.04 350);
+  }
+
+  [data-theme='modern'] .menu-choix-option[aria-selected='true'] {
+    color: oklch(0.52 0.24 350);
+  }
+
+  [data-theme='cinema'] .menu-choix {
+    border: 1px solid oklch(1 0 0 / 0.1);
+    border-radius: 1rem;
+    background-color: oklch(0.14 0.004 85 / 0.92);
+    color: oklch(0.95 0.01 90);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.06),
+      0 30px 60px -24px oklch(0 0 0 / 0.95);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  }
+
+  [data-theme='cinema'] .menu-choix-option {
+    border-radius: 0.625rem;
+    font-weight: 500;
+  }
+
+  [data-theme='cinema'] .menu-choix-option[data-actif='true'] {
+    background-color: oklch(1 0 0 / 0.07);
+  }
+
+  [data-theme='cinema'] .menu-choix-option[aria-selected='true'] {
+    color: oklch(0.88 0.16 95);
+  }
+
+  /* Deux sources pour les membres, trois pour les administrateurs. */
+  .source-onglets-deux {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   [data-theme='cinema'] .btn-brand.btn-secondary,

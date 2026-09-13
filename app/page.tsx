@@ -39,7 +39,7 @@ const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
  *
  * C'est la seule page visible sans compte. Elle ne montre ni scene de
  * joueur, ni participant, ni rendu ; sa seule scene est celle de la
- * vitrine, lue depuis YouTube et designee en base. Elle explique le
+ * vitrine, figee dans le depot (voir `lib/home-demo.ts`). Elle explique le
  * principe, ce qui permet de la faire lire a quelqu'un avant de
  * l'inviter, sans rien ouvrir de ce que le PRD §14 protege.
  *
@@ -53,8 +53,8 @@ const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 /**
  * L'accueil est la seule page du produit qui a vocation a etre trouvee.
  *
- * C'est une page de presentation. La scene de la vitrine est integree
- * par le lecteur de YouTube, jamais hebergee ici. Le
+ * C'est une page de presentation. La scene de la vitrine est une courte
+ * video sans son servie par le site. Le
  * `robots` global ferme tout ; cette page-ci rouvre pour elle-meme.
  */
 export async function generateMetadata(): Promise<Metadata> {
@@ -87,7 +87,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: SITE_URL,
       title: `${t.home.seoTitle} · ${APP_NAME}`,
       description: t.home.heroBody,
-      images: [{ url: '/illustrations/og-card.webp', width: 1200, height: 675 }],
+      images: [{ url: '/illustrations/og-invitation.jpg', width: 1200, height: 630 }],
     },
   };
 }
@@ -366,13 +366,6 @@ export default async function HomePage() {
                 <FaqList items={[...t.home.faq, ...t.home.faqExtra]} />
               </div>
             </section>
-
-            <Card data-reveal suppressHydrationWarning className="space-y-2">
-              <h2 className="text-sm font-bold">{t.home.privateTitle}</h2>
-              <p className="text-sm leading-relaxed text-text-muted">
-                {t.home.privateBody}
-              </p>
-            </Card>
           </main>
         </TvSet>
 

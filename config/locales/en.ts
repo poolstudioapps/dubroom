@@ -19,6 +19,11 @@ export const en = {
     communityShort: 'Community',
     myPacks: 'My packs',
     myPacksShort: 'My packs',
+    guides: 'Guides',
+    guidesShort: 'Guides',
+    create: 'Create',
+    join: 'Join',
+    joinHelp: 'Enter the six-character code the host gave you.',
   },
 
   account: {
@@ -153,9 +158,6 @@ export const en = {
         a: 'Only addresses added to the guest list can get in. You add an address yourself from your account.',
       },
     ] as const,
-    privateTitle: 'A private room, not a network',
-    privateBody:
-      'Dub’Up is for invited people only. No public catalogue, no sharing outside the circle, no search indexing. That is what makes it workable: we dub extracts of protected works, among friends, without publishing anything.',
     slides: {
       importTitle: 'Pick the scene you know by heart',
       importBody:
@@ -406,7 +408,7 @@ export const en = {
 
   create: {
     title: 'New scene',
-    tabUpload: 'Import a file',
+    tabUpload: 'Import a video',
     tabYoutube: 'Paste a YouTube link',
     songLabel: 'It is a song',
     songHelp:
@@ -417,7 +419,7 @@ export const en = {
     matchLines: 'The lines to say',
     matchUse: 'Start from this scene',
     matchScratch: 'Redo it from scratch',
-    tabPack: 'Start from a pack',
+    tabPack: 'Start from a ready scene',
     packHelp:
       'Nothing to prepare: the scene is already cut, you pick the roles and record. The full catalogue is in the Community tab.',
     titleLabel: 'Scene title',
@@ -440,6 +442,18 @@ export const en = {
     submitUpload: 'Import and prepare',
     submitYoutube: 'Download and prepare',
     uploading: 'Uploading the file…',
+    subtitle: 'Two ways to start: import your video for a brand-new scene, or pick up a scene the group has already prepared.',
+    introUpload: 'A brand-new scene, prepared from scratch from your video.',
+    introPack: 'Characters and lines are already set: you bring the video, and the lobby opens in about two minutes.',
+    introYoutube: 'Administrators only: the video is downloaded by the worker on the host’s PC, which must be running.',
+    limits: 'MP4 · 50 MB and 10 minutes at most',
+    uploadStepsTitle: 'How it works',
+    uploadSteps: [
+      'You pick your video and give it a title.',
+      'We prepare everything online: sound, voices, dialogue. Two to three minutes.',
+      'You check the characters, then invite your friends to the lobby.',
+    ],
+    adminBadge: 'Admin',
   },
 
   ingest: {
@@ -642,6 +656,22 @@ export const en = {
     working: 'Count a few minutes. You can leave the tab open and come back later.',
     almost: 'Nearly there.',
     longer: 'This is taking longer than usual, but it is still running. Let it finish.',
+    phases: {
+      upload: 'Uploading the video',
+      queued: 'Starting processing',
+      download: 'Fetching the video',
+      encode: 'Preparing the picture',
+      extract: 'Audio processing',
+      separate: 'Separating voices and music',
+      transcribe: 'Breaking down the dialogue',
+      segment: 'Assigning lines to characters',
+      renderQueued: 'Starting the edit',
+      fetch: 'Fetching the takes',
+      mix: 'Mixing the voices',
+      mux: 'Editing the video',
+      uploadRender: 'Uploading the result',
+      purge: 'Finishing',
+    },
   },
   render: {
     title: 'Rendering',
@@ -671,6 +701,10 @@ export const en = {
     voiceOriginal: 'Original kept',
     shareHint: 'The link only works for people in this scene.',
     sourcePurged: 'The source has been deleted: only the final mix is kept.',
+    expiresIn: (m: string) => `This video will be deleted in ${m}. Download it now if you want to keep it.`,
+    expiresSoon: 'This video is about to be deleted. Download it now if you want to keep it.',
+    expiredTitle: 'The video has been deleted',
+    expiredBody: 'Finished scenes are erased one hour after the edit: nothing is kept on our servers. To keep a scene, download it before then.',
   },
 
   packStart: {
@@ -690,6 +724,7 @@ export const en = {
     autoBody: 'The host’s PC fetches the video from YouTube. start.bat has to be running on it.',
     autoSubmit: 'Start the download',
     mediaBody: 'This scene is hosted here: it starts right away.',
+    introMember: 'This scene is kept as a link: bring its video, and everything is prepared online with the pack’s text and characters.',
   },
 
   guide: {
@@ -726,11 +761,9 @@ export const en = {
       '10 minutes at most',
     ],
     whyTitle: 'Why this step?',
-    whyBody: 'YouTube refuses downloads coming from servers. Dub’Up therefore cannot fetch the video online: either the host’s PC does it from its own connection, or you bring the file.',
+    whyBody: 'YouTube refuses downloads coming from servers. Dub’Up therefore cannot fetch the video for you: you bring it, and everything else happens online.',
     wayFileTitle: 'You import the file',
     wayFileBody: 'Works at any time, even if nobody started start.bat. Preparation runs online, in about two minutes.',
-    wayAutoTitle: 'The host’s PC downloads',
-    wayAutoBody: 'No file to handle, but the worker must be running on the host’s PC during the download.',
     faqTitle: 'Frequently asked questions',
     faq: [
       {
@@ -755,6 +788,26 @@ export const en = {
     homeLead: 'A catalogue scene won’t download?',
     homeAction: 'Import your own video',
     createLink: 'How do I get the file of a YouTube video?',
+  },
+
+  guideHub: {
+    title: 'Guides and help',
+    body: 'Everything you need to prepare a scene, dub it with friends and get the result.',
+    guidesTitle: 'Guides',
+    readGuide: 'Read the guide',
+    videoGuideSummary: 'Get the video of a catalogue scene, check that it matches the text, and import it.',
+    readingTime: '5 min read',
+  },
+
+  admin: {
+    title: 'Administrators',
+    help: 'An administrator can create a scene from a YouTube link: the video is downloaded by the worker on their PC. Other members import their videos, prepared online.',
+    roleOwner: 'Owner',
+    roleAdmin: 'Admin',
+    roleUser: 'Member',
+    promote: 'Make admin',
+    demote: 'Remove admin',
+    noAccount: 'not signed in yet',
   },
 
   errors: {

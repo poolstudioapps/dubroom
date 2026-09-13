@@ -38,12 +38,9 @@ export default function PrivacyPage() {
 
       <LegalSection title="La vidéo de l’accueil">
         <p>
-          La page d’accueil montre un extrait de démonstration lu depuis YouTube, par son
-          lecteur intégré en mode de confidentialité renforcée (youtube-nocookie.com). Le
-          fichier n’est pas hébergé ici. À l’affichage de cette page, votre navigateur
-          contacte donc les serveurs de Google, qui reçoivent votre adresse IP et les
-          informations techniques habituelles d’une vidéo intégrée. C’est la seule page du
-          site concernée.
+          La page d’accueil montre un court extrait de démonstration, sans son, servi par ce
+          site. Aucun service tiers n’est contacté pour l’afficher, et aucun cookie n’est
+          déposé à cette occasion.
         </p>
       </LegalSection>
 
@@ -52,6 +49,11 @@ export default function PrivacyPage() {
           La vidéo source et les pistes audio séparées sont supprimées automatiquement
           dès qu’un rendu a été produit et vérifié. Vos enregistrements le sont au même
           moment.
+        </p>
+        <p>
+          Le rendu final est lui-même supprimé une heure après sa création. L’écran du
+          résultat indique le temps restant : pour garder la scène, il faut la télécharger
+          avant. Aucune copie n’est conservée au-delà.
         </p>
         <p>
           Une exception : si l’hôte choisit de conserver une scène préparée pour la
@@ -77,9 +79,10 @@ export default function PrivacyPage() {
       <LegalSection title="Sous-traitants">
         <p>
           Supabase (hébergement des données et des fichiers, Irlande), Vercel
-          (hébergement de l’application, États-Unis), ElevenLabs (transcription des
-          dialogues, États-Unis). La transcription porte sur la piste de voix de la
-          scène importée, jamais sur vos enregistrements.
+          (hébergement de l’application, États-Unis), Google Cloud (traitement audio et
+          vidéo des scènes, Belgique), ElevenLabs (transcription des dialogues,
+          États-Unis). La transcription porte sur la piste de voix de la scène importée,
+          jamais sur vos enregistrements.
         </p>
       </LegalSection>
 

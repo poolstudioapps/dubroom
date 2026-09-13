@@ -17,6 +17,11 @@ export const ja = {
     communityShort: 'コミュニティ',
     myPacks: 'マイパック',
     myPacksShort: 'マイパック',
+    guides: 'ガイド',
+    guidesShort: 'ガイド',
+    create: '作成',
+    join: '参加',
+    joinHelp: 'ホストから受け取った6文字のコードを入力してください。',
   },
 
   account: {
@@ -149,9 +154,6 @@ export const ja = {
         a: '招待リストに追加されたアドレスだけが入れます。アドレスの追加はアカウント画面から自分でできます。',
       },
     ] as const,
-    privateTitle: 'ネットワークではなく、私的な部屋',
-    privateBody:
-      'Dub’Up は招待された人だけのものです。公開カタログはなく、輪の外への共有もなく、検索にも載りません。それが成り立たせている条件です。著作物の抜粋を、友人どうしで吹き替え、外には出しません。',
     slides: {
       importTitle: '台詞まで覚えているあのシーンを選ぶ',
       importBody:
@@ -401,7 +403,7 @@ export const ja = {
 
   create: {
     title: '新しいシーン',
-    tabUpload: 'ファイルを取り込む',
+    tabUpload: '動画をインポート',
     tabYoutube: 'YouTube のリンクを貼る',
     songLabel: 'これは曲です',
     songHelp:
@@ -412,7 +414,7 @@ export const ja = {
     matchLines: '言う台詞',
     matchUse: 'このシーンから始める',
     matchScratch: '一から作り直す',
-    tabPack: 'パックから始める',
+    tabPack: '準備済みのシーンから始める',
     packHelp:
       '下準備は不要です。シーンはすでに区切られているので、役を選んで録音するだけ。全部の一覧はコミュニティのタブにあります。',
     titleLabel: 'シーンの題名',
@@ -435,6 +437,18 @@ export const ja = {
     submitUpload: '取り込んで準備',
     submitYoutube: 'ダウンロードして準備',
     uploading: 'ファイルを送信中…',
+    subtitle: '始め方は二つ。動画をインポートして新しいシーンを作るか、グループが準備したシーンを使うかです。',
+    introUpload: 'あなたの動画から一から準備する新しいシーン。',
+    introPack: 'キャラクターとセリフは準備済み。動画を用意すれば、約2分でロビーが開きます。',
+    introYoutube: '管理者専用：動画はホストのPCのworkerがダウンロードします。workerを起動しておく必要があります。',
+    limits: 'MP4・最大50 MB・最長10分',
+    uploadStepsTitle: '流れ',
+    uploadSteps: [
+      '動画を選んでタイトルを付けます。',
+      '音声、声、セリフまで、すべてオンラインで準備します。2〜3分です。',
+      'キャラクターを確認したら、友だちをロビーに招待します。',
+    ],
+    adminBadge: '管理者',
   },
 
   ingest: {
@@ -636,6 +650,22 @@ export const ja = {
     almost: 'もうすぐ終わります。',
     longer:
       'いつもより時間がかかっていますが、処理は続いています。そのままお待ちください。',
+    phases: {
+      upload: '動画を送信中',
+      queued: '処理を開始しています',
+      download: '動画を取得中',
+      encode: '映像を準備中',
+      extract: '音声を処理中',
+      separate: '声と音楽を分離中',
+      transcribe: 'セリフを分解中',
+      segment: 'セリフをキャラクターに割り当て中',
+      renderQueued: '編集を開始しています',
+      fetch: 'テイクを取得中',
+      mix: '声をミックス中',
+      mux: '動画を編集中',
+      uploadRender: '結果を送信中',
+      purge: '仕上げ中',
+    },
   },
   render: {
     title: '書き出し中',
@@ -665,6 +695,10 @@ export const ja = {
     voiceOriginal: 'もとの音声',
     shareHint: 'このリンクはシーンの参加者だけが開けます。',
     sourcePurged: 'もとの素材は削除されました。残っているのは完成ミックスだけです。',
+    expiresIn: (m: string) => `この動画はあと${m}で削除されます。残したい場合は今ダウンロードしてください。`,
+    expiresSoon: 'この動画はまもなく削除されます。残したい場合は今ダウンロードしてください。',
+    expiredTitle: '動画は削除されました',
+    expiredBody: '完成したシーンは編集の1時間後に削除され、サーバーには何も残りません。残したいシーンは、その前にダウンロードしてください。',
   },
 
   packStart: {
@@ -684,6 +718,7 @@ export const ja = {
     autoBody: 'ホストのPCがYouTubeから動画をダウンロードします。そのPCでstart.batが動いている必要があります。',
     autoSubmit: 'ダウンロードを開始',
     mediaBody: 'このシーンはここに保存されています。すぐに始められます。',
+    introMember: 'このシーンはリンクとして保存されています。動画を用意すれば、パックのセリフとキャラクターでオンライン準備されます。',
   },
 
   guide: {
@@ -720,11 +755,9 @@ export const ja = {
       '最長10分',
     ],
     whyTitle: 'なぜこの手順が必要？',
-    whyBody: 'YouTubeはサーバーからのダウンロードを拒否します。そのためDub’Upはオンラインで動画を取得できません。ホストのPCが自宅の回線でダウンロードするか、あなたがファイルを持ち込むかのどちらかです。',
+    whyBody: 'YouTubeはサーバーからのダウンロードを拒否します。そのためDub’Upが代わりに動画を取得することはできません。動画はあなたが用意し、それ以外はすべてオンラインで行います。',
     wayFileTitle: 'ファイルをインポートする',
     wayFileBody: '誰もstart.batを起動していなくても、いつでも使えます。準備はオンラインで約2分です。',
-    wayAutoTitle: 'ホストのPCがダウンロードする',
-    wayAutoBody: 'ファイルを扱う必要はありませんが、ダウンロード中はホストのPCでworkerが動いている必要があります。',
     faqTitle: 'よくある質問',
     faq: [
       {
@@ -749,6 +782,26 @@ export const ja = {
     homeLead: 'カタログのシーンがダウンロードできない？',
     homeAction: '自分の動画をインポート',
     createLink: 'YouTube動画のファイルを用意するには？',
+  },
+
+  guideHub: {
+    title: 'ガイドとヘルプ',
+    body: 'シーンの準備、友だちとの吹き替え、結果の受け取りまで、必要なことをまとめました。',
+    guidesTitle: 'ガイド一覧',
+    readGuide: 'ガイドを読む',
+    videoGuideSummary: 'カタログのシーンの動画を用意し、セリフと合っているか確認してインポートする方法。',
+    readingTime: '約5分',
+  },
+
+  admin: {
+    title: '管理者',
+    help: '管理者はYouTubeのリンクからシーンを作成できます。動画は本人のPCのworkerがダウンロードします。ほかのメンバーは動画をインポートし、オンラインで準備されます。',
+    roleOwner: 'オーナー',
+    roleAdmin: '管理者',
+    roleUser: 'メンバー',
+    promote: '管理者にする',
+    demote: '管理者を外す',
+    noAccount: 'まだログインしていません',
   },
 
   errors: {

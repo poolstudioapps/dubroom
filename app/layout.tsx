@@ -75,10 +75,15 @@ const grotesk = Inter({
  * refus quand on heberge des extraits d'oeuvres protegees.
  */
 /** L'image qu'affichent les messageries et les reseaux quand on colle le lien. */
+/*
+ * Une bande d'amis qui rient dans une salle de cinema : c'est la scene
+ * qu'on promet a la personne invitee. En JPEG et au format 1,91:1, le
+ * seul que toutes les messageries affichent sans le recadrer ni l'ignorer.
+ */
 const OG_IMAGE = {
-  url: '/illustrations/og-card.webp',
+  url: '/illustrations/og-invitation.jpg',
   width: 1200,
-  height: 675,
+  height: 630,
   alt: APP_NAME,
 };
 

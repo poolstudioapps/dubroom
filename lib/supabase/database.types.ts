@@ -50,6 +50,10 @@ export interface SessionRow {
   /** Rendu recadré en 9/16, ou `null` s'il n'a pas été produit. */
   render_vertical_path: string | null;
   render_vertical_size_bytes: number | null;
+  /** Quand le rendu sera supprime : une heure apres sa creation. */
+  render_expires_at: string | null;
+  /** Quand le rendu a ete supprime, une fois l'heure passee. */
+  render_deleted_at: string | null;
   from_pack_id: string | null;
   published_pack_id: string | null;
   purged_at: string | null;

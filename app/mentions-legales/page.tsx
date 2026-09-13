@@ -25,9 +25,11 @@ export default function MentionsPage() {
           sur une infrastructure située dans l’Union européenne (région Irlande).
         </p>
         <p>
-          Les traitements audio et vidéo s’exécutent sur un ordinateur personnel, et non
-          sur un serveur : aucun fichier source ne transite par un service tiers en
-          dehors de ceux cités ici.
+          Les traitements audio et vidéo s’exécutent sur Google Cloud Run, dans l’Union
+          européenne (région Belgique), service fourni par Google Cloud EMEA Limited,
+          Velasco, Clanwilliam Place, Dublin 2, Irlande. Les scènes créées depuis un lien
+          par un administrateur sont téléchargées par son ordinateur personnel. Aucun
+          fichier source ne transite par un service tiers en dehors de ceux cités ici.
         </p>
       </LegalSection>
 

@@ -8,6 +8,7 @@ import { useT } from '@/lib/i18n';
 import { PlayerProgressList } from '@/components/scene/player-progress';
 import { VoiceConsole } from '@/components/scene/voice-console';
 import { useSceneCtx } from '@/components/scene-page';
+import { SelectMenu } from '@/components/select-menu';
 import { Alert, Button, Card, Dialog, Progress, Toggle } from '@/components/ui';
 import {
   MIC_OFFSET_MAX_MS,
@@ -316,25 +317,18 @@ export function StudioSidebar({
               .map((character) => (
                 <div key={character.id} className="flex items-center gap-2">
                   <span className="flex-1 truncate text-sm">{character.name}</span>
-                  <select
-                    className="h-8 rounded-lg border border-border bg-surface-sunken px-2 text-xs"
-                    defaultValue=""
-                    aria-label={t.studio.reassign(character.name)}
-                    onChange={(e) => {
-                      const target = e.target.value;
-                      if (!target) return;
-                      act.mutate(() => reassignCharacter(character.id, target));
-                    }}
-                  >
-                    <option value="">{t.studio.pickPlayer}</option>
-                    {participants
+                  <SelectMenu
+                    variant="compact"
+                    label={t.studio.reassign(character.name)}
+                    value=""
+                    placeholder={t.studio.pickPlayer}
+                    options={participants
                       .filter((p) => !p.is_kicked && p.id !== pendingKick?.id)
-                      .map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.display_name}
-                        </option>
-                      ))}
-                  </select>
+                      .map((p) => ({ value: p.id, label: p.display_name }))}
+                    onChange={(target) => {
+                      if (target) act.mutate(() => reassignCharacter(character.id, target));
+                    }}
+                  />
                 </div>
               ))}
           </div>

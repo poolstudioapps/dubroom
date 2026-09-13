@@ -1,7 +1,8 @@
 'use client';
 
-import { ChevronDown, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
+import { SelectMenu } from '@/components/select-menu';
 import { Button } from '@/components/ui';
 import { useT } from '@/lib/i18n';
 import { PACK_GENRES, type Pack, type PackGenre } from '@/lib/packs';
@@ -229,25 +230,17 @@ function FilterPill<V extends string>({
   /** Le tri a toujours une valeur : il ne s'allume pas comme un filtre. */
   neutral?: boolean;
 }) {
-  const current = options.find((option) => option.value === value)?.label ?? '';
-
   return (
-    <label className={cn('filtre', !neutral && value !== '' && 'filtre-actif')}>
-      <span className="filtre-nom">{label}</span>
-      <span className="filtre-valeur">{current}</span>
-      <ChevronDown className="filtre-chevron h-3.5 w-3.5 shrink-0" aria-hidden />
-      <select
-        value={value}
-        aria-label={label}
-        onChange={(e) => onChange(e.target.value as V)}
-        className="filtre-select"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
+    <SelectMenu
+      variant="pill"
+      label={label}
+      prefix={label}
+      value={value}
+      options={options}
+      onChange={onChange}
+      // Le tri est range a droite : sa liste s'ouvre vers la gauche.
+      align={neutral ? 'end' : 'start'}
+      className={cn(!neutral && value !== '' && 'filtre-actif')}
+    />
   );
 }

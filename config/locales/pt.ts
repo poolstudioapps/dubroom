@@ -17,6 +17,11 @@ export const pt = {
     communityShort: 'Comunidade',
     myPacks: 'Meus packs',
     myPacksShort: 'Meus packs',
+    guides: 'Guias',
+    guidesShort: 'Guias',
+    create: 'Criar',
+    join: 'Entrar',
+    joinHelp: 'Digite o código de seis caracteres que o anfitrião te passou.',
   },
 
   account: {
@@ -150,9 +155,6 @@ export const pt = {
         a: 'Só entram os endereços adicionados à lista de convidados. Você mesmo adiciona um endereço pela sua conta.',
       },
     ] as const,
-    privateTitle: 'Uma sala privada, não uma rede',
-    privateBody:
-      'O Dub’Up é só para quem foi convidado. Sem catálogo público, sem compartilhar fora do círculo, sem indexação. É isso que torna a coisa sustentável: dublamos trechos de obras protegidas, entre amigos, sem divulgar nada.',
     slides: {
       importTitle: 'Escolham a cena que vocês sabem de cor',
       importBody:
@@ -404,7 +406,7 @@ export const pt = {
 
   create: {
     title: 'Nova cena',
-    tabUpload: 'Importar um arquivo',
+    tabUpload: 'Importar um vídeo',
     tabYoutube: 'Colar um link do YouTube',
     songLabel: 'É uma música',
     songHelp:
@@ -415,7 +417,7 @@ export const pt = {
     matchLines: 'As falas a dizer',
     matchUse: 'Partir desta cena',
     matchScratch: 'Refazer do zero',
-    tabPack: 'Partir de um pack',
+    tabPack: 'Partir de uma cena pronta',
     packHelp:
       'Nada para preparar: a cena já está cortada, vocês escolhem os papéis e gravam. O catálogo completo está na aba Comunidade.',
     titleLabel: 'Título da cena',
@@ -438,6 +440,18 @@ export const pt = {
     submitUpload: 'Importar e preparar',
     submitYoutube: 'Baixar e preparar',
     uploading: 'Enviando o arquivo…',
+    subtitle: 'Duas formas de começar: importar seu vídeo para uma cena nova, ou retomar uma cena que o grupo já preparou.',
+    introUpload: 'Uma cena nova, preparada do zero a partir do seu vídeo.',
+    introPack: 'Personagens e falas já estão prontos: você traz o vídeo e o lobby abre em cerca de dois minutos.',
+    introYoutube: 'Só para administradores: o vídeo é baixado pelo worker do PC do anfitrião, que precisa estar rodando.',
+    limits: 'MP4 · no máximo 50 MB e 10 minutos',
+    uploadStepsTitle: 'Como funciona',
+    uploadSteps: [
+      'Você escolhe o vídeo e dá um título.',
+      'Preparamos tudo online: o som, as vozes, os diálogos. De dois a três minutos.',
+      'Você confere os personagens e depois convida os amigos para o lobby.',
+    ],
+    adminBadge: 'Admin',
   },
 
   ingest: {
@@ -638,6 +652,22 @@ export const pt = {
     working: 'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
     almost: 'Quase lá.',
     longer: 'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',
+    phases: {
+      upload: 'Enviando o vídeo',
+      queued: 'Iniciando o processamento',
+      download: 'Buscando o vídeo',
+      encode: 'Preparando a imagem',
+      extract: 'Processando o áudio',
+      separate: 'Separando vozes e música',
+      transcribe: 'Decompondo os diálogos',
+      segment: 'Atribuindo as falas aos personagens',
+      renderQueued: 'Iniciando a montagem',
+      fetch: 'Buscando as gravações',
+      mix: 'Mixando as vozes',
+      mux: 'Montando o vídeo',
+      uploadRender: 'Enviando o resultado',
+      purge: 'Finalizando',
+    },
   },
   render: {
     title: 'Renderizando',
@@ -667,6 +697,10 @@ export const pt = {
     voiceOriginal: 'Original mantido',
     shareHint: 'O link só funciona para quem participa desta cena.',
     sourcePurged: 'A fonte foi apagada: só a mixagem final fica.',
+    expiresIn: (m: string) => `Este vídeo será apagado em ${m}. Baixe agora se quiser guardá-lo.`,
+    expiresSoon: 'Este vídeo vai ser apagado a qualquer momento. Baixe agora se quiser guardá-lo.',
+    expiredTitle: 'O vídeo foi apagado',
+    expiredBody: 'As cenas finalizadas são apagadas uma hora depois da montagem: nada fica em nossos servidores. Para guardar uma cena, baixe antes.',
   },
 
   packStart: {
@@ -686,6 +720,7 @@ export const pt = {
     autoBody: 'O PC do anfitrião baixa o vídeo do YouTube. O start.bat precisa estar rodando nele.',
     autoSubmit: 'Iniciar o download',
     mediaBody: 'Esta cena está hospedada aqui: começa na hora.',
+    introMember: 'Esta cena está guardada como link: traga o vídeo e tudo é preparado online com o texto e os personagens do pack.',
   },
 
   guide: {
@@ -722,11 +757,9 @@ export const pt = {
       'No máximo 10 minutos',
     ],
     whyTitle: 'Por que esta etapa?',
-    whyBody: 'O YouTube recusa downloads vindos de servidores. Por isso o Dub’Up não consegue buscar o vídeo online: ou o PC do anfitrião faz isso pela conexão dele, ou você traz o arquivo.',
+    whyBody: 'O YouTube recusa downloads vindos de servidores. Por isso o Dub’Up não consegue buscar o vídeo por você: você traz o arquivo, e todo o resto acontece online.',
     wayFileTitle: 'Você importa o arquivo',
     wayFileBody: 'Funciona a qualquer hora, mesmo que ninguém tenha iniciado o start.bat. A preparação acontece online, em cerca de dois minutos.',
-    wayAutoTitle: 'O PC do anfitrião baixa',
-    wayAutoBody: 'Nenhum arquivo para mexer, mas o worker precisa estar rodando no PC do anfitrião durante o download.',
     faqTitle: 'Perguntas frequentes',
     faq: [
       {
@@ -751,6 +784,26 @@ export const pt = {
     homeLead: 'Uma cena do catálogo não baixa?',
     homeAction: 'Importe o seu próprio vídeo',
     createLink: 'Como obtenho o arquivo de um vídeo do YouTube?',
+  },
+
+  guideHub: {
+    title: 'Guias e ajuda',
+    body: 'Tudo o que é preciso para preparar uma cena, dublá-la com amigos e pegar o resultado.',
+    guidesTitle: 'Os guias',
+    readGuide: 'Ler o guia',
+    videoGuideSummary: 'Obtenha o vídeo de uma cena do catálogo, confira se bate com o texto e importe.',
+    readingTime: '5 min de leitura',
+  },
+
+  admin: {
+    title: 'Administradores',
+    help: 'Um administrador pode criar uma cena a partir de um link do YouTube: o vídeo é baixado pelo worker do PC dele. Os outros membros importam seus vídeos, preparados online.',
+    roleOwner: 'Proprietário',
+    roleAdmin: 'Admin',
+    roleUser: 'Membro',
+    promote: 'Tornar admin',
+    demote: 'Remover admin',
+    noAccount: 'ainda não entrou',
   },
 
   errors: {

@@ -35,6 +35,13 @@ const MESSAGES: Record<string, string> = {
     'Seule une scène créée depuis un lien peut être partagée. Une vidéo importée reste privée à ton groupe.',
   NOTHING_TO_PUBLISH: 'Cette scène n’a aucun personnage à partager.',
   PACK_FORBIDDEN: 'Seule la personne qui a conservé cette scène peut la retirer.',
+  PACK_HAS_MEDIA: 'Cette scène démarre sans vidéo à fournir.',
+  ADMIN_ONLY:
+    'Réservé aux administrateurs. Importe plutôt la vidéo : elle sera préparée en ligne.',
+  OWNER_ONLY: 'Réservé aux propriétaires du projet.',
+  OWNER_LOCKED: 'Le rôle d’un propriétaire ne se change pas depuis l’application.',
+  INVALID_ROLE: 'Ce rôle n’existe pas.',
+  GUEST_NOT_FOUND: 'Cette adresse n’est pas dans la liste des invités.',
 };
 
 /** Erreur porteuse d'un message deja lisible par l'utilisateur. */

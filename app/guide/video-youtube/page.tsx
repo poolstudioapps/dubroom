@@ -10,7 +10,6 @@ import {
   Download,
   FileVideo,
   Link2,
-  MonitorDown,
   Timer,
   Upload,
 } from 'lucide-react';
@@ -215,31 +214,17 @@ export default async function GuideVideoPage() {
                 >
                   {g.whyBody}
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div
-                    data-reveal
-                    suppressHydrationWarning
-                    style={delai(0)}
-                    className="panel space-y-2 p-5"
-                  >
-                    <h3 className="flex items-center gap-2 font-bold text-text">
-                      <Upload className="h-4 w-4 text-link" aria-hidden />
-                      {g.wayFileTitle}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-text-muted">{g.wayFileBody}</p>
-                  </div>
-                  <div
-                    data-reveal
-                    suppressHydrationWarning
-                    style={delai(120)}
-                    className="panel space-y-2 p-5"
-                  >
-                    <h3 className="flex items-center gap-2 font-bold text-text">
-                      <MonitorDown className="h-4 w-4 text-text-faint" aria-hidden />
-                      {g.wayAutoTitle}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-text-muted">{g.wayAutoBody}</p>
-                  </div>
+                <div
+                  data-reveal
+                  suppressHydrationWarning
+                  style={delai(0)}
+                  className="panel max-w-xl space-y-2 p-5"
+                >
+                  <h3 className="flex items-center gap-2 font-bold text-text">
+                    <Upload className="h-4 w-4 text-link" aria-hidden />
+                    {g.wayFileTitle}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-text-muted">{g.wayFileBody}</p>
                 </div>
               </div>
 

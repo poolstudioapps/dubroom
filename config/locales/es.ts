@@ -17,6 +17,11 @@ export const es = {
     communityShort: 'Comunidad',
     myPacks: 'Mis packs',
     myPacksShort: 'Mis packs',
+    guides: 'Guías',
+    guidesShort: 'Guías',
+    create: 'Crear',
+    join: 'Unirse',
+    joinHelp: 'Introduce el código de seis caracteres que te dio el anfitrión.',
   },
 
   account: {
@@ -151,9 +156,6 @@ export const es = {
         a: 'Solo entran las direcciones añadidas a la lista de invitados. Tú mismo añades una dirección desde tu cuenta.',
       },
     ] as const,
-    privateTitle: 'Un salón privado, no una red',
-    privateBody:
-      'Dub’Up es solo para personas invitadas. Sin catálogo público, sin compartir fuera del círculo, sin indexación. Eso es lo que lo hace sostenible: doblamos fragmentos de obras protegidas, entre amigos, sin difundir nada.',
     slides: {
       importTitle: 'Elegid la escena que os sabéis de memoria',
       importBody:
@@ -406,7 +408,7 @@ export const es = {
 
   create: {
     title: 'Nueva escena',
-    tabUpload: 'Importar un archivo',
+    tabUpload: 'Importar un vídeo',
     tabYoutube: 'Pegar un enlace de YouTube',
     songLabel: 'Es una canción',
     songHelp:
@@ -417,7 +419,7 @@ export const es = {
     matchLines: 'Las frases a decir',
     matchUse: 'Partir de esta escena',
     matchScratch: 'Rehacer desde cero',
-    tabPack: 'Partir de un pack',
+    tabPack: 'Partir de una escena lista',
     packHelp:
       'Nada que preparar: la escena ya está cortada, elegís los papeles y grabáis. El catálogo completo está en la pestaña Comunidad.',
     titleLabel: 'Título de la escena',
@@ -440,6 +442,18 @@ export const es = {
     submitUpload: 'Importar y preparar',
     submitYoutube: 'Descargar y preparar',
     uploading: 'Subiendo el archivo…',
+    subtitle: 'Dos maneras de empezar: importar tu vídeo para una escena nueva, o retomar una escena que el grupo ya preparó.',
+    introUpload: 'Una escena nueva, preparada desde cero a partir de tu vídeo.',
+    introPack: 'Los personajes y las frases ya están listos: tú traes el vídeo y la sala se abre en unos dos minutos.',
+    introYoutube: 'Solo para administradores: el vídeo lo descarga el worker del PC del anfitrión, que debe estar en marcha.',
+    limits: 'MP4 · 50 MB y 10 minutos como máximo',
+    uploadStepsTitle: 'Cómo funciona',
+    uploadSteps: [
+      'Eliges tu vídeo y le pones un título.',
+      'Preparamos todo en línea: el sonido, las voces, los diálogos. De dos a tres minutos.',
+      'Revisas los personajes y luego invitas a tus amigos a la sala.',
+    ],
+    adminBadge: 'Admin',
   },
 
   ingest: {
@@ -645,6 +659,22 @@ export const es = {
     working: 'Cuenta unos minutos. Puedes dejar la pestaña abierta y volver más tarde.',
     almost: 'Casi está.',
     longer: 'Está tardando más de lo normal, pero sigue en marcha. Déjalo terminar.',
+    phases: {
+      upload: 'Enviando el vídeo',
+      queued: 'Iniciando el procesamiento',
+      download: 'Recuperando el vídeo',
+      encode: 'Preparando la imagen',
+      extract: 'Procesando el audio',
+      separate: 'Separando voces y música',
+      transcribe: 'Desglosando los diálogos',
+      segment: 'Asignando las frases a los personajes',
+      renderQueued: 'Iniciando el montaje',
+      fetch: 'Recuperando las tomas',
+      mix: 'Mezclando las voces',
+      mux: 'Montando el vídeo',
+      uploadRender: 'Enviando el resultado',
+      purge: 'Finalizando',
+    },
   },
   render: {
     title: 'Montaje en curso',
@@ -674,6 +704,10 @@ export const es = {
     voiceOriginal: 'Original guardado',
     shareHint: 'El enlace solo funciona para quienes participan en esta escena.',
     sourcePurged: 'La fuente se ha eliminado: solo se conserva la mezcla final.',
+    expiresIn: (m: string) => `Este vídeo se borrará en ${m}. Descárgalo ahora si quieres conservarlo.`,
+    expiresSoon: 'Este vídeo se va a borrar en cualquier momento. Descárgalo ahora si quieres conservarlo.',
+    expiredTitle: 'El vídeo se ha borrado',
+    expiredBody: 'Las escenas terminadas se borran una hora después del montaje: no guardamos nada en nuestros servidores. Para conservar una escena, descárgala antes.',
   },
 
   packStart: {
@@ -693,6 +727,7 @@ export const es = {
     autoBody: 'El PC del anfitrión descarga el vídeo de YouTube. start.bat tiene que estar en marcha.',
     autoSubmit: 'Iniciar la descarga',
     mediaBody: 'Esta escena está alojada aquí: empieza enseguida.',
+    introMember: 'Esta escena se guarda como enlace: trae su vídeo y todo se prepara en línea con el texto y los personajes del pack.',
   },
 
   guide: {
@@ -729,11 +764,9 @@ export const es = {
       '10 minutos como máximo',
     ],
     whyTitle: '¿Por qué este paso?',
-    whyBody: 'YouTube rechaza las descargas que vienen de servidores. Por eso Dub’Up no puede conseguir el vídeo en línea: o lo hace el PC del anfitrión desde su conexión, o traes tú el archivo.',
+    whyBody: 'YouTube rechaza las descargas que vienen de servidores. Por eso Dub’Up no puede conseguir el vídeo por ti: tú lo traes y todo lo demás se hace en línea.',
     wayFileTitle: 'Importas el archivo',
     wayFileBody: 'Funciona a cualquier hora, aunque nadie haya iniciado start.bat. La preparación se hace en línea, en unos dos minutos.',
-    wayAutoTitle: 'Descarga el PC del anfitrión',
-    wayAutoBody: 'Ningún archivo que manejar, pero el worker debe estar en marcha en el PC del anfitrión durante la descarga.',
     faqTitle: 'Preguntas frecuentes',
     faq: [
       {
@@ -758,6 +791,26 @@ export const es = {
     homeLead: '¿Una escena del catálogo no se descarga?',
     homeAction: 'Importa tu propio vídeo',
     createLink: '¿Cómo consigo el archivo de un vídeo de YouTube?',
+  },
+
+  guideHub: {
+    title: 'Guías y ayuda',
+    body: 'Todo lo necesario para preparar una escena, doblarla con amigos y recuperar el resultado.',
+    guidesTitle: 'Las guías',
+    readGuide: 'Leer la guía',
+    videoGuideSummary: 'Consigue el vídeo de una escena del catálogo, comprueba que coincide con el texto e impórtalo.',
+    readingTime: '5 min de lectura',
+  },
+
+  admin: {
+    title: 'Administradores',
+    help: 'Un administrador puede crear una escena desde un enlace de YouTube: el vídeo lo descarga el worker de su PC. Los demás miembros importan sus vídeos, que se preparan en línea.',
+    roleOwner: 'Propietario',
+    roleAdmin: 'Admin',
+    roleUser: 'Miembro',
+    promote: 'Hacer admin',
+    demote: 'Quitar admin',
+    noAccount: 'aún no ha entrado',
   },
 
   errors: {

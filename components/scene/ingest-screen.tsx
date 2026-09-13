@@ -11,6 +11,7 @@ import { Alert, Button, Card } from '@/components/ui';
 
 import { enqueueIngest } from '@/lib/actions';
 import { useJobState } from '@/lib/data';
+import { PART_ENVOI } from '@/lib/progress';
 import { humanizeError } from '@/lib/errors';
 
 export function IngestScreen() {
@@ -50,6 +51,9 @@ export function IngestScreen() {
         state={jobState.data}
         kind="ingest"
         needsLocal={session.source_type === 'youtube' && !session.video_path}
+        // Une scene importee a deja fait l'envoi de sa video : la barre
+        // reprend la ou celle de l'import s'est arretee.
+        depart={session.source_type === 'upload' ? PART_ENVOI : 0}
       />
 
       {session.status === 'ingest_failed' ? (

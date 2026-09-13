@@ -1,32 +1,50 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { CircleHelp, FileVideo, Library, Link2, Upload } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { PackMatch } from '@/components/pack-match';
 import { PackSourcePicker } from '@/components/pack-source-picker';
-import { Alert, Button, Card, Input, Label, Progress, Toggle } from '@/components/ui';
+import { PhaseProgress } from '@/components/scene/phase-progress';
+import { Alert, Badge, Button, Card, Input, Label, Toggle } from '@/components/ui';
 import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
 import { humanizeError } from '@/lib/errors';
+import { PART_ENVOI } from '@/lib/progress';
+import { isAdmin, useMyRole } from '@/lib/roles';
 import { cn } from '@/lib/utils';
 import { checkVideoFile } from '@/lib/video-file';
 
-type Mode = 'upload' | 'youtube';
+type Mode = 'upload' | 'pack' | 'youtube';
 
+/**
+ * Nouvelle scene.
+ *
+ * Deux facons de commencer pour tout le monde, dites en clair avant le
+ * premier clic : importer sa video pour une scene toute neuve, ou partir
+ * d'une scene deja preparee par le groupe en apportant la video. Les deux
+ * sont traitees en ligne.
+ *
+ * Le lien YouTube est une troisieme voie, reservee aux administrateurs :
+ * elle passe par le worker du PC de l'hote, le seul que YouTube laisse
+ * telecharger. La base refuse ce chemin aux autres (`ADMIN_ONLY`) ; l'ecran
+ * ne le montre donc pas, plutot que de proposer un bouton qui echouerait.
+ */
 export function NewSessionForm({ displayName }: { displayName: string }) {
   const t = useT();
 
   const router = useRouter();
+  const role = useMyRole();
+  const admin = isAdmin(role.data);
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const [mode, setMode] = useState<Mode | 'pack'>('upload');
+  const [mode, setMode] = useState<Mode>('upload');
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -42,6 +60,12 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
    */
   const [ecarte, setEcarte] = useState('');
   const [isSong, setIsSong] = useState(false);
+
+  // Un membre sans le role ne reste pas sur un onglet qui n'existe pas
+  // pour lui.
+  useEffect(() => {
+    if (mode === 'youtube' && role.isSuccess && !admin) setMode('upload');
+  }, [mode, admin, role.isSuccess]);
 
   async function pickFile(picked: File | null) {
     setError(null);
@@ -97,29 +121,39 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
 
   const canSubmit = mode === 'upload' ? !!file : youtubeUrl.trim().length > 10;
 
-  /*
-   * La troisieme source, et de loin la plus rapide : une scene deja
-   * preparee par quelqu'un d'autre. Elle vivait dans un autre onglet,
-   * donc personne qui cliquait « Nouvelle scene » ne la trouvait.
-   */
-  const sources = [
+  const sources: { mode: Mode; icon: typeof FileVideo; label: string }[] = [
     { mode: 'upload', icon: FileVideo, label: t.create.tabUpload },
-    { mode: 'youtube', icon: Link2, label: t.create.tabYoutube },
     { mode: 'pack', icon: Library, label: t.create.tabPack },
-  ] as const;
+    ...(admin ? [{ mode: 'youtube' as const, icon: Link2, label: t.create.tabYoutube }] : []),
+  ];
+
+  const intro =
+    mode === 'upload'
+      ? t.create.introUpload
+      : mode === 'pack'
+        ? t.create.introPack
+        : t.create.introYoutube;
 
   return (
     <AppShell className="space-y-6 sm:space-y-8">
-      {/*
-        Un selecteur segmente, pas trois boutons.
-        Trois boutons de taille fixe coupaient leur libelle en deux sur
-        telephone, et le texte debordait du cadre. Les trois cases se
-        partagent la largeur a parts egales ; en dessous de 640 px,
-        l'icone passe au-dessus du mot, qui a alors toute la case.
-      */}
       <header className="mx-auto w-full max-w-2xl space-y-5 text-center">
-        <h1 className="titre text-3xl sm:text-4xl">{t.create.title}</h1>
-        <div role="group" aria-label={t.create.title} className="panel source-onglets">
+        <div className="space-y-2">
+          <h1 className="titre text-3xl sm:text-4xl">{t.create.title}</h1>
+          <p className="text-balance text-sm leading-relaxed text-text-muted">
+            {t.create.subtitle}
+          </p>
+        </div>
+
+        {/*
+          Un selecteur segmente, pas des boutons : les cases se partagent la
+          largeur a parts egales, et sous 640 px l'icone passe au-dessus du
+          mot pour que le libelle ne soit jamais coupe.
+        */}
+        <div
+          role="group"
+          aria-label={t.create.title}
+          className={cn('panel source-onglets', sources.length === 2 && 'source-onglets-deux')}
+        >
           {sources.map((source) => {
             const Icon = source.icon;
             return (
@@ -132,17 +166,47 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden />
                 <span>{source.label}</span>
+                {source.mode === 'youtube' ? (
+                  <Badge tone="accent" className="hidden sm:inline-flex">
+                    {t.create.adminBadge}
+                  </Badge>
+                ) : null}
               </button>
             );
           })}
         </div>
+
+        <p className="text-balance text-sm leading-relaxed text-text-faint">{intro}</p>
       </header>
 
       {/* Le catalogue prend toute la largeur ; un formulaire, non. */}
       {mode === 'pack' ? (
         <PackSourcePicker displayName={displayName} />
       ) : (
-        <Card className="mx-auto w-full max-w-xl space-y-4">
+        <Card className="mx-auto w-full max-w-xl space-y-5">
+          {/* Ce qui va se passer, avant de le lancer : trois etapes, et le
+              temps que prend celle qui fait attendre. */}
+          {mode === 'upload' ? (
+            <div className="space-y-2.5">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-faint">
+                {t.create.uploadStepsTitle}
+              </h2>
+              <ol className="grid gap-3 sm:grid-cols-3">
+                {t.create.uploadSteps.map((etape, rang) => (
+                  <li
+                    key={etape}
+                    className="flex gap-3 text-xs leading-relaxed text-text-muted sm:flex-col sm:gap-2"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-ink">
+                      {rang + 1}
+                    </span>
+                    <span>{etape}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
+
           <div className="space-y-1.5">
             <Label htmlFor="title">{t.create.titleLabel}</Label>
             <Input
@@ -171,7 +235,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
                   void pickFile(e.dataTransfer.files?.[0] ?? null);
                 }}
                 className={cn(
-                  'flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-strong text-sm text-text-muted transition-colors',
+                  'flex h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-strong px-4 text-center text-sm text-text-muted transition-colors',
                   'hover:border-select hover:bg-select/5 hover:text-text',
                   file && 'border-select bg-select/10 text-text',
                 )}
@@ -179,7 +243,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
                 {file ? (
                   <>
                     <FileVideo className="h-7 w-7 text-select" aria-hidden />
-                    <span className="font-bold">{file.name}</span>
+                    <span className="break-all font-bold">{file.name}</span>
                     <span className="text-xs text-text-faint">
                       {formatBytes(file.size)}
                     </span>
@@ -188,6 +252,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
                   <>
                     <Upload className="h-7 w-7 text-text-faint" aria-hidden />
                     <span>{t.create.dropzone}</span>
+                    <span className="text-xs text-text-faint">{t.create.limits}</span>
                   </>
                 )}
               </button>
@@ -250,12 +315,9 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
             </div>
           </div>
 
-          {/* L'intention de partager se pose souvent des le depart : on
-            prepare une scene pour le groupe, pas pour une seule soiree.
-            La case ne s'affiche que pour un lien : partager un fichier
-            importe reviendrait a heberger l'oeuvre, ce qu'un pack ne
-            fait jamais. Mieux vaut ne rien proposer que proposer une
-            case qui refuserait de se cocher. */}
+          {/* La case de partage ne s'affiche que pour un lien : partager un
+            fichier importe reviendrait a heberger l'oeuvre, ce qu'un pack
+            ne fait jamais. */}
           {mode === 'youtube' ? (
             <div className="panel flex items-start gap-3 p-3">
               <Toggle
@@ -272,11 +334,14 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
             <p className="text-xs text-text-faint">{t.create.keepHelpUpload}</p>
           )}
 
+          {/* La meme barre que la preparation : l'envoi en occupe le debut,
+              et l'ecran suivant reprend la ou celle-ci s'arrete. */}
           {progress !== null ? (
-            <div className="space-y-1">
-              <Progress value={progress} indeterminate={progress === 0} />
-              <p className="text-xs text-text-faint">{t.create.uploading}</p>
-            </div>
+            <PhaseProgress
+              titre={t.progress.preparing}
+              phase={t.progress.phases.upload}
+              valeur={(progress * PART_ENVOI) / 100}
+            />
           ) : null}
 
           {error ? <Alert tone="danger">{error}</Alert> : null}

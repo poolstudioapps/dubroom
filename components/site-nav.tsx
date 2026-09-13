@@ -2,10 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Library, Clapperboard, Package } from 'lucide-react';
+import { BookOpen, Home, Library } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
-import { useMyPackCount } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 
 /*
@@ -15,47 +14,38 @@ import { cn } from '@/lib/utils';
  */
 const TABS = [
   { href: '/', icon: Home, exact: true },
-  { href: '/sessions', icon: Clapperboard, exact: false },
   { href: '/communaute', icon: Library, exact: false },
+  { href: '/guide', icon: BookOpen, exact: false },
 ] as const;
-
-/** Le dernier onglet, qui n'apparait que si on a quelque chose dedans. */
-const MY_PACKS = { href: '/mes-packs', icon: Package, exact: false } as const;
 
 /**
  * Onglets du site.
  *
- * Quatre destinations au plus, et la quatrieme n'est la que si elle a du
- * contenu : « Mes packs » ouvrirait sinon sur une page vide, ce qui donne
- * l'impression d'avoir perdu quelque chose. Tant qu'elle n'a rien, c'est
- * l'accueil qui propose d'en creer un.
+ * Trois lieux, et seulement des lieux : l'accueil, le catalogue, les
+ * guides. Les gestes — creer, rejoindre — sont des boutons a cote du
+ * compte, et ce qui est a soi — ses scenes, ses packs — vit dans le menu
+ * du compte. Melanger les trois dans une meme barre obligeait a lire
+ * chaque onglet pour savoir s'il menait quelque part ou s'il faisait
+ * quelque chose.
  *
  * Les ecrans d'une scene n'y figurent pas — on y entre par une scene,
  * jamais par la barre.
- *
- * Les onglets passent a la ligne plutot que de pousser la page hors de
- * l'ecran : le quatrieme ne rentrait pas en largeur telephone, et faisait
- * deborder tout le site de soixante-quinze pixels.
  */
-export function SiteNav({ signedIn }: { signedIn?: boolean }) {
+export function SiteNav(_props: { signedIn?: boolean }) {
   const t = useT();
   const pathname = usePathname();
-  const packs = useMyPackCount(!!signedIn);
 
-  /* Le libelle court n'est pas le premier mot du long : « Mes scènes »
-     donnait « Mes », qui ne designe rien. Il est ecrit a la main. */
+  /* Le libelle court n'est pas le premier mot du long : il est ecrit a la
+     main, pour les telephones. */
   const labels: Record<string, { label: string; short: string }> = {
     '/': { label: t.nav.home, short: t.nav.homeShort },
-    '/sessions': { label: t.nav.sessions, short: t.nav.sessionsShort },
     '/communaute': { label: t.nav.community, short: t.nav.communityShort },
-    '/mes-packs': { label: t.nav.myPacks, short: t.nav.myPacksShort },
+    '/guide': { label: t.nav.guides, short: t.nav.guidesShort },
   };
-
-  const tabs = [...TABS, ...((packs.data ?? 0) > 0 ? [MY_PACKS] : [])];
 
   return (
     <nav className="flex flex-wrap gap-1" aria-label="Navigation principale">
-      {tabs.map((tab) => {
+      {TABS.map((tab) => {
         const active = tab.exact
           ? pathname === tab.href
           : pathname.startsWith(tab.href);
@@ -67,9 +57,6 @@ export function SiteNav({ signedIn }: { signedIn?: boolean }) {
             href={tab.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              // Sur telephone les quatre onglets tiennent sur deux lignes
-              // quoi qu'on fasse : autant qu'elles coutent le moins
-              // possible, l'ecran servant deja a doubler.
               'tab inline-flex items-center gap-1.5 rounded-t-lg border-2 border-b-0 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-colors',
               'sm:gap-2 sm:px-3 sm:py-2 sm:text-sm',
               active

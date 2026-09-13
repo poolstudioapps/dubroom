@@ -17,6 +17,11 @@ export const de = {
     communityShort: 'Community',
     myPacks: 'Meine Packs',
     myPacksShort: 'Meine Packs',
+    guides: 'Anleitungen',
+    guidesShort: 'Hilfe',
+    create: 'Erstellen',
+    join: 'Beitreten',
+    joinHelp: 'Gib den sechsstelligen Code ein, den dir der Gastgeber gegeben hat.',
   },
 
   account: {
@@ -151,9 +156,6 @@ export const de = {
         a: 'Hinein kommen nur Adressen, die auf der Gästeliste stehen. Eine Adresse trägst du selbst in deinem Konto ein.',
       },
     ] as const,
-    privateTitle: 'Ein privates Wohnzimmer, kein Netzwerk',
-    privateBody:
-      'Dub’Up ist nur für eingeladene Personen. Kein öffentlicher Katalog, kein Teilen außerhalb des Kreises, keine Indexierung. Genau das macht die Sache tragfähig: wir synchronisieren Ausschnitte geschützter Werke, unter Freunden, ohne etwas zu verbreiten.',
     slides: {
       importTitle: 'Nehmt die Szene, die ihr auswendig könnt',
       importBody:
@@ -408,7 +410,7 @@ export const de = {
 
   create: {
     title: 'Neue Szene',
-    tabUpload: 'Datei importieren',
+    tabUpload: 'Video importieren',
     tabYoutube: 'YouTube-Link einfügen',
     songLabel: 'Das ist ein Lied',
     songHelp:
@@ -419,7 +421,7 @@ export const de = {
     matchLines: 'Die Sätze zum Sprechen',
     matchUse: 'Diese Szene übernehmen',
     matchScratch: 'Von vorn aufbauen',
-    tabPack: 'Mit einem Pack starten',
+    tabPack: 'Mit einer fertigen Szene starten',
     packHelp:
       'Nichts vorzubereiten: die Szene ist schon geschnitten, ihr wählt die Rollen und nehmt auf. Der ganze Katalog steht im Reiter Community.',
     titleLabel: 'Titel der Szene',
@@ -442,6 +444,18 @@ export const de = {
     submitUpload: 'Importieren und vorbereiten',
     submitYoutube: 'Herunterladen und vorbereiten',
     uploading: 'Datei wird hochgeladen…',
+    subtitle: 'Zwei Wege zum Start: Importiere dein Video für eine ganz neue Szene, oder übernimm eine Szene, die die Gruppe schon vorbereitet hat.',
+    introUpload: 'Eine neue Szene, von Grund auf aus deinem Video vorbereitet.',
+    introPack: 'Figuren und Sätze stehen schon: Du bringst das Video mit, und die Lobby öffnet sich in etwa zwei Minuten.',
+    introYoutube: 'Nur für Administratoren: Das Video lädt der Worker auf dem PC des Gastgebers herunter, der laufen muss.',
+    limits: 'MP4 · höchstens 50 MB und 10 Minuten',
+    uploadStepsTitle: 'So läuft es ab',
+    uploadSteps: [
+      'Du wählst dein Video aus und gibst ihm einen Titel.',
+      'Wir bereiten alles online vor: Ton, Stimmen, Dialoge. Zwei bis drei Minuten.',
+      'Du prüfst die Figuren und lädst dann deine Freunde in die Lobby ein.',
+    ],
+    adminBadge: 'Admin',
   },
 
   ingest: {
@@ -649,6 +663,22 @@ export const de = {
       'Rechne mit ein paar Minuten. Du kannst den Tab offen lassen und später zurückkommen.',
     almost: 'Fast fertig.',
     longer: 'Es dauert länger als sonst, läuft aber weiter. Lass es zu Ende laufen.',
+    phases: {
+      upload: 'Video wird hochgeladen',
+      queued: 'Verarbeitung startet',
+      download: 'Video wird geholt',
+      encode: 'Bild wird vorbereitet',
+      extract: 'Audioverarbeitung',
+      separate: 'Stimmen und Musik werden getrennt',
+      transcribe: 'Dialoge werden zerlegt',
+      segment: 'Sätze werden den Figuren zugeordnet',
+      renderQueued: 'Schnitt startet',
+      fetch: 'Aufnahmen werden geholt',
+      mix: 'Stimmen werden gemischt',
+      mux: 'Video wird geschnitten',
+      uploadRender: 'Ergebnis wird hochgeladen',
+      purge: 'Abschluss',
+    },
   },
   render: {
     title: 'Ausgabe läuft',
@@ -678,6 +708,10 @@ export const de = {
     voiceOriginal: 'Original bleibt',
     shareHint: 'Der Link funktioniert nur für die Beteiligten dieser Szene.',
     sourcePurged: 'Die Quelle wurde gelöscht: nur die fertige Mischung bleibt.',
+    expiresIn: (m: string) => `Dieses Video wird in ${m} gelöscht. Lade es jetzt herunter, wenn du es behalten willst.`,
+    expiresSoon: 'Dieses Video wird gleich gelöscht. Lade es jetzt herunter, wenn du es behalten willst.',
+    expiredTitle: 'Das Video wurde gelöscht',
+    expiredBody: 'Fertige Szenen werden eine Stunde nach dem Schnitt gelöscht: Auf unseren Servern bleibt nichts. Wer eine Szene behalten will, lädt sie vorher herunter.',
   },
 
   packStart: {
@@ -697,6 +731,7 @@ export const de = {
     autoBody: 'Der PC des Gastgebers lädt das Video von YouTube. Dort muss start.bat laufen.',
     autoSubmit: 'Download starten',
     mediaBody: 'Diese Szene liegt hier: Sie startet sofort.',
+    introMember: 'Diese Szene ist als Link gespeichert: Bring ihr Video mit, und alles wird online mit Text und Figuren des Packs vorbereitet.',
   },
 
   guide: {
@@ -733,11 +768,9 @@ export const de = {
       'Höchstens 10 Minuten',
     ],
     whyTitle: 'Warum dieser Schritt?',
-    whyBody: 'YouTube lehnt Downloads von Servern ab. Dub’Up kann das Video deshalb nicht online holen: Entweder lädt es der PC des Gastgebers über seinen Anschluss, oder du bringst die Datei mit.',
+    whyBody: 'YouTube lehnt Downloads von Servern ab. Dub’Up kann das Video deshalb nicht für dich holen: Du bringst es mit, und alles andere passiert online.',
     wayFileTitle: 'Du importierst die Datei',
     wayFileBody: 'Funktioniert jederzeit, auch wenn niemand start.bat gestartet hat. Die Vorbereitung läuft online, in etwa zwei Minuten.',
-    wayAutoTitle: 'Der PC des Gastgebers lädt herunter',
-    wayAutoBody: 'Keine Datei nötig, aber der Worker muss während des Downloads auf dem PC des Gastgebers laufen.',
     faqTitle: 'Häufige Fragen',
     faq: [
       {
@@ -762,6 +795,26 @@ export const de = {
     homeLead: 'Eine Katalogszene lässt sich nicht herunterladen?',
     homeAction: 'Importiere dein eigenes Video',
     createLink: 'Wie komme ich an die Datei eines YouTube-Videos?',
+  },
+
+  guideHub: {
+    title: 'Anleitungen und Hilfe',
+    body: 'Alles, um eine Szene vorzubereiten, sie mit Freunden zu synchronisieren und das Ergebnis zu holen.',
+    guidesTitle: 'Die Anleitungen',
+    readGuide: 'Anleitung lesen',
+    videoGuideSummary: 'Das Video einer Katalogszene besorgen, prüfen, ob es zum Text passt, und importieren.',
+    readingTime: '5 Min. Lesezeit',
+  },
+
+  admin: {
+    title: 'Administratoren',
+    help: 'Ein Administrator kann eine Szene aus einem YouTube-Link erstellen: Das Video lädt der Worker auf seinem PC herunter. Andere Mitglieder importieren ihre Videos, die online vorbereitet werden.',
+    roleOwner: 'Inhaber',
+    roleAdmin: 'Admin',
+    roleUser: 'Mitglied',
+    promote: 'Zum Admin machen',
+    demote: 'Admin entziehen',
+    noAccount: 'noch nicht angemeldet',
   },
 
   errors: {

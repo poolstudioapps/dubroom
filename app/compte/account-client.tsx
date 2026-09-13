@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import {
+  Crown,
   HardDrive,
   KeyRound,
   LogOut,
@@ -16,6 +17,7 @@ import {
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
+import { AdminCard } from '@/components/admin-card';
 import { GuestListCard } from '@/components/guest-list-card';
 import { PasswordCard } from '@/components/password-card';
 import {
@@ -40,6 +42,7 @@ import {
   useMyProfile,
   useUpdateProfile,
 } from '@/lib/profile';
+import { useMyRole } from '@/lib/roles';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
 /**
@@ -113,6 +116,7 @@ export function AccountClient({
     router.refresh();
   }
 
+  const role = useMyRole();
   const used = usage.data ?? 0;
   const dirty = name !== null && name.trim() !== current?.display_name;
   const viaDiscord = providers.includes('discord');
@@ -266,6 +270,13 @@ export function AccountClient({
       >
         <GuestListCard bare />
       </Disclosure>
+
+      {/* Les administrateurs : seuls les proprietaires les voient. */}
+      {role.data === 'owner' ? (
+        <Disclosure title={t.admin.title} icon={<Crown className="h-4 w-4" aria-hidden />}>
+          <AdminCard />
+        </Disclosure>
+      ) : null}
 
       <Disclosure
         title={t.sessions.storageTitle}

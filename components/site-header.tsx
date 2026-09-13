@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 
+import { HeaderActions } from '@/components/header-actions';
 import { SiteNav } from '@/components/site-nav';
 import { APP_NAME } from '@/config/strings';
 import { useT } from '@/lib/i18n';
@@ -55,7 +56,8 @@ export function SiteHeader({
         compte, et le dire au moment ou l'on clique vaut mieux que de
         fermer la porte d'emblee.
       */}
-      <div className="order-2 ml-auto sm:order-3">
+      <div className="order-2 ml-auto flex items-center gap-2 sm:order-3">
+        <HeaderActions signedIn={!!signedIn} />
         {right ?? (
           <Link
             href="/login"

@@ -17,6 +17,11 @@ export const fr = {
     communityShort: 'Communauté',
     myPacks: 'Mes packs',
     myPacksShort: 'Mes packs',
+    guides: 'Guides',
+    guidesShort: 'Guides',
+    create: 'Créer',
+    join: 'Rejoindre',
+    joinHelp: 'Entre le code à six caractères que l’hôte t’a donné.',
   },
 
   account: {
@@ -150,9 +155,6 @@ export const fr = {
         a: 'Seules les adresses ajoutées à la liste des invités peuvent entrer. Tu ajoutes toi-même une adresse depuis ton compte.',
       },
     ] as const,
-    privateTitle: 'Un salon privé, pas un réseau',
-    privateBody:
-      'Dub’Up est réservé aux personnes invitées. Pas de catalogue public, pas de partage hors du cercle, pas d’indexation. C’est ce qui rend l’exercice tenable : on double des extraits d’œuvres protégées, entre amis, sans rien diffuser.',
     slides: {
       importTitle: 'Choisissez la scène que vous connaissez par cœur',
       importBody:
@@ -408,7 +410,7 @@ export const fr = {
 
   create: {
     title: 'Nouvelle scène',
-    tabUpload: 'Importer un fichier',
+    tabUpload: 'Importer une vidéo',
     tabYoutube: 'Coller un lien YouTube',
     songLabel: 'C’est une chanson',
     songHelp:
@@ -419,7 +421,7 @@ export const fr = {
     matchLines: 'Les répliques à dire',
     matchUse: 'Partir de cette scène',
     matchScratch: 'Refaire depuis zéro',
-    tabPack: 'Partir d’un pack',
+    tabPack: 'Partir d’une scène prête',
     packHelp:
       'Rien à préparer : la scène est déjà découpée, vous choisissez les rôles et vous enregistrez. Le catalogue complet est dans l’onglet Communauté.',
     titleLabel: 'Titre de la scène',
@@ -442,6 +444,18 @@ export const fr = {
     submitUpload: 'Importer et préparer',
     submitYoutube: 'Télécharger et préparer',
     uploading: 'Envoi du fichier…',
+    subtitle: 'Deux façons de commencer : importer ta vidéo pour une scène toute neuve, ou reprendre une scène que le groupe a déjà préparée.',
+    introUpload: 'Une scène neuve, préparée de zéro à partir de ta vidéo.',
+    introPack: 'Personnages et répliques sont déjà prêts : tu apportes la vidéo, et le lobby s’ouvre en deux minutes environ.',
+    introYoutube: 'Réservé aux administrateurs : la vidéo est téléchargée par le worker du PC de l’hôte, qui doit être lancé.',
+    limits: 'MP4 · 50 Mo et 10 minutes au plus',
+    uploadStepsTitle: 'Comment ça se passe',
+    uploadSteps: [
+      'Tu choisis ta vidéo et tu lui donnes un titre.',
+      'On prépare tout en ligne : le son, les voix, les dialogues. Deux à trois minutes.',
+      'Tu vérifies les personnages, puis tu invites tes amis dans le lobby.',
+    ],
+    adminBadge: 'Admin',
   },
 
   ingest: {
@@ -648,6 +662,22 @@ export const fr = {
       'Compte quelques minutes. Tu peux laisser l’onglet ouvert et revenir plus tard.',
     almost: 'Presque fini.',
     longer: 'C’est plus long que d’habitude, mais ça tourne toujours. Laisse faire.',
+    phases: {
+      upload: 'Envoi de la vidéo',
+      queued: 'Démarrage du traitement',
+      download: 'Récupération de la vidéo',
+      encode: 'Préparation de l’image',
+      extract: 'Traitement audio',
+      separate: 'Séparation des voix et de la musique',
+      transcribe: 'Décomposition des dialogues',
+      segment: 'Attribution des répliques aux personnages',
+      renderQueued: 'Démarrage du montage',
+      fetch: 'Récupération des prises',
+      mix: 'Mixage des voix',
+      mux: 'Montage de la vidéo',
+      uploadRender: 'Envoi du résultat',
+      purge: 'Finalisation',
+    },
   },
   render: {
     title: 'Rendu en cours',
@@ -677,6 +707,10 @@ export const fr = {
     voiceOriginal: 'VO conservée',
     shareHint: 'Le lien n’est accessible qu’aux participants de cette scène.',
     sourcePurged: 'La source a été supprimée : seul le rendu final est conservé.',
+    expiresIn: (m: string) => `Cette vidéo sera supprimée dans ${m}. Télécharge-la maintenant si tu veux la garder.`,
+    expiresSoon: 'Cette vidéo va être supprimée d’un instant à l’autre. Télécharge-la maintenant si tu veux la garder.',
+    expiredTitle: 'La vidéo a été supprimée',
+    expiredBody: 'Les scènes terminées sont effacées une heure après le montage : rien n’est gardé sur nos serveurs. Pour garder une scène, il faut la télécharger avant.',
   },
 
   packStart: {
@@ -696,6 +730,7 @@ export const fr = {
     autoBody: 'Le PC de l’hôte récupère la vidéo depuis YouTube. Il faut que start.bat y tourne.',
     autoSubmit: 'Lancer le téléchargement',
     mediaBody: 'Cette scène est hébergée ici : elle démarre tout de suite.',
+    introMember: 'Cette scène est gardée sous forme de lien : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
   },
 
   guide: {
@@ -732,11 +767,9 @@ export const fr = {
       '10 minutes au plus',
     ],
     whyTitle: 'Pourquoi cette étape ?',
-    whyBody: 'YouTube refuse les téléchargements qui viennent de serveurs. Dub’Up ne peut donc pas récupérer la vidéo en ligne : soit le PC de l’hôte le fait depuis sa connexion, soit tu apportes le fichier.',
+    whyBody: 'YouTube refuse les téléchargements qui viennent de serveurs. Dub’Up ne peut donc pas récupérer la vidéo à ta place : tu l’apportes, et tout le reste se fait en ligne.',
     wayFileTitle: 'Tu importes le fichier',
     wayFileBody: 'Marche à toute heure, même si personne n’a lancé start.bat. La préparation se fait en ligne, en deux minutes environ.',
-    wayAutoTitle: 'Le PC de l’hôte télécharge',
-    wayAutoBody: 'Aucun fichier à manipuler, mais il faut que le worker tourne sur le PC de l’hôte pendant le téléchargement.',
     faqTitle: 'Questions fréquentes',
     faq: [
       {
@@ -761,6 +794,26 @@ export const fr = {
     homeLead: 'Une scène du catalogue ne se télécharge pas ?',
     homeAction: 'Importe ta propre vidéo',
     createLink: 'Comment récupérer le fichier d’une vidéo YouTube ?',
+  },
+
+  guideHub: {
+    title: 'Guides et aide',
+    body: 'Tout ce qu’il faut pour préparer une scène, la doubler entre amis et récupérer le résultat.',
+    guidesTitle: 'Les guides',
+    readGuide: 'Lire le guide',
+    videoGuideSummary: 'Récupérer la vidéo d’une scène du catalogue, vérifier qu’elle colle au texte, et l’importer.',
+    readingTime: '5 min de lecture',
+  },
+
+  admin: {
+    title: 'Administrateurs',
+    help: 'Un administrateur peut créer une scène depuis un lien YouTube : la vidéo est téléchargée par le worker de son PC. Les autres membres importent leurs vidéos, préparées en ligne.',
+    roleOwner: 'Propriétaire',
+    roleAdmin: 'Admin',
+    roleUser: 'Membre',
+    promote: 'Nommer admin',
+    demote: 'Retirer l’admin',
+    noAccount: 'pas encore connecté',
   },
 
   errors: {

@@ -6,13 +6,16 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { CircleHelp, ExternalLink, FileVideo, MonitorDown, Upload } from 'lucide-react';
 
-import { Alert, Badge, Button, Dialog, Progress } from '@/components/ui';
+import { PhaseProgress } from '@/components/scene/phase-progress';
+import { Alert, Badge, Button, Dialog } from '@/components/ui';
 import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
 import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
 import { startFromPack, startFromPackWithFile, type Pack } from '@/lib/packs';
 import { useMyProfile } from '@/lib/profile';
+import { PART_ENVOI } from '@/lib/progress';
+import { isAdmin, useMyRole } from '@/lib/roles';
 import { cn } from '@/lib/utils';
 import { checkVideoFile } from '@/lib/video-file';
 
@@ -51,6 +54,10 @@ export function PackStartDialog({
   const t = useT();
   const router = useRouter();
   const profile = useMyProfile();
+  // Le telechargement automatique passe par le PC de l'hote : il n'est
+  // propose qu'aux administrateurs, les seuls que la base y autorise.
+  const role = useMyRole();
+  const admin = isAdmin(role.data);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -137,7 +144,9 @@ export function PackStartDialog({
             </>
           ) : (
             <>
-              <p className="leading-relaxed">{t.packStart.intro}</p>
+              <p className="leading-relaxed">
+                {admin ? t.packStart.intro : t.packStart.introMember}
+              </p>
 
               {/* ── Premier chemin : le fichier ─────────────────────── */}
               <section className="panel space-y-3 p-4">
@@ -146,7 +155,7 @@ export function PackStartDialog({
                     <FileVideo className="h-4 w-4 text-link" aria-hidden />
                     {t.packStart.fileTitle}
                   </h3>
-                  <Badge tone="accent">{t.packStart.recommended}</Badge>
+                  {admin ? <Badge tone="accent">{t.packStart.recommended}</Badge> : null}
                 </div>
                 <p className="text-xs leading-relaxed text-text-muted">
                   {t.packStart.fileBody}
@@ -230,10 +239,11 @@ export function PackStartDialog({
                 ) : null}
 
                 {progress !== null ? (
-                  <div className="space-y-1">
-                    <Progress value={progress} indeterminate={progress === 0} />
-                    <p className="text-xs text-text-faint">{t.create.uploading}</p>
-                  </div>
+                  <PhaseProgress
+                    titre={t.progress.preparing}
+                    phase={t.progress.phases.upload}
+                    valeur={(progress * PART_ENVOI) / 100}
+                  />
                 ) : null}
 
                 <Button
@@ -247,6 +257,8 @@ export function PackStartDialog({
                 </Button>
               </section>
 
+              {admin ? (
+                <>
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-text-faint">
                 <span className="h-px flex-1 bg-border" aria-hidden />
                 {t.packStart.or}
@@ -276,6 +288,8 @@ export function PackStartDialog({
                   {t.packStart.autoSubmit}
                 </Button>
               </section>
+                </>
+              ) : null}
             </>
           )}
         </div>

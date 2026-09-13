@@ -137,11 +137,13 @@ export default function ConditionsPage() {
           {APP_NAME} est un projet personnel, fourni en l’état, sans garantie de
           disponibilité, de continuité ni d’absence d’erreur. Le service peut être
           interrompu, modifié ou arrêté à tout moment. Les traitements audio et vidéo
-          s’exécutent sur un ordinateur personnel : une scène peut échouer ou attendre.
+          s’exécutent sur un service en ligne ou sur l’ordinateur personnel d’un
+          administrateur : une scène peut échouer ou attendre.
         </p>
         <p>
-          L’éditeur ne saurait être tenu responsable de la perte d’un enregistrement,
-          d’un rendu ou d’une scène. Ce qui compte pour vous doit être téléchargé.
+          Le rendu d’une scène est supprimé une heure après sa création. L’éditeur ne
+          saurait être tenu responsable de la perte d’un enregistrement, d’un rendu ou
+          d’une scène. Ce qui compte pour vous doit être téléchargé.
         </p>
       </LegalSection>
 

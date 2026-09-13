@@ -10,11 +10,10 @@ import { cn } from '@/lib/utils';
 /**
  * La bande rythmo, en vitrine.
  *
- * Deux formes. Quand une scene est designee pour l'accueil, la vitrine la
- * joue : la video tourne en boucle et le texte de la preparation defile
- * sous la tete de lecture, cale sur elle, exactement comme dans le
- * studio. Sinon, ou si quoi que ce soit echoue, elle retombe sur une
- * demonstration ecrite, sans video, qui ne peut pas manquer.
+ * La video de la scene tourne en boucle et le texte de la preparation
+ * defile sous la tete de lecture, cale sur elle, exactement comme dans le
+ * studio. Sans scene, elle retombe sur une demonstration ecrite, sans
+ * video, qui ne peut pas manquer.
  */
 export function HeroRythmo({ demo }: { demo?: HomeDemo | null }) {
   return demo ? <DemoScene demo={demo} /> : <DemoEcrite />;
@@ -36,133 +35,29 @@ const PX_PAR_MS = 0.2;
 const AVANT_MS = 4500;
 const APRES_MS = 2500;
 
-/** La duree des fondus enchaines, a l'entree comme a la sortie. */
+/**
+ * Le fondu enchaine de la boucle : une seconde au noir en fin de scene,
+ * une seconde pour en sortir au debut.
+ */
 const FONDU_MS = 1000;
-/**
- * Ce que l'affiche couvre apres chaque depart.
- *
- * A chaque depart — l'arrivee sur la page comme chaque tour de boucle —
- * YouTube pose ses boutons precedent, pause et suivant au milieu de
- * l'image. Mesure au quart de seconde sur le lecteur nu : ils restent un
- * peu plus de quatre secondes. La video joue dessous, la bande avance
- * avec elle, et l'image ne s'ouvre qu'apres.
- *
- * C'est l'affiche de la scene qui couvre, et non du noir : arriver sur
- * une page et regarder quatre secondes d'ecran vide, c'est croire que
- * rien ne charge.
- */
-const TENUE_MS = 4200;
-/**
- * La boucle repart un quart de seconde avant la fin reelle.
- *
- * Laisser YouTube boucler lui-meme fait passer par son ecran de fin, meme
- * bref. On revient au debut nous-memes, sous l'affiche, juste avant.
- */
-const MARGE_FIN_MS = 250;
-
-interface LecteurYt {
-  getCurrentTime(): number;
-  getDuration(): number;
-  seekTo(secondes: number, chargerAuDela: boolean): void;
-  mute(): void;
-  playVideo(): void;
-  destroy(): void;
-}
-
-interface EspaceYt {
-  Player: new (cible: HTMLElement, options: Record<string, unknown>) => LecteurYt;
-  PlayerState: { PLAYING: number };
-}
-
-declare global {
-  interface Window {
-    YT?: EspaceYt;
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
-
-let promesseApi: Promise<EspaceYt> | null = null;
-
-/** Le script du lecteur YouTube, charge une seule fois pour la page. */
-function chargerApiYoutube(): Promise<EspaceYt> {
-  if (window.YT?.Player) return Promise.resolve(window.YT);
-  if (promesseApi) return promesseApi;
-  promesseApi = new Promise((resoudre, rejeter) => {
-    const precedent = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      precedent?.();
-      if (window.YT) resoudre(window.YT);
-    };
-    const script = document.createElement('script');
-    script.src = 'https://www.youtube.com/iframe_api';
-    script.async = true;
-    script.onerror = () => {
-      promesseApi = null;
-      rejeter(new Error('Lecteur YouTube indisponible'));
-    };
-    document.head.appendChild(script);
-  });
-  return promesseApi;
-}
 
 function DemoScene({ demo }: { demo: HomeDemo }) {
   const t = useT();
-  const cibleRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const pisteRef = useRef<HTMLDivElement>(null);
-  const afficheRef = useRef<HTMLImageElement>(null);
-  const lecteurRef = useRef<LecteurYt | null>(null);
-  /**
-   * La derniere heure lue sur le lecteur, et l'instant ou on l'a lue.
-   *
-   * `getCurrentTime` n'avance que par paliers de quelques centaines de
-   * millisecondes : le texte sautait par a-coups. Entre deux paliers, on
-   * prolonge donc a partir de l'horloge de l'ecran.
-   *
-   * `demarre` : la video a joue au moins une fois. Avant, l'affiche reste
-   * posee. `retour` : l'instant du dernier retour au debut, pendant lequel
-   * le lecteur annonce encore l'ancienne heure.
-   */
-  const horloge = useRef({
-    ms: demo.lines[0]?.start ?? 0,
-    a: 0,
-    lecture: false,
-    demarre: false,
-    retour: -Infinity,
-  });
+  const voileRef = useRef<HTMLDivElement>(null);
 
   const [fixe, setFixe] = useState(false);
   const [maintenant, setMaintenant] = useState(demo.lines[0]?.start ?? 0);
-
-  /*
-   * L'affiche : la plus grande image que YouTube publie, sinon la moyenne.
-   *
-   * `maxresdefault` n'existe pas pour toutes les videos, et son absence ne
-   * se signale pas toujours par une erreur : YouTube renvoie alors une
-   * vignette grise de cent vingt pixels. On la reconnait a sa largeur.
-   */
-  const grande = `https://i.ytimg.com/vi/${demo.videoId}/maxresdefault.jpg`;
-  const moyenne = `https://i.ytimg.com/vi/${demo.videoId}/hqdefault.jpg`;
-  const [affiche, setAffiche] = useState(grande);
-
-  const verifierAffiche = () => {
-    const img = afficheRef.current;
-    if (img?.complete && img.naturalWidth > 0 && img.naturalWidth < 400) {
-      setAffiche(moyenne);
-    }
-  };
-
-  // L'image a pu finir de charger avant que React ne branche `onLoad`.
-  useEffect(() => {
-    verifierAffiche();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [affiche]);
 
   const personnages = useMemo(
     () => new Map(demo.characters.map((c) => [c.key, c])),
     [demo.characters],
   );
 
-  // ── Le lecteur ─────────────────────────────────────────────────────
+  // ── La lecture ─────────────────────────────────────────────────────
+  // La video est servie par le site : ni lecteur tiers, ni boutons a
+  // masquer, ni dependance a une mise en ligne qui peut disparaitre.
   useEffect(() => {
     const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const economie =
@@ -173,58 +68,16 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       return;
     }
 
-    let annule = false;
-    // Apres la premiere peinture : le lecteur pese son poids, et le titre
-    // de la page n'a pas a l'attendre.
-    const depart = window.setTimeout(() => {
-      chargerApiYoutube()
-        .then((YT) => {
-          if (annule || !cibleRef.current) return;
-          lecteurRef.current = new YT.Player(cibleRef.current, {
-            host: 'https://www.youtube-nocookie.com',
-            videoId: demo.videoId,
-            playerVars: {
-              autoplay: 1,
-              mute: 1,
-              controls: 0,
-              disablekb: 1,
-              fs: 0,
-              iv_load_policy: 3,
-              // Filet, si le retour au debut ne se faisait pas : YouTube
-              // bouclerait alors lui-meme.
-              loop: 1,
-              playlist: demo.videoId,
-              modestbranding: 1,
-              playsinline: 1,
-              rel: 0,
-            },
-            events: {
-              // Muet par le code en plus du parametre : c'est ce qui
-              // autorise la lecture automatique, et certains navigateurs
-              // ne regardent que l'appel.
-              onReady: (e: { target: LecteurYt }) => {
-                e.target.mute();
-                e.target.playVideo();
-              },
-              onStateChange: (e: { data: number }) => {
-                const lecture = e.data === YT.PlayerState.PLAYING;
-                horloge.current.lecture = lecture;
-                horloge.current.a = performance.now();
-                if (lecture) horloge.current.demarre = true;
-              },
-            },
-          });
-        })
-        .catch(() => setFixe(true));
-    }, 500);
-
-    return () => {
-      annule = true;
-      window.clearTimeout(depart);
-      lecteurRef.current?.destroy();
-      lecteurRef.current = null;
-    };
-  }, [demo.videoId]);
+    const video = videoRef.current;
+    if (!video) return;
+    // Muet par le code en plus de l'attribut : React ne rend pas `muted`
+    // cote serveur, et sans lui aucun navigateur ne lance la lecture seul.
+    video.muted = true;
+    const essai = video.play();
+    // Mode economie d'energie, lecture automatique refusee : l'image fixe
+    // prend la place plutot qu'un cadre noir.
+    essai?.catch(() => setFixe(true));
+  }, []);
 
   // ── Sans lecture : la bande reste posee sur la premiere replique ─────
   useEffect(() => {
@@ -243,49 +96,25 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
     let dernierEtat = 0;
     const boucle = (instant: number) => {
       image = requestAnimationFrame(boucle);
-      const lecteur = lecteurRef.current;
-      const h = horloge.current;
-      const pret = !!lecteur && typeof lecteur.getCurrentTime === 'function';
-      // Juste apres un retour au debut, le lecteur donne encore l'heure
-      // de la fin : la croire relancerait le retour en boucle.
-      const enRetour = instant - h.retour < 800;
+      const video = videoRef.current;
+      if (!video) return;
 
-      if (pret && !enRetour) {
-        const lu = lecteur.getCurrentTime() * 1000;
-        const prolonge = h.lecture ? h.ms + (instant - h.a) : h.ms;
-        // Un nouveau palier, ou un vrai saut — la boucle qui repart a zero.
-        if (Math.abs(lu - prolonge) > 180 || (lu !== h.ms && !h.lecture)) {
-          h.ms = lu;
-          h.a = instant;
-        }
-      }
-
-      let ms = h.lecture ? h.ms + (instant - h.a) : h.ms;
-
-      // ── La fin : retour au debut, sous l'affiche ────────────────────
+      const ms = video.currentTime * 1000;
       const duree =
-        pret && typeof lecteur.getDuration === 'function' ? lecteur.getDuration() * 1000 : 0;
-      const fin = (duree > 0 ? duree : demo.durationMs) - MARGE_FIN_MS;
-      const bouclable = fin > TENUE_MS + FONDU_MS * 2;
-      if (pret && h.demarre && !enRetour && bouclable && ms >= fin) {
-        lecteur.seekTo(0, true);
-        h.ms = 0;
-        h.a = instant;
-        h.retour = instant;
-        ms = 0;
-      }
+        Number.isFinite(video.duration) && video.duration > 0
+          ? video.duration * 1000
+          : demo.durationMs;
 
-      // ── L'affiche ────────────────────────────────────────────────────
-      // Posee tant que rien n'a joue et pendant que les boutons du lecteur
-      // sont affiches, puis elle s'efface en une seconde et revient de
-      // meme sur la derniere seconde.
-      let couverture = 1;
-      if (h.demarre) {
-        const entree = 1 - (ms - TENUE_MS) / FONDU_MS;
-        const sortie = bouclable ? (ms - (fin - FONDU_MS)) / FONDU_MS : 0;
-        couverture = Math.min(1, Math.max(0, entree, sortie));
+      // Noir tant que rien ne joue, puis une seconde pour en sortir ; une
+      // seconde pour y retourner avant que la boucle ne reparte.
+      const demarree = video.readyState >= 2 && (ms > 0 || !video.paused);
+      let voile = 1;
+      if (demarree) {
+        const entree = 1 - ms / FONDU_MS;
+        const sortie = (ms - (duree - FONDU_MS)) / FONDU_MS;
+        voile = Math.min(1, Math.max(0, entree, sortie));
       }
-      if (afficheRef.current) afficheRef.current.style.opacity = couverture.toFixed(3);
+      if (voileRef.current) voileRef.current.style.opacity = voile.toFixed(3);
 
       if (pisteRef.current) {
         pisteRef.current.style.transform = `translate3d(${-ms * PX_PAR_MS}px, 0, 0)`;
@@ -316,31 +145,41 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       role="img"
       aria-label={t.home.rythmoLabel}
     >
-      {/* La scene. Le cadre est plus large que la video : les bandes noires
-          du film tombent hors champ. */}
+      {/* La scene, deja recadree en 21/9 et sans son. */}
       <div className="demo-video aspect-[21/9]">
-        {!fixe ? <div ref={cibleRef} /> : null}
-        {/*
-          L'affiche, par-dessus le lecteur. Son opacite est reglee a chaque
-          image par l'horloge, jamais par une transition, pour suivre la
-          video exactement. Sans lecture — moins d'animation demande,
-          economie de donnees, lecteur injoignable — elle reste posee.
-          Agrandie comme la video, pour que le passage de l'une a l'autre
-          ne fasse pas sauter le cadrage.
-        */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={afficheRef}
-          src={affiche}
-          alt=""
-          referrerPolicy="no-referrer"
-          decoding="async"
-          onLoad={verifierAffiche}
-          onError={() => setAffiche(moyenne)}
-          className="pointer-events-none absolute inset-0 h-full w-full scale-[1.08] object-cover"
-          style={{ opacity: 1 }}
-          aria-hidden
-        />
+        {fixe ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={demo.posterSrc}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <>
+            <video
+              ref={videoRef}
+              src={demo.videoSrc}
+              muted
+              loop
+              playsInline
+              autoPlay
+              preload="auto"
+              disablePictureInPicture
+              disableRemotePlayback
+              aria-hidden
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            />
+            {/* Le voile : son opacite est reglee a chaque image par
+                l'horloge, jamais par une transition, pour suivre la video
+                exactement. */}
+            <div
+              ref={voileRef}
+              className="pointer-events-none absolute inset-0 bg-black"
+              style={{ opacity: 1 }}
+              aria-hidden
+            />
+          </>
+        )}
       </div>
 
       {/* La bande. La tete de lecture est fixe, c'est le texte qui passe. */}

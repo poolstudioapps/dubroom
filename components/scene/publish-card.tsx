@@ -7,7 +7,8 @@ import { Library, Share2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { useSceneCtx } from '@/components/scene-page';
-import { Alert, Button, Card, Input, Select } from '@/components/ui';
+import { SelectMenu } from '@/components/select-menu';
+import { Alert, Button, Card, Input } from '@/components/ui';
 
 import { humanizeError } from '@/lib/errors';
 import {
@@ -123,30 +124,28 @@ export function PublishCard() {
       />
 
       <div className="grid gap-2 sm:grid-cols-2">
-        <Select
+        <SelectMenu
+          label={t.community.filterLang}
           value={sourceLang}
-          aria-label={t.community.filterLang}
-          onChange={(e) => setSourceLang(e.target.value)}
-        >
-          <option value="">{t.community.langUnknown}</option>
-          {PACK_LANGS.map((code) => (
-            <option key={code} value={code}>
-              {t.community.langNames[code]}
-            </option>
-          ))}
-        </Select>
+          onChange={setSourceLang}
+          options={[
+            { value: '', label: t.community.langUnknown },
+            ...PACK_LANGS.map((code) => ({
+              value: code as string,
+              label: t.community.langNames[code] ?? code,
+            })),
+          ]}
+        />
 
-        <Select
+        <SelectMenu
+          label={t.community.filterGenre}
           value={genre}
-          aria-label={t.community.filterGenre}
-          onChange={(e) => setGenre(e.target.value as PackGenre)}
-        >
-          {PACK_GENRES.map((value) => (
-            <option key={value} value={value}>
-              {t.community.genreNames[value]}
-            </option>
-          ))}
-        </Select>
+          onChange={(next) => setGenre(next as PackGenre)}
+          options={PACK_GENRES.map((value) => ({
+            value: value as string,
+            label: t.community.genreNames[value] ?? value,
+          }))}
+        />
       </div>
 
       <Button

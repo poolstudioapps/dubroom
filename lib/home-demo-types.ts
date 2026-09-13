@@ -26,7 +26,10 @@ export interface HomeDemoCharacter {
 }
 
 export interface HomeDemo {
-  videoId: string;
+  /** La video, servie par le site lui-meme. */
+  videoSrc: string;
+  /** Son image fixe, pour qui a demande moins d'animation. */
+  posterSrc: string;
   durationMs: number;
   characters: HomeDemoCharacter[];
   lines: HomeDemoLine[];
