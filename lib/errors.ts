@@ -30,7 +30,9 @@ const MESSAGES: Record<string, string> = {
   PACK_NOT_FOUND: 'Cette scène n’est plus disponible.',
   ALREADY_PUBLISHED: 'Cette scène est déjà dans la communauté.',
   NO_SOURCE_URL:
-    'Cette scène vient d’un fichier importé, et ses médias ont été purgés après le rendu. Il fallait cocher « garder cette scène » avant de lancer le rendu.',
+    'Cette scène vient d’un fichier importé. Seules les scènes créées depuis un lien peuvent rejoindre la communauté.',
+  PACK_NEEDS_URL:
+    'Seule une scène créée depuis un lien peut être partagée. Une vidéo importée reste privée à ton groupe.',
   NOTHING_TO_PUBLISH: 'Cette scène n’a aucun personnage à partager.',
   PACK_FORBIDDEN: 'Seule la personne qui a conservé cette scène peut la retirer.',
 };

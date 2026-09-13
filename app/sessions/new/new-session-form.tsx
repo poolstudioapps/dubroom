@@ -93,7 +93,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
         sourceType: mode === 'youtube' ? 'youtube' : 'upload',
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
-        keepAsPack,
+        keepAsPack: mode === 'youtube' && keepAsPack,
         isSong,
       });
 
@@ -255,20 +255,26 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
           </div>
 
           {/* L'intention de partager se pose souvent des le depart : on
-            prepare une scene pour le groupe, pas pour une seule soiree. */}
-          <div className="panel flex items-start gap-3 p-3">
-            <Toggle
-              checked={keepAsPack}
-              onChange={setKeepAsPack}
-              label={t.create.keepLabel}
-            />
-            <div className="space-y-0.5">
-              <p className="text-sm font-bold">{t.create.keepLabel}</p>
-              <p className="text-xs text-text-faint">
-                {mode === 'youtube' ? t.create.keepHelpUrl : t.create.keepHelpUpload}
-              </p>
+            prepare une scene pour le groupe, pas pour une seule soiree.
+            La case ne s'affiche que pour un lien : partager un fichier
+            importe reviendrait a heberger l'oeuvre, ce qu'un pack ne
+            fait jamais. Mieux vaut ne rien proposer que proposer une
+            case qui refuserait de se cocher. */}
+          {mode === 'youtube' ? (
+            <div className="panel flex items-start gap-3 p-3">
+              <Toggle
+                checked={keepAsPack}
+                onChange={setKeepAsPack}
+                label={t.create.keepLabel}
+              />
+              <div className="space-y-0.5">
+                <p className="text-sm font-bold">{t.create.keepLabel}</p>
+                <p className="text-xs text-text-faint">{t.create.keepHelpUrl}</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p className="text-xs text-text-faint">{t.create.keepHelpUpload}</p>
+          )}
 
           {progress !== null ? (
             <div className="space-y-1">

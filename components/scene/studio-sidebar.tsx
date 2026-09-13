@@ -242,20 +242,24 @@ export function StudioSidebar({
 
       {isHost ? (
         <Card variant="plate" className="space-y-3">
-          <div className="flex items-start gap-3">
-            <Toggle
-              checked={session.keep_as_pack}
-              onChange={(next) => act.mutate(() => setKeepAsPack(session.id, next))}
-              label={t.community.keepLabel}
-              disabled={!!session.from_pack_id}
-            />
-            <div className="space-y-0.5">
-              <p className="text-sm font-bold">{t.community.keepLabel}</p>
-              <p className="text-xs text-text-faint">
-                {session.source_ref ? t.create.keepHelpUrl : t.create.keepHelpUpload}
-              </p>
+          {/* Sans lien d'origine, il n'y a rien a partager : on le dit
+            plutot que d'afficher une case qui refuserait de se cocher. */}
+          {session.source_ref ? (
+            <div className="flex items-start gap-3">
+              <Toggle
+                checked={session.keep_as_pack}
+                onChange={(next) => act.mutate(() => setKeepAsPack(session.id, next))}
+                label={t.community.keepLabel}
+                disabled={!!session.from_pack_id}
+              />
+              <div className="space-y-0.5">
+                <p className="text-sm font-bold">{t.community.keepLabel}</p>
+                <p className="text-xs text-text-faint">{t.create.keepHelpUrl}</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p className="text-xs text-text-faint">{t.create.keepHelpUpload}</p>
+          )}
 
           <Button
             variant="primary"

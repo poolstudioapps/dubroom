@@ -21,6 +21,7 @@ import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.t
 import {
   downmixForStt,
   encodeBackingPreview,
+  encodeStemLossless,
   extractAudio,
   normalize,
   probe,
@@ -103,10 +104,17 @@ export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
     logger,
   );
 
-  const voiceRemote = `${session.id}/voice.wav`;
-  const musicRemote = `${session.id}/music.wav`;
-  await storage.upload(BUCKET_SOURCES, voiceRemote, voicePath, 'audio/wav');
-  await storage.upload(BUCKET_SOURCES, musicRemote, musicPath, 'audio/wav');
+  // Les stems partent compresses : un WAV de scene longue depasse la
+  // taille qu'accepte le stockage. Voir `encodeStemLossless`.
+  const voiceFlac = path.join(sepDir, 'voice.flac');
+  const musicFlac = path.join(sepDir, 'music.flac');
+  await encodeStemLossless(voicePath, voiceFlac);
+  await encodeStemLossless(musicPath, musicFlac);
+
+  const voiceRemote = `${session.id}/voice.flac`;
+  const musicRemote = `${session.id}/music.flac`;
+  await storage.upload(BUCKET_SOURCES, voiceRemote, voiceFlac, 'audio/flac');
+  await storage.upload(BUCKET_SOURCES, musicRemote, musicFlac, 'audio/flac');
 
   // Le studio consomme la preview, jamais le WAV.
   const previewLocal = path.join(sepDir, 'music-preview.m4a');

@@ -353,6 +353,49 @@ export async function encodeStemForPack(input: string, output: string): Promise<
   );
 }
 
+/**
+ * Stem sans perte, pour le stockage de session.
+ *
+ * Supabase refuse tout objet de plus de 50 Mo, et un WAV 48 kHz stereo
+ * pese 192 Ko par seconde : la limite tombait a 4 min 20 de scene, sur
+ * un maximum autorise de dix minutes. Autant dire qu'une scene sur deux
+ * echouait a l'envoi.
+ *
+ * Le FLAC divise le poids par pres de quatre — 53 Mo tombent a 14 sur
+ * une piste mesuree — sans perdre un echantillon. Ce n'est pas une
+ * approximation : les deux decodages rendent la meme empreinte MD5.
+ *
+ * Cette exactitude est la raison du choix. Le mixage aligne les prises
+ * des joueurs au millier de microsecondes pres, et un format a perte
+ * comme l'AAC introduit un decalage d'encodage au debut du flux. C'est
+ * sans consequence sur une preview qu'on ecoute seule, cela n'en a pas
+ * ici.
+ */
+export async function encodeStemLossless(
+  input: string,
+  output: string,
+): Promise<void> {
+  await ffmpeg(
+    [
+      '-i',
+      input,
+      '-c:a',
+      'flac',
+      // Le niveau 8 gagne quelques pourcents sur le 5 par defaut, pour
+      // un encodage qui reste bien plus rapide que la separation qui le
+      // precede : la depense ne se voit pas.
+      '-compression_level',
+      '8',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+    ],
+    output,
+    { timeoutMs: TIMEOUTS.extract },
+  );
+}
+
 /** Reechantillonne un stem en 48 kHz stereo (PRD §20.7). */
 export async function resample48k(input: string, output: string): Promise<void> {
   await ffmpeg(['-i', input, '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le'], output, {

@@ -123,8 +123,19 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
   );
 
   // Telechargement des trois fichiers de session, puis des prises.
-  const musicLocal = path.join(workDir, 'music.wav');
-  const voiceLocal = path.join(workDir, 'voice.wav');
+  /*
+   * Le nom local suit l'extension stockee, jamais une supposition.
+   *
+   * Les scenes preparees avant le passage au FLAC ont des chemins en
+   * `.wav` et doivent continuer a se rendre. Nommer le fichier d'apres
+   * ce qu'on telecharge evite une migration, et evite surtout de
+   * presenter a ffmpeg un FLAC deguise en WAV.
+   */
+  const extensionDe = (chemin: string | null) =>
+    path.extname(chemin ?? '').toLowerCase() || '.wav';
+
+  const musicLocal = path.join(workDir, `music${extensionDe(session.stem_music_path)}`);
+  const voiceLocal = path.join(workDir, `voice${extensionDe(session.stem_voice_path)}`);
   const videoLocal = path.join(workDir, 'work.mp4');
 
   await storage.download(BUCKET_SOURCES, session.stem_music_path, musicLocal);
@@ -395,12 +406,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
   // Une scene deja issue d'un pack n'en refabrique pas un second.
   if (session.keep_as_pack && !session.from_pack_id) {
     try {
-      await buildPack(
-        session,
-        { video: videoLocal, voice: voiceLocal, music: musicLocal },
-        workDir,
-        logger,
-      );
+      await buildPack(session, logger);
     } catch (error) {
       // Le rendu est deja en securite : rater la conservation ne doit pas
       // faire echouer un job qui a abouti.

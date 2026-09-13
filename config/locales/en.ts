@@ -273,12 +273,13 @@ export const en = {
 
   terms: {
     consent: 'I have read and accept the {terms} and the {privacy}.',
+    notice: 'By continuing, you accept the {terms} and the {privacy}.',
     linkTerms: 'terms of use',
     linkPrivacy: 'privacy policy',
     required: 'You need to accept the terms to continue.',
     gateTitle: 'One more thing',
     gateBody:
-      'The terms of use have changed since your last visit, or you have never accepted them. One checkbox and we are back to it.',
+      'Before you start, you need to accept the terms of use. One checkbox and off you go.',
     gateGist:
       'The short version: you answer for the clips you import and for what you do with them. Everything stays between invited people, nothing is published.',
     gateConfirm: 'Accept and continue',
@@ -402,7 +403,7 @@ export const en = {
     keepHelpUrl:
       'It will join the Community tab. Since it comes from a link, only the link and the cut are kept: nothing is hosted here.',
     keepHelpUpload:
-      'It will join the Community tab after the render. Since it comes from a file, the video and the separated tracks are kept, around ten megabytes.',
+      'Only scenes created from a link can join the community. An imported file stays private to your group: we never re-host the work itself.',
     submitUpload: 'Import and prepare',
     submitYoutube: 'Download and prepare',
     uploading: 'Uploading the file…',

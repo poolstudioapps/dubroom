@@ -271,12 +271,13 @@ export const fr = {
 
   terms: {
     consent: 'J’ai lu et j’accepte les {terms} et la {privacy}.',
+    notice: 'En continuant, tu acceptes les {terms} et la {privacy}.',
     linkTerms: 'conditions générales d’utilisation',
     linkPrivacy: 'politique de confidentialité',
     required: 'Il faut accepter les conditions pour continuer.',
     gateTitle: 'Encore une chose',
     gateBody:
-      'Les conditions générales d’utilisation ont changé depuis ta dernière visite, ou tu ne les as jamais acceptées. Une case à cocher et on y retourne.',
+      'Avant de commencer, il faut accepter les conditions générales d’utilisation. Une case à cocher et c’est parti.',
     gateGist:
       'L’essentiel : tu réponds toi-même des extraits que tu importes et de ce que tu en fais. Tout reste entre invités, rien n’est publié.',
     gateConfirm: 'Accepter et continuer',
@@ -404,7 +405,7 @@ export const fr = {
     keepHelpUrl:
       'Elle rejoindra l’onglet Communauté. Comme elle vient d’un lien, seuls le lien et le découpage seront conservés : rien n’est hébergé ici.',
     keepHelpUpload:
-      'Elle rejoindra l’onglet Communauté après le rendu. Comme elle vient d’un fichier, la vidéo et les pistes séparées seront conservées, soit une dizaine de mégaoctets.',
+      'Seule une scène venue d’un lien peut rejoindre la communauté. Un fichier importé reste privé à ton groupe : on ne réhéberge jamais l’œuvre elle-même.',
     submitUpload: 'Importer et préparer',
     submitYoutube: 'Télécharger et préparer',
     uploading: 'Envoi du fichier…',

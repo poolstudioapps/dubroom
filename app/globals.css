@@ -466,20 +466,31 @@
   --color-text-faint: oklch(0.78 0.08 312);
 
   /* ── L'accent ────────────────────────────────────────────────────
-     Le vert des boutons de depart de ces jeux, assombri juste assez
-     pour porter du texte blanc. L'encre des pastilles, elle, est
-     toujours plus sombre que leur fond dilue : ce sont deux questions
-     differentes, et un seul jeton pour les deux donnait du blanc sur
-     du blanc. */
-  /* Mesure : a 0.58 le texte blanc pose dessus donnait 3.9, sous la
-     barre. Un cran plus sombre passe a 4.7 sans que le vert perde sa
-     vivacite. */
-  --color-accent: oklch(0.53 0.19 148);
-  --color-accent-hover: oklch(0.47 0.19 148);
+     Le rose du cadre, repris pour l'action.
+
+     Un vert trainait ici, herite d'une autre peau. Il ne se rattachait
+     a rien : cette scene-ci vit entre le violet 300, le cyan 200 et le
+     rose 350, et un accent a 148 tombait au milieu comme une faute de
+     frappe. Le rose, lui, est deja la couleur du cadre, de la LED et de
+     la selection — en faire aussi celle des boutons donne une peau d'un
+     seul tenant, ou tout ce qui est vivant est rose.
+
+     Mesure : texte blanc sur ce rose donne 4.81, un cheveu au-dessus du
+     vert qu'il remplace (4.71). Rien n'est perdu en lisibilite. */
+  --color-accent: oklch(0.58 0.25 350);
+  --color-accent-hover: oklch(0.52 0.25 350);
   --color-accent-ink: oklch(1 0 0);
   --color-link: oklch(0.86 0.15 200);
   --color-select: oklch(0.7 0.24 350);
-  --color-badge-accent-ink: oklch(0.36 0.14 148);
+  /* L'encre des pastilles va dans l'autre sens que sur la peau claire.
+
+     Une pastille, c'est l'accent a 30 % pose sur le plateau. Sur du
+     papier ce melange est presque blanc et reclame une encre sombre ;
+     ici le plateau est un violet profond, le melange reste sombre, et
+     une encre sombre par-dessus donnait 1.09 de contraste — autant dire
+     du texte invisible. Il faut donc l'inverse : une encre claire, qui
+     remonte a 6.3. */
+  --color-badge-accent-ink: oklch(0.92 0.08 350);
 
   --color-ok: oklch(0.62 0.17 150);
   --color-warn: oklch(0.72 0.16 78);
@@ -868,5 +879,48 @@
   [data-theme='modern'] input[type='range']::-moz-range-thumb {
     border: 0;
     background: var(--color-select);
+  }
+}
+
+@layer components {
+  /*
+   * Les icones dessinees, une par peau.
+   *
+   * Deux jeux cohabitent : un imprime, use, pour le meuble de
+   * television, et un aplat vif pour la table de jeu. Repeindre un seul
+   * dessin n'aurait pas suffi — les deux peaux n'ont ni la meme palette
+   * ni le meme age, et une icone rose fluo posee sur le meuble jurerait
+   * autant que le vert d'avant sur la table.
+   *
+   * Le fond plutot que deux balises `img` dont on cacherait une : le
+   * navigateur ne telecharge que l'image de la regle qui s'applique.
+   * Deux images auraient ete chargees pour n'en montrer qu'une, sur la
+   * page ou l'on arrive.
+   */
+  .icone {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+  .icone-voix {
+    background-image: url('/icones/retro-voix.png');
+  }
+  .icone-secret {
+    background-image: url('/icones/retro-secret.png');
+  }
+  .icone-fichier {
+    background-image: url('/icones/retro-fichier.png');
+  }
+
+  [data-theme='modern'] .icone-voix {
+    background-image: url('/icones/modern-voix.png');
+  }
+  [data-theme='modern'] .icone-secret {
+    background-image: url('/icones/modern-secret.png');
+  }
+  [data-theme='modern'] .icone-fichier {
+    background-image: url('/icones/modern-fichier.png');
   }
 }

@@ -1,33 +1,42 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-
-import { BUCKET_SOURCES } from '../../../config/constants.ts';
 import { SystemError } from '../errors.ts';
 import { db, type Session } from '../lib/db.ts';
-import { encodeStemForPack } from '../lib/ffmpeg.ts';
-import * as storage from '../lib/storage.ts';
 import type { ScopedLog } from '../log.ts';
 
 /**
  * Fabrique une scene preparee reutilisable (PRD §16.2).
  *
- * Le moment est choisi : on le fait pendant le job de rendu, juste avant
- * la purge, parce que tous les fichiers sont deja sur le disque local. Un
- * job separe les re-telechargerait pour rien.
+ * Un pack est une RECETTE : l'adresse de la video, plus le travail de
+ * preparation — decoupage, personnages, texte corrige a la main. Jamais
+ * une copie de l'oeuvre. Quelques kilo-octets la ou une copie en pesait
+ * treize mega.
  *
- * Les fichiers sont deposes sous `packs/{id}/`, hors du dossier de la
- * session. La purge de fin de rendu ne balaie que `{session_id}/` : le
- * pack lui echappe par construction, sans exception a maintenir.
+ * Ce choix n'est pas qu'une affaire de place. Rejouer un pack
+ * retelecharge la video depuis sa source ; c'est l'utilisateur qui va la
+ * chercher, comme il le ferait a la main, et nos serveurs ne
+ * redistribuent rien.
+ *
+ * Le moment est choisi : on le fait pendant le job de rendu, juste avant
+ * la purge, parce que la preparation est encore en base et qu'un job
+ * separe la relirait pour rien.
  *
  * Les prises des joueurs ne sont jamais copiees. Un pack contient la
  * scene et sa preparation, pas ce que quelqu'un a enregistre.
  */
-export async function buildPack(
-  session: Session,
-  local: { video: string; voice: string; music: string },
-  workDir: string,
-  logger: ScopedLog,
-): Promise<void> {
+export async function buildPack(session: Session, logger: ScopedLog): Promise<void> {
+  /*
+   * Sans adresse, pas de pack.
+   *
+   * La base refuse deja de marquer une scene importee comme publiable,
+   * et le formulaire ne propose plus la case. Ce garde-fou est le
+   * troisieme : une session creee avant la regle pourrait encore porter
+   * l'ancien drapeau, et il vaut mieux l'ignorer en silence que publier
+   * une recette qui ne menerait nulle part.
+   */
+  if (session.source_type !== 'youtube' || !session.source_ref) {
+    logger.warn('pack ignoré : la scène ne vient pas d’un lien', { step: 'purge' });
+    return;
+  }
+
   const [characters, lines] = await Promise.all([
     db
       .from('characters')
@@ -51,27 +60,15 @@ export async function buildPack(
     return;
   }
 
-  // Une scene venue d'un lien devient une RECETTE : on garde le lien et
-  // la preparation, pas une copie de l'oeuvre. Le pack tombe de 13 Mo a
-  // quelques kilo-octets, et le telechargement sera refait a la demande.
-  // Une scene venue d'un fichier importe n'a pas de lien : il faut alors
-  // conserver les medias, sans quoi elle serait irrecuperable.
-  const asRecipe = session.source_type === 'youtube' && !!session.source_ref;
-
   const { data: pack, error: packError } = await db
     .from('packs')
     .insert({
       created_by: session.host_id,
       title: session.title ?? 'Scène sans titre',
       duration_ms: session.duration_ms ?? 0,
-      kind: asRecipe ? 'url' : 'media',
-      source_url: asRecipe ? session.source_ref : null,
+      kind: 'url',
+      source_url: session.source_ref,
       source_session_id: session.id,
-      // Renseignes juste apres l'envoi pour un pack media : on a besoin
-      // de l'identifiant pour construire les chemins.
-      video_path: asRecipe ? null : 'pending',
-      stem_voice_path: asRecipe ? null : 'pending',
-      stem_music_path: asRecipe ? null : 'pending',
       voice_peaks: session.voice_peaks,
       voice_peaks_hz: session.voice_peaks_hz,
       character_count: (characters.data ?? []).length,
@@ -85,46 +82,6 @@ export async function buildPack(
   }
 
   const packId = pack.id as string;
-
-  let totalBytes = 0;
-
-  if (!asRecipe) {
-    const prefix = `packs/${packId}`;
-
-    // Stems compresses : voir encodeStemForPack pour le calcul de poids.
-    const voiceOut = path.join(workDir, 'pack-voice.m4a');
-    const musicOut = path.join(workDir, 'pack-music.m4a');
-    await encodeStemForPack(local.voice, voiceOut);
-    await encodeStemForPack(local.music, musicOut);
-
-    const videoPath = `${prefix}/work.mp4`;
-    const voicePath = `${prefix}/voice.m4a`;
-    const musicPath = `${prefix}/music.m4a`;
-
-    await storage.upload(BUCKET_SOURCES, videoPath, local.video, 'video/mp4');
-    await storage.upload(BUCKET_SOURCES, voicePath, voiceOut, 'audio/mp4');
-    await storage.upload(BUCKET_SOURCES, musicPath, musicOut, 'audio/mp4');
-
-    const sizes = await Promise.all([
-      storage.verifyUploaded(BUCKET_SOURCES, videoPath),
-      storage.verifyUploaded(BUCKET_SOURCES, voicePath),
-      storage.verifyUploaded(BUCKET_SOURCES, musicPath),
-    ]);
-    totalBytes = sizes.reduce((sum, n) => sum + n, 0);
-
-    await db
-      .from('packs')
-      .update({
-        video_path: videoPath,
-        stem_voice_path: voicePath,
-        stem_music_path: musicPath,
-        size_bytes: totalBytes,
-      })
-      .eq('id', packId);
-
-    await fs.rm(voiceOut, { force: true });
-    await fs.rm(musicOut, { force: true });
-  }
 
   // Personnages, puis repliques rattachees par leur cle de locuteur.
   const { data: packChars, error: charError } = await db
@@ -182,7 +139,6 @@ export async function buildPack(
   logger.info('scène conservée dans la communauté', {
     step: 'purge',
     packId,
-    nature: asRecipe ? 'recette' : 'médias',
-    kilooctets: Math.round(totalBytes / 1024),
+    repliques: rows.length,
   });
 }

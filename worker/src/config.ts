@@ -21,6 +21,14 @@ function int(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+/** Une variable qui contient plusieurs valeurs, virgules ou retours a la ligne. */
+function liste(name: string): string[] {
+  return str(name)
+    .split(/[,\n]/)
+    .map((valeur) => valeur.trim())
+    .filter(Boolean);
+}
+
 /**
  * Resout un chemin de binaire. Tout passe par les variables
  * d'environnement : `.exe` n'apparait nulle part ailleurs que dans le
@@ -64,6 +72,31 @@ export const config = {
    * oppose son controle anti-robot aux adresses d'hebergeurs.
    */
   ytdlpClients: str('YTDLP_CLIENTS'),
+  /**
+   * Sorties a essayer pour joindre YouTube, dans l'ordre.
+   *
+   * YouTube ne juge pas la requete mais l'adresse qui l'emet. Celles de
+   * Cloud Run sont connues comme appartenant a un hebergeur, et le
+   * controle anti-robot les refuse sans appel. Un intermediaire preste
+   * son adresse le temps du telechargement.
+   *
+   * La liste compte parce que la reputation se calcule adresse par
+   * adresse et change sans prevenir : sur dix intermediaires eprouves le
+   * meme soir, un seul a livre la video. Le worker les essaie donc l'un
+   * apres l'autre, et finit par une tentative directe — la seule qui
+   * marche depuis le PC d'un hote, ou aucun intermediaire n'est reglé.
+   *
+   * Separateur : la virgule, ou un retour a la ligne.
+   */
+  ytdlpProxies: liste('YTDLP_PROXIES'),
+  /**
+   * Jeton d'API Webshare, qui donne la liste courante des intermediaires.
+   *
+   * Preferable a une liste ecrite en dur : le fournisseur renouvelle ses
+   * adresses, et une liste figee se perime en silence. Facultatif — sans
+   * lui, seules `YTDLP_PROXIES` et la connexion directe sont essayees.
+   */
+  webshareToken: str('WEBSHARE_TOKEN'),
 
   python: str('PYTHON_PATH', isWindows ? 'python' : 'python3'),
   demucsModel: str('DEMUCS_MODEL', 'htdemucs'),

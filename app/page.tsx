@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Check, Headphones, Library, Mic, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Clapperboard, Library, Sparkles } from 'lucide-react';
 
 import { Carousel, type Slide } from '@/components/carousel';
 import { AccountMenu } from '@/components/account-menu';
@@ -81,7 +81,18 @@ export default async function HomePage() {
     getDictionary(),
     currentLocale(),
   ]);
-  const primaryHref = user ? '/sessions' : '/login';
+  /*
+   * Ou mene le bouton plein.
+   *
+   * Un visiteur n'a qu'une decision a prendre : essayer. Une fois entre,
+   * la question devient « qu'est-ce que je fais maintenant », et la
+   * reponse la plus frequente est d'en commencer une nouvelle. L'ancien
+   * chemin passait par la liste des scenes, ce qui ajoutait un clic a
+   * l'action la plus courante et laissait le visiteur devant un
+   * inventaire plutot que devant un depart.
+   */
+  const primaryHref = user ? '/sessions/new' : '/login';
+  const primaryLabel = user ? t.sessions.create : t.home.cta;
 
   const slides: Slide[] = [
     {
@@ -134,9 +145,22 @@ export default async function HomePage() {
                     href={primaryHref}
                     className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover sm:text-lg"
                   >
-                    {user ? t.home.ctaSessions : t.home.cta}
+                    {primaryLabel}
                     <ArrowRight className="h-5 w-5" aria-hidden />
                   </Link>
+
+                  {/* Retrouver les siennes : utile, mais jamais la
+                      premiere chose qu'on vient faire. */}
+                  {user ? (
+                    <Link
+                      href="/sessions"
+                      className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-5 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]"
+                    >
+                      <Clapperboard className="h-5 w-5" aria-hidden />
+                      {t.home.ctaSessions}
+                    </Link>
+                  ) : null}
+
                   <Link
                     href="/communaute"
                     className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-5 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]"
@@ -167,15 +191,27 @@ export default async function HomePage() {
               <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
                 {t.home.valueTitle}
               </h2>
+              {/*
+                Trois cartes courtes, donc centrees.
+
+                La regle vaut pour tout le site : ce qui tient en deux
+                lignes sous une image se centre, ce qui se lit en
+                paragraphes reste cale a gauche. Centrer un texte long
+                deplace le debut de chaque ligne et oblige l'oeil a le
+                rechercher a chaque retour.
+              */}
               <div className="grid gap-4 sm:grid-cols-3">
                 {[
-                  { icon: Mic, ...t.home.value1 },
-                  { icon: Headphones, ...t.home.value2 },
-                  { icon: Sparkles, ...t.home.value3 },
-                ].map(({ icon: Icon, title, body }) => (
-                  <Card key={title} className="space-y-2">
-                    <Icon className="h-5 w-5 text-link" aria-hidden />
-                    <h3 className="text-sm font-bold">{title}</h3>
+                  { nom: 'voix', ...t.home.value1 },
+                  { nom: 'secret', ...t.home.value2 },
+                  { nom: 'fichier', ...t.home.value3 },
+                ].map(({ nom, title, body }) => (
+                  <Card
+                    key={title}
+                    className="flex flex-col items-center gap-3 text-center"
+                  >
+                    <span className={`icone icone-${nom} h-20 w-20`} aria-hidden />
+                    <h3 className="text-base font-bold text-balance">{title}</h3>
                     <p className="text-sm leading-relaxed text-text-muted">{body}</p>
                   </Card>
                 ))}
@@ -200,7 +236,7 @@ export default async function HomePage() {
                 href={primaryHref}
                 className="btn-3d btn-primary mt-4 inline-flex h-12 items-center justify-center gap-2 bg-accent px-7 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
               >
-                {user ? t.home.ctaSessions : t.home.cta}
+                {primaryLabel}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </section>

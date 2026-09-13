@@ -1,35 +1,34 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ScrollText } from 'lucide-react';
 
 import { TermsConsent } from '@/components/terms-consent';
 import { Alert, Button } from '@/components/ui';
-import { TERMS_STORAGE_KEY, TERMS_VERSION } from '@/config/terms';
+import { TERMS_VERSION } from '@/config/terms';
 import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
 import { useAcceptTerms, useMyProfile } from '@/lib/profile';
 
 /**
- * Le passage oblige par les conditions.
+ * Le seul endroit ou les conditions sont acceptees.
  *
- * La case est cochee sur l'ecran de connexion, donc avant d'avoir un
- * compte : au moment ou l'on demande un lien par courriel, il n'y a
- * encore personne a qui attacher la reponse. Elle attend dans le
- * navigateur, et c'est ici, a la premiere page connectee, qu'elle
- * devient une ligne en base — qui a accepte, quelle version, quand.
+ * L'ecran de connexion n'en porte qu'une mention, sans case : avant
+ * l'authentification on ne sait pas a qui l'on parle, et l'on ne peut
+ * donc pas savoir ce que cette personne a deja signe. Une case a cet
+ * endroit-la aurait redemande son consentement a chaque nouveau
+ * navigateur, ce qui est a la fois inutile et agacant.
  *
- * Trois cas, et il faut les trois :
+ * Ici, au contraire, le profil est charge. Il porte la version acceptee,
+ * et cette information suit le compte partout — autre machine, autre
+ * navigateur, session effacee. On demande une fois, jamais deux.
+ *
+ * Deux cas seulement :
  *
  *  - le profil porte la version en cours : on ne montre rien ;
- *  - le profil ne la porte pas mais le navigateur si : la personne vient
- *    de cocher, on inscrit sans rien demander ;
- *  - ni l'un ni l'autre : un compte ouvert avant ces conditions, ou une
- *    connexion depuis une autre machine. On demande, et on bloque.
- *
- * Le troisieme cas est la raison d'etre du composant. Une case cochee a
- * l'inscription ne dit rien des comptes qui existaient avant elle, et
- * c'est precisement ceux-la qu'il faut rattraper.
+ *  - il ne la porte pas : nouveau compte, ou conditions modifiees depuis
+ *    la derniere acceptation. On demande, et on bloque tant que ce n'est
+ *    pas fait.
  *
  * Une lecture en echec ne bloque personne : si le profil ne se charge
  * pas, le produit reste utilisable. Ce garde-fou protege un texte
@@ -45,27 +44,8 @@ export function TermsGate() {
 
   const aJour = profile.data?.terms_version === TERMS_VERSION;
 
-  // L'acceptation laissee par l'ecran de connexion, inscrite une fois.
-  // Le verrou est une reference et non un etat : l'objet de mutation
-  // change a chaque rendu, et s'y fier relancait l'ecriture en boucle.
-  const inscrite = useRef(false);
-  useEffect(() => {
-    if (!profile.data || aJour || inscrite.current) return;
-    if (window.localStorage.getItem(TERMS_STORAGE_KEY) !== TERMS_VERSION) return;
-    inscrite.current = true;
-    accept.mutate(TERMS_VERSION);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile.data, aJour]);
 
   if (!profile.data || aJour) return null;
-
-  // Le temps que l'inscription silencieuse passe, rien ne s'affiche :
-  // montrer la carte une demi-seconde pour la retirer aussitot donnerait
-  // un clignotement a chaque chargement de page.
-  const dejaCochee =
-    typeof window !== 'undefined' &&
-    window.localStorage.getItem(TERMS_STORAGE_KEY) === TERMS_VERSION;
-  if (dejaCochee) return null;
 
   return (
     <div
@@ -103,8 +83,6 @@ export function TermsGate() {
           onClick={() => {
             setError(null);
             accept.mutate(TERMS_VERSION, {
-              onSuccess: () =>
-                window.localStorage.setItem(TERMS_STORAGE_KEY, TERMS_VERSION),
               onError: (e) => setError(humanizeError(e)),
             });
           }}

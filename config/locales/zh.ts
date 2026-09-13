@@ -261,12 +261,13 @@ export const zh = {
 
   terms: {
     consent: '我已阅读并接受{terms}和{privacy}。',
+    notice: '继续即表示你接受{terms}和{privacy}。',
     linkTerms: '使用条款',
     linkPrivacy: '隐私政策',
     required: '需要同意条款才能继续。',
     gateTitle: '还有一件事',
     gateBody:
-      '自你上次来过之后，使用条款有了变化，也可能你还没同意过。勾一下就能继续。',
+      '开始之前，需要先接受使用条款。勾选一下即可。',
     gateGist:
       '要点只有一条：你自己对导入的片段和它的用途负责。一切只在受邀的人之间，不会公开。',
     gateConfirm: '同意并继续',
@@ -383,7 +384,7 @@ export const zh = {
     keepLabel: '做成共享片段',
     keepHelpUrl: '它会进入社区页。因为来自链接，只保存链接和切分：这里什么都不存。',
     keepHelpUpload:
-      '出片之后它会进入社区页。因为来自文件，会保存视频和分离出来的音轨，大概十来兆。',
+      '只有通过链接创建的场景才能加入社区。导入的文件只对你的小组可见，我们绝不会重新托管作品本身。',
     submitUpload: '导入并准备',
     submitYoutube: '下载并准备',
     uploading: '正在上传文件…',

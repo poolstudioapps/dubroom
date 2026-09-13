@@ -46,7 +46,7 @@ export default async function LoginPage() {
           </div>
           <div className="grille h-3 w-32 rounded-sm bg-console-dark/40" />
           <div className="flex gap-2">
-            <span className="h-4 w-4 rounded-full bg-accent shadow-[0_2px_0_oklch(0.5_0.15_143)]" />
+            <span className="h-4 w-4 rounded-full bg-accent shadow-[0_2px_0_color-mix(in_oklch,var(--color-accent)_60%,black)]" />
             <span className="h-4 w-4 rounded-full bg-danger shadow-[0_2px_0_oklch(0.36_0.16_25)]" />
             <span className="h-4 w-4 rounded-full bg-warn shadow-[0_2px_0_oklch(0.5_0.12_75)]" />
           </div>
