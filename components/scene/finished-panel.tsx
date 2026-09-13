@@ -44,7 +44,7 @@ export function FinishedPanel({
       <PartyPopper className="mx-auto h-10 w-10 text-ok" aria-hidden />
 
       <div className="space-y-1">
-        <h2 className="signage text-2xl" style={{ textShadow: 'none' }}>
+        <h2 className="titre text-2xl">
           {t.studio.finishedTitle}
         </h2>
         <p className="mx-auto max-w-md text-sm text-text-muted">

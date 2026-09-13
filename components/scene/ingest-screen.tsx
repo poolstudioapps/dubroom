@@ -32,7 +32,7 @@ export function IngestScreen() {
   if (session.status === 'prepping' && !isHost) {
     return (
       <Card className="mx-auto max-w-lg space-y-2">
-        <h1 className="signage text-2xl" style={{ textShadow: 'none' }}>
+        <h1 className="titre text-2xl">
           {session.title ?? t.ingest.title}
         </h1>
         <p className="text-sm text-text-muted">{t.ingest.hostPreparing}</p>
@@ -43,7 +43,7 @@ export function IngestScreen() {
   return (
     <Card className="mx-auto max-w-lg space-y-5">
       <header>
-        <h1 className="text-lg font-semibold">{session.title ?? t.ingest.title}</h1>
+        <h1 className="titre text-2xl">{session.title ?? t.ingest.title}</h1>
       </header>
 
       <JobProgress state={jobState.data} kind="ingest" />

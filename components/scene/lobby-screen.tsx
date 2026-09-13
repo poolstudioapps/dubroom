@@ -69,9 +69,7 @@ export function LobbyScreen() {
         partie » avant de savoir de quelle scene il s'agissait.
       */}
       <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight">
-          {session.title ?? t.lobby.title}
-        </h1>
+        <h1 className="titre text-2xl">{session.title ?? t.lobby.title}</h1>
         <p className="text-sm text-text-faint">{t.lobby.watchOriginal}</p>
       </header>
 
@@ -94,7 +92,7 @@ export function LobbyScreen() {
           </div>
 
           <section className="space-y-2">
-            <h2 className="text-sm font-medium">{t.lobby.characters}</h2>
+            <h2 className="text-sm font-bold">{t.lobby.characters}</h2>
             {characters.map((character) => {
               const stat = stats.get(character.id);
               const owner = participants.find((p) => p.id === character.assigned_to);
@@ -210,7 +208,7 @@ export function LobbyScreen() {
           </Card>
 
           <Card className="space-y-3">
-            <h2 className="text-sm font-medium">{t.lobby.players}</h2>
+            <h2 className="text-sm font-bold">{t.lobby.players}</h2>
             <ul className="space-y-1.5">
               {activePlayers.map((player) => (
                 <li
@@ -226,7 +224,7 @@ export function LobbyScreen() {
                     <span className="truncate">
                       {player.display_name}
                       {player.is_host ? (
-                        <span className="ml-1 text-xs text-text-faint">(hôte)</span>
+                        <span className="ml-1 text-xs text-text-faint">{t.lobby.hostTag}</span>
                       ) : null}
                     </span>
                   </span>

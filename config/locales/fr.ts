@@ -54,6 +54,14 @@ export const fr = {
   },
 
   home: {
+    originalScene: 'la scène d’origine',
+    demoLines: [
+      { name: 'Alba', text: 'Tu es sûr que c’est la bonne porte ?' },
+      { name: 'Rem', text: 'Absolument pas.' },
+      { name: 'Noor', text: 'On y va quand même.' },
+    ],
+    carouselLabel: 'Comment ça marche',
+    rythmoLabel: 'Aperçu de la bande rythmo : le texte défile sous une tête de lecture pendant qu’on double.',
     heroTitle: 'Redoublez vos scènes préférées',
     heroBody:
       'Vous choisissez une scène, chacun prend un personnage, et vous l’enregistrez chacun de votre côté. La musique et l’ambiance d’origine restent en place : seules les voix changent. Le résultat se découvre à la fin, tous ensemble.',
@@ -293,7 +301,26 @@ export const fr = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: 'Brouillon',
+    ingest_queued: 'En file',
+    ingesting: 'Import en cours',
+    ingest_failed: 'Import échoué',
+    prepping: 'À préparer',
+    lobby: 'Lobby ouvert',
+    recording: 'Enregistrement',
+    render_queued: 'Rendu en file',
+    rendering: 'Rendu en cours',
+    render_failed: 'Rendu échoué',
+    done: 'Terminée',
+  },
+
   common: {
+    untitled: 'Scène sans titre',
+    stepTitled: (n: number, titre: string) => `Étape ${n} : ${titre}`,
+    scrollPause: 'Arrêter le défilement',
+    scrollResume: 'Reprendre le défilement',
+    step: (n: number, total: number) => `Étape ${n} sur ${total}`,
     loading: 'Chargement…',
     save: 'Enregistrer',
     cancel: 'Annuler',
@@ -308,6 +335,9 @@ export const fr = {
   },
 
   auth: {
+    linkExpired: 'Ce lien a expiré ou a déjà servi. Les liens de connexion ne valent qu’une heure et qu’une fois. Demandes-en un nouveau.',
+    linkUsed: 'Ce lien a expiré ou a déjà servi. Demande-en un nouveau.',
+    linkIncomplete: 'Ce lien est incomplet. Demande-en un nouveau.',
     title: 'Connexion',
     subtitle: 'On t’envoie un lien, tu cliques, c’est fini.',
     emailLabel: 'Ton adresse e-mail',
@@ -354,6 +384,8 @@ export const fr = {
   },
 
   sessions: {
+    joinTitle: 'Rejoindre la scène',
+    joinCode: 'Code',
     title: 'Mes scènes',
     empty: 'Aucune scène pour l’instant. Importes-en une pour commencer.',
     create: 'Nouvelle scène',
@@ -427,6 +459,10 @@ export const fr = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `Sélectionner ${nom}`,
+    selectLine: (code: string) => `Sélectionner la réplique de ${code}`,
+    listen: 'Écouter',
+    lineText: 'Texte de la réplique',
     title: 'Préparer les personnages',
     subtitle:
       'La détection automatique se trompe souvent de personnage. C’est le moment de corriger : après l’ouverture du lobby, ce n’est plus modifiable.',
@@ -469,6 +505,7 @@ export const fr = {
   },
 
   lobby: {
+    hostTag: '(hôte)',
     title: 'Lobby',
     shareLink: 'Lien à partager',
     shareCode: 'Code de la scène',
@@ -495,6 +532,8 @@ export const fr = {
   },
 
   studio: {
+    reassign: (nom: string) => `Réassigner ${nom}`,
+    pickPlayer: 'Choisir un joueur…',
     title: 'Studio',
     clipProgress: (current: number, total: number) => `Clip ${current} / ${total}`,
     playOriginal: 'Lire la scène (VO)',

@@ -20,7 +20,7 @@ export function ResultScreen() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header className="space-y-1">
-        <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+        <h1 className="titre text-3xl">
           {session.title ?? t.result.title}
         </h1>
         <p className="text-sm text-text-faint">{t.result.shareHint}</p>
@@ -42,7 +42,7 @@ export function ResultScreen() {
       <ExportCard />
 
       <Card className="space-y-3">
-        <h2 className="text-sm font-medium">{t.result.cast}</h2>
+        <h2 className="text-sm font-bold">{t.result.cast}</h2>
         <ul className="space-y-1.5">
           {characters.map((character) => (
             <li key={character.id} className="flex items-center gap-2 text-sm">

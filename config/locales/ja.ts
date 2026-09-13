@@ -53,6 +53,14 @@ export const ja = {
   },
 
   home: {
+    originalScene: '元のシーン',
+    demoLines: [
+      { name: 'Alba', text: '本当にこの扉で合ってる？' },
+      { name: 'Rem', text: 'まったく自信ない。' },
+      { name: 'Noor', text: 'それでも行こう。' },
+    ],
+    carouselLabel: '仕組み',
+    rythmoLabel: 'リズモバンドのプレビュー：吹き替え中、再生ヘッドの下をテキストが流れます。',
     heroTitle: '好きなシーンを吹き替え直す',
     heroBody:
       'シーンを選び、ひとりずつ役を持ち、それぞれ自分の都合で録音します。もとの音楽や環境音はそのまま、声だけが変わります。結果は最後に、全員そろって見ます。',
@@ -290,7 +298,26 @@ export const ja = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: '下書き',
+    ingest_queued: '待機中',
+    ingesting: '読み込み中',
+    ingest_failed: '読み込み失敗',
+    prepping: '準備待ち',
+    lobby: 'ロビー開放中',
+    recording: '録音中',
+    render_queued: '書き出し待ち',
+    rendering: '書き出し中',
+    render_failed: '書き出し失敗',
+    done: '完了',
+  },
+
   common: {
+    untitled: '無題のシーン',
+    stepTitled: (n: number, titre: string) => `ステップ ${n}：${titre}`,
+    scrollPause: 'スライドを止める',
+    scrollResume: 'スライドを再開する',
+    step: (n: number, total: number) => `ステップ ${n} / ${total}`,
     loading: '読み込み中…',
     save: '保存',
     cancel: 'キャンセル',
@@ -305,6 +332,9 @@ export const ja = {
   },
 
   auth: {
+    linkExpired: 'このリンクは期限切れか、すでに使われています。ログインリンクは一時間、一回だけ有効です。新しいものを請求してください。',
+    linkUsed: 'このリンクは期限切れか、すでに使われています。新しいものを請求してください。',
+    linkIncomplete: 'このリンクは不完全です。新しいものを請求してください。',
     title: 'ログイン',
     subtitle: 'リンクをお送りします。押せば完了です。',
     emailLabel: 'メールアドレス',
@@ -348,6 +378,8 @@ export const ja = {
   },
 
   sessions: {
+    joinTitle: 'シーンに参加',
+    joinCode: 'コード',
     title: 'マイシーン',
     empty: 'まだシーンがありません。ひとつ取り込んで始めましょう。',
     create: '新しいシーン',
@@ -419,6 +451,10 @@ export const ja = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `${nom} を選択`,
+    selectLine: (code: string) => `${code} のセリフを選択`,
+    listen: '再生する',
+    lineText: 'セリフの文章',
     title: '登場人物の整理',
     subtitle:
       '自動判定は話者をよく取り違えます。直すのは今です。ロビーを開いたあとは変更できません。',
@@ -458,6 +494,7 @@ export const ja = {
   },
 
   lobby: {
+    hostTag: '（ホスト）',
     title: 'ロビー',
     shareLink: '共有リンク',
     shareCode: 'シーンのコード',
@@ -485,6 +522,8 @@ export const ja = {
   },
 
   studio: {
+    reassign: (nom: string) => `${nom} を割り当て直す`,
+    pickPlayer: 'プレイヤーを選ぶ…',
     title: 'スタジオ',
     clipProgress: (current: number, total: number) => `クリップ ${current} / ${total}`,
     playOriginal: 'もとのシーンを再生',

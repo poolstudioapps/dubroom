@@ -55,6 +55,14 @@ export const de = {
   },
 
   home: {
+    originalScene: 'die Originalszene',
+    demoLines: [
+      { name: 'Alba', text: 'Bist du sicher, dass das die richtige Tür ist?' },
+      { name: 'Rem', text: 'Überhaupt nicht.' },
+      { name: 'Noor', text: 'Wir gehen trotzdem rein.' },
+    ],
+    carouselLabel: 'So funktioniert es',
+    rythmoLabel: 'Vorschau des Rhythmusbands: Der Text läuft beim Synchronisieren unter einem Abspielkopf durch.',
     heroTitle: 'Synchronisiert eure Lieblingsszenen neu',
     heroBody:
       'Ihr wählt eine Szene, jeder nimmt sich eine Figur, und ihr nehmt für euch allein auf. Musik und Atmosphäre des Originals bleiben stehen: nur die Stimmen ändern sich. Das Ergebnis entdeckt ihr am Ende, gemeinsam.',
@@ -293,7 +301,26 @@ export const de = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: 'Entwurf',
+    ingest_queued: 'In Warteschlange',
+    ingesting: 'Wird importiert',
+    ingest_failed: 'Import fehlgeschlagen',
+    prepping: 'Vorzubereiten',
+    lobby: 'Lobby offen',
+    recording: 'Aufnahme',
+    render_queued: 'Rendern in Warteschlange',
+    rendering: 'Wird gerendert',
+    render_failed: 'Rendern fehlgeschlagen',
+    done: 'Fertig',
+  },
+
   common: {
+    untitled: 'Szene ohne Titel',
+    stepTitled: (n: number, titre: string) => `Schritt ${n}: ${titre}`,
+    scrollPause: 'Diashow anhalten',
+    scrollResume: 'Diashow fortsetzen',
+    step: (n: number, total: number) => `Schritt ${n} von ${total}`,
     loading: 'Lädt…',
     save: 'Speichern',
     cancel: 'Abbrechen',
@@ -308,6 +335,9 @@ export const de = {
   },
 
   auth: {
+    linkExpired: 'Dieser Link ist abgelaufen oder wurde bereits verwendet. Anmeldelinks gelten eine Stunde und nur einmal. Fordere einen neuen an.',
+    linkUsed: 'Dieser Link ist abgelaufen oder wurde bereits verwendet. Fordere einen neuen an.',
+    linkIncomplete: 'Dieser Link ist unvollständig. Fordere einen neuen an.',
     title: 'Anmelden',
     subtitle: 'Wir schicken dir einen Link, du klickst, fertig.',
     emailLabel: 'Deine E-Mail-Adresse',
@@ -354,6 +384,8 @@ export const de = {
   },
 
   sessions: {
+    joinTitle: 'Der Szene beitreten',
+    joinCode: 'Code',
     title: 'Meine Szenen',
     empty: 'Noch keine Szene. Importiere eine, um anzufangen.',
     create: 'Neue Szene',
@@ -427,6 +459,10 @@ export const de = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `${nom} auswählen`,
+    selectLine: (code: string) => `Zeile bei ${code} auswählen`,
+    listen: 'Anhören',
+    lineText: 'Text der Zeile',
     title: 'Figuren vorbereiten',
     subtitle:
       'Die automatische Erkennung verwechselt oft die Figur. Jetzt ist der Moment zu korrigieren: sobald die Lobby offen ist, geht nichts mehr.',
@@ -469,6 +505,7 @@ export const de = {
   },
 
   lobby: {
+    hostTag: '(Gastgeber)',
     title: 'Lobby',
     shareLink: 'Link zum Teilen',
     shareCode: 'Code der Szene',
@@ -496,6 +533,8 @@ export const de = {
   },
 
   studio: {
+    reassign: (nom: string) => `${nom} neu zuweisen`,
+    pickPlayer: 'Spieler auswählen…',
     title: 'Studio',
     clipProgress: (current: number, total: number) => `Clip ${current} / ${total}`,
     playOriginal: 'Szene abspielen (Original)',

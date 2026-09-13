@@ -54,6 +54,14 @@ export const pt = {
   },
 
   home: {
+    originalScene: 'a cena original',
+    demoLines: [
+      { name: 'Alba', text: 'Tens a certeza de que é a porta certa?' },
+      { name: 'Rem', text: 'De todo.' },
+      { name: 'Noor', text: 'Vamos entrar na mesma.' },
+    ],
+    carouselLabel: 'Como funciona',
+    rythmoLabel: 'Pré-visualização da banda rítmica: o texto desliza sob uma cabeça de leitura enquanto dobras.',
     heroTitle: 'Redublem suas cenas favoritas',
     heroBody:
       'Vocês escolhem uma cena, cada um pega um personagem e grava por conta própria. A música e o ambiente originais continuam ali: só as vozes mudam. O resultado se descobre no fim, todos juntos.',
@@ -292,7 +300,26 @@ export const pt = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: 'Rascunho',
+    ingest_queued: 'Em fila',
+    ingesting: 'A importar',
+    ingest_failed: 'Falha ao importar',
+    prepping: 'Por preparar',
+    lobby: 'Sala aberta',
+    recording: 'Gravação',
+    render_queued: 'Montagem em fila',
+    rendering: 'A montar',
+    render_failed: 'Falha na montagem',
+    done: 'Concluída',
+  },
+
   common: {
+    untitled: 'Cena sem título',
+    stepTitled: (n: number, titre: string) => `Passo ${n}: ${titre}`,
+    scrollPause: 'Parar a passagem',
+    scrollResume: 'Retomar a passagem',
+    step: (n: number, total: number) => `Passo ${n} de ${total}`,
     loading: 'Carregando…',
     save: 'Salvar',
     cancel: 'Cancelar',
@@ -307,6 +334,9 @@ export const pt = {
   },
 
   auth: {
+    linkExpired: 'Esta ligação expirou ou já foi usada. As ligações de acesso duram uma hora e servem uma vez. Pede uma nova.',
+    linkUsed: 'Esta ligação expirou ou já foi usada. Pede uma nova.',
+    linkIncomplete: 'Esta ligação está incompleta. Pede uma nova.',
     title: 'Entrar',
     subtitle: 'A gente manda um link, você clica, pronto.',
     emailLabel: 'Seu endereço de e-mail',
@@ -351,6 +381,8 @@ export const pt = {
   },
 
   sessions: {
+    joinTitle: 'Juntar-te à cena',
+    joinCode: 'Código',
     title: 'Minhas cenas',
     empty: 'Nenhuma cena por enquanto. Importe uma para começar.',
     create: 'Nova cena',
@@ -422,6 +454,10 @@ export const pt = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `Selecionar ${nom}`,
+    selectLine: (code: string) => `Selecionar a fala de ${code}`,
+    listen: 'Ouvir',
+    lineText: 'Texto da fala',
     title: 'Preparar os personagens',
     subtitle:
       'A detecção automática erra de personagem com frequência. É a hora de corrigir: depois que o lobby abrir, não dá mais para mudar.',
@@ -462,6 +498,7 @@ export const pt = {
   },
 
   lobby: {
+    hostTag: '(anfitrião)',
     title: 'Lobby',
     shareLink: 'Link para compartilhar',
     shareCode: 'Código da cena',
@@ -489,6 +526,8 @@ export const pt = {
   },
 
   studio: {
+    reassign: (nom: string) => `Reatribuir ${nom}`,
+    pickPlayer: 'Escolhe um jogador…',
     title: 'Estúdio',
     clipProgress: (current: number, total: number) => `Clipe ${current} / ${total}`,
     playOriginal: 'Ver a cena (original)',

@@ -101,7 +101,7 @@ export function PrepareScreen() {
     <div className="space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+          <h1 className="titre text-3xl">
             {t.prepare.title}
           </h1>
           <p className="max-w-2xl text-sm text-text-faint">{t.prepare.subtitle}</p>
@@ -159,7 +159,7 @@ export function PrepareScreen() {
                       type="checkbox"
                       checked={checked}
                       onChange={() => setSelectedChars((s) => toggle(s, character.id))}
-                      aria-label={`Sélectionner ${character.name}`}
+                      aria-label={t.prepare.selectCharacter(character.name)}
                       className="h-4 w-4 accent-[var(--color-accent)]"
                     />
                   </label>
@@ -353,7 +353,7 @@ export function PrepareScreen() {
                       type="checkbox"
                       checked={checked}
                       onChange={() => setSelectedLines((s) => toggle(s, line.id))}
-                      aria-label={`Sélectionner la réplique de ${formatTimecode(line.start_ms)}`}
+                      aria-label={t.prepare.selectLine(formatTimecode(line.start_ms))}
                       className="h-4 w-4 accent-[var(--color-accent)]"
                     />
                   </label>
@@ -362,7 +362,7 @@ export function PrepareScreen() {
                     size="icon"
                     variant="ghost"
                     className="h-7 w-7 shrink-0"
-                    aria-label="Écouter"
+                    aria-label={t.prepare.listen}
                     onClick={() => excerpt.play(line.id, line.start_ms, line.end_ms)}
                   >
                     {excerpt.playingId === line.id ? (
@@ -387,7 +387,7 @@ export function PrepareScreen() {
                   <input
                     key={line.text}
                     defaultValue={line.text}
-                    aria-label="Texte de la réplique"
+                    aria-label={t.prepare.lineText}
                     title={line.is_deleted ? t.prepare.deleteLineHint : undefined}
                     className={cn(
                       'min-h-8 min-w-0 flex-1 rounded-md border-0 bg-transparent px-1.5 text-sm outline-none',

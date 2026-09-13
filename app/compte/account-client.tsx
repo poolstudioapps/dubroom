@@ -120,7 +120,7 @@ export function AccountClient({
   return (
     <AppShell className="space-y-6">
       <header className="space-y-1">
-        <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+        <h1 className="titre text-3xl">
           {t.account.title}
         </h1>
         <p className="text-sm text-text-muted">{t.account.subtitle}</p>

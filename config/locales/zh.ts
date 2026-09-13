@@ -50,6 +50,14 @@ export const zh = {
   },
 
   home: {
+    originalScene: '原始场景',
+    demoLines: [
+      { name: 'Alba', text: '你确定是这扇门吗？' },
+      { name: 'Rem', text: '完全不确定。' },
+      { name: 'Noor', text: '那也要进去。' },
+    ],
+    carouselLabel: '运作方式',
+    rythmoLabel: '节奏带预览：配音时文字在播放头下方滚动。',
     heroTitle: '把喜欢的片段重新配一遍',
     heroBody:
       '你们挑一个片段，每人认领一个角色，各自找时间录。原来的音乐和环境声照旧，只有声音换成你们的。结果留到最后，一起看。',
@@ -282,7 +290,26 @@ export const zh = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: '草稿',
+    ingest_queued: '排队中',
+    ingesting: '导入中',
+    ingest_failed: '导入失败',
+    prepping: '待准备',
+    lobby: '大厅已开',
+    recording: '录音中',
+    render_queued: '渲染排队',
+    rendering: '渲染中',
+    render_failed: '渲染失败',
+    done: '已完成',
+  },
+
   common: {
+    untitled: '未命名场景',
+    stepTitled: (n: number, titre: string) => `第 ${n} 步：${titre}`,
+    scrollPause: '停止播放',
+    scrollResume: '继续播放',
+    step: (n: number, total: number) => `第 ${n} 步，共 ${total} 步`,
     loading: '加载中…',
     save: '保存',
     cancel: '取消',
@@ -297,6 +324,9 @@ export const zh = {
   },
 
   auth: {
+    linkExpired: '此链接已过期或已被使用。登录链接有效期为一小时，且只能使用一次。请重新申请。',
+    linkUsed: '此链接已过期或已被使用。请重新申请。',
+    linkIncomplete: '此链接不完整。请重新申请。',
     title: '登录',
     subtitle: '我们发一条链接给你，点一下就好。',
     emailLabel: '你的邮箱地址',
@@ -339,6 +369,8 @@ export const zh = {
   },
 
   sessions: {
+    joinTitle: '加入场景',
+    joinCode: '代码',
     title: '我的片段',
     empty: '暂时还没有片段。导入一个就能开始。',
     create: '新片段',
@@ -404,6 +436,10 @@ export const zh = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `选择 ${nom}`,
+    selectLine: (code: string) => `选择 ${code} 的台词`,
+    listen: '试听',
+    lineText: '台词文字',
     title: '整理角色',
     subtitle: '自动识别经常认错人。现在是改的时候：大厅一开就动不了了。',
     charactersHeading: '识别出的角色',
@@ -442,6 +478,7 @@ export const zh = {
   },
 
   lobby: {
+    hostTag: '（主持人）',
     title: '大厅',
     shareLink: '分享链接',
     shareCode: '片段代码',
@@ -468,6 +505,8 @@ export const zh = {
   },
 
   studio: {
+    reassign: (nom: string) => `重新分配 ${nom}`,
+    pickPlayer: '选择一位玩家…',
     title: '录音棚',
     clipProgress: (current: number, total: number) => `片段 ${current} / ${total}`,
     playOriginal: '播放原片',

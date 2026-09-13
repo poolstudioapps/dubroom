@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { CHARACTER_COLOR_FALLBACK } from '@/config/constants';
+import { useT } from '@/lib/i18n';
 
 /** Ce que verrait quelqu'un en train de doubler, en boucle. */
 /*
@@ -11,11 +12,14 @@ import { CHARACTER_COLOR_FALLBACK } from '@/config/constants';
  * cadre et se lisait comme un defaut d'affichage, alors que c'est
  * justement la premiere chose que voit un visiteur.
  */
-const SCRIPT = [
-  { speaker: 'character-1', name: 'Tyrion', text: 'Je sais des choses.' },
-  { speaker: 'character-4', name: 'Ygritte', text: 'Tu ne sais rien.' },
-  { speaker: 'character-2', name: 'Jon', text: 'J’apprends vite.' },
-] as const;
+/*
+ * Les couleurs des trois voix de la vitrine.
+ *
+ * Le texte, lui, vient du dictionnaire : c'est une page d'accueil lue en
+ * dix langues, et un extrait fige en francais y detonnait. Les repliques
+ * sont ecrites pour l'occasion, comme les personnages qui les disent.
+ */
+const VOIX = ['character-1', 'character-4', 'character-2'] as const;
 
 const STEP_MS = 3200;
 
@@ -31,6 +35,7 @@ const STEP_MS = 3200;
  * theme. Elle s'arrete si la personne a demande moins d'animation.
  */
 export function HeroRythmo() {
+  const t = useT();
   const [index, setIndex] = useState(0);
   const [still, setStill] = useState(false);
   const timer = useRef<number | null>(null);
@@ -41,7 +46,7 @@ export function HeroRythmo() {
       return;
     }
     timer.current = window.setInterval(
-      () => setIndex((i) => (i + 1) % SCRIPT.length),
+      () => setIndex((i) => (i + 1) % VOIX.length),
       STEP_MS,
     );
     return () => {
@@ -49,19 +54,25 @@ export function HeroRythmo() {
     };
   }, []);
 
-  const line = SCRIPT[index] ?? SCRIPT[0];
-  const color = CHARACTER_COLOR_FALLBACK[line.speaker] ?? '#4da3ff';
+  // La replique vient du dictionnaire, la couleur de la liste locale :
+  // les deux sont indexees par le meme rang.
+  // Le repli explicite n'est pas de la superstition : l'acces indexe est
+  // verifie par le compilateur, et un tableau vide rendrait `undefined`.
+  const repliques = t.home.demoLines;
+  const line = repliques[index] ?? repliques[0] ?? { name: '', text: '' };
+  const voix = VOIX[index % VOIX.length] ?? VOIX[0];
+  const color = CHARACTER_COLOR_FALLBACK[voix] ?? '#4da3ff';
 
   return (
     <div
       className="relative overflow-hidden rounded-card border-2 border-bezel-dark bg-stage"
       role="img"
-      aria-label="Aperçu de la bande rythmo : le texte défile sous une tête de lecture pendant qu’on double."
+      aria-label={t.home.rythmoLabel}
     >
       {/* Le cadre image, suggere par un simple aplat plus clair. */}
       <div className="flex aspect-[16/7] items-end justify-center bg-gradient-to-b from-stage-raised/70 to-stage px-4 pb-3">
         <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-stage-faint">
-          la scène d’origine
+          {t.home.originalScene}
         </span>
       </div>
 

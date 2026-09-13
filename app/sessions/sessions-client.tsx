@@ -70,7 +70,7 @@ export function SessionsClient({
   return (
     <AppShell className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+        <h1 className="titre text-3xl">
           {t.sessions.title}
         </h1>
         <Button variant="primary" onClick={() => router.push('/sessions/new')}>
@@ -115,7 +115,7 @@ export function SessionsClient({
                     href={`/s/${session.code}`}
                     className="truncate font-bold hover:text-link hover:underline"
                   >
-                    {session.title ?? 'Scène sans titre'}
+                    {session.title ?? t.common.untitled}
                   </Link>
                   <StatusBadge status={session.status} />
                 </div>

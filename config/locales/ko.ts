@@ -52,6 +52,14 @@ export const ko = {
   },
 
   home: {
+    originalScene: '원본 장면',
+    demoLines: [
+      { name: 'Alba', text: '이 문이 맞는 거 확실해?' },
+      { name: 'Rem', text: '전혀.' },
+      { name: 'Noor', text: '그래도 간다.' },
+    ],
+    carouselLabel: '작동 방식',
+    rythmoLabel: '리드모 밴드 미리보기: 더빙하는 동안 재생 헤드 아래로 텍스트가 흐릅니다.',
     heroTitle: '좋아하는 장면을 다시 더빙하세요',
     heroBody:
       '장면을 고르고, 각자 배역을 하나씩 맡아, 각자 편한 때에 녹음합니다. 원래 음악과 현장음은 그대로 두고 목소리만 바뀝니다. 결과는 마지막에 다 같이 확인합니다.',
@@ -288,7 +296,26 @@ export const ko = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: '초안',
+    ingest_queued: '대기 중',
+    ingesting: '가져오는 중',
+    ingest_failed: '가져오기 실패',
+    prepping: '준비 필요',
+    lobby: '로비 열림',
+    recording: '녹음 중',
+    render_queued: '렌더링 대기',
+    rendering: '렌더링 중',
+    render_failed: '렌더링 실패',
+    done: '완료',
+  },
+
   common: {
+    untitled: '제목 없는 장면',
+    stepTitled: (n: number, titre: string) => `${n}단계: ${titre}`,
+    scrollPause: '슬라이드 멈춤',
+    scrollResume: '슬라이드 재개',
+    step: (n: number, total: number) => `${total}단계 중 ${n}단계`,
     loading: '불러오는 중…',
     save: '저장',
     cancel: '취소',
@@ -303,6 +330,9 @@ export const ko = {
   },
 
   auth: {
+    linkExpired: '이 링크는 만료되었거나 이미 사용되었습니다. 로그인 링크는 한 시간 동안 한 번만 유효합니다. 새로 요청하세요.',
+    linkUsed: '이 링크는 만료되었거나 이미 사용되었습니다. 새로 요청하세요.',
+    linkIncomplete: '이 링크는 불완전합니다. 새로 요청하세요.',
     title: '로그인',
     subtitle: '링크를 보내 드립니다. 누르면 끝입니다.',
     emailLabel: '이메일 주소',
@@ -346,6 +376,8 @@ export const ko = {
   },
 
   sessions: {
+    joinTitle: '장면 참가',
+    joinCode: '코드',
     title: '내 장면',
     empty: '아직 장면이 없습니다. 하나 가져와서 시작하세요.',
     create: '새 장면',
@@ -417,6 +449,10 @@ export const ko = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `${nom} 선택`,
+    selectLine: (code: string) => `${code} 대사 선택`,
+    listen: '듣기',
+    lineText: '대사 문구',
     title: '등장인물 정리',
     subtitle:
       '자동 판별은 화자를 자주 틀립니다. 지금이 고칠 때입니다. 로비를 열면 바꿀 수 없습니다.',
@@ -456,6 +492,7 @@ export const ko = {
   },
 
   lobby: {
+    hostTag: '(호스트)',
     title: '로비',
     shareLink: '공유 링크',
     shareCode: '장면 코드',
@@ -482,6 +519,8 @@ export const ko = {
   },
 
   studio: {
+    reassign: (nom: string) => `${nom} 재배정`,
+    pickPlayer: '플레이어 선택…',
     title: '스튜디오',
     clipProgress: (current: number, total: number) => `클립 ${current} / ${total}`,
     playOriginal: '원본 장면 재생',

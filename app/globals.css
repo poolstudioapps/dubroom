@@ -371,6 +371,21 @@
     transform: rotate(7deg);
   }
 
+  /* ── Titre d'ecran ────────────────────────────────────────────────
+     La police d'enseigne, sans son ombre.
+
+     L'ombre de `.signage` est faite pour les grands titres de marque —
+     l'enseigne du site, le titre d'accueil, les vignettes du carrousel.
+     Partout ailleurs elle ecrase des titres de dix-huit pixels, et le
+     code le savait deja : dix-neuf endroits posaient `.signage` puis
+     annulaient l'ombre par un style en ligne, dont deux qui l'avaient
+     oublie et detonnaient. Autant nommer l'intention. */
+  .titre {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
   /* ── Texte d'enseigne ─────────────────────────────────────────────
      L'ombre portee dure, decalee, des logos de jeux televises. */
   .signage {

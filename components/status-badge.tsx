@@ -1,26 +1,30 @@
 'use client';
 
 import { Badge } from '@/components/ui';
+import { useT } from '@/lib/i18n';
 import type { SessionStatus } from '@/lib/supabase/database.types';
 
-const LABELS: Record<
-  SessionStatus,
-  { text: string; tone: 'neutral' | 'ok' | 'warn' | 'danger' | 'accent' }
-> = {
-  draft: { text: 'Brouillon', tone: 'neutral' },
-  ingest_queued: { text: 'En file', tone: 'warn' },
-  ingesting: { text: 'Import en cours', tone: 'accent' },
-  ingest_failed: { text: 'Import échoué', tone: 'danger' },
-  prepping: { text: 'À préparer', tone: 'accent' },
-  lobby: { text: 'Lobby ouvert', tone: 'accent' },
-  recording: { text: 'Enregistrement', tone: 'accent' },
-  render_queued: { text: 'Rendu en file', tone: 'warn' },
-  rendering: { text: 'Rendu en cours', tone: 'accent' },
-  render_failed: { text: 'Rendu échoué', tone: 'danger' },
-  done: { text: 'Terminée', tone: 'ok' },
+/**
+ * La couleur de chaque statut.
+ *
+ * Elle vit ici et non dans les traductions : c'est une decision de
+ * lecture, pas de langue. Un import echoue est rouge dans les dix.
+ */
+const TONS: Record<SessionStatus, 'neutral' | 'ok' | 'warn' | 'danger' | 'accent'> = {
+  draft: 'neutral',
+  ingest_queued: 'warn',
+  ingesting: 'accent',
+  ingest_failed: 'danger',
+  prepping: 'accent',
+  lobby: 'accent',
+  recording: 'accent',
+  render_queued: 'warn',
+  rendering: 'accent',
+  render_failed: 'danger',
+  done: 'ok',
 };
 
 export function StatusBadge({ status }: { status: SessionStatus }) {
-  const { text, tone } = LABELS[status];
-  return <Badge tone={tone}>{text}</Badge>;
+  const t = useT();
+  return <Badge tone={TONS[status]}>{t.status[status]}</Badge>;
 }

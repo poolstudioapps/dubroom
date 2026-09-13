@@ -370,7 +370,7 @@ export function Dialog({
     >
       <div className="plate rounded-sm">
         <div className="flex items-center justify-between border-b-2 border-border-strong px-4 py-3">
-          <h2 className="signage text-lg text-text" style={{ textShadow: 'none' }}>
+          <h2 className="titre text-lg text-text">
             {title}
           </h2>
           <button

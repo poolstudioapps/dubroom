@@ -190,7 +190,7 @@ export function StudioSidebar({
 
         {iAmDone ? (
           <div className="space-y-1 pt-1">
-            <p className="text-sm font-medium">{t.studio.finishedTitle}</p>
+            <p className="text-sm font-bold">{t.studio.finishedTitle}</p>
             <p className="text-xs text-text-faint">{t.studio.finishedBody}</p>
           </div>
         ) : null}
@@ -314,14 +314,14 @@ export function StudioSidebar({
                   <select
                     className="h-8 rounded-lg border border-border bg-surface-sunken px-2 text-xs"
                     defaultValue=""
-                    aria-label={`Réassigner ${character.name}`}
+                    aria-label={t.studio.reassign(character.name)}
                     onChange={(e) => {
                       const target = e.target.value;
                       if (!target) return;
                       act.mutate(() => reassignCharacter(character.id, target));
                     }}
                   >
-                    <option value="">Choisir un joueur…</option>
+                    <option value="">{t.studio.pickPlayer}</option>
                     {participants
                       .filter((p) => !p.is_kicked && p.id !== pendingKick?.id)
                       .map((p) => (

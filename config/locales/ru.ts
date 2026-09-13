@@ -62,6 +62,14 @@ export const ru = {
   },
 
   home: {
+    originalScene: 'исходная сцена',
+    demoLines: [
+      { name: 'Alba', text: 'Ты уверен, что это та дверь?' },
+      { name: 'Rem', text: 'Совсем нет.' },
+      { name: 'Noor', text: 'Всё равно идём.' },
+    ],
+    carouselLabel: 'Как это работает',
+    rythmoLabel: 'Предпросмотр ритмо-ленты: текст движется под указателем во время озвучки.',
     heroTitle: 'Переозвучьте любимые сцены',
     heroBody:
       'Вы выбираете сцену, каждый берёт персонажа и пишет свою дорожку когда удобно. Музыка и шумы остаются родными: меняются только голоса. Результат смотрите в конце, все вместе.',
@@ -300,7 +308,26 @@ export const ru = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: 'Черновик',
+    ingest_queued: 'В очереди',
+    ingesting: 'Импорт',
+    ingest_failed: 'Ошибка импорта',
+    prepping: 'К подготовке',
+    lobby: 'Лобби открыто',
+    recording: 'Запись',
+    render_queued: 'Монтаж в очереди',
+    rendering: 'Монтаж',
+    render_failed: 'Ошибка монтажа',
+    done: 'Готово',
+  },
+
   common: {
+    untitled: 'Сцена без названия',
+    stepTitled: (n: number, titre: string) => `Шаг ${n}: ${titre}`,
+    scrollPause: 'Остановить прокрутку',
+    scrollResume: 'Продолжить прокрутку',
+    step: (n: number, total: number) => `Шаг ${n} из ${total}`,
     loading: 'Загрузка…',
     save: 'Сохранить',
     cancel: 'Отмена',
@@ -315,6 +342,9 @@ export const ru = {
   },
 
   auth: {
+    linkExpired: 'Ссылка истекла или уже использована. Ссылки для входа действуют час и только один раз. Запроси новую.',
+    linkUsed: 'Ссылка истекла или уже использована. Запроси новую.',
+    linkIncomplete: 'Ссылка неполная. Запроси новую.',
     title: 'Вход',
     subtitle: 'Мы пришлём ссылку, ты нажмёшь — и всё.',
     emailLabel: 'Твой адрес почты',
@@ -358,6 +388,8 @@ export const ru = {
   },
 
   sessions: {
+    joinTitle: 'Присоединиться к сцене',
+    joinCode: 'Код',
     title: 'Мои сцены',
     empty: 'Пока ни одной сцены. Загрузи одну, чтобы начать.',
     create: 'Новая сцена',
@@ -429,6 +461,10 @@ export const ru = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `Выбрать ${nom}`,
+    selectLine: (code: string) => `Выбрать реплику на ${code}`,
+    listen: 'Прослушать',
+    lineText: 'Текст реплики',
     title: 'Разобраться с персонажами',
     subtitle:
       'Автоматика часто путает персонажей. Сейчас самое время поправить: после открытия лобби ничего не изменить.',
@@ -470,6 +506,7 @@ export const ru = {
   },
 
   lobby: {
+    hostTag: '(ведущий)',
     title: 'Лобби',
     shareLink: 'Ссылка для своих',
     shareCode: 'Код сцены',
@@ -496,6 +533,8 @@ export const ru = {
   },
 
   studio: {
+    reassign: (nom: string) => `Переназначить ${nom}`,
+    pickPlayer: 'Выбери игрока…',
     title: 'Студия',
     clipProgress: (current: number, total: number) => `Кусок ${current} / ${total}`,
     playOriginal: 'Смотреть сцену (оригинал)',

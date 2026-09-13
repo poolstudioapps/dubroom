@@ -136,6 +136,7 @@ export function ScenePage({
 }
 
 function JoinForm({ code, defaultName }: { code: string; defaultName: string }) {
+  const t = useT();
   const qc = useQueryClient();
   const [name, setName] = useState(defaultName);
   const [error, setError] = useState<string | null>(null);
@@ -149,9 +150,9 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
   return (
     <Card className="mx-auto max-w-sm space-y-4">
       <div>
-        <h1 className="text-lg font-semibold">Rejoindre la scène</h1>
+        <h1 className="titre text-2xl">{t.sessions.joinTitle}</h1>
         <p className="text-sm text-text-faint">
-          Code <span className="font-mono uppercase">{code}</span>
+          {t.sessions.joinCode} <span className="font-mono uppercase">{code}</span>
         </p>
       </div>
 

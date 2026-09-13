@@ -3,6 +3,7 @@
 import { Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useT } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 export interface Slide {
@@ -39,6 +40,7 @@ const INTERVAL_MS = 5_500;
  * main.
  */
 export function Carousel({ slides }: { slides: Slide[] }) {
+  const t = useT();
   const [index, setIndex] = useState(0);
   /** Arret demande : par le bouton, par un doigt, ou par le systeme. */
   const [stopped, setStopped] = useState(false);
@@ -69,7 +71,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
   return (
     <section
       aria-roledescription="carrousel"
-      aria-label="Comment ça marche"
+      aria-label={t.home.carouselLabel}
       onTouchStart={() => setStopped(true)}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight') go(index + 1);
@@ -139,15 +141,14 @@ export function Carousel({ slides }: { slides: Slide[] }) {
               inert={!actif ? true : undefined}
             >
               <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
-                Étape {i + 1} sur {slides.length}
+                {t.common.step(i + 1, slides.length)}
               </p>
               <h3
                 key={actif ? `on-${i}` : `off-${i}`}
                 className={cn(
-                  'signage text-2xl sm:text-3xl',
+                  'titre text-2xl sm:text-3xl',
                   actif && !reduced && 'animate-fade-in',
                 )}
-                style={{ textShadow: 'none' }}
               >
                 {slide.title}
               </h3>
@@ -178,7 +179,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
             <button
               key={slide.title}
               type="button"
-              aria-label={`Étape ${i + 1} : ${slide.title}`}
+              aria-label={t.common.stepTitled(i + 1, slide.title)}
               aria-current={i === index ? 'true' : undefined}
               onClick={() => go(i)}
               className="group flex h-10 w-10 items-center justify-center"
@@ -198,7 +199,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
         {slides.length > 1 ? (
           <button
             type="button"
-            aria-label={stopped ? 'Reprendre le défilement' : 'Arrêter le défilement'}
+            aria-label={stopped ? t.common.scrollResume : t.common.scrollPause}
             onClick={() => setStopped((value) => !value)}
             className="ml-1 flex h-10 w-10 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-surface hover:text-text"
           >

@@ -104,7 +104,7 @@ export function CommunityClient({
   return (
     <AppShell className="space-y-7">
       <header className="space-y-2">
-        <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+        <h1 className="titre text-3xl">
           {strings.title}
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-text-muted">

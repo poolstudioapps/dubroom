@@ -89,7 +89,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
     mutationFn: async () => {
       setError(null);
       const session = await createSession({
-        title: title.trim() || 'Scène sans titre',
+        title: title.trim() || t.common.untitled,
         sourceType: mode === 'youtube' ? 'youtube' : 'upload',
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
@@ -117,7 +117,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
 
   return (
     <AppShell className="max-w-xl space-y-6">
-      <h1 className="signage text-3xl" style={{ textShadow: 'none' }}>
+      <h1 className="titre text-3xl">
         {t.create.title}
       </h1>
 

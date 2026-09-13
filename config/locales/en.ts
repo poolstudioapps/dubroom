@@ -57,6 +57,14 @@ export const en = {
   },
 
   home: {
+    originalScene: 'the original scene',
+    demoLines: [
+      { name: 'Alba', text: 'Are you sure this is the right door?' },
+      { name: 'Rem', text: 'Absolutely not.' },
+      { name: 'Noor', text: 'We’re going in anyway.' },
+    ],
+    carouselLabel: 'How it works',
+    rythmoLabel: 'Preview of the rythmo band: the text scrolls under a playhead while you dub.',
     heroTitle: 'Redub your favourite scenes',
     heroBody:
       'You pick a scene, each of you takes a character, and you record on your own time. The original music and atmosphere stay in place: only the voices change. You discover the result at the end, together.',
@@ -295,7 +303,26 @@ export const en = {
     contactEmail: 'ienders.pro@gmail.com',
   },
 
+  status: {
+    draft: 'Draft',
+    ingest_queued: 'Queued',
+    ingesting: 'Importing',
+    ingest_failed: 'Import failed',
+    prepping: 'To prepare',
+    lobby: 'Lobby open',
+    recording: 'Recording',
+    render_queued: 'Render queued',
+    rendering: 'Rendering',
+    render_failed: 'Render failed',
+    done: 'Done',
+  },
+
   common: {
+    untitled: 'Untitled scene',
+    stepTitled: (n: number, titre: string) => `Step ${n}: ${titre}`,
+    scrollPause: 'Stop the slideshow',
+    scrollResume: 'Resume the slideshow',
+    step: (n: number, total: number) => `Step ${n} of ${total}`,
     loading: 'Loading…',
     save: 'Save',
     cancel: 'Cancel',
@@ -310,6 +337,9 @@ export const en = {
   },
 
   auth: {
+    linkExpired: 'This link has expired or has already been used. Sign-in links last one hour and work once. Ask for a new one.',
+    linkUsed: 'This link has expired or has already been used. Ask for a new one.',
+    linkIncomplete: 'This link is incomplete. Ask for a new one.',
     title: 'Sign in',
     subtitle: 'We send you a link, you click it, done.',
     emailLabel: 'Your email address',
@@ -353,6 +383,8 @@ export const en = {
   },
 
   sessions: {
+    joinTitle: 'Join the scene',
+    joinCode: 'Code',
     title: 'My scenes',
     empty: 'No scene yet. Import one to get started.',
     create: 'New scene',
@@ -425,6 +457,10 @@ export const en = {
   },
 
   prepare: {
+    selectCharacter: (nom: string) => `Select ${nom}`,
+    selectLine: (code: string) => `Select the line at ${code}`,
+    listen: 'Listen',
+    lineText: 'Line text',
     title: 'Sort out the characters',
     subtitle:
       'Automatic detection often gets the character wrong. Now is the time to fix it: once the lobby opens, none of this can change.',
@@ -466,6 +502,7 @@ export const en = {
   },
 
   lobby: {
+    hostTag: '(host)',
     title: 'Lobby',
     shareLink: 'Link to share',
     shareCode: 'Scene code',
@@ -493,6 +530,8 @@ export const en = {
   },
 
   studio: {
+    reassign: (nom: string) => `Reassign ${nom}`,
+    pickPlayer: 'Pick a player…',
     title: 'Studio',
     clipProgress: (current: number, total: number) => `Clip ${current} / ${total}`,
     playOriginal: 'Play the scene (original)',

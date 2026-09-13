@@ -188,7 +188,7 @@ export default async function HomePage() {
 
             {/* ── Ce qu'on y gagne, dit en trois fois ───────────────── */}
             <section className="space-y-4">
-              <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+              <h2 className="titre text-xl">
                 {t.home.valueTitle}
               </h2>
               {/*
@@ -220,7 +220,7 @@ export default async function HomePage() {
 
             {/* ── Le deroule ─────────────────────────────────────────── */}
             <section className="space-y-4">
-              <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+              <h2 className="titre text-xl">
                 {t.home.howTitle}
               </h2>
               <Carousel slides={slides} />
@@ -258,7 +258,7 @@ export default async function HomePage() {
             */}
             <section className="space-y-6">
               <article className="space-y-2">
-                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                <h2 className="titre text-xl">
                   {t.home.defineTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -267,7 +267,7 @@ export default async function HomePage() {
               </article>
 
               <article className="space-y-2">
-                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                <h2 className="titre text-xl">
                   {t.home.defineHowTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -276,7 +276,7 @@ export default async function HomePage() {
               </article>
 
               <article className="space-y-2">
-                <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+                <h2 className="titre text-xl">
                   {t.home.defineWhoTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -287,7 +287,7 @@ export default async function HomePage() {
 
             {/* ── Les questions qui restent ──────────────────────────── */}
             <section className="space-y-4">
-              <h2 className="signage text-xl" style={{ textShadow: 'none' }}>
+              <h2 className="titre text-xl">
                 {t.home.faqTitle}
               </h2>
               <FaqList items={[...t.home.faq, ...t.home.faqExtra]} />
