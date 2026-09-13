@@ -102,11 +102,14 @@ export function Footer() {
   ];
 
   return (
-    <footer className="w-full pb-8 pt-8">
-      <div className="rounded-card border border-border/60 bg-surface/40 px-5 py-8 backdrop-blur-sm sm:px-8 sm:py-10">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
+    // `@container` : les colonnes suivent la largeur du pied de page, pas
+    // celle de la fenetre. Sur la connexion ou une page d'erreur, il vit
+    // dans une colonne etroite ou quatre colonnes n'avaient pas la place.
+    <footer className="@container w-full pb-8 pt-8">
+      <div className="rounded-card border border-border/60 bg-surface/40 px-5 py-8 backdrop-blur-sm @sm:px-8 @sm:py-10">
+        <div className="grid gap-10 @sm:grid-cols-2 @3xl:grid-cols-[1.5fr_repeat(3,1fr)]">
           {/* La marque, sa promesse, ses reseaux. */}
-          <div className="space-y-5 sm:col-span-2 lg:col-span-1">
+          <div className="space-y-5 @sm:col-span-2 @3xl:col-span-1">
             <Link href="/" className="signage site-logo inline-block rounded-sm text-3xl">
               {APP_NAME}
             </Link>
@@ -179,7 +182,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-border/60 pt-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-border/60 pt-6 @3xl:flex-row @3xl:items-center @3xl:justify-between">
           <p className="max-w-2xl text-xs leading-relaxed text-text-faint">{t.legal.usageNotice}</p>
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-xs text-text-faint">

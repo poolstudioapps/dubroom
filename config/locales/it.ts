@@ -553,6 +553,9 @@ export const it = {
     rendersReady: 'Pronta da guardare',
     rendersSoon: 'Pronta tra pochi minuti',
     rendersWatch: 'Guarda',
+    joinNameLabel: 'Il tuo nome, perché gli altri ti riconoscano',
+    joinNotFoundTitle: 'Questa scena non esiste più',
+    joinNotFoundBody: 'Il link o il codice non portano da nessuna parte: la scena è stata eliminata, o il codice è sbagliato.',
   },
 
   create: {
@@ -1071,7 +1074,7 @@ export const it = {
         body: 'La tua ripresa suona esattamente come nel video finale.',
       },
       {
-        title: 'Venti minuti fermi e si chiude',
+        title: 'Trenta minuti fermi e si chiude',
         body: 'Una lobby o uno studio senza attività per trenta minuti si chiude da solo.',
       },
       {

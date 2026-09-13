@@ -554,6 +554,9 @@ export const en = {
     rendersReady: 'Ready to watch',
     rendersSoon: 'Ready in a few minutes',
     rendersWatch: 'Watch',
+    joinNameLabel: 'Your name, so the others recognise you',
+    joinNotFoundTitle: 'This scene no longer exists',
+    joinNotFoundBody: 'The link or code leads nowhere: the scene was deleted, or the code is wrong.',
   },
 
   create: {
@@ -1069,7 +1072,7 @@ export const en = {
         body: 'Your take plays back exactly as it will sound in the video.',
       },
       {
-        title: 'Twenty idle minutes close it',
+        title: 'Thirty idle minutes close it',
         body: 'A lobby or studio with no activity for thirty minutes closes by itself.',
       },
       {

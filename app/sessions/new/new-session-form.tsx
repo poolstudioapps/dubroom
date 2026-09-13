@@ -182,7 +182,7 @@ export function NewSessionForm({
 
   return (
     <AppShell className="space-y-6 sm:space-y-8">
-      <header className="mx-auto w-full max-w-2xl space-y-5 text-center">
+      <header className="mx-auto w-full max-w-3xl space-y-5 text-center">
         <div className="space-y-2">
           <h1 className="titre text-3xl sm:text-4xl">
             {packMode ? t.create.communityTitle : t.create.title}

@@ -44,7 +44,7 @@ export default function CookiesPage() {
           ne servent à rien d’autre.
         </p>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm [&_code]:break-all">
             <thead>
               <tr>
                 <th className={cellule}>Nom</th>
@@ -81,7 +81,7 @@ export default function CookiesPage() {
           valent le temps de la visite, puis sont oubliés.
         </p>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm [&_code]:break-all">
             <thead>
               <tr>
                 <th className={cellule}>Nom</th>
@@ -109,10 +109,19 @@ export default function CookiesPage() {
               </tr>
               <tr>
                 <td className={cellule}>
-                  <code>dubup.micOffsetEverywhere</code> (stockage local)
+                  <code>dubup.micDevice</code>, <code>dubup.outputDevice</code> (stockage
+                  local)
+                </td>
+                <td className={cellule}>Retenir le micro et le casque choisis dans le studio.</td>
+                <td className={cellule}>Jusqu’à effacement ; non enregistré si refusé</td>
+              </tr>
+              <tr>
+                <td className={cellule}>
+                  <code>dubup.keepFx</code>, <code>dubup.fxPerso</code> (stockage local)
                 </td>
                 <td className={cellule}>
-                  Retenir la case « appliquer à toutes mes prises » du studio.
+                  Retenir les réglages de voix du studio : la case « garder ces effets »
+                  et ceux gardés pour un personnage.
                 </td>
                 <td className={cellule}>Jusqu’à effacement ; non enregistré si refusé</td>
               </tr>

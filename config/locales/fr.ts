@@ -556,6 +556,9 @@ export const fr = {
     rendersReady: 'Prête à regarder',
     rendersSoon: 'Prête dans quelques minutes',
     rendersWatch: 'Voir',
+    joinNameLabel: 'Ton nom, pour que les autres te reconnaissent',
+    joinNotFoundTitle: 'Cette scène n’existe plus',
+    joinNotFoundBody: 'Le lien ou le code ne mène nulle part : la scène a été supprimée, ou le code est faux.',
   },
 
   create: {
@@ -1074,7 +1077,7 @@ export const fr = {
         body: '« Ma prise » rejoue la voix telle qu’elle sortira dans la vidéo.',
       },
       {
-        title: 'Vingt minutes sans rien, ça ferme',
+        title: 'Trente minutes sans rien, ça ferme',
         body: 'Un salon ou un studio sans activité pendant trente minutes se ferme tout seul.',
       },
       {

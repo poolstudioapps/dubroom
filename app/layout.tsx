@@ -156,8 +156,15 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Avant la premiere peinture : voir `lib/reveal-script.ts`. */}
-        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
+        {/* Avant la premiere peinture : voir `lib/reveal-script.ts`.
+            `suppressHydrationWarning` : le navigateur efface la valeur de
+            l'attribut `nonce` une fois lu (c'est le principe du nonce), et
+            React croyait a un HTML different du sien. */}
+        <script
+          nonce={nonce}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }}
+        />
       </head>
       <body className="min-h-dvh antialiased">
         <Providers locale={locale}>

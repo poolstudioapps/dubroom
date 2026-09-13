@@ -554,6 +554,9 @@ export const es = {
     rendersReady: 'Lista para ver',
     rendersSoon: 'Lista en unos minutos',
     rendersWatch: 'Ver',
+    joinNameLabel: 'Tu nombre, para que los demás te reconozcan',
+    joinNotFoundTitle: 'Esta escena ya no existe',
+    joinNotFoundBody: 'El enlace o el código no llevan a ningún sitio: la escena se borró, o el código es incorrecto.',
   },
 
   create: {
@@ -1071,7 +1074,7 @@ export const es = {
         body: 'Tu toma suena exactamente como en el vídeo final.',
       },
       {
-        title: 'Veinte minutos sin actividad y se cierra',
+        title: 'Treinta minutos sin actividad y se cierra',
         body: 'Una sala o un estudio sin actividad durante treinta minutos se cierra solo.',
       },
       {

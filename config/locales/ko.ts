@@ -547,6 +547,9 @@ export const ko = {
     rendersReady: '시청 가능',
     rendersSoon: '몇 분 뒤 완성',
     rendersWatch: '보기',
+    joinNameLabel: '다른 사람이 알아볼 수 있는 이름',
+    joinNotFoundTitle: '이 장면은 더 이상 없어요',
+    joinNotFoundBody: '링크나 코드가 아무 곳으로도 이어지지 않아요. 장면이 삭제됐거나 코드가 잘못됐어요.',
   },
 
   create: {

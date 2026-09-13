@@ -541,6 +541,9 @@ export const zh = {
     rendersReady: '可以观看',
     rendersSoon: '几分钟后完成',
     rendersWatch: '观看',
+    joinNameLabel: '你的名字，让其他人认出你',
+    joinNotFoundTitle: '这个场景已不存在',
+    joinNotFoundBody: '链接或代码无效：场景已被删除，或者代码有误。',
   },
 
   create: {

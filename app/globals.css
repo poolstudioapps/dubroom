@@ -351,6 +351,18 @@
       flex-direction: row;
       gap: 0.5rem;
       min-height: 3rem;
+      /* Sur une ligne : un libelle coupe en deux au milieu des autres
+         donnait trois onglets de trois hauteurs. Les cases prennent
+         alors la largeur de leur mot, le reste se partage. */
+      white-space: nowrap;
+    }
+
+    .source-onglets {
+      grid-template-columns: repeat(3, auto);
+    }
+
+    .source-onglets-deux {
+      grid-template-columns: repeat(2, auto);
     }
   }
 

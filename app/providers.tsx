@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Locale } from '@/config/i18n';
 import { I18nProvider } from '@/lib/i18n';
@@ -28,6 +28,13 @@ export function Providers({
         },
       }),
   );
+
+  // L'hydratation est faite : le script d'apparition peut marquer les
+  // elements sans que React y voie un HTML different du sien.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-hydrated', '');
+    document.dispatchEvent(new Event('dubblers:hydrated'));
+  }, []);
 
   return (
     <QueryClientProvider client={client}>

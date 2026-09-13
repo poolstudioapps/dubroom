@@ -11,15 +11,33 @@
  * ils entrent a l'ecran, et c'est la feuille de style qui decide de les
  * animer.
  *
- * Deux filets de securite : sans `IntersectionObserver`, ou si quoi que
- * ce soit leve une erreur, tout est revele et la classe retiree. Une
- * animation ratee ne doit jamais laisser une page vide.
+ * Il attend l'hydratation avant de marquer quoi que ce soit. Marquer
+ * plus tot posait un attribut que React ne connaissait pas sur des
+ * elements qu'il allait hydrater, et chaque page s'ouvrait sur un
+ * avertissement de HTML different entre serveur et client. La classe
+ * qui cache, elle, se pose tout de suite sur la racine, que React ne
+ * compare pas ; `Providers` signale l'hydratation par un evenement.
+ *
+ * Deux filets de securite : sans `IntersectionObserver`, si
+ * l'hydratation ne vient pas, ou si quoi que ce soit leve une erreur, la
+ * classe est retiree et tout est visible. Une animation ratee ne doit
+ * jamais laisser une page vide.
  */
 export const REVEAL_SCRIPT = `(function () {
   var racine = document.documentElement;
   function toutReveler() {
-    var liste = document.querySelectorAll('[data-reveal]');
-    for (var i = 0; i < liste.length; i++) liste[i].setAttribute('data-revealed', '');
+    racine.classList.remove('reveal-pret');
+  }
+  function quandHydrate(fn) {
+    if (racine.hasAttribute('data-hydrated')) return fn();
+    var fait = false;
+    var lancer = function (ok) {
+      if (fait) return;
+      fait = true;
+      if (ok) fn(); else toutReveler();
+    };
+    document.addEventListener('dubblers:hydrated', function () { lancer(true); }, { once: true });
+    setTimeout(function () { lancer(false); }, 2500);
   }
   try {
     if (!('IntersectionObserver' in window)) return;
@@ -47,16 +65,14 @@ export const REVEAL_SCRIPT = `(function () {
         }).observe(document.body, { childList: true, subtree: true });
       } catch (e) {
         toutReveler();
-        racine.classList.remove('reveal-pret');
       }
     }
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', demarrer);
+      document.addEventListener('DOMContentLoaded', function () { quandHydrate(demarrer); });
     } else {
-      demarrer();
+      quandHydrate(demarrer);
     }
   } catch (e) {
     toutReveler();
-    racine.classList.remove('reveal-pret');
   }
 })();`;

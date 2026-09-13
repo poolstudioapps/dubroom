@@ -556,6 +556,9 @@ export const de = {
     rendersReady: 'Bereit zum Ansehen',
     rendersSoon: 'In ein paar Minuten bereit',
     rendersWatch: 'Ansehen',
+    joinNameLabel: 'Dein Name, damit die anderen dich erkennen',
+    joinNotFoundTitle: 'Diese Szene gibt es nicht mehr',
+    joinNotFoundBody: 'Der Link oder Code führt ins Leere: Die Szene wurde gelöscht, oder der Code ist falsch.',
   },
 
   create: {
@@ -854,7 +857,7 @@ export const de = {
     fxKeepHelp: 'Ohne Haken startet der nächste Satz ohne Effekte.',
     dragHint: 'Spur ziehen, um sie neu anzulegen',
     expiredTitle: 'Sitzung abgelaufen',
-    expiredBody: 'Zwanzig Minuten lang wurde keine Aufnahme gemacht: Die Sitzung wurde automatisch geschlossen. Du kannst jederzeit eine neue starten.',
+    expiredBody: 'Dreißig Minuten lang wurde keine Aufnahme gemacht: Die Sitzung wurde automatisch geschlossen. Du kannst jederzeit eine neue starten.',
     expiredOk: 'Verstanden',
     takeDragHelp: 'Deine Aufnahme sitzt. Um sie zu verschieben, zieh ihre Spur auf der Wellenform.',
     allTakesSavedStay: 'Alle deine Aufnahmen sind gespeichert. Hör sie dir an oder nimm eine neu auf, und schließ ab, wenn du so weit bist.',
@@ -1075,7 +1078,7 @@ export const de = {
         body: 'Deine Aufnahme klingt beim Abspielen genau wie im fertigen Video.',
       },
       {
-        title: 'Zwanzig Minuten Stillstand schließen',
+        title: 'Dreißig Minuten Stillstand schließen',
         body: 'Eine Lobby oder ein Studio ohne Aktivität schließt sich nach dreißig Minuten von selbst.',
       },
       {

@@ -169,10 +169,11 @@ export function PackFilters({
   const genres = PACK_GENRES.filter((g) => packs.some((p) => p.genre === g));
   const active = value.lang || value.genre || value.cast || value.length;
 
-  // Sur telephone, une seule rangee qui defile de cote : quatre pastilles
-  // empilees occupaient tout le premier ecran avant la moindre scene.
+  // Les pastilles passent a la ligne plutot que de defiler de cote : une
+  // rangee coupee au bord de l'ecran se lisait comme un defaut, et le tri
+  // restait hors de vue.
   return (
-    <div className="-mx-3 flex items-center gap-2 overflow-x-auto px-3 pb-1.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [&>*]:shrink-0">
+    <div className="flex flex-wrap items-center gap-2 [&>*]:shrink-0">
       {langs.length > 1 ? (
         <FilterPill
           label={t.community.filterLang}

@@ -45,7 +45,7 @@ function useMinutesRestantes(echeance: string | null): number | null {
 export function ResultScreen() {
   const t = useT();
 
-  const { session, characters, participants } = useSceneCtx();
+  const { session, characters, participants, isHost } = useSceneCtx();
   const url = useRenderUrl(session);
   const minutes = useMinutesRestantes(session.render_expires_at);
   const supprime = !session.render_path;
@@ -126,7 +126,8 @@ export function ResultScreen() {
         </ul>
       </Card>
 
-      {session.purged_at && !supprime ? (
+      {/* L'hote lit deja la meme chose sur la carte « On la refait ? ». */}
+      {session.purged_at && !supprime && !isHost ? (
         <p className="text-xs leading-relaxed text-text-faint">
           {t.result.sourcePurged}
         </p>

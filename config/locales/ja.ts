@@ -549,6 +549,9 @@ export const ja = {
     rendersReady: '視聴できます',
     rendersSoon: '数分で完成します',
     rendersWatch: '見る',
+    joinNameLabel: 'あなたの名前（ほかの人が分かるように）',
+    joinNotFoundTitle: 'このシーンはもう存在しません',
+    joinNotFoundBody: 'リンクやコードの先に何もありません。シーンが削除されたか、コードが間違っています。',
   },
 
   create: {

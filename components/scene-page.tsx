@@ -173,16 +173,25 @@ export function ScenePage({
  */
 function JoinForm({ code, defaultName }: { code: string; defaultName: string }) {
   const t = useT();
+  const router = useRouter();
   const qc = useQueryClient();
   const profile = useMyProfile();
   const [name, setName] = useState(defaultName);
   const [error, setError] = useState<string | null>(null);
   const tente = useRef(false);
 
+  // La scene n'existe pas : un lien perime ou un code faux, et rien a
+  // saisir pour y remedier.
+  const [introuvable, setIntrouvable] = useState(false);
+
   const join = useMutation({
     mutationFn: (nom: string) => joinSession(code, nom.trim() || defaultName),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['session-by-code', code] }),
-    onError: (e) => setError(humanizeError(e)),
+    onError: (e) => {
+      const message = humanizeError(e);
+      setIntrouvable(message === t.sessions.codeNotFound);
+      setError(message);
+    },
   });
 
   useEffect(() => {
@@ -202,6 +211,23 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
     );
   }
 
+  if (introuvable) {
+    return (
+      <Card className="mx-auto max-w-sm space-y-4 text-center">
+        <div className="space-y-2">
+          <h1 className="titre text-2xl">{t.sessions.joinNotFoundTitle}</h1>
+          <p className="text-sm leading-relaxed text-text-muted">{t.sessions.joinNotFoundBody}</p>
+          <p className="text-xs text-text-faint">
+            {t.sessions.joinCode} <span className="font-mono uppercase">{code}</span>
+          </p>
+        </div>
+        <Button variant="secondary" className="w-full" onClick={() => router.push('/sessions')}>
+          {t.lobby.closedBack}
+        </Button>
+      </Card>
+    );
+  }
+
   return (
     <Card className="mx-auto max-w-sm space-y-4">
       <div>
@@ -212,7 +238,7 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="name">Ton nom, pour que les autres te reconnaissent</Label>
+        <Label htmlFor="name">{t.sessions.joinNameLabel}</Label>
         <Input
           id="name"
           value={name}
@@ -232,7 +258,7 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
           join.mutate(name);
         }}
       >
-        Rejoindre
+        {t.sessions.join}
       </Button>
     </Card>
   );

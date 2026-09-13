@@ -552,6 +552,9 @@ export const pt = {
     rendersReady: 'Pronta para assistir',
     rendersSoon: 'Pronta em alguns minutos',
     rendersWatch: 'Assistir',
+    joinNameLabel: 'Seu nome, para que os outros reconheçam você',
+    joinNotFoundTitle: 'Esta cena não existe mais',
+    joinNotFoundBody: 'O link ou o código não levam a lugar nenhum: a cena foi apagada, ou o código está errado.',
   },
 
   create: {
@@ -1066,7 +1069,7 @@ export const pt = {
         body: 'Sua tomada soa exatamente como no vídeo final.',
       },
       {
-        title: 'Vinte minutos parado, fecha',
+        title: 'Trinta minutos parado, fecha',
         body: 'Um lobby ou estúdio sem atividade por trinta minutos fecha sozinho.',
       },
       {
