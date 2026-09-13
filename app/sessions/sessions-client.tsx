@@ -105,35 +105,38 @@ export function SessionsClient({
             rangee suffit a les separer. */}
         <div className={sessions.data?.length ? 'panel px-4' : undefined}>
           {sessions.data?.map((session) => (
-            <div
-              key={session.id}
-              className="row flex flex-wrap items-center justify-between gap-3 px-1 py-3"
-            >
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Link
-                    href={`/s/${session.code}`}
-                    className="truncate font-bold hover:text-link hover:underline"
-                  >
-                    {session.title ?? t.common.untitled}
-                  </Link>
+            // Le titre tient sur une ligne et les actions ne passent jamais
+            // dessous : un titre long renvoyait « Ouvrir » a la ligne, et
+            // la liste perdait sa colonne de boutons sur telephone.
+            <div key={session.id} className="row flex items-center gap-3 px-1 py-3">
+              <div className="min-w-0 flex-1">
+                <Link
+                  href={`/s/${session.code}`}
+                  className="block truncate font-bold hover:text-link hover:underline"
+                  title={session.title ?? undefined}
+                >
+                  {session.title ?? t.common.untitled}
+                </Link>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-text-faint">
                   <StatusBadge status={session.status} />
+                  <span>
+                    <span className="font-mono uppercase">{session.code}</span>
+                    {session.duration_ms
+                      ? ` · ${formatDuration(session.duration_ms)}`
+                      : ''}
+                    {session.render_size_bytes
+                      ? ` · ${formatBytes(session.render_size_bytes)}`
+                      : ''}
+                  </span>
                 </div>
-                <p className="mt-0.5 text-xs text-text-faint">
-                  <span className="font-mono uppercase">{session.code}</span>
-                  {session.duration_ms
-                    ? ` · ${formatDuration(session.duration_ms)}`
-                    : ''}
-                  {session.render_size_bytes
-                    ? ` · ${formatBytes(session.render_size_bytes)}`
-                    : ''}
-                </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-1.5">
                 <Button size="sm" onClick={() => router.push(`/s/${session.code}`)}>
                   {t.sessions.open}
                 </Button>
+                {/* Sans corbeille, une case vide garde « Ouvrir » aligne
+                    sur les autres rangees. */}
                 {session.host_id === userId ? (
                   <Button
                     size="icon"
@@ -143,7 +146,9 @@ export function SessionsClient({
                   >
                     <Trash2 className="h-4 w-4" aria-hidden />
                   </Button>
-                ) : null}
+                ) : (
+                  <span className="h-9 w-9" aria-hidden />
+                )}
               </div>
             </div>
           ))}
@@ -151,11 +156,11 @@ export function SessionsClient({
       </section>
 
       {/* Rejoindre : c'est une action, pas un reglage. Elle reste visible. */}
-      <Card className="flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0 space-y-2">
+      <Card>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-bold">{t.sessions.joinByCode}</h2>
           <form
-            className="flex flex-wrap gap-2"
+            className="flex gap-2"
             onSubmit={(e) => {
               e.preventDefault();
               setError(null);
@@ -168,7 +173,7 @@ export function SessionsClient({
               placeholder={t.sessions.codePlaceholder}
               maxLength={6}
               aria-label={t.sessions.joinByCode}
-              className="max-w-40 font-mono uppercase tracking-[0.3em]"
+              className="min-w-0 flex-1 font-mono uppercase tracking-[0.3em] sm:w-40 sm:flex-none"
             />
             <Button type="submit" loading={join.isPending} disabled={code.length < 6}>
               {t.sessions.join}

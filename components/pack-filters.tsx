@@ -1,10 +1,11 @@
 'use client';
 
-import { RotateCcw } from 'lucide-react';
+import { ChevronDown, RotateCcw } from 'lucide-react';
 
-import { Button, Select } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { useT } from '@/lib/i18n';
 import { PACK_GENRES, type Pack, type PackGenre } from '@/lib/packs';
+import { cn } from '@/lib/utils';
 
 export interface PackFilter {
   lang: string;
@@ -100,9 +101,14 @@ export function matchesFilter(pack: Pack, filter: PackFilter): boolean {
  * liste de dix langues dont huit ne donnent rien fait perdre du temps a
  * chaque fois.
  *
- * Le tri est en tete, et non parmi les criteres : filtrer retire des
- * scenes, trier n'en retire aucune. Les melanger ferait chercher un
- * filtre disparu la ou il n'a jamais ete.
+ * Une barre de pastilles plutot qu'un formulaire : quatre libelles en
+ * capitales au-dessus de quatre grands champs prenaient plus de place
+ * que la premiere rangee de scenes, pour des criteres qu'on touche
+ * rarement. Le critere en cours d'usage se distingue des autres.
+ *
+ * Le tri est a part, a droite : filtrer retire des scenes, trier n'en
+ * retire aucune. Les melanger ferait chercher un filtre disparu la ou il
+ * n'a jamais ete.
  */
 export function PackFilters({
   packs,
@@ -125,91 +131,62 @@ export function PackFilters({
   const genres = PACK_GENRES.filter((g) => packs.some((p) => p.genre === g));
   const active = value.lang || value.genre || value.cast || value.length;
 
+  // Sur telephone, une seule rangee qui defile de cote : quatre pastilles
+  // empilees occupaient tout le premier ecran avant la moindre scene.
   return (
-    <div className="flex flex-wrap items-end gap-2">
-      <Field label={t.community.sort.label}>
-        <Select
-          value={sort}
-          aria-label={t.community.sort.label}
-          onChange={(e) => onSortChange(e.target.value as PackSort)}
-        >
-          {PACK_SORTS.map((key) => (
-            <option key={key} value={key}>
-              {t.community.sort[key]}
-            </option>
-          ))}
-        </Select>
-      </Field>
-
+    <div className="-mx-3 flex items-center gap-2 overflow-x-auto px-3 pb-1.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [&>*]:shrink-0">
       {langs.length > 1 ? (
-        <Field label={t.community.filterLang}>
-          <Select
-            value={value.lang}
-            aria-label={t.community.filterLang}
-            onChange={(e) => onChange({ ...value, lang: e.target.value })}
-          >
-            <option value="">{t.community.filterAll}</option>
-            {langs.map((code) => (
-              <option key={code} value={code}>
-                {t.community.langNames[code] ?? code}
-              </option>
-            ))}
-          </Select>
-        </Field>
+        <FilterPill
+          label={t.community.filterLang}
+          value={value.lang}
+          onChange={(lang) => onChange({ ...value, lang })}
+          options={[
+            { value: '', label: t.community.filterAll },
+            ...langs.map((code) => ({
+              value: code,
+              label: t.community.langNames[code] ?? code,
+            })),
+          ]}
+        />
       ) : null}
 
       {genres.length > 1 ? (
-        <Field label={t.community.filterGenre}>
-          <Select
-            value={value.genre}
-            aria-label={t.community.filterGenre}
-            onChange={(e) =>
-              onChange({ ...value, genre: e.target.value as PackGenre | '' })
-            }
-          >
-            <option value="">{t.community.filterAllGenres}</option>
-            {genres.map((g) => (
-              <option key={g} value={g}>
-                {t.community.genreNames[g]}
-              </option>
-            ))}
-          </Select>
-        </Field>
+        <FilterPill
+          label={t.community.filterGenre}
+          value={value.genre}
+          onChange={(genre) => onChange({ ...value, genre })}
+          options={[
+            { value: '' as const, label: t.community.filterAllGenres },
+            ...genres.map((g) => ({ value: g, label: t.community.genreNames[g] ?? g })),
+          ]}
+        />
       ) : null}
 
-      <Field label={t.community.filterCast}>
-        <Select
-          value={value.cast}
-          aria-label={t.community.filterCast}
-          onChange={(e) =>
-            onChange({ ...value, cast: e.target.value as PackFilter['cast'] })
-          }
-        >
-          <option value="">{t.community.filterAnyCast}</option>
-          {(['solo', 'duo', 'small', 'large'] as const).map((k) => (
-            <option key={k} value={k}>
-              {t.community.castBuckets[k]}
-            </option>
-          ))}
-        </Select>
-      </Field>
+      <FilterPill
+        label={t.community.filterCast}
+        value={value.cast}
+        onChange={(cast) => onChange({ ...value, cast })}
+        options={[
+          { value: '' as const, label: t.community.filterAnyCast },
+          ...(['solo', 'duo', 'small', 'large'] as const).map((k) => ({
+            value: k,
+            label: t.community.castBuckets[k] ?? k,
+          })),
+        ]}
+      />
 
-      <Field label={t.community.filterLength}>
-        <Select
-          value={value.length}
-          aria-label={t.community.filterLength}
-          onChange={(e) =>
-            onChange({ ...value, length: e.target.value as PackFilter['length'] })
-          }
-        >
-          <option value="">{t.community.filterAnyLength}</option>
-          {(['short', 'medium', 'long'] as const).map((k) => (
-            <option key={k} value={k}>
-              {t.community.lengthBuckets[k]}
-            </option>
-          ))}
-        </Select>
-      </Field>
+      <FilterPill
+        label={t.community.filterLength}
+        value={value.length}
+        onChange={(length) => onChange({ ...value, length })}
+        options={[
+          { value: '' as const, label: t.community.filterAnyLength },
+          ...(['short', 'medium', 'long'] as const).map((k) => ({
+            value: k,
+            label: t.community.lengthBuckets[k] ?? k,
+          })),
+        ]}
+      />
 
       {active ? (
         <Button size="sm" variant="ghost" onClick={() => onChange(EMPTY_FILTER)}>
@@ -217,17 +194,60 @@ export function PackFilters({
           {t.community.filterReset}
         </Button>
       ) : null}
+
+      <div className="sm:ml-auto">
+        <FilterPill
+          label={t.community.sort.label}
+          value={sort}
+          onChange={onSortChange}
+          neutral
+          options={PACK_SORTS.map((key) => ({ value: key, label: t.community.sort[key] }))}
+        />
+      </div>
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * Une pastille qui s'ouvre sur une liste.
+ *
+ * Le `select` du systeme couvre toute la pastille, invisible : on garde
+ * la roulette native sur telephone, le clavier et le lecteur d'ecran,
+ * et c'est la pastille entiere qui se touche — pas seulement le mot.
+ */
+function FilterPill<V extends string>({
+  label,
+  value,
+  options,
+  onChange,
+  neutral,
+}: {
+  label: string;
+  value: V;
+  options: { value: V; label: string }[];
+  onChange: (next: V) => void;
+  /** Le tri a toujours une valeur : il ne s'allume pas comme un filtre. */
+  neutral?: boolean;
+}) {
+  const current = options.find((option) => option.value === value)?.label ?? '';
+
   return (
-    <label className="min-w-36 flex-1 space-y-1">
-      <span className="text-xs font-bold uppercase tracking-wide text-text-faint">
-        {label}
-      </span>
-      {children}
+    <label className={cn('filtre', !neutral && value !== '' && 'filtre-actif')}>
+      <span className="filtre-nom">{label}</span>
+      <span className="filtre-valeur">{current}</span>
+      <ChevronDown className="filtre-chevron h-3.5 w-3.5 shrink-0" aria-hidden />
+      <select
+        value={value}
+        aria-label={label}
+        onChange={(e) => onChange(e.target.value as V)}
+        className="filtre-select"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }

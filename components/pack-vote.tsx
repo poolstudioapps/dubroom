@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
  * Revoter la meme chose retire son vote. C'est le geste attendu partout
  * ailleurs, et il evite un troisieme bouton pour se dedire.
  */
-export function PackVote({ pack }: { pack: Pack }) {
+export function PackVote({ pack, compact }: { pack: Pack; compact?: boolean }) {
   const t = useT();
 
   const qc = useQueryClient();
@@ -38,11 +38,12 @@ export function PackVote({ pack }: { pack: Pack }) {
   });
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex shrink-0 items-center gap-0.5">
       <VoteButton
         label={t.community.voteUp}
         active={mine === 1}
         tone="up"
+        compact={compact}
         onClick={() => vote.mutate(1)}
       >
         <ThumbsUp className="h-4 w-4" aria-hidden />
@@ -50,7 +51,8 @@ export function PackVote({ pack }: { pack: Pack }) {
 
       <span
         className={cn(
-          'min-w-7 text-center text-sm font-bold tabular-nums',
+          'text-center font-bold tabular-nums',
+          compact ? 'min-w-5 text-xs' : 'min-w-7 text-sm',
           // `text-ok` est une couleur d'aplat : ecrite sur la carte
           // blanche, elle donnait trois de contraste. L'encre est la
           // meme teinte, assombrie de ce qu'il faut pour se lire.
@@ -67,6 +69,7 @@ export function PackVote({ pack }: { pack: Pack }) {
         label={t.community.voteDown}
         active={mine === -1}
         tone="down"
+        compact={compact}
         onClick={() => vote.mutate(-1)}
       >
         <ThumbsDown className="h-4 w-4" aria-hidden />
@@ -79,12 +82,14 @@ function VoteButton({
   label,
   active,
   tone,
+  compact,
   onClick,
   children,
 }: {
   label: string;
   active: boolean;
   tone: 'up' | 'down';
+  compact?: boolean;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -95,7 +100,8 @@ function VoteButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
+        'flex items-center justify-center rounded-lg transition-colors',
+        compact ? 'h-8 w-8' : 'h-9 w-9',
         'text-text-muted hover:bg-surface-sunken hover:text-text',
         active && tone === 'up' && 'bg-ok/20 text-ok-ink hover:text-ok-ink',
         active &&

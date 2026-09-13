@@ -118,7 +118,7 @@ export function AccountClient({
   const viaDiscord = providers.includes('discord');
 
   return (
-    <AppShell className="space-y-6">
+    <AppShell className="mx-auto w-full max-w-3xl space-y-6">
       <header className="space-y-1">
         <h1 className="titre text-3xl">
           {t.account.title}

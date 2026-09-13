@@ -177,6 +177,7 @@ export interface Database {
     Views: Record<never, never>;
     Functions: {
       app_is_allowed: { Args: Record<string, never>; Returns: boolean };
+      home_demo: { Args: Record<string, never>; Returns: Json };
       storage_usage: { Args: Record<string, never>; Returns: number };
       create_session: {
         Args: {

@@ -3,8 +3,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Clapperboard } from 'lucide-react';
 
+import { PackCard, packGridClass } from '@/components/pack-card';
 import {
   DEFAULT_SORT,
   EMPTY_FILTER,
@@ -14,13 +14,12 @@ import {
   type PackFilter,
   type PackSort,
 } from '@/components/pack-filters';
-import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
-import { characterColorVar } from '@/config/constants';
-import { formatDuration } from '@/config/strings';
+import { Alert, Card, Spinner } from '@/components/ui';
 import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
 import { PACKS_QUERY, startFromPack, type Pack } from '@/lib/packs';
 import { useMyProfile } from '@/lib/profile';
+import { cn } from '@/lib/utils';
 
 /**
  * Partir d'une scene deja preparee, depuis l'ecran de creation.
@@ -31,9 +30,9 @@ import { useMyProfile } from '@/lib/profile';
  * puisqu'il n'y a rien a preparer, se trouvait ailleurs et n'etait donc
  * jamais choisie.
  *
- * La liste est volontairement courte ici : les scenes les mieux notees,
- * avec les memes criteres que le catalogue. Qui veut tout voir a
- * l'onglet Communaute, et le lien y mene.
+ * Les cartes sont celles du catalogue, sans le vote, la suppression ni
+ * la marque « La tienne » : ici on choisit une scene, on ne juge ni ne
+ * range le catalogue.
  */
 export function PackSourcePicker({ displayName }: { displayName: string }) {
   const t = useT();
@@ -64,7 +63,7 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
 
   if (packs.isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-text-faint">
+      <div className="flex items-center justify-center gap-2 py-8 text-sm text-text-faint">
         <Spinner />
         {t.common.loading}
       </div>
@@ -73,7 +72,7 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
 
   if (tous.length === 0) {
     return (
-      <Card className="space-y-2 py-6 text-center">
+      <Card className="mx-auto max-w-xl space-y-2 py-8 text-center">
         <h2 className="text-sm font-bold">{t.community.emptyTitle}</h2>
         <p className="mx-auto max-w-sm text-sm leading-relaxed text-text-muted">
           {t.community.emptyBody}
@@ -83,7 +82,7 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {error ? <Alert tone="danger">{error}</Alert> : null}
 
       {tous.length > 1 ? (
@@ -97,62 +96,32 @@ export function PackSourcePicker({ displayName }: { displayName: string }) {
       ) : null}
 
       {visibles.length === 0 ? (
-        <p className="py-4 text-center text-sm text-text-muted">
+        <p className="py-8 text-center text-sm text-text-muted">
           {t.community.filterNoMatch}
         </p>
       ) : null}
 
-      <ul className="panel divide-y divide-border px-4">
+      <ul className={cn('grid gap-4 sm:gap-5', packGridClass(visibles.length))}>
         {visibles.map((pack) => (
-          <li
+          <PackCard
             key={pack.id}
-            className="flex flex-wrap items-center justify-between gap-3 py-3"
-          >
-            <div className="min-w-0 space-y-1">
-              <p className="font-bold leading-snug">{pack.title}</p>
-              <p className="text-xs text-text-faint">
-                {formatDuration(pack.duration_ms)} ·{' '}
-                {t.community.characterCount(pack.character_count)} ·{' '}
-                {t.community.lineCount(pack.line_count)}
-              </p>
-              <ul className="flex flex-wrap items-center gap-1.5">
-                {pack.characters.map((character) => (
-                  <li
-                    key={character.name}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-surface-sunken px-2 py-0.5 text-xs font-bold"
-                  >
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: characterColorVar(character.color) }}
-                      aria-hidden
-                    />
-                    {character.name}
-                  </li>
-                ))}
-                <li>
-                  <Badge>{t.community.genreNames[pack.genre]}</Badge>
-                </li>
-              </ul>
-            </div>
-
-            <Button
-              variant="primary"
-              loading={startingId === pack.id}
-              disabled={startingId !== null && startingId !== pack.id}
-              onClick={() => {
-                setError(null);
-                setStartingId(pack.id);
-                start.mutate(pack);
-              }}
-            >
-              <Clapperboard className="h-4 w-4" aria-hidden />
-              {t.community.play}
-            </Button>
-          </li>
+            pack={pack}
+            showVote={false}
+            showMine={false}
+            starting={startingId === pack.id}
+            locked={startingId !== null && startingId !== pack.id}
+            onPlay={() => {
+              setError(null);
+              setStartingId(pack.id);
+              start.mutate(pack);
+            }}
+          />
         ))}
       </ul>
 
-      <p className="text-xs leading-relaxed text-text-faint">{t.create.packHelp}</p>
+      <p className="mx-auto max-w-2xl text-center text-xs leading-relaxed text-text-faint">
+        {t.create.packHelp}
+      </p>
     </div>
   );
 }

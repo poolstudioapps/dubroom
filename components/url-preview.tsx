@@ -25,11 +25,14 @@ export function UrlPreview({
   url,
   title,
   flush,
+  overlay,
 }: {
   url: string;
   title: string;
   /** A fleur du conteneur : pas de cadre propre, pas de coins arrondis. */
   flush?: boolean;
+  /** Ce qui se lit sur la vignette (duree, proprietaire), jamais sur le lecteur. */
+  overlay?: React.ReactNode;
 }) {
   const t = useT();
 
@@ -79,14 +82,18 @@ export function UrlPreview({
           />
         ) : null}
 
+        {/* Le mot « Aperçu » recouvrait les visages sur chaque carte. Il
+            n'apparait plus qu'au survol, la ou le survol existe ; sur
+            telephone, le bouton de lecture seul suffit. */}
         <span className="relative flex flex-col items-center gap-2 text-white drop-shadow-[0_2px_6px_rgb(0_0_0/0.8)]">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-ink shadow-lg transition-transform duration-200 group-hover:scale-110">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink shadow-lg transition-transform duration-200 group-hover:scale-110">
             <Play className="h-5 w-5 fill-current" aria-hidden />
           </span>
-          <span className="text-xs font-bold uppercase tracking-wide">
+          <span className="text-xs font-bold uppercase tracking-wide opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
             {t.community.preview}
           </span>
         </span>
+        {overlay}
       </button>
     );
   }

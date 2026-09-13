@@ -1,6 +1,5 @@
 'use client';
 
-import { Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useT } from '@/lib/i18n';
@@ -25,10 +24,8 @@ const INTERVAL_MS = 5_500;
  * Il s'arretait au survol. C'est un reflexe de bon eleve — un defilement
  * qui continue pendant qu'on lit agace — sauf qu'ici le carrousel occupe
  * le milieu de la page : la souris s'y pose sans y penser, et le
- * carrousel restait fige. Il ne defile donc plus que sur demande
- * explicite : le bouton de pause, ou le fait de toucher l'ecran. Une
- * personne qui veut lire tranquillement a un bouton pour ca, ce qui vaut
- * mieux qu'un comportement qu'elle n'a pas demande et ne comprend pas.
+ * carrousel restait fige. Il ne s'arrete donc que si on le touche, ou si
+ * le clavier y entre : deux gestes qui disent vraiment « je lis ».
  *
  * Et les vues sont desormais empilees sur une seule colonne, centrees,
  * illustration puis texte. En deux colonnes, la partie gauche etait
@@ -42,8 +39,19 @@ const INTERVAL_MS = 5_500;
 export function Carousel({ slides }: { slides: Slide[] }) {
   const t = useT();
   const [index, setIndex] = useState(0);
-  /** Arret demande : par le bouton, par un doigt, ou par le systeme. */
+  /** Arret demande : par un doigt, ou par le systeme. */
   const [stopped, setStopped] = useState(false);
+  /**
+   * Le clavier est dans le carrousel.
+   *
+   * Le bouton de pause a ete retire a la demande, mais un defilement
+   * automatique doit rester arretable : WCAG le demande pour tout ce qui
+   * bouge plus de cinq secondes. Quelqu'un qui navigue au clavier et
+   * entre dans le carrousel le fige donc le temps d'y rester, et le
+   * relance en sortant. Le doigt et le mouvement reduit continuent de
+   * l'arreter pour de bon.
+   */
+  const [focused, setFocused] = useState(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -57,7 +65,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
     [slides.length],
   );
 
-  const running = !stopped && slides.length > 1;
+  const running = !stopped && !focused && slides.length > 1;
 
   useEffect(() => {
     if (!running) return;
@@ -73,6 +81,10 @@ export function Carousel({ slides }: { slides: Slide[] }) {
       aria-roledescription="carrousel"
       aria-label={t.home.carouselLabel}
       onTouchStart={() => setStopped(true)}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);
+      }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight') go(index + 1);
         if (e.key === 'ArrowLeft') go(index - 1);
@@ -196,20 +208,6 @@ export function Carousel({ slides }: { slides: Slide[] }) {
           ))}
         </div>
 
-        {slides.length > 1 ? (
-          <button
-            type="button"
-            aria-label={stopped ? t.common.scrollResume : t.common.scrollPause}
-            onClick={() => setStopped((value) => !value)}
-            className="ml-1 flex h-10 w-10 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-surface hover:text-text"
-          >
-            {stopped ? (
-              <Play className="h-4 w-4" aria-hidden />
-            ) : (
-              <Pause className="h-4 w-4" aria-hidden />
-            )}
-          </button>
-        ) : null}
       </div>
     </section>
   );

@@ -326,6 +326,127 @@
     background-color: color-mix(in oklch, var(--color-surface) 45%, transparent);
   }
 
+  /* ── Pastille de filtre ───────────────────────────────────────────
+     Un libelle discret, la valeur en gras, un chevron. Le `select` est
+     pose par-dessus, invisible, et c'est lui qui recoit le doigt. */
+  .filtre {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    max-width: 100%;
+    padding-inline: 0.875rem 0.75rem;
+    border: 2px solid var(--color-border-strong);
+    border-radius: 0.5rem;
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      border-color 160ms ease-out,
+      background-color 160ms ease-out;
+  }
+
+  .filtre:hover {
+    border-color: var(--color-select);
+  }
+
+  .filtre:has(select:focus-visible) {
+    outline: 2px solid var(--color-select);
+    outline-offset: 2px;
+  }
+
+  .filtre-nom {
+    color: var(--color-text-faint);
+    font-size: 0.75rem;
+  }
+
+  .filtre-valeur {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+  }
+
+  .filtre-chevron {
+    color: var(--color-text-faint);
+  }
+
+  .filtre-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  .filtre-actif {
+    border-color: var(--color-select);
+    background-color: color-mix(in oklch, var(--color-select) 14%, var(--color-surface-raised));
+  }
+
+  /* ── Selecteur segmente ───────────────────────────────────────────
+     Trois cases egales dans un bandeau. Sur telephone l'icone passe
+     au-dessus du mot, qui dispose alors de toute la largeur de sa
+     case au lieu d'etre coupe. */
+  .source-onglets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.375rem;
+    padding: 0.375rem;
+  }
+
+  .source-onglet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    min-height: 3.75rem;
+    padding: 0.5rem 0.375rem;
+    border-radius: 0.625rem;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    transition:
+      background-color 180ms ease-out,
+      color 180ms ease-out,
+      box-shadow 180ms ease-out;
+  }
+
+  @media (min-width: 40rem) {
+    .source-onglet {
+      flex-direction: row;
+      gap: 0.5rem;
+      min-height: 3rem;
+      font-size: 0.8125rem;
+    }
+  }
+
+  .source-onglet:hover {
+    color: var(--color-text);
+    background-color: color-mix(in oklch, var(--color-surface-raised) 80%, transparent);
+  }
+
+  .source-onglet:focus-visible {
+    outline: 2px solid var(--color-select);
+    outline-offset: 2px;
+  }
+
+  .source-onglet[aria-pressed='true'] {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    box-shadow: 0 3px 0 0 var(--color-accent-ink);
+  }
+
   /* ── Diode ────────────────────────────────────────────────────────
      Le petit temoin rouge a gauche de chaque libelle du menu. */
   .led {
@@ -787,9 +908,44 @@
   }
 
   [data-theme='modern'] .ui-badge {
+    /* Le fond est toujours clair ici : l'encre claire de la peau, faite
+       pour le plateau violet, rendait « La tienne » invisible. */
+    --color-badge-accent-ink: oklch(0.45 0.2 350);
     border-width: 2px;
     background-color: oklch(0.97 0.02 320) !important;
     text-transform: uppercase;
+  }
+
+  /* Les pastilles de filtre sont posees sur le plateau violet, hors de
+     toute carte : elles prennent le blanc des champs, et leur propre
+     encre sombre. */
+  [data-theme='modern'] .filtre {
+    --color-text: oklch(0.22 0.04 300);
+    --color-text-faint: oklch(0.5 0.04 305);
+    border-color: oklch(0.78 0.08 320);
+    border-radius: 9999px;
+    background-color: oklch(1 0 0);
+    box-shadow: 0 3px 0 0 oklch(0.24 0.11 300 / 0.45);
+  }
+
+  [data-theme='modern'] .filtre:hover,
+  [data-theme='modern'] .filtre-actif {
+    border-color: oklch(0.66 0.26 350);
+  }
+
+  [data-theme='modern'] .filtre-actif {
+    background-color: oklch(0.96 0.04 350);
+  }
+
+  [data-theme='modern'] .source-onglet {
+    border-radius: 0.875rem;
+    font-weight: 800;
+  }
+
+  [data-theme='modern'] .source-onglet[aria-pressed='true'] {
+    background-color: oklch(0.58 0.25 350);
+    color: oklch(1 0 0);
+    box-shadow: 0 4px 0 0 oklch(0.38 0.18 345);
   }
 
   [data-theme='modern'] .ui-alert {
@@ -1110,6 +1266,44 @@
   .hero-fond {
     display: none;
   }
+
+  /* ── La scene de la vitrine ──────────────────────────────────────────
+     Le lecteur YouTube remplace une balise qu'il ne connait pas : on ne
+     peut donc le styler que par son parent. La video est plus haute que
+     le cadre, centree, et legerement agrandie, si bien que les bandes
+     noires du film et l'habillage du lecteur tombent hors champ. */
+  .demo-video {
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+  }
+
+  .demo-video iframe {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    pointer-events: none;
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .demo-affiche {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    transition: opacity 700ms ease-out;
+  }
+
+  /* Le grand numero des definitions : propre a la peau cinema. */
+  .definition-numero {
+    display: none;
+  }
 }
 
 @layer utilities {
@@ -1400,6 +1594,69 @@
     text-transform: none;
     letter-spacing: 0;
     font-weight: 600;
+  }
+
+  /* ── Les filtres : des pastilles de verre ────────────────────────── */
+  [data-theme='cinema'] .filtre {
+    border: 1px solid oklch(1 0 0 / 0.12);
+    border-radius: 9999px;
+    background-color: oklch(0.12 0.003 85 / 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:
+      border-color 220ms var(--cinema-courbe),
+      background-color 220ms var(--cinema-courbe);
+  }
+
+  [data-theme='cinema'] .filtre:hover {
+    border-color: oklch(1 0 0 / 0.28);
+  }
+
+  [data-theme='cinema'] .filtre-actif {
+    border-color: oklch(0.86 0.16 94 / 0.55);
+    background-color: oklch(0.86 0.16 94 / 0.1);
+  }
+
+  [data-theme='cinema'] .filtre-actif .filtre-valeur {
+    color: oklch(0.88 0.16 95);
+  }
+
+  /* ── Le selecteur de source : l'actif est un lingot d'or ─────────── */
+  [data-theme='cinema'] .source-onglets {
+    border-radius: 1.25rem;
+  }
+
+  [data-theme='cinema'] .source-onglet {
+    border-radius: 0.875rem;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition:
+      background-color 320ms var(--cinema-courbe),
+      color 320ms var(--cinema-courbe),
+      box-shadow 320ms var(--cinema-courbe);
+  }
+
+  @media (min-width: 40rem) {
+    [data-theme='cinema'] .source-onglets,
+    [data-theme='cinema'] .source-onglet {
+      border-radius: 9999px;
+    }
+
+    [data-theme='cinema'] .source-onglet {
+      font-size: 0.875rem;
+    }
+  }
+
+  [data-theme='cinema'] .source-onglet:hover {
+    background-color: oklch(1 0 0 / 0.06);
+  }
+
+  [data-theme='cinema'] .source-onglet[aria-pressed='true'] {
+    background: linear-gradient(180deg, oklch(0.9 0.16 95), oklch(0.8 0.16 85));
+    color: oklch(0.2 0.02 85);
+    box-shadow: 0 12px 30px -14px oklch(0.86 0.16 94 / 0.6);
   }
 
   [data-theme='cinema'] .ui-alert {
@@ -1696,6 +1953,63 @@
     letter-spacing: -0.015em;
   }
 
+  /* ── Les trois definitions ───────────────────────────────────────────
+     Un grand numero cerne d'or dans la marge, un titre qui glisse depuis
+     la gauche, un filet dore qui se trace dessous, puis le texte. Chaque
+     question arrive comme un chapitre de generique. */
+  [data-theme='cinema'] .definition {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  [data-theme='cinema'] .definition > * {
+    margin-top: 0 !important;
+  }
+
+  @media (min-width: 640px) {
+    [data-theme='cinema'] .definition {
+      grid-template-columns: 6.5rem 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+  }
+
+  [data-theme='cinema'] .definition-numero {
+    display: block;
+    font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1px oklch(0.86 0.14 92 / 0.6);
+  }
+
+  [data-theme='cinema'] .definition .titre-section {
+    position: relative;
+    padding-bottom: 0.85rem;
+  }
+
+  [data-theme='cinema'] .definition .titre-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: min(9rem, 40%);
+    background: linear-gradient(90deg, oklch(0.9 0.15 94), transparent);
+    transform-origin: left center;
+  }
+
+  /* Le filet ne se trace que si le script d'apparition tourne : sans lui,
+     il est simplement la. */
+  html.reveal-pret[data-theme='cinema'] .definition .titre-section::after {
+    transform: scaleX(0);
+    transition: transform 1200ms var(--cinema-courbe) 520ms;
+  }
+
+  html.reveal-pret[data-theme='cinema'] .definition .titre-section[data-revealed]::after {
+    transform: scaleX(1);
+  }
+
   /* ── Les apparitions ─────────────────────────────────────────────────
      Chaque bloc marque `data-reveal` monte de vingt-huit pixels en
      fondu quand il entre a l'ecran, avec le decalage `--delai` qu'on
@@ -1712,6 +2026,11 @@
       border-color 450ms var(--cinema-courbe),
       box-shadow 450ms var(--cinema-courbe);
     transition-delay: var(--delai, 0ms), var(--delai, 0ms), 0ms, 0ms, 0ms;
+  }
+
+  /* Variante : arriver par la gauche plutot que par le bas. */
+  html.reveal-pret[data-theme='cinema'] [data-reveal='gauche'] {
+    translate: -36px 0;
   }
 
   html.reveal-pret[data-theme='cinema'] [data-reveal][data-revealed] {

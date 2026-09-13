@@ -115,46 +115,52 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
 
   const canSubmit = mode === 'upload' ? !!file : youtubeUrl.trim().length > 10;
 
+  /*
+   * La troisieme source, et de loin la plus rapide : une scene deja
+   * preparee par quelqu'un d'autre. Elle vivait dans un autre onglet,
+   * donc personne qui cliquait « Nouvelle scene » ne la trouvait.
+   */
+  const sources = [
+    { mode: 'upload', icon: FileVideo, label: t.create.tabUpload },
+    { mode: 'youtube', icon: Link2, label: t.create.tabYoutube },
+    { mode: 'pack', icon: Library, label: t.create.tabPack },
+  ] as const;
+
   return (
-    <AppShell className="max-w-xl space-y-6">
-      <h1 className="titre text-3xl">
-        {t.create.title}
-      </h1>
+    <AppShell className="space-y-6 sm:space-y-8">
+      {/*
+        Un selecteur segmente, pas trois boutons.
+        Trois boutons de taille fixe coupaient leur libelle en deux sur
+        telephone, et le texte debordait du cadre. Les trois cases se
+        partagent la largeur a parts egales ; en dessous de 640 px,
+        l'icone passe au-dessus du mot, qui a alors toute la case.
+      */}
+      <header className="mx-auto w-full max-w-2xl space-y-5 text-center">
+        <h1 className="titre text-3xl sm:text-4xl">{t.create.title}</h1>
+        <div role="group" aria-label={t.create.title} className="panel source-onglets">
+          {sources.map((source) => {
+            const Icon = source.icon;
+            return (
+              <button
+                key={source.mode}
+                type="button"
+                aria-pressed={mode === source.mode}
+                onClick={() => setMode(source.mode)}
+                className="source-onglet"
+              >
+                <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                <span>{source.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </header>
 
-      <div className="flex gap-2">
-        <Button
-          variant={mode === 'upload' ? 'primary' : 'secondary'}
-          onClick={() => setMode('upload')}
-        >
-          <FileVideo className="h-4 w-4" aria-hidden />
-          {t.create.tabUpload}
-        </Button>
-        <Button
-          variant={mode === 'youtube' ? 'primary' : 'secondary'}
-          onClick={() => setMode('youtube')}
-        >
-          <Link2 className="h-4 w-4" aria-hidden />
-          {t.create.tabYoutube}
-        </Button>
-        {/*
-          La troisieme source, et de loin la plus rapide : une scene deja
-          preparee par quelqu'un d'autre. Elle vivait dans un autre
-          onglet, donc personne qui cliquait « Nouvelle scene » ne la
-          trouvait.
-        */}
-        <Button
-          variant={mode === 'pack' ? 'primary' : 'secondary'}
-          onClick={() => setMode('pack')}
-        >
-          <Library className="h-4 w-4" aria-hidden />
-          {t.create.tabPack}
-        </Button>
-      </div>
-
+      {/* Le catalogue prend toute la largeur ; un formulaire, non. */}
       {mode === 'pack' ? (
         <PackSourcePicker displayName={displayName} />
       ) : (
-        <Card className="space-y-4">
+        <Card className="mx-auto w-full max-w-xl space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="title">{t.create.titleLabel}</Label>
             <Input

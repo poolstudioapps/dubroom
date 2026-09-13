@@ -10,6 +10,7 @@ import { Footer } from '@/components/footer';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { HeroRythmo } from '@/components/hero-rythmo';
 import { HomePacksCta } from '@/components/home-packs-cta';
+import { loadHomeDemo } from '@/lib/home-demo';
 import { ArtCharacters, ArtImport, ArtRender, ArtRythmo } from '@/components/home-art';
 import { SiteHeader } from '@/components/site-header';
 import { StructuredData } from '@/components/structured-data';
@@ -35,8 +36,9 @@ const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 /**
  * Accueil.
  *
- * C'est la seule page visible sans compte, et elle ne montre aucun
- * contenu : ni scene, ni participant, ni rendu. Elle explique le
+ * C'est la seule page visible sans compte. Elle ne montre ni scene de
+ * joueur, ni participant, ni rendu ; sa seule scene est celle de la
+ * vitrine, lue depuis YouTube et designee en base. Elle explique le
  * principe, ce qui permet de la faire lire a quelqu'un avant de
  * l'inviter, sans rien ouvrir de ce que le PRD §14 protege.
  *
@@ -50,7 +52,8 @@ const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 /**
  * L'accueil est la seule page du produit qui a vocation a etre trouvee.
  *
- * Elle ne montre aucune oeuvre : c'est une page de presentation. Le
+ * C'est une page de presentation. La scene de la vitrine est integree
+ * par le lecteur de YouTube, jamais hebergee ici. Le
  * `robots` global ferme tout ; cette page-ci rouvre pour elle-meme.
  */
 export async function generateMetadata(): Promise<Metadata> {
@@ -89,10 +92,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [user, t, locale] = await Promise.all([
+  const [user, t, locale, demo] = await Promise.all([
     currentUser(),
     getDictionary(),
     currentLocale(),
+    loadHomeDemo(),
   ]);
   /*
    * Ou mene le bouton plein.
@@ -219,7 +223,7 @@ export default async function HomePage() {
               </div>
 
               <div data-reveal suppressHydrationWarning style={delai(240)}>
-                <HeroRythmo />
+                <HeroRythmo demo={demo} />
               </div>
             </section>
 
@@ -300,33 +304,42 @@ export default async function HomePage() {
               parce que ce sont les seuls qui repondent sans supposer
               qu'on sait deja de quoi on parle.
             */}
-            <section className="space-y-6">
-              <article data-reveal suppressHydrationWarning className="space-y-2">
-                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
-                  {t.home.defineTitle}
-                </h2>
-                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
-                  {t.home.defineBody}
-                </p>
-              </article>
-
-              <article data-reveal suppressHydrationWarning className="space-y-2">
-                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
-                  {t.home.defineHowTitle}
-                </h2>
-                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
-                  {t.home.defineHowBody}
-                </p>
-              </article>
-
-              <article data-reveal suppressHydrationWarning className="space-y-2">
-                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
-                  {t.home.defineWhoTitle}
-                </h2>
-                <p className="max-w-prose text-sm leading-relaxed text-text-muted">
-                  {t.home.defineWhoBody}
-                </p>
-              </article>
+            <section className="space-y-10 sm:space-y-14">
+              {[
+                { titre: t.home.defineTitle, texte: t.home.defineBody },
+                { titre: t.home.defineHowTitle, texte: t.home.defineHowBody },
+                { titre: t.home.defineWhoTitle, texte: t.home.defineWhoBody },
+              ].map(({ titre, texte }, rang) => (
+                <article key={titre} className="definition space-y-2">
+                  {/* Le numero n'existe que dans la peau cinema : decor pur. */}
+                  <span
+                    data-reveal
+                    suppressHydrationWarning
+                    className="definition-numero titre"
+                    aria-hidden
+                  >
+                    {String(rang + 1).padStart(2, '0')}
+                  </span>
+                  <div className="space-y-3">
+                    <h2
+                      data-reveal="gauche"
+                      suppressHydrationWarning
+                      style={delai(120)}
+                      className="titre titre-section text-xl"
+                    >
+                      {titre}
+                    </h2>
+                    <p
+                      data-reveal
+                      suppressHydrationWarning
+                      style={delai(280)}
+                      className="max-w-prose text-sm leading-relaxed text-text-muted"
+                    >
+                      {texte}
+                    </p>
+                  </div>
+                </article>
+              ))}
             </section>
 
             {/* ── Les questions qui restent ──────────────────────────── */}

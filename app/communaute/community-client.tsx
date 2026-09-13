@@ -3,10 +3,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Clapperboard, Trash2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { PackCard, packGridClass } from '@/components/pack-card';
 import {
   DEFAULT_SORT,
   EMPTY_FILTER,
@@ -16,11 +16,7 @@ import {
   type PackFilter,
   type PackSort,
 } from '@/components/pack-filters';
-import { PackVote } from '@/components/pack-vote';
-import { UrlPreview } from '@/components/url-preview';
-import { Alert, Badge, Button, Card, Dialog, Spinner } from '@/components/ui';
-import { characterColorVar } from '@/config/constants';
-import { formatBytes, formatDuration } from '@/config/strings';
+import { Alert, Button, Card, Dialog, Spinner } from '@/components/ui';
 import { PACKS_QUERY, deletePack, startFromPack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
 import { useMyProfile } from '@/lib/profile';
@@ -38,14 +34,6 @@ import { cn } from '@/lib/utils';
  * deux listes dessinees separement auraient diverge des la premiere
  * retouche.
  */
-/** Combien de colonnes pour ce nombre de scenes. */
-function gridColumns(count: number): string {
-  if (count <= 1) return 'max-w-sm';
-  if (count === 2) return 'sm:grid-cols-2';
-  if (count === 3) return 'sm:grid-cols-2 lg:grid-cols-3';
-  return 'sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4';
-}
-
 export function CommunityClient({
   displayName,
   scope = 'all',
@@ -102,16 +90,14 @@ export function CommunityClient({
   const strings = scope === 'mine' ? t.myPacks : t.community;
 
   return (
-    <AppShell className="space-y-7">
-      <header className="space-y-2">
-        <h1 className="titre text-3xl">
-          {strings.title}
-        </h1>
-        <p className="max-w-2xl text-sm leading-relaxed text-text-muted">
-          {strings.subtitle}
-        </p>
+    <AppShell className="space-y-6">
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+        <div className="max-w-2xl space-y-2">
+          <h1 className="titre text-3xl sm:text-4xl">{strings.title}</h1>
+          <p className="text-sm leading-relaxed text-text-muted">{strings.subtitle}</p>
+        </div>
         {visible.length > 0 ? (
-          <p className="text-xs font-bold uppercase tracking-widest text-text-faint">
+          <p className="text-sm font-semibold text-text-faint">
             {strings.sceneCount(visible.length)}
           </p>
         ) : null}
@@ -154,122 +140,27 @@ export function CommunityClient({
         </Card>
       ) : null}
 
-      {/*
-        Une grille de catalogue, pas une pile de fiches.
-        Le nombre de colonnes suit le nombre de scenes : a un element,
-        quatre colonnes laissent trois quarts de vide ; a douze, une
-        seule colonne oblige a faire defiler pour comparer. La carte,
-        elle, reste la meme partout.
-      */}
-      <ul className={cn('grid gap-5', gridColumns(visible.length))}>
+      {/* Une grille de catalogue, pas une pile de fiches. */}
+      <ul className={cn('grid gap-4 sm:gap-5', packGridClass(visible.length))}>
         {visible.map((pack) => (
-          <li key={pack.id} className="panel flex flex-col overflow-hidden">
-            {/*
-              L'apercu est a fleur du panneau : un cadre autour d'un cadre
-              autour de l'ecran du poste faisait trois encadrements pour
-              une seule vignette.
-            */}
-            {pack.kind === 'url' && pack.source_url ? (
-              <UrlPreview url={pack.source_url} title={pack.title} flush />
-            ) : null}
-
-            <div className="flex flex-1 flex-col gap-2.5 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 space-y-0.5">
-                  <h2 className="truncate font-bold leading-snug" title={pack.title}>
-                    {pack.title}
-                  </h2>
-                  <p className="text-xs text-text-faint">
-                    {formatDuration(pack.duration_ms)} ·{' '}
-                    {t.community.characterCount(pack.character_count)} ·{' '}
-                    {t.community.lineCount(pack.line_count)}
-                    {pack.kind === 'media' ? ` · ${formatBytes(pack.size_bytes)}` : ''}
-                  </p>
-                </div>
-                <PackVote pack={pack} />
-              </div>
-
-              <ul className="flex flex-wrap gap-1.5">
-                {pack.characters.map((character) => (
-                  <li
-                    key={character.name}
-                    className="inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-bold"
-                  >
-                    <span
-                      className="h-2 w-2 shrink-0 rounded-full"
-                      style={{ backgroundColor: characterColorVar(character.color) }}
-                      aria-hidden
-                    />
-                    {character.name}
-                  </li>
-                ))}
-              </ul>
-
-              {/*
-                Les etiquettes de catalogue : ce sur quoi on trie, et
-                rien d'autre. La phrase qui expliquait qu'une recette
-                n'est pas hebergee ici occupait trois lignes sur chaque
-                carte et disait douze fois la meme chose ; elle tient
-                dans une pastille, et le detail vit sous la grille.
-              */}
-              <ul className="flex flex-wrap gap-1.5">
-                <li>
-                  <Badge>{t.community.genreNames[pack.genre]}</Badge>
-                </li>
-                {pack.source_lang ? (
-                  <li>
-                    <Badge>
-                      {t.community.langNames[pack.source_lang] ?? pack.source_lang}
-                    </Badge>
-                  </li>
-                ) : null}
-                <li>
-                  <Badge>
-                    {pack.kind === 'url'
-                      ? t.community.kindRecipe
-                      : t.community.kindMedia}
-                  </Badge>
-                </li>
-                {pack.is_mine && scope === 'all' ? (
-                  <li>
-                    <Badge tone="accent">{t.community.mine}</Badge>
-                  </li>
-                ) : null}
-              </ul>
-
-              <div className="mt-auto flex items-center gap-2 pt-1">
-                <Button
-                  variant="primary"
-                  className="flex-1"
-                  loading={startingId === pack.id}
-                  disabled={startingId !== null && startingId !== pack.id}
-                  onClick={() => {
-                    setError(null);
-                    setStartingId(pack.id);
-                    start.mutate(pack);
-                  }}
-                >
-                  <Clapperboard className="h-4 w-4" aria-hidden />
-                  {t.community.play}
-                </Button>
-                {pack.is_mine ? (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    aria-label={`${t.community.remove} : ${pack.title}`}
-                    onClick={() => setPendingDelete(pack)}
-                  >
-                    <Trash2 className="h-4 w-4" aria-hidden />
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-          </li>
+          <PackCard
+            key={pack.id}
+            pack={pack}
+            showMine={scope === 'all'}
+            starting={startingId === pack.id}
+            locked={startingId !== null && startingId !== pack.id}
+            onPlay={() => {
+              setError(null);
+              setStartingId(pack.id);
+              start.mutate(pack);
+            }}
+            onDelete={pack.is_mine ? () => setPendingDelete(pack) : undefined}
+          />
         ))}
       </ul>
 
       {visible.length > 0 ? (
-        <div className="space-y-1 text-xs leading-relaxed text-text-faint">
+        <div className="space-y-1 border-t border-border pt-4 text-xs leading-relaxed text-text-faint">
           <p>{t.community.voteHelp}</p>
           <p>{t.community.recipeHelp}</p>
         </div>

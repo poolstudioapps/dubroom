@@ -36,6 +36,17 @@ export default function PrivacyPage() {
         </p>
       </LegalSection>
 
+      <LegalSection title="La vidéo de l’accueil">
+        <p>
+          La page d’accueil montre un extrait de démonstration lu depuis YouTube, par son
+          lecteur intégré en mode de confidentialité renforcée (youtube-nocookie.com). Le
+          fichier n’est pas hébergé ici. À l’affichage de cette page, votre navigateur
+          contacte donc les serveurs de Google, qui reçoivent votre adresse IP et les
+          informations techniques habituelles d’une vidéo intégrée. C’est la seule page du
+          site concernée.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Combien de temps">
         <p>
           La vidéo source et les pistes audio séparées sont supprimées automatiquement
