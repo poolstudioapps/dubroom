@@ -57,8 +57,13 @@ export interface SessionRow {
   from_pack_id: string | null;
   published_pack_id: string | null;
   purged_at: string | null;
-  /** Salon ferme apres une heure d'ouverture ; l'hote peut le rouvrir. */
+  /**
+   * Salon ou studio ferme apres vingt minutes sans activite. L'hote peut
+   * rouvrir un salon ; un studio ferme renvoie ses joueurs a l'accueil.
+   */
   closed_at: string | null;
+  /** Quand l'enregistrement a commence : l'inactivite du studio part de la. */
+  recording_started_at: string | null;
   /** Quand le salon a ouvert : c'est de la que court l'heure. */
   lobby_opened_at: string | null;
   /** Langue parlee, choisie a la creation (ISO 639-1). */

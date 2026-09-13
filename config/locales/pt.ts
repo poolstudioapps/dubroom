@@ -73,14 +73,14 @@ export const pt = {
     heroTitle: 'Redublem suas cenas favoritas',
     heroBody:
       'Vocês escolhem uma cena, cada um pega um personagem e grava por conta própria. A música e o ambiente originais continuam ali: só as vozes mudam. O resultado se descobre no fim, todos juntos.',
-    kicker: 'O estúdio de dublagem entre amigos',
+    kicker: 'O jogo de dublagem entre amigos',
     cta: 'Entrar no estúdio',
     ctaSessions: 'Ver minhas cenas',
     ctaCommunity: 'Ver cenas prontas',
     howTitle: 'Como funciona',
     reassure1: 'Nada para instalar',
     reassure2: 'Cada um grava quando quiser',
-    reassure3: 'Nada é publicado',
+    reassure3: 'Nada é publicado sem você',
 
     valueTitle: 'O que sai disso',
     value1: {
@@ -92,8 +92,8 @@ export const pt = {
       body: 'Suas tomadas ficam inaudíveis para os outros enquanto a mixagem final não existir. Descobrir juntos no fim é o jogo inteiro.',
     },
     value3: {
-      title: 'Um MP4 que fica',
-      body: 'No fim, um arquivo que roda em qualquer lugar, sem legendas gravadas. A cena de origem, essa é apagada.',
+      title: 'Um vídeo para guardar',
+      body: 'No final, um vídeo com as vozes de vocês, que roda em qualquer lugar e se compartilha num toque. Baixe-o em até uma hora.',
     },
 
     midCta: 'Escolha uma cena, distribua os papéis, e veja o que sai.',
@@ -104,7 +104,7 @@ export const pt = {
     packsCtaAction: 'Preparar uma cena',
 
     faqTitle: 'O que perguntam para a gente',
-    seoTitle: 'Dublar uma cena de filme entre amigos',
+    seoTitle: 'O jogo de dublagem de filmes entre amigos',
     defineTitle: 'O que é dublar uma cena de filme?',
     defineBody:
       'Dublar uma cena de filme é trocar as vozes originais pelas suas mantendo todo o resto: a imagem, a música, os efeitos, o ritmo. O resultado não é um comentário por cima, é a própria cena com outros atores. O Dub’Up é um software de dublagem online que faz esse trabalho no navegador, sem instalar nada.',
@@ -116,46 +116,54 @@ export const pt = {
       'Para grupos de amigos que querem refazer uma fala clássica, para quem faz fandub e procura uma ferramenta que não seja um editor, para professores de idiomas que põem a turma a dublar um trecho, e para quem estuda dublagem e quer treinar em faixa rítmica sem alugar estúdio.',
     faqExtra: [
       {
-        q: 'É de graça?',
-        a: 'É. O Dub’Up é um projeto pessoal, sem anúncios, sem assinatura e sem limite de cenas.',
+        q: 'É grátis?',
+        a: 'Sim. O Dub’Up é um projeto pessoal, sem publicidade, sem assinatura e sem limite de cenas.',
       },
       {
-        q: 'Qual a diferença para um editor de vídeo?',
-        a: 'Um editor entrega uma linha do tempo vazia e deixa você encaixar as tomadas na mão. O Dub’Up parte da cena: separa as vozes, acha as falas, atribui aos personagens e reposiciona suas tomadas sobre a voz original.',
+        q: 'O que é a comunidade?',
+        a: 'O catálogo de cenas já preparadas por outros jogadores: personagens, texto e cortes estão prontos. Você traz o vídeo, e o lobby abre em poucos minutos. Vídeos e vozes nunca são compartilhados.',
       },
       {
-        q: 'Dá para dublar uma cena em inglês com a interface em português?',
-        a: 'Dá. O idioma da interface e o da cena são independentes. O texto transcrito serve de guia de tempo, e você fala o que quiser por cima.',
+        q: 'Qual a diferença para uma edição de vídeo comum?',
+        a: 'Um programa de edição te dá uma timeline vazia. O Dub’Up parte da cena: separa as vozes da música, encontra as falas, atribui aos personagens e alinha suas tomadas sozinho.',
+      },
+      {
+        q: 'Dá para dublar uma cena em outro idioma?',
+        a: 'Sim. O idioma da interface e o da cena são independentes. O texto transcrito serve de guia de ritmo: diga o que quiser por cima.',
+      },
+      {
+        q: 'E se fizermos uma pausa?',
+        a: 'Um lobby ou estúdio sem atividade por vinte minutos fecha sozinho, para não acumular cenas esquecidas. O anfitrião pode reabrir um lobby; para um estúdio, é preciso começar uma nova cena.',
       },
       {
         q: 'Como as vozes são separadas da música?',
-        a: 'Por um modelo de separação de fontes que roda na máquina do anfitrião e devolve duas faixas: as vozes de um lado, música e ambiente do outro. Como a separação vem da própria cena, continua grudada na imagem.',
+        a: 'Automaticamente, logo na importação: a cena é dividida em duas, as vozes de um lado, a música e os efeitos do outro. Só as vozes são substituídas, e todo o resto continua sincronizado com a imagem.',
       },
     ] as const,
     faq: [
       {
         q: 'Do que eu preciso, exatamente?',
-        a: 'Um fone com microfone e um navegador. O fone não é detalhe: sem ele, seu microfone grava a trilha de novo e a mixagem fica inutilizável.',
+        a: 'Um fone com microfone e um navegador, no computador ou no celular. O fone faz diferença: sem ele, o microfone grava de novo a música da cena.',
       },
       {
-        q: 'Todo mundo precisa estar junto ao mesmo tempo?',
-        a: 'Não. Cada um grava as falas quando quiser. A renderização começa quando todos terminarem.',
+        q: 'Precisamos estar todos ao mesmo tempo?',
+        a: 'Não. Depois de escolher os papéis, cada um grava suas falas por conta própria. O anfitrião inicia a montagem quando todos terminarem.',
       },
       {
-        q: 'Preciso saber dublar?',
-        a: 'Não. O texto passa sob uma cabeça de leitura, como num estúdio de verdade: você lê e cai no tempo. Uma tomada ruim se refaz igual.',
+        q: 'É preciso saber dublar?',
+        a: 'Não. O texto passa sob um cursor de leitura, como num estúdio de verdade, e sua tomada é alinhada sozinha com a voz original. Uma tomada ruim se refaz quantas vezes quiser.',
       },
       {
         q: 'Quanto tempo leva?',
-        a: 'Conte alguns minutos de preparo automático depois da importação, e depois o tempo das falas. Uma cena de dois minutos se dubla em meia hora em três pessoas.',
+        a: 'Dois a três minutos de preparação depois da importação, e então o tempo de dizer as falas. Uma cena de dois minutos se dubla em meia hora a três.',
       },
       {
-        q: 'Minhas gravações ficam guardadas?',
-        a: 'Não. São apagadas junto com o vídeo de origem, assim que a mixagem final existir.',
+        q: 'O que fica no final?',
+        a: 'Um vídeo com as vozes de vocês, que você pode baixar e compartilhar durante uma hora. Depois ele é apagado, assim como as gravações e o vídeo original: nada fica nos nossos servidores.',
       },
       {
         q: 'Posso convidar quem eu quiser?',
-        a: 'Só entram os endereços adicionados à lista de convidados. Você mesmo adiciona um endereço pela sua conta.',
+        a: 'O acesso é por convite: só entram os endereços da lista de convidados. Para jogar uma cena, basta depois compartilhar o código ou o link.',
       },
     ] as const,
     slides: {
@@ -258,7 +266,7 @@ export const pt = {
     remove: 'Tirar do catálogo',
     removeTitle: 'Tirar esta cena?',
     removeBody:
-      'O vídeo, as faixas separadas e o corte serão apagados. As cenas já iniciadas a partir dela param de funcionar. Não tem volta.',
+      'A ficha e os cortes serão apagados. As cenas já iniciadas a partir dela deixarão de funcionar. Não dá para desfazer.',
     publish: 'Publicar na comunidade',
     published: 'Esta cena está na comunidade',
     seeInCommunity: 'Ver na comunidade',
@@ -357,6 +365,9 @@ export const pt = {
     publishLater: 'Esta cena não será compartilhada. Você pode mudar de ideia a qualquer momento nesta tela.',
     linkPlaceholder: 'https://www.youtube.com/watch?v=…',
     editedByCreator: (date: string) => `Editado pelo criador em ${date}`,
+    previewMoreTitle: 'E muitas outras cenas para dublar',
+    previewMoreBody: (n: number) => (n > 0 ? `Crie sua conta para explorar as ${n} cenas do catálogo, jogá-las com os amigos e publicar as suas.` : 'Crie sua conta para explorar o catálogo, jogar as cenas com os amigos e publicar as suas.'),
+    previewCta: 'Ver mais cenas',
   },
 
   terms: {
@@ -369,7 +380,7 @@ export const pt = {
     gateBody:
       'Antes de começares, tens de aceitar os termos de utilização. Uma caixa e está feito.',
     gateGist:
-      'O essencial: você responde pelos trechos que importa e pelo que faz com eles. Tudo fica entre convidados, nada é publicado.',
+      'O essencial: você responde pelos trechos que importa e pelo que faz com eles. Nada é publicado sem o seu consentimento.',
     gateConfirm: 'Aceitar e continuar',
   },
 
@@ -378,7 +389,7 @@ export const pt = {
     privacy: 'Privacidade',
     terms: 'Condições',
     usageNotice:
-      'Uso estritamente privado, entre pessoas convidadas. Nenhum conteúdo é divulgado publicamente nem indexado.',
+      'Cenas e vozes ficam entre convidados: a comunidade vê apenas as fichas dos packs compartilhados.',
     contact: 'Contato',
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookies',
@@ -488,12 +499,12 @@ export const pt = {
     storageWarning: 'O espaço está acabando. Exclua cenas antigas para abrir lugar.',
     deleteConfirmTitle: 'Excluir esta cena?',
     deleteConfirmBody:
-      'A mixagem final, as tomadas e todos os metadados serão apagados. Não tem volta.',
+      'O vídeo final, as tomadas e tudo o que diz respeito à cena serão apagados. Não dá para desfazer.',
     joinByCode: 'Entrar com um código',
     join: 'Entrar',
     storageTitle: 'Espaço usado',
     storageHelp:
-      'O vídeo de origem e as faixas separadas são apagados assim que existe uma renderização: só o resultado final ocupa espaço de forma duradoura. Excluir uma cena libera o espaço dela.',
+      'O vídeo original e as gravações são apagados assim que o vídeo final fica pronto: só ele ocupa espaço, e por uma hora apenas.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Nenhuma cena corresponde a esse código.',
     joining: 'Entrando na cena…',
@@ -540,7 +551,7 @@ export const pt = {
     subtitle: 'Duas formas de começar: importar seu vídeo para uma cena nova, ou retomar uma cena que o grupo já preparou.',
     introUpload: 'Uma cena nova, preparada do zero a partir do seu vídeo, venha de onde vier: um filme, uma série, um clipe do YouTube ou do TikTok, uma gravação de tela…',
     introPack: 'Personagens e falas já estão prontos: você traz o vídeo e o lobby abre em cerca de dois minutos.',
-    introYoutube: 'Só para administradores: o vídeo é baixado pelo worker do PC do anfitrião, que precisa estar rodando.',
+    introYoutube: 'Só para administradores: o vídeo é baixado pelo computador do anfitrião, que precisa estar ligado.',
     limits: 'Qualquer formato de vídeo · no máximo 50 MB e 10 minutos',
     uploadStepsTitle: 'Como funciona',
     uploadSteps: [
@@ -565,9 +576,9 @@ export const pt = {
     title: 'Preparando a cena',
     subtitle: 'A cena está sendo cortada. Leva alguns minutos.',
     queued:
-      'À espera do worker.',
+      'A preparação começa em instantes.',
     queuedHelp:
-      'A cena começa assim que o worker estiver a correr no PC do anfitrião: abre o start.bat.',
+      'Costuma começar em segundos. Se a espera se prolongar, reinicie a importação ou avise o anfitrião.',
     failed: 'A importação falhou.',
     retry: 'Rodar a importação de novo',
     neverStarted:
@@ -674,8 +685,8 @@ export const pt = {
     clipCount: (n: number) => (n === 1 ? '1 clipe' : `${n} clipes`),
     hostOnly: 'Só o anfitrião pode começar a partida.',
     closedTitle: 'Lobby fechado',
-    closedBody: 'Este lobby ficou aberto por mais de uma hora: foi fechado automaticamente e ninguém mais pode entrar.',
-    closedHost: 'Você pode reabrir por mais uma hora, ou excluir a cena em “Minhas cenas”.',
+    closedBody: 'Este lobby ficou vinte minutos sem atividade: fechou automaticamente, e ninguém mais pode entrar.',
+    closedHost: 'Você pode reabri-lo por mais vinte minutos, ou apagar a cena na sua lista de cenas.',
     closedGuest: 'Só o anfitrião pode reabrir.',
     closedBack: 'Voltar para minhas cenas',
     reopen: 'Reabrir o lobby',
@@ -704,7 +715,7 @@ export const pt = {
     next: 'Próximo',
     backingVolume: 'Fundo sonoro',
     micOffset: 'Atraso do microfone',
-    micOffsetHelp: 'O alinhamento automático já posiciona sua gravação. Se ainda entrar atrasada, diminua o valor; adiantada, aumente.',
+    micOffsetHelp: 'Sua tomada é alinhada sozinha com a voz original. Se ainda cair um pouco atrasada, diminua o valor; um pouco adiantada, aumente. Você também pode arrastar sua faixa na forma de onda.',
     micDenied: 'O navegador recusou o microfone. Autorize e recarregue a página.',
     headphonesRequired:
       'Fone obrigatório. Enquanto grava você só ouve a música, nunca as vozes originais.',
@@ -719,16 +730,15 @@ export const pt = {
     fxTitle: 'Mesa de voz',
     fxReset: 'Zerar tudo',
     fxReverb: 'Reverb',
-    fxPitch: 'Altura',
-    fxTune: 'Afinação',
-    fxHelp: 'Tudo se ouve na hora ao reproduzir sua gravação, e só afeta a gravação exibida. Os efeitos são aplicados na mixagem, nunca na gravação: você pode mudá-los até a renderização.',
+    fxPitch: 'Pitch',
+    fxHelp: 'Tudo se ouve na hora ao reescutar a sua tomada, exatamente como no vídeo final. Os efeitos nunca mexem na gravação: você pode mudá-los até a montagem.',
     fxPresets: {
-      dry: 'Voz crua',
+      dry: 'Voz limpa',
       room: 'Sala pequena',
       cathedral: 'Catedral',
-      cartoon: 'Desenho',
+      cartoon: 'Desenho animado',
       deep: 'Voz grave',
-      cover: 'Cover',
+      monster: 'Monstro',
     },
     emptyTake:
       'Nada foi gravado. Confere se o seu microfone está conectado e selecionado, e grave de novo.',
@@ -766,13 +776,6 @@ export const pt = {
     cueIdle: 'Pronto',
     originalTrace: 'O traço colorido mostra quando a voz original fala.',
     micWindow: 'O microfone só abre na sua fala.',
-    alignedBy: (ms: number) =>
-      ms === 0
-        ? 'Sua tomada já caía certinho.'
-        : ms > 0
-          ? `Você estava ${ms} ms atrasado, já foi corrigido.`
-          : `Você estava ${-ms} ms adiantado, já foi corrigido.`,
-    alignUnsure: 'O ajuste não achou nada claro nesta tomada. Ela fica como está.',
     fxGain: 'Volume',
     fxGainApplyAll: 'Aplicar este volume a todas as minhas gravações',
     fxGainAppliedAll: 'Volume aplicado a todas as suas gravações',
@@ -797,6 +800,12 @@ export const pt = {
     devicesDuringTake: 'Os aparelhos podem ser trocados entre uma gravação e outra.',
     deviceMicN: (n: number) => `Microfone ${n}`,
     deviceOutputN: (n: number) => `Saída ${n}`,
+    fxKeep: 'Manter estes efeitos na próxima tomada',
+    fxKeepHelp: 'Desmarcado, a próxima fala começa sem efeitos.',
+    dragHint: 'Arraste sua faixa para realinhá-la',
+    expiredTitle: 'Sessão expirada',
+    expiredBody: 'Nenhuma tomada foi gravada em vinte minutos: a sessão foi fechada automaticamente. Você pode começar outra quando quiser.',
+    expiredOk: 'Entendi',
   },
 
   progress: {
@@ -827,7 +836,7 @@ export const pt = {
   render: {
     title: 'Renderizando',
     queued:
-      'À espera do worker.',
+      'A montagem começa em instantes.',
     frozen: 'A cena está congelada: as tomadas não mudam mais.',
     failed: 'A montagem não conseguiu terminar.',
     retry: 'Rodar a renderização de novo',
@@ -838,17 +847,13 @@ export const pt = {
     backgroundNotice: 'A montagem continua sem você: pode sair desta página. Em alguns minutos a cena estará pronta em Minhas cenas e em Minha conta, para todos que participaram.',
     ctaNewScene: 'Fazer outra cena',
     ctaHome: 'Ir para o início',
+    keepNotice: (minutes: number) => `Quando ficar pronto, seu vídeo continua disponível por ${minutes} minutos: baixe-o antes que seja apagado.`,
   },
 
   result: {
     title: 'O resultado',
-    download: 'Baixar o MP4',
+    download: 'Baixar o vídeo',
     exportTitle: 'Levar a cena',
-    formatWide: 'Formato largo',
-    formatWideHint: 'Para tela de computador ou televisão.',
-    formatVertical: 'Formato celular',
-    formatVerticalHint: 'Cortado no centro, para stories e reels.',
-    formatVerticalMissing: 'A versão para celular não está disponível para esta cena.',
     share: 'Compartilhar',
     shareHelp:
       'No celular, Compartilhar abre o menu do sistema: TikTok, Instagram e os outros apps instalados aparecem ali.',
@@ -876,7 +881,7 @@ export const pt = {
     tooLarge: 'Arquivo muito pesado: máximo 50 MB. Exporte o vídeo de novo em 720p ou 480p.',
     or: 'ou',
     autoTitle: 'Download automático',
-    autoBody: 'O PC do anfitrião baixa o vídeo do YouTube. O start.bat precisa estar rodando nele.',
+    autoBody: 'O computador do anfitrião baixa o vídeo do YouTube: ele precisa estar ligado.',
     autoSubmit: 'Iniciar o download',
     mediaBody: 'Esta cena está hospedada aqui: começa na hora.',
     introMember: 'O catálogo guarda só a preparação desta cena: traga o vídeo e tudo é preparado online com o texto e os personagens do pack.',
@@ -913,19 +918,19 @@ export const pt = {
     checklistTitle: 'Antes de importar',
     checklist: [
       'O mesmo trecho da cena do pack, sem cortes',
-      'Qualquer formato de vídeo: MP4, MOV, MKV, WebM…',
+      'Qualquer formato de vídeo',
       'No máximo 50 MB: 720p ou 480p bastam',
       'No máximo 10 minutos',
     ],
     whyTitle: 'Por que esta etapa?',
     whyBody: 'O Dub’Up não hospeda nenhuma obra: o catálogo guarda a preparação, nunca o vídeo. E a maioria das plataformas recusa downloads vindos de servidores. Por isso você traz o arquivo, e todo o resto acontece online.',
     wayFileTitle: 'Você importa o arquivo',
-    wayFileBody: 'Funciona a qualquer hora, mesmo que ninguém tenha iniciado o start.bat. A preparação acontece online, em cerca de dois minutos.',
+    wayFileBody: 'Funciona a qualquer hora, sem instalar nada. A preparação acontece online, em cerca de dois minutos.',
     faqTitle: 'Perguntas frequentes',
     faq: [
       {
         q: 'Quais formatos são aceitos?',
-        a: 'Todos os formatos de vídeo comuns: MP4, MOV, MKV, AVI, WebM e muitos outros. O vídeo é convertido automaticamente na importação, você não precisa fazer nada.',
+        a: 'Todos os formatos de vídeo comuns. O vídeo é convertido automaticamente na importação, você não precisa fazer nada.',
       },
       {
         q: 'Que ferramenta usar para pegar um vídeo?',
@@ -953,6 +958,7 @@ export const pt = {
     homeBannerBody: 'YouTube, TikTok, um filme no seu disco, uma gravação de tela: qualquer arquivo de vídeo pode ser importado, seja qual for o formato. O guia mostra como pegar e preparar em cinco minutos.',
     homeBannerAction: 'Ler o guia de importação',
     midLink: 'Ainda não tem um vídeo em mãos? O guia explica como conseguir um.',
+    trajetFile: 'Qualquer formato · até 50 MB',
   },
 
   guideHub: {
@@ -987,27 +993,27 @@ export const pt = {
     tipsTitle: 'Os hábitos que mudam tudo',
     tips: [
       {
-        title: 'Sempre de fone',
-        body: 'Sem fone, a música volta para o microfone e aparece duas vezes no resultado.',
+        title: 'Fone, sempre',
+        body: 'Sem fone, a música volta para o microfone e é ouvida duas vezes no vídeo final.',
       },
       {
         title: 'Ouça o original primeiro',
-        body: 'O ritmo da fala original é a sua melhor referência.',
+        body: 'O ritmo da fala original é o seu melhor guia.',
       },
       {
         title: 'Deixe o alinhamento trabalhar',
-        body: 'Sua gravação é recolocada automaticamente sobre a voz original.',
+        body: 'Sua tomada se encaixa sozinha na voz original; arraste à mão se precisar.',
       },
       {
-        title: 'Ouça de novo com os efeitos',
-        body: 'Sua gravação toca exatamente como vai soar no resultado.',
+        title: 'Reouça com os efeitos',
+        body: 'Sua tomada soa exatamente como no vídeo final.',
       },
       {
-        title: 'Uma hora para o lobby',
-        body: 'Um lobby aberto por mais de uma hora fecha; o anfitrião pode reabrir.',
+        title: 'Vinte minutos parado, fecha',
+        body: 'Um lobby ou estúdio sem atividade por vinte minutos fecha sozinho.',
       },
       {
-        title: 'Baixe o resultado logo',
+        title: 'Baixe o vídeo logo',
         body: 'O vídeo final é apagado uma hora depois da montagem.',
       },
     ],
@@ -1017,7 +1023,7 @@ export const pt = {
 
   admin: {
     title: 'Administradores',
-    help: 'Um administrador pode criar uma cena a partir de um link do YouTube: o vídeo é baixado pelo worker do PC dele. Os outros membros importam seus vídeos, preparados online.',
+    help: 'Um administrador também pode criar uma cena a partir de um link do YouTube: o vídeo é então baixado pelo computador dele. Os outros membros importam seus vídeos, preparados online.',
     roleOwner: 'Proprietário',
     roleAdmin: 'Admin',
     roleUser: 'Membro',
@@ -1051,7 +1057,7 @@ export const pt = {
         },
         {
           title: 'Ajuste a voz no console',
-          body: 'Volume, reverb, tom, afinação: cada ajuste vale para a gravação exibida e se ouve na hora. O atraso do microfone corrige uma gravação que entra um pouco cedo ou tarde.',
+          body: 'Volume, reverb, pitch: cada ajuste vale para a tomada exibida e se ouve na hora. Marque «Manter estes efeitos» para levá-los à próxima fala, e arraste sua faixa se ela cair um pouco adiantada ou atrasada.',
         },
       ],
       checklistTitle: 'Antes de iniciar a renderização',
@@ -1087,7 +1093,7 @@ export const pt = {
         },
         {
           title: 'Abra o lobby',
-          body: 'Compartilhe o código ou o link. Cada um escolhe um personagem; os que ninguém pega mantêm a voz original. O lobby fecha sozinho depois de uma hora.',
+          body: 'Compartilhe o código ou o link. Cada um escolhe um personagem; os que ninguém pega mantêm a voz original. O lobby fecha sozinho após vinte minutos sem atividade.',
         },
       ],
       checklistTitle: 'Uma cena pronta para jogar',
@@ -1245,5 +1251,18 @@ export const pt = {
     pageNotFoundTitle: 'Esta página não existe',
     pageNotFoundBody: 'O link pode estar incompleto, ou a página mudou de lugar. Recomece pelo início.',
     backHome: 'Voltar ao início',
+  },
+  notifications: {
+    title: 'Notificações',
+    empty: 'Nada de novo por enquanto.',
+    label: (n: number) => (n === 0 ? 'Notificações' : `Notificações, ${n} nova${n > 1 ? 's' : ''}`),
+    renderStarted: (title: string) => `A montagem de “${title}” começou.`,
+    renderDone: (title: string) => `“${title}” está pronta: assista e baixe.`,
+    renderExpiring: (title: string, minutes: number) => `“${title}” será apagada em ${minutes} min: lembre-se de baixar.`,
+    renderDeleted: (title: string) => `O vídeo de “${title}” foi apagado.`,
+    packLike: (who: string, others: number, title: string) => (others === 0 ? `${who} curtiu “${title}”` : `${who} e mais ${others} curtiram “${title}”`),
+    packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} comentou “${title}”` : `${who} e mais ${others} comentaram “${title}”`),
+    profileComment: (who: string, others: number) => (others === 0 ? `${who} escreveu no seu perfil` : `${who} e mais ${others} escreveram no seu perfil`),
+    reply: (who: string, others: number) => (others === 0 ? `${who} respondeu ao seu comentário` : `${who} e mais ${others} responderam ao seu comentário`),
   },
 } satisfies Dictionary;

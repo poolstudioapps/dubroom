@@ -287,23 +287,13 @@ export function useMediaUrls(session: SessionRow | undefined) {
 }
 
 /**
- * L'adresse signee d'un rendu.
- *
- * `format` choisit entre la version d'origine et celle recadree pour les
- * ecrans tenus a la verticale. Les deux ont leur propre cle de cache :
- * une seule adresse pour les deux fichiers aurait servi le mauvais des
- * qu'on passe de l'un a l'autre.
+ * L'adresse signee d'un rendu, au format de la video d'origine.
  */
-export function useRenderUrl(
-  session: SessionRow | undefined,
-  format: 'large' | 'vertical' = 'large',
-) {
-  const chemin =
-    format === 'vertical' ? session?.render_vertical_path : session?.render_path;
-  const suffixe = format === 'vertical' ? ' (9x16)' : '';
+export function useRenderUrl(session: SessionRow | undefined) {
+  const chemin = session?.render_path;
 
   return useQuery({
-    queryKey: [...keys.render(session?.id ?? 'none'), format],
+    queryKey: [...keys.render(session?.id ?? 'none'), chemin ?? ''],
     enabled: !!chemin,
     staleTime: (SIGNED_URL_TTL_S - 120) * 1000,
     queryFn: async () => {
@@ -311,7 +301,7 @@ export function useRenderUrl(
       const { data, error } = await db.storage
         .from(BUCKET_RENDERS)
         .createSignedUrl(chemin!, SIGNED_URL_TTL_S, {
-          download: `${session!.title ?? 'dubup'}${suffixe}.mp4`,
+          download: `${session!.title ?? 'dubup'}.mp4`,
         });
       if (error) throw error;
       return data.signedUrl;

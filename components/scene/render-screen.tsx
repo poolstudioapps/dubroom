@@ -2,7 +2,9 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Clock, House, Plus, RotateCcw, TriangleAlert } from 'lucide-react';
+import { Clock, House, Plus, RotateCcw, Timer, TriangleAlert } from 'lucide-react';
+
+import { RENDER_KEEP_MINUTES } from '@/config/constants';
 
 import { useT } from '@/lib/i18n';
 import { LinkButton } from '@/components/link-button';
@@ -97,6 +99,11 @@ export function RenderScreen() {
             <p className="flex gap-2 text-sm leading-relaxed text-text-muted">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
               {t.render.backgroundNotice}
+            </p>
+            {/* Le delai est dit avant que la video existe : apres, il court deja. */}
+            <p className="flex gap-2 text-sm font-semibold leading-relaxed text-text">
+              <Timer className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              {t.render.keepNotice(RENDER_KEEP_MINUTES)}
             </p>
             <div className="flex flex-wrap gap-2">
               <LinkButton href="/sessions/new">

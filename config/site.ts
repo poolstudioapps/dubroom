@@ -23,13 +23,21 @@ export const SITE_URL =
 /**
  * Les seules adresses ouvertes a l'indexation.
  *
- * Tout le reste est derriere la connexion et porte des extraits d'oeuvres
- * protegees. Un catalogue d'extraits indexe est exactement ce qui
- * transforme un usage prive en service de contrefacon : la liste est
- * donc blanche, et non noire. Ce qui n'y figure pas est ferme.
+ * L'accueil, les guides et les pages legales : ce qui explique le produit
+ * sans rien montrer d'une oeuvre. La communaute reste fermee, meme si son
+ * apercu est visible sans compte — c'est un catalogue d'extraits de films,
+ * et un catalogue d'extraits indexe est exactement ce qui transforme un
+ * usage prive en service de contrefacon. La liste est donc blanche, et
+ * non noire : ce qui n'y figure pas est ferme.
  */
 export const INDEXABLE_PATHS = [
   '/',
+  '/guide',
+  '/guide/video-youtube',
+  '/guide/preparer-la-scene',
+  '/guide/bien-enregistrer',
+  '/guide/publier-un-pack',
+  '/guide/devenir-certifie',
   '/mentions-legales',
   '/confidentialite',
   '/conditions',
@@ -47,10 +55,14 @@ export const INDEXABLE_PATHS = [
  */
 export const ROBOTS_ALLOW = [
   '/$',
+  '/guide',
   '/mentions-legales',
   '/confidentialite',
   '/conditions',
   '/cookies',
+  // Le fichier des moteurs de reponse, et les images des apercus de partage.
+  '/llms.txt',
+  '/illustrations/',
 ] as const;
 
 export function isIndexable(pathname: string): boolean {
@@ -66,6 +78,7 @@ export function isIndexable(pathname: string): boolean {
  * doit en contenir naturellement, sinon ce n'est pas la bonne page.
  */
 export const SEO_TERMS = [
+  'jeu de doublage entre amis',
   'doublage de scène de film',
   'logiciel de doublage',
   'doubler une scène de film',

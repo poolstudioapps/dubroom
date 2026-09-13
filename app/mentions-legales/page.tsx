@@ -37,8 +37,12 @@ export default function MentionsPage() {
         <p>
           {APP_NAME} est un outil privé, sans inscription ouverte, sans publicité et
           sans monétisation. L’accès est réservé aux personnes explicitement invitées
-          par l’éditeur. Il n’existe ni catalogue public, ni partage hors du cercle des
-          participants, ni indexation par les moteurs de recherche.
+          par l’éditeur. Les vidéos, les enregistrements et les scènes jouées ne sont
+          jamais partagés hors du cercle des participants. Seules les fiches des packs
+          que leurs auteurs publient (titre, personnages, texte et lien d’origine) sont
+          visibles de la communauté, et un aperçu des mieux notées l’est sans compte.
+          Seules les pages de présentation, les guides et les pages légales sont ouvertes
+          aux moteurs de recherche.
         </p>
       </LegalSection>
 

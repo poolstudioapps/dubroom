@@ -1,47 +1,34 @@
 import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  AudioLines,
-  BookOpen,
-  Clock,
-  Crosshair,
-  DoorClosed,
-  Download,
-  Ear,
-  Headphones,
-  Library,
-  Mic,
-  Plus,
-  Share2,
-  Upload,
-  Users,
-} from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Library, Plus } from 'lucide-react';
 
 import { AccountMenu } from '@/components/account-menu';
 import { FaqList } from '@/components/faq-list';
 import { Footer } from '@/components/footer';
+import { GuideIcon, type GuideIconName } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LinkButton } from '@/components/link-button';
 import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
 import { GUIDE_ORDER } from '@/config/guides';
 import { ficheGuide } from '@/lib/guides';
-import { getDictionary } from '@/lib/i18n-server';
+import { GuideStructuredData } from '@/components/guide-structured-data';
+import { currentLocale, getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 
 const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 
-const ICONES_PARCOURS = [Upload, Users, Mic, Share2] as const;
-const ICONES_ASTUCES = [Headphones, Ear, Crosshair, AudioLines, DoorClosed, Download] as const;
+const ICONES_PARCOURS: GuideIconName[] = ['import', 'script', 'micro', 'partage'];
+const ICONES_ASTUCES: GuideIconName[] = ['casque', 'oreille', 'cible', 'console', 'sablier', 'telechargement'];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getDictionary();
   return {
     title: t.guideHub.title,
     description: t.guideHub.body,
-    robots: { index: false, follow: false },
+    robots: { index: true, follow: true },
+    alternates: { canonical: '/guide' },
   };
 }
 
@@ -55,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * les questions frequentes.
  */
 export default async function GuidesPage() {
-  const [user, t] = await Promise.all([currentUser(), getDictionary()]);
+  const [user, t, locale] = await Promise.all([currentUser(), getDictionary(), currentLocale()]);
   const h = t.guideHub;
 
   return (
@@ -126,17 +113,17 @@ export default async function GuidesPage() {
                     aria-hidden
                   />
                   {h.journey.map((etape, rang) => {
-                    const Icone = ICONES_PARCOURS[rang] ?? Share2;
+                    const nom = ICONES_PARCOURS[rang] ?? 'partage';
                     return (
                       <li key={etape.title} className="relative flex gap-4">
                         <span
                           className={
                             rang === h.journey.length - 1
-                              ? 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink'
-                              : 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised text-text'
+                              ? 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-surface-raised'
+                              : 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised'
                           }
                         >
-                          <Icone className="h-4 w-4" aria-hidden />
+                          <GuideIcon nom={nom} className="h-7 w-7" />
                         </span>
                         <span className="min-w-0 space-y-0.5 pt-0.5">
                           <span className="block text-sm font-bold text-text">{etape.title}</span>
@@ -209,7 +196,7 @@ export default async function GuidesPage() {
               </h2>
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {h.tips.map((astuce, rang) => {
-                  const Icone = ICONES_ASTUCES[rang] ?? Headphones;
+                  const nom = ICONES_ASTUCES[rang] ?? 'casque';
                   return (
                     <li
                       key={astuce.title}
@@ -218,9 +205,10 @@ export default async function GuidesPage() {
                       style={delai(rang * 70)}
                       className="panel flex gap-4 p-5"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                        <Icone className="h-5 w-5" aria-hidden />
-                      </span>
+                      <GuideIcon
+                        nom={nom}
+                        className="h-14 w-14 shrink-0 drop-shadow-[0_10px_14px_rgb(0_0_0/0.55)]"
+                      />
                       <span className="space-y-1">
                         <span className="block font-bold text-text">{astuce.title}</span>
                         <span className="block text-sm leading-relaxed text-text-muted">{astuce.body}</span>
@@ -265,6 +253,15 @@ export default async function GuidesPage() {
 
         <Footer />
       </div>
+
+      <GuideStructuredData
+        path="/guide"
+        name={h.title}
+        description={h.body}
+        locale={locale}
+        hubName={h.title}
+        faq={[...t.home.faq, ...t.home.faqExtra]}
+      />
     </div>
   );
 }

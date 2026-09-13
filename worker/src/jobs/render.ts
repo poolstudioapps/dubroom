@@ -9,7 +9,7 @@ import {
 } from '../../../config/constants.ts';
 import { SystemError, UserError } from '../errors.ts';
 import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
-import { autotune } from '../lib/autotune.ts';
+import { demandeTraitement, traiterVoix } from '../../../lib/audio/voice-dsp.ts';
 import {
   audioDurationMs,
   decodeTakeToWav,
@@ -18,7 +18,6 @@ import {
   meanVolumeDb,
   mixWithGraph,
   muxFinal,
-  muxVertical,
 } from '../lib/ffmpeg.ts';
 import { readWavMono, writeWavMono } from '../lib/wav.ts';
 import { buildMixGraph, placeTake, type VoSegment } from '../lib/mixgraph.ts';
@@ -54,7 +53,6 @@ interface TakeRow {
   offset_ms: number;
   fx_reverb: number | null;
   fx_pitch: number | null;
-  fx_tune: number | null;
   /** Decalage micro de cette prise, regle dans la console de voix. */
   mic_offset_ms: number | null;
   /** Gain de cette prise, en dB, ajoute a la correction automatique. */
@@ -93,7 +91,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     db
       .from('takes')
       .select(
-        'id, clip_id, participant_id, audio_path, offset_ms, fx_reverb, fx_pitch, fx_tune, mic_offset_ms, gain_db',
+        'id, clip_id, participant_id, audio_path, offset_ms, fx_reverb, fx_pitch, mic_offset_ms, gain_db',
       )
       .eq('is_selected', true),
     db
@@ -191,33 +189,33 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     }
 
     /*
-     * Le recalage sur les notes, s'il est demande.
+     * Le pitch et la reverb, s'ils sont demandes.
      *
-     * Il se fait ici et pas dans le graphe de mixage : ffmpeg sait
-     * transposer mais pas corriger, et la correction demande de
-     * reconnaitre chaque note avant de la deplacer. La prise est donc
-     * decodee, traitee, et reecrite a cote ; l'originale reste intacte
-     * en reserve, ce qui permet de changer le reglage et de relancer.
+     * Ils se calculent ici et pas dans le graphe de mixage, avec le code
+     * exact qui fait l'ecoute du studio (`lib/audio/voice-dsp.ts`) : ce
+     * qu'on a regle a l'oreille est ce qui sort dans la video. La prise
+     * est decodee, traitee, et reecrite a cote ; l'originale reste intacte.
      */
-    // Le reglage de CETTE prise : les effets ne sont plus ceux du joueur.
-    const justesse = take.fx_tune ?? 0;
+    const effets = { pitch: take.fx_pitch ?? 0, reverb: take.fx_reverb ?? 0 };
     let fichier = local;
 
-    if (justesse > 0) {
+    if (demandeTraitement(effets)) {
       try {
         const brut = path.join(takesDir, `${take.id}-brut.wav`);
-        const corrige = path.join(takesDir, `${take.id}-tune.wav`);
+        const traite = path.join(takesDir, `${take.id}-fx.wav`);
         await decodeTakeToWav(local, brut);
         const wav = await readWavMono(brut);
-        await writeWavMono(corrige, {
-          sampleRate: wav.sampleRate,
-          samples: autotune(wav.samples, wav.sampleRate, justesse / 100),
-        });
-        fichier = corrige;
+        const samples = traiterVoix(
+          Float32Array.from(wav.samples),
+          wav.sampleRate,
+          effets,
+        );
+        await writeWavMono(traite, { sampleRate: wav.sampleRate, samples });
+        fichier = traite;
       } catch (error) {
         // Un effet rate ne vaut pas un rendu perdu : la prise part
         // telle qu'elle a ete enregistree.
-        logger.warn('recalage impossible, prise laissée brute', {
+        logger.warn('effets impossibles, prise laissée brute', {
           step: 'fetch',
           takeId: take.id,
           detail: error instanceof Error ? error.message : String(error),
@@ -305,7 +303,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
         // les reglages par prise retombe sur celui du joueur.
         (take.mic_offset_ms ?? reglages?.offset ?? 0) + MIC_OFFSET_BASELINE_MS,
         index,
-        { gainDb, reverb: take.fx_reverb ?? 0, pitch: take.fx_pitch ?? 0 },
+        { gainDb },
       ),
     );
   }
@@ -362,29 +360,6 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     (pct) => void setJobStep(job.id, 'mux', pct).catch(() => undefined),
   );
 
-  // ── 3 bis. La version debout ────────────────────────────────────────
-  //
-  // Elle sort du rendu fini, pas des sources : meme image, meme mixage,
-  // recadres. Son echec ne compromet rien — le rendu principal est deja
-  // sur le disque, et l'interface sait se passer d'une version qui
-  // manque.
-  const verticalPath = path.join(workDir, 'final-vertical.mp4');
-  let verticalOk = false;
-  try {
-    await muxVertical(
-      finalPath,
-      verticalPath,
-      durationMs,
-      (pct) => void setJobStep(job.id, 'mux', 50 + pct / 2).catch(() => undefined),
-    );
-    verticalOk = true;
-  } catch (error) {
-    logger.warn('recadrage vertical impossible', {
-      step: 'mux',
-      detail: error instanceof Error ? error.message : String(error),
-    });
-  }
-
   // ── 4. Envoi ────────────────────────────────────────────────────────
   await setJobStep(job.id, 'upload', 0);
   const renderPath = `${session.id}/final.mp4`;
@@ -395,33 +370,6 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     render_path: renderPath,
     render_size_bytes: size,
   });
-
-  /*
-   * La version verticale est un bonus : son envoi ne fait jamais echouer
-   * le rendu.
-   *
-   * Sur une scene de quatre minutes et demie, elle depassait la taille
-   * maximale d'un fichier du stockage alors que la version large passait.
-   * L'envoi levait, le job repartait trois fois, et la scene finissait en
-   * echec avec un rendu principal pourtant deja en ligne.
-   */
-  if (verticalOk) {
-    const droitPath = `${session.id}/final-vertical.mp4`;
-    try {
-      await storage.upload(BUCKET_RENDERS, droitPath, verticalPath, 'video/mp4');
-      const droitSize = await storage.verifyUploaded(BUCKET_RENDERS, droitPath);
-      await updateSession(session.id, {
-        render_vertical_path: droitPath,
-        render_vertical_size_bytes: droitSize,
-      });
-      logger.info('version verticale envoyée', { step: 'upload', bytes: droitSize });
-    } catch (error) {
-      logger.warn('version verticale non envoyée', {
-        step: 'upload',
-        detail: error instanceof Error ? error.message : String(error),
-      });
-    }
-  }
 
   await setJobStep(job.id, 'upload', 100);
   logger.info('rendu envoyé', { step: 'upload', bytes: size });

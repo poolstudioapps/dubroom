@@ -2,17 +2,19 @@ import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowRight, BookOpen, Check, Clock, Lightbulb } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, Clock } from 'lucide-react';
 
 import { AccountMenu } from '@/components/account-menu';
 import { Footer } from '@/components/footer';
+import { GuideIcon } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LinkButton } from '@/components/link-button';
 import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
 import { GUIDE_ARTICLES, GUIDE_ORDER, isGuideSlug } from '@/config/guides';
 import { ficheGuide } from '@/lib/guides';
-import { getDictionary } from '@/lib/i18n-server';
+import { GuideStructuredData } from '@/components/guide-structured-data';
+import { currentLocale, getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 
 const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
@@ -30,7 +32,20 @@ export async function generateMetadata({
   if (!isGuideSlug(slug)) return {};
   const t = await getDictionary();
   const g = t.guides[GUIDE_ARTICLES[slug].cle];
-  return { title: g.title, description: g.summary, robots: { index: false, follow: false } };
+  // Un guide explique le produit sans rien montrer d'une oeuvre : il est
+  // fait pour etre trouve.
+  return {
+    title: g.title,
+    description: g.summary,
+    robots: { index: true, follow: true },
+    alternates: { canonical: `/guide/${slug}` },
+    openGraph: {
+      type: 'article',
+      title: g.title,
+      description: g.summary,
+      images: [{ url: GUIDE_ARTICLES[slug].image, width: 1000, height: 563 }],
+    },
+  };
 }
 
 /**
@@ -48,7 +63,7 @@ export default async function GuideArticlePage({
   const { slug } = await params;
   if (!isGuideSlug(slug)) notFound();
 
-  const [user, t] = await Promise.all([currentUser(), getDictionary()]);
+  const [user, t, locale] = await Promise.all([currentUser(), getDictionary(), currentLocale()]);
   const meta = GUIDE_ARTICLES[slug];
   const g = t.guides[meta.cle];
   const autres = GUIDE_ORDER.filter((guide) => guide.cle !== meta.cle);
@@ -126,7 +141,10 @@ export default async function GuideArticlePage({
                   >
                     <span
                       aria-hidden
-                      className="pointer-events-none absolute -right-1 -top-5 select-none text-[6.5rem] font-black leading-none text-transparent opacity-50 [-webkit-text-stroke:1.5px_var(--color-border-strong)]"
+                      // Un chiffre plein et pale, pas un contour : le contour
+                      // trace chaque trait de la police, et le « 4 » s'y
+                      // croisait en morceaux.
+                      className="pointer-events-none absolute -right-1 -top-5 select-none text-[6.5rem] font-black leading-none text-text opacity-[0.06]"
                     >
                       {rang + 1}
                     </span>
@@ -146,9 +164,10 @@ export default async function GuideArticlePage({
                 suppressHydrationWarning
                 className="panel flex gap-4 p-6"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                  <Lightbulb className="h-5 w-5" aria-hidden />
-                </span>
+                <GuideIcon
+                  nom="ampoule"
+                  className="h-14 w-14 shrink-0 drop-shadow-[0_10px_14px_rgb(0_0_0/0.55)]"
+                />
                 <div className="space-y-1">
                   <h2 className="font-bold text-text">{t.guides.noteTitle}</h2>
                   <p className="text-sm leading-relaxed text-text-muted">{g.note}</p>
@@ -227,6 +246,16 @@ export default async function GuideArticlePage({
 
         <Footer />
       </div>
+
+      <GuideStructuredData
+        path={`/guide/${slug}`}
+        name={g.title}
+        description={g.summary}
+        image={meta.image}
+        locale={locale}
+        hubName={t.guideHub.title}
+        steps={g.steps}
+      />
     </div>
   );
 }

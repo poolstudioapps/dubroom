@@ -2,10 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { FolderHeart, Library, Mic, Plus, Search, Share2, Upload, X } from 'lucide-react';
+import { FolderHeart, Library, Plus, Search, X } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { GuideIcon, type GuideIconName } from '@/components/guide-icon';
+import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LinkButton } from '@/components/link-button';
 import { PackCard, packGridClass } from '@/components/pack-card';
 import {
@@ -25,7 +27,7 @@ import { humanizeError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
 const CREER_UN_PACK = '/sessions/new?pour=communaute';
-const ICONES_ETAPES = [Upload, Mic, Share2] as const;
+const ICONES_ETAPES: GuideIconName[] = ['fiche', 'script', 'partage'];
 
 /**
  * Le catalogue des scenes preparees.
@@ -107,7 +109,10 @@ export function CommunityClient({
   const langues = new Set(mine.map((pack) => pack.source_lang).filter(Boolean)).size;
 
   return (
-    <AppShell className="space-y-10 sm:space-y-12">
+    <AppShell
+      className="space-y-10 sm:space-y-12"
+      backdrop={scope === 'all' ? <HeroBackdrop variant="communaute" /> : undefined}
+    >
       {/* ── Les deux portes ─────────────────────────────────────────── */}
       <section className="grid items-center gap-8 lg:grid-cols-[1.25fr_1fr]">
         <div className="space-y-5">
@@ -164,18 +169,16 @@ export function CommunityClient({
               aria-hidden
             />
             {t.community.howSteps.map((etape, rang) => {
-              const Icone = ICONES_ETAPES[rang] ?? Share2;
+              const nom = ICONES_ETAPES[rang] ?? 'partage';
               return (
                 <li key={etape.title} className="relative flex gap-4">
                   <span
                     className={cn(
-                      'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-                      rang === t.community.howSteps.length - 1
-                        ? 'bg-accent text-accent-ink'
-                        : 'border-2 border-border-strong bg-surface-raised text-text',
+                      'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-surface-raised',
+                      rang === t.community.howSteps.length - 1 ? 'border-accent' : 'border-border-strong',
                     )}
                   >
-                    <Icone className="h-4 w-4" aria-hidden />
+                    <GuideIcon nom={nom} className="h-7 w-7" />
                   </span>
                   <span className="min-w-0 space-y-0.5 pt-0.5">
                     <span className="block text-sm font-bold text-text">{etape.title}</span>

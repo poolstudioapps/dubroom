@@ -81,9 +81,22 @@ export function ScenePage({
   const isHost = scene.data?.session.host_id === userId;
   const target = status ? screenForStatus(status, isHost) : null;
 
+  /*
+   * Un studio ferme pour inactivite renvoie a l'accueil.
+   *
+   * Vingt minutes sans une prise et la base le ferme : rester sur un
+   * studio ou plus rien ne s'enregistre serait un piege. L'accueil dit
+   * pourquoi, dans une fenetre.
+   */
+  const expiree = status === 'recording' && !!scene.data?.session.closed_at;
   useEffect(() => {
+    if (expiree) router.replace('/?expiree=1');
+  }, [expiree, router]);
+
+  useEffect(() => {
+    if (expiree) return;
     if (target && target !== expect) router.replace(sceneHref(code, target));
-  }, [target, expect, code, router]);
+  }, [target, expect, code, router, expiree]);
 
   /*
    * Tant qu'on n'est pas sur le bon ecran, on n'en montre aucun.
@@ -94,7 +107,12 @@ export function ScenePage({
    * boutons compris, pendant qu'on changeait de page. On voyait des pages
    * qui n'avaient plus rien a faire la.
    */
-  if (lookup.isLoading || (sessionId && scene.isLoading) || (target && target !== expect)) {
+  if (
+    expiree ||
+    lookup.isLoading ||
+    (sessionId && scene.isLoading) ||
+    (target && target !== expect)
+  ) {
     return (
       <AppShell wide={wide}>
         <div className="flex items-center gap-2 text-sm text-text-faint">

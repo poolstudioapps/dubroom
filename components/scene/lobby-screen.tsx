@@ -25,8 +25,8 @@ import { useProfilesOf } from '@/lib/profile';
 import { statsByCharacter } from '@/lib/scene-stats';
 import { cn } from '@/lib/utils';
 
-/** Un salon se ferme une heure apres son ouverture. */
-const SALON_DUREE_MS = 60 * 60 * 1000;
+/** Un salon se ferme vingt minutes apres son ouverture (voir `app_fermer_salons`). */
+const SALON_DUREE_MS = 20 * 60 * 1000;
 
 /** Les minutes avant fermeture, rafraichies toutes les trente secondes. */
 function useMinutesRestantes(ouvertLe: string | null): number | null {
@@ -81,7 +81,7 @@ export function LobbyScreen() {
   const minutesRestantes = useMinutesRestantes(session.lobby_opened_at);
 
   /*
-   * Un salon oublie se ferme apres une heure (voir `app_fermer_salons`).
+   * Un salon oublie se ferme apres vingt minutes (voir `app_fermer_salons`).
    * On ne montre plus alors ni personnages ni bouton de lancement, qui
    * echoueraient tous : on dit ce qui s'est passe, et l'hote peut rouvrir.
    */

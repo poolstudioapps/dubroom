@@ -73,14 +73,14 @@ export const fr = {
     heroTitle: 'Redoublez vos scènes préférées',
     heroBody:
       'Vous choisissez une scène, chacun prend un personnage, et vous l’enregistrez chacun de votre côté. La musique et l’ambiance d’origine restent en place : seules les voix changent. Le résultat se découvre à la fin, tous ensemble.',
-    kicker: 'Le studio de doublage entre amis',
+    kicker: 'Le jeu de doublage entre amis',
     cta: 'Entrer dans le studio',
     ctaSessions: 'Voir mes scènes',
     ctaCommunity: 'Parcourir les scènes prêtes',
     howTitle: 'Comment ça marche',
     reassure1: 'Sans installation',
     reassure2: 'Chacun enregistre quand il veut',
-    reassure3: 'Rien n’est publié',
+    reassure3: 'Rien n’est publié sans toi',
 
     valueTitle: 'Ce que ça donne',
     value1: {
@@ -92,8 +92,8 @@ export const fr = {
       body: 'Tes prises sont inaudibles des autres tant que le rendu n’a pas été produit. La découverte à la fin, tous ensemble, c’est tout le jeu.',
     },
     value3: {
-      title: 'Un MP4 qui se garde',
-      body: 'À la fin, un fichier qui se lit partout, sans sous-titres incrustés. La scène source, elle, est effacée.',
+      title: 'Une vidéo qui se garde',
+      body: 'À la fin, une vidéo avec vos voix, qui se lit partout et se partage en un geste. Pense à la télécharger dans l’heure.',
     },
 
     midCta: 'Choisis une scène, distribue les rôles, et vois ce que ça donne.',
@@ -104,7 +104,7 @@ export const fr = {
     packsCtaAction: 'Préparer une scène',
 
     faqTitle: 'Les questions qu’on nous pose',
-    seoTitle: 'Doubler une scène de film entre amis',
+    seoTitle: 'Le jeu de doublage de films entre amis',
     defineTitle: 'Qu’est-ce que le doublage d’une scène de film ?',
     defineBody:
       'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. Dub’Up est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
@@ -120,42 +120,50 @@ export const fr = {
         a: 'Oui. Dub’Up est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
       },
       {
+        q: 'C’est quoi, la communauté ?',
+        a: 'Le catalogue des scènes déjà préparées par d’autres joueurs : personnages, texte et découpage sont prêts. Tu apportes la vidéo, et le lobby s’ouvre en quelques minutes. Les vidéos et les voix ne sont jamais partagées.',
+      },
+      {
         q: 'Quelle différence avec un montage vidéo classique ?',
-        a: 'Un logiciel de montage vous donne une timeline vide et vous laisse caler vos prises à la main. Dub’Up part de la scène : il en sépare les voix, repère les répliques, les attribue aux personnages et recale automatiquement vos prises sur la voix d’origine.',
+        a: 'Un logiciel de montage te laisse une timeline vide. Dub’Up part de la scène : il sépare les voix de la musique, repère les répliques, les attribue aux personnages et cale tes prises tout seul.',
       },
       {
         q: 'Peut-on doubler une scène en anglais depuis le français ?',
-        a: 'Oui. La langue de l’interface et celle de la scène sont indépendantes. Le texte transcrit sert de guide de rythme, vous dites ce que vous voulez par-dessus.',
+        a: 'Oui. La langue de l’interface et celle de la scène sont indépendantes. Le texte transcrit sert de guide de rythme : tu dis ce que tu veux par-dessus.',
+      },
+      {
+        q: 'Et si on fait une pause ?',
+        a: 'Un salon ou un studio resté vingt minutes sans activité se ferme automatiquement, pour ne pas garder de scène oubliée. L’hôte peut rouvrir un salon ; pour un studio, il faut relancer une scène.',
       },
       {
         q: 'Comment les voix sont-elles séparées de la musique ?',
-        a: 'Par un modèle de séparation de sources qui tourne sur la machine de l’hôte et rend deux pistes : les voix d’un côté, la musique et l’ambiance de l’autre. Comme la séparation vient de la scène elle-même, elle reste calée à l’image.',
+        a: 'Automatiquement, dès l’import : la scène est coupée en deux, les voix d’un côté, la musique et les bruitages de l’autre. Seules les voix sont remplacées, tout le reste reste calé à l’image.',
       },
     ] as const,
     faq: [
       {
         q: 'Il me faut quoi, exactement ?',
-        a: 'Un casque avec un micro, et un navigateur. Le casque n’est pas un détail : sans lui, ton micro réenregistre la bande-son et le mixage devient inutilisable.',
+        a: 'Un casque avec un micro et un navigateur, sur ordinateur ou sur téléphone. Le casque compte : sans lui, ton micro réenregistre la musique de la scène.',
       },
       {
         q: 'On doit être tous là en même temps ?',
-        a: 'Non. Chacun enregistre ses répliques quand il veut. Le rendu se lance quand tout le monde a fini.',
+        a: 'Non. Une fois les rôles choisis, chacun enregistre ses répliques de son côté. L’hôte lance le montage quand tout le monde a fini.',
       },
       {
         q: 'Il faut savoir doubler ?',
-        a: 'Non. Le texte défile sous une tête de lecture, comme dans un vrai studio : tu lis, et tu tombes juste. Une prise ratée se refait à l’identique.',
+        a: 'Non. Le texte défile sous une tête de lecture, comme dans un vrai studio, et ta prise se cale toute seule sur la voix d’origine. Une prise ratée se refait autant de fois que tu veux.',
       },
       {
         q: 'Combien de temps ça prend ?',
-        a: 'Compte quelques minutes de préparation automatique après l’import, puis autant que de répliques à dire. Une scène de deux minutes se double en une demi-heure à trois.',
+        a: 'Deux à trois minutes de préparation après l’import, puis le temps de dire vos répliques. Une scène de deux minutes se double en une demi-heure à trois.',
       },
       {
-        q: 'Mes enregistrements sont conservés ?',
-        a: 'Non. Ils sont effacés en même temps que la vidéo source, dès que le rendu final est produit.',
+        q: 'Qu’est-ce qu’on garde à la fin ?',
+        a: 'Une vidéo avec vos voix, que tu peux télécharger et partager pendant une heure. Ensuite elle est supprimée, comme vos enregistrements et la vidéo d’origine : rien ne traîne sur nos serveurs.',
       },
       {
         q: 'Je peux inviter qui je veux ?',
-        a: 'Seules les adresses ajoutées à la liste des invités peuvent entrer. Tu ajoutes toi-même une adresse depuis ton compte.',
+        a: 'L’accès se fait sur invitation : seules les adresses de la liste des invités peuvent entrer. Pour jouer une scène, il suffit ensuite de partager son code ou son lien.',
       },
     ] as const,
     slides: {
@@ -259,7 +267,7 @@ export const fr = {
     remove: 'Retirer du catalogue',
     removeTitle: 'Retirer cette scène ?',
     removeBody:
-      'La vidéo, les pistes séparées et le découpage seront supprimés. Les scènes déjà lancées à partir d’elle cesseront de fonctionner. C’est irréversible.',
+      'La fiche et le découpage seront supprimés. Les scènes déjà lancées à partir d’elle cesseront de fonctionner. C’est irréversible.',
     publish: 'Publier dans la communauté',
     published: 'Cette scène est dans la communauté',
     seeInCommunity: 'Voir dans la communauté',
@@ -358,6 +366,9 @@ export const fr = {
     publishLater: 'Pas de partage pour cette scène. Tu peux changer d’avis à tout moment depuis cet écran.',
     linkPlaceholder: 'https://www.youtube.com/watch?v=…',
     editedByCreator: (date: string) => `Modifié par le créateur le ${date}`,
+    previewMoreTitle: 'Et plein d’autres scènes à doubler',
+    previewMoreBody: (n: number) => (n > 0 ? `Crée ton compte pour parcourir les ${n} scènes du catalogue, les jouer entre amis et publier les tiennes.` : 'Crée ton compte pour parcourir le catalogue, jouer les scènes entre amis et publier les tiennes.'),
+    previewCta: 'Voir plus de scènes',
   },
 
   terms: {
@@ -370,7 +381,7 @@ export const fr = {
     gateBody:
       'Avant de commencer, il faut accepter les conditions générales d’utilisation. Une case à cocher et c’est parti.',
     gateGist:
-      'L’essentiel : tu réponds toi-même des extraits que tu importes et de ce que tu en fais. Tout reste entre invités, rien n’est publié.',
+      'L’essentiel : tu réponds toi-même des extraits que tu importes et de ce que tu en fais. Rien n’est publié sans ton accord.',
     gateConfirm: 'Accepter et continuer',
   },
 
@@ -379,7 +390,7 @@ export const fr = {
     privacy: 'Confidentialité',
     terms: 'Conditions',
     usageNotice:
-      'Usage strictement privé, entre personnes invitées. Aucun contenu n’est diffusé publiquement ni indexé.',
+      'Les scènes et les voix restent entre invités : seules les fiches des packs partagés sont visibles par la communauté.',
     contact: 'Contact',
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookies',
@@ -388,15 +399,15 @@ export const fr = {
 
   status: {
     draft: 'Brouillon',
-    ingest_queued: 'En file',
+    ingest_queued: 'En attente',
     ingesting: 'Import en cours',
     ingest_failed: 'Import échoué',
     prepping: 'À préparer',
     lobby: 'Lobby ouvert',
     recording: 'Enregistrement',
-    render_queued: 'Rendu en file',
-    rendering: 'Rendu en cours',
-    render_failed: 'Rendu échoué',
+    render_queued: 'Montage en attente',
+    rendering: 'Montage en cours',
+    render_failed: 'Montage échoué',
     done: 'Terminée',
   },
 
@@ -492,12 +503,12 @@ export const fr = {
       'L’espace de stockage arrive à saturation. Supprime d’anciennes scènes pour faire de la place.',
     deleteConfirmTitle: 'Supprimer cette scène ?',
     deleteConfirmBody:
-      'Le rendu final, les prises et toutes les métadonnées seront effacés. C’est irréversible.',
+      'La vidéo finale, les prises et tout ce qui concerne la scène seront effacés. C’est irréversible.',
     joinByCode: 'Rejoindre avec un code',
     join: 'Rejoindre',
     storageTitle: 'Espace utilisé',
     storageHelp:
-      'La vidéo source et les pistes séparées sont effacées dès qu’un rendu est produit : seul le montage final occupe durablement de la place. Supprimer une scène libère la sienne.',
+      'La vidéo d’origine et les enregistrements sont effacés dès que la vidéo finale est prête : seule celle-ci occupe de la place, et une heure seulement.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Aucune scène ne correspond à ce code.',
     joining: 'Entrée dans la scène…',
@@ -544,7 +555,7 @@ export const fr = {
     subtitle: 'Deux façons de commencer : importer ta vidéo pour une scène toute neuve, ou reprendre une scène que le groupe a déjà préparée.',
     introUpload: 'Une scène neuve, préparée de zéro à partir de ta vidéo, d’où qu’elle vienne : un film, une série, un clip YouTube ou TikTok, un enregistrement d’écran…',
     introPack: 'Personnages et répliques sont déjà prêts : tu apportes la vidéo, et le lobby s’ouvre en deux minutes environ.',
-    introYoutube: 'Réservé aux administrateurs : la vidéo est téléchargée par le worker du PC de l’hôte, qui doit être lancé.',
+    introYoutube: 'Réservé aux administrateurs : la vidéo est récupérée par l’ordinateur de l’hôte, qui doit être allumé.',
     limits: 'Tous formats vidéo · 50 Mo et 10 minutes au plus',
     uploadStepsTitle: 'Comment ça se passe',
     uploadSteps: [
@@ -569,9 +580,9 @@ export const fr = {
     title: 'Préparation de la scène',
     subtitle: 'On découpe la scène. Ça prend quelques minutes.',
     queued:
-      'En attente du worker.',
+      'La préparation démarre dans un instant.',
     queuedHelp:
-      'La scène démarre dès que le worker tourne sur le PC de l’hôte : lance start.bat.',
+      'Ça démarre d’habitude en quelques secondes. Si l’attente dure, relance l’import ou préviens l’hôte.',
     failed: 'L’import a échoué.',
     retry: 'Relancer l’import',
     neverStarted:
@@ -621,7 +632,7 @@ export const fr = {
     openLobbyConfirm:
       'Une fois le lobby ouvert, les personnages et les répliques ne sont plus modifiables.',
     lockedAfterLobby: 'La préparation est verrouillée depuis l’ouverture du lobby.',
-    recalculating: 'Recalcul des clips…',
+    recalculating: 'Mise à jour des clips…',
     noSelection: 'Sélectionne des répliques pour les déplacer.',
     restoreLine: 'Rétablir la réplique',
     deletedBadge: 'Supprimée, VO conservée',
@@ -680,8 +691,8 @@ export const fr = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Seul l’hôte peut lancer la partie.',
     closedTitle: 'Salon fermé',
-    closedBody: 'Ce salon est resté ouvert plus d’une heure : il a été fermé automatiquement, et plus personne ne peut le rejoindre.',
-    closedHost: 'Tu peux le rouvrir pour une nouvelle heure, ou supprimer la scène depuis « Mes scènes ».',
+    closedBody: 'Ce salon est resté vingt minutes sans activité : il s’est fermé automatiquement, et plus personne ne peut le rejoindre.',
+    closedHost: 'Tu peux le rouvrir pour vingt nouvelles minutes, ou supprimer la scène depuis « Mes scènes ».',
     closedGuest: 'Seul l’hôte peut le rouvrir.',
     closedBack: 'Retour à mes scènes',
     reopen: 'Rouvrir le salon',
@@ -710,7 +721,7 @@ export const fr = {
     next: 'Suivant',
     backingVolume: 'Fond sonore',
     micOffset: 'Décalage micro',
-    micOffsetHelp: 'Le calage automatique place déjà ta prise. Si elle tombe encore trop tard, descends la valeur ; trop tôt, monte-la.',
+    micOffsetHelp: 'Ta prise est calée automatiquement sur la voix d’origine. Si elle tombe encore un peu tard, descends la valeur ; un peu tôt, monte-la. Tu peux aussi faire glisser ta piste sur la forme d’onde.',
     micDenied:
       'Le micro est refusé par le navigateur. Autorise-le puis recharge la page.',
     headphonesRequired:
@@ -725,17 +736,16 @@ export const fr = {
       'Aucun personnage ne t’a été attribué sur cette scène. Tu peux suivre les autres ici.',
     fxTitle: 'Console de voix',
     fxReset: 'Remettre à plat',
-    fxReverb: 'Réverbe',
-    fxPitch: 'Hauteur',
-    fxTune: 'Justesse',
-    fxHelp: 'Tout s’entend tout de suite dans « Ma prise », et ne touche que la prise affichée. Les effets sont posés au mixage, jamais sur l’enregistrement : tu peux les changer jusqu’au rendu.',
+    fxReverb: 'Reverb',
+    fxPitch: 'Pitch',
+    fxHelp: 'Tout s’entend tout de suite dans « Ma prise », exactement comme dans la vidéo finale. Les effets ne touchent jamais ton enregistrement : tu peux les changer jusqu’au montage.',
     fxPresets: {
       dry: 'Voix nue',
       room: 'Petite salle',
       cathedral: 'Cathédrale',
       cartoon: 'Dessin animé',
       deep: 'Voix grave',
-      cover: 'Reprise',
+      monster: 'Monstre',
     },
     emptyTake:
       'Rien n’a été enregistré. Vérifie que ton micro est bien branché et choisi, puis refais la prise.',
@@ -773,14 +783,6 @@ export const fr = {
     cueIdle: 'Prêt',
     originalTrace: 'Le tracé coloré montre quand la voix d’origine parle.',
     micWindow: 'Le micro ne s’ouvre que sur ta réplique.',
-    alignedBy: (ms: number) =>
-      ms === 0
-        ? 'Ta prise tombait déjà juste.'
-        : ms > 0
-          ? `Tu avais ${ms} ms de retard, c’est rattrapé.`
-          : `Tu avais ${-ms} ms d’avance, c’est rattrapé.`,
-    alignUnsure:
-      'Le calage n’a rien trouvé de net sur cette prise. Elle est posée telle quelle.',
     fxGain: 'Volume',
     fxGainApplyAll: 'Appliquer ce volume à toutes mes prises',
     fxGainAppliedAll: 'Volume appliqué à toutes tes prises',
@@ -805,6 +807,12 @@ export const fr = {
     devicesDuringTake: 'Les appareils se changent entre deux prises.',
     deviceMicN: (n: number) => `Micro ${n}`,
     deviceOutputN: (n: number) => `Sortie ${n}`,
+    fxKeep: 'Garder ces effets pour la prise suivante',
+    fxKeepHelp: 'Décochée, la réplique suivante repart sans effet.',
+    dragHint: 'Glisse ta piste pour la recaler',
+    expiredTitle: 'Session expirée',
+    expiredBody: 'Aucune prise n’a été enregistrée pendant vingt minutes : la session s’est fermée automatiquement. Tu peux en relancer une quand tu veux.',
+    expiredOk: 'J’ai compris',
   },
 
   progress: {
@@ -836,28 +844,24 @@ export const fr = {
   render: {
     title: 'Rendu en cours',
     queued:
-      'En attente du worker.',
+      'Le montage démarre dans un instant.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
     failed: 'Le montage n’a pas pu aller au bout.',
     retry: 'Relancer le rendu',
     failedTitle: 'Le rendu a échoué',
     failedHost: 'Tes prises sont intactes : relance le rendu. Si ça recommence, préviens l’administrateur avec le détail ci-dessous.',
     failedGuest: 'Vos prises sont intactes. L’hôte peut relancer le rendu.',
-    failedDetail: 'Détail technique',
+    failedDetail: 'Détail de l’erreur',
     backgroundNotice: 'Le montage continue sans toi : tu peux quitter cette page. Dans quelques minutes, la scène sera prête dans Mes scènes et sur Mon compte, pour tous ceux qui y ont joué.',
     ctaNewScene: 'Refaire une scène',
     ctaHome: 'Aller à l’accueil',
+    keepNotice: (minutes: number) => `Une fois prête, ta vidéo reste disponible ${minutes} minutes : pense à la télécharger avant qu’elle soit supprimée.`,
   },
 
   result: {
     title: 'Le résultat',
-    download: 'Télécharger le MP4',
+    download: 'Télécharger la vidéo',
     exportTitle: 'Emporter la scène',
-    formatWide: 'Format large',
-    formatWideHint: 'Pour un écran d’ordinateur ou une télévision.',
-    formatVertical: 'Format téléphone',
-    formatVerticalHint: 'Recadré au centre, pour les stories et les reels.',
-    formatVerticalMissing: 'La version téléphone n’est pas disponible pour cette scène.',
     share: 'Partager',
     shareHelp:
       'Sur téléphone, « Partager » ouvre la feuille du système : TikTok, Instagram et les autres applications installées y apparaissent.',
@@ -885,7 +889,7 @@ export const fr = {
     tooLarge: 'Fichier trop lourd : 50 Mo maximum. Réexporte la vidéo en 720p ou en 480p.',
     or: 'ou',
     autoTitle: 'Téléchargement automatique',
-    autoBody: 'Le PC de l’hôte récupère la vidéo depuis YouTube. Il faut que start.bat y tourne.',
+    autoBody: 'L’ordinateur de l’hôte récupère la vidéo depuis YouTube : il doit être allumé.',
     autoSubmit: 'Lancer le téléchargement',
     mediaBody: 'Cette scène est hébergée ici : elle démarre tout de suite.',
     introMember: 'Le catalogue ne garde que le découpage de cette scène : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
@@ -922,19 +926,19 @@ export const fr = {
     checklistTitle: 'Avant d’importer',
     checklist: [
       'Le même extrait que la scène du pack, sans coupe',
-      'N’importe quel format vidéo : MP4, MOV, MKV, WebM…',
+      'N’importe quel format vidéo',
       '50 Mo au plus : 720p ou 480p suffisent',
       '10 minutes au plus',
     ],
     whyTitle: 'Pourquoi cette étape ?',
     whyBody: 'Dub’Up n’héberge aucune œuvre : le catalogue garde le découpage, jamais la vidéo. Et la plupart des plateformes refusent les téléchargements venus de serveurs. Tu apportes donc le fichier, et tout le reste se fait en ligne.',
     wayFileTitle: 'Tu importes le fichier',
-    wayFileBody: 'Marche à toute heure, même si personne n’a lancé start.bat. La préparation se fait en ligne, en deux minutes environ.',
+    wayFileBody: 'Marche à toute heure, sans rien installer. La préparation se fait en ligne, en deux minutes environ.',
     faqTitle: 'Questions fréquentes',
     faq: [
       {
         q: 'Quels formats sont acceptés ?',
-        a: 'Tous les formats vidéo courants : MP4, MOV, MKV, AVI, WebM et bien d’autres. La vidéo est convertie automatiquement à l’import, tu n’as rien à faire.',
+        a: 'Tous les formats vidéo courants. La vidéo est convertie automatiquement à l’import, tu n’as rien à faire.',
       },
       {
         q: 'Quel outil utiliser pour récupérer une vidéo ?',
@@ -962,6 +966,7 @@ export const fr = {
     homeBannerBody: 'YouTube, TikTok, un film sur ton disque, un enregistrement d’écran : tout fichier vidéo s’importe, quel que soit son format. Le guide montre comment le récupérer et le préparer en cinq minutes.',
     homeBannerAction: 'Lire le guide d’import',
     midLink: 'Pas encore de vidéo sous la main ? Le guide explique comment en récupérer une.',
+    trajetFile: 'Tous formats · 50 Mo max',
   },
 
   guideHub: {
@@ -997,7 +1002,7 @@ export const fr = {
     tips: [
       {
         title: 'Un casque, toujours',
-        body: 'Sans casque, la musique repasse dans le micro et s’entend deux fois au rendu.',
+        body: 'Sans casque, la musique repasse dans le micro et s’entend deux fois dans la vidéo finale.',
       },
       {
         title: 'Écoute la VO d’abord',
@@ -1005,18 +1010,18 @@ export const fr = {
       },
       {
         title: 'Laisse faire le calage',
-        body: 'Ta prise est replacée automatiquement sur la voix d’origine.',
+        body: 'Ta prise se cale toute seule sur la voix d’origine ; fais-la glisser à la main si besoin.',
       },
       {
         title: 'Réécoute avec les effets',
-        body: '« Ma prise » rejoue la voix telle qu’elle sortira au rendu.',
+        body: '« Ma prise » rejoue la voix telle qu’elle sortira dans la vidéo.',
       },
       {
-        title: 'Une heure pour le lobby',
-        body: 'Un salon ouvert plus d’une heure se ferme ; l’hôte peut le rouvrir.',
+        title: 'Vingt minutes sans rien, ça ferme',
+        body: 'Un salon ou un studio sans activité pendant vingt minutes se ferme tout seul.',
       },
       {
-        title: 'Télécharge vite le rendu',
+        title: 'Télécharge vite ta vidéo',
         body: 'La vidéo finale est effacée une heure après le montage.',
       },
     ],
@@ -1026,7 +1031,7 @@ export const fr = {
 
   admin: {
     title: 'Administrateurs',
-    help: 'Un administrateur peut créer une scène depuis un lien YouTube : la vidéo est téléchargée par le worker de son PC. Les autres membres importent leurs vidéos, préparées en ligne.',
+    help: 'Un administrateur peut aussi créer une scène depuis un lien YouTube : la vidéo est alors récupérée par son ordinateur. Les autres membres importent leurs vidéos, préparées en ligne.',
     roleOwner: 'Propriétaire',
     roleAdmin: 'Admin',
     roleUser: 'Membre',
@@ -1060,7 +1065,7 @@ export const fr = {
         },
         {
           title: 'Règle la voix dans la console',
-          body: 'Volume, réverbe, hauteur, justesse : chaque réglage vaut pour la prise affichée et s’entend tout de suite. Le décalage micro corrige une prise qui tombe un peu tôt ou un peu tard.',
+          body: 'Volume, reverb, pitch : chaque réglage vaut pour la prise affichée et s’entend tout de suite. Coche « Garder ces effets » pour les reprendre sur la réplique suivante, et fais glisser ta piste si elle tombe un peu tôt ou un peu tard.',
         },
       ],
       checklistTitle: 'Avant de lancer le rendu',
@@ -1096,7 +1101,7 @@ export const fr = {
         },
         {
           title: 'Ouvre le lobby',
-          body: 'Partage le code ou le lien. Chacun prend un personnage ; ceux que personne ne prend gardent leur voix d’origine. Le salon se ferme tout seul après une heure.',
+          body: 'Partage le code ou le lien. Chacun prend un personnage ; ceux que personne ne prend gardent leur voix d’origine. Le salon se ferme tout seul après vingt minutes sans activité.',
         },
       ],
       checklistTitle: 'Une scène prête à jouer',
@@ -1255,5 +1260,18 @@ export const fr = {
     pageNotFoundTitle: 'Cette page n’existe pas',
     pageNotFoundBody: 'Le lien est peut-être incomplet, ou la page a été déplacée. Retrouve ton chemin depuis l’accueil.',
     backHome: 'Revenir à l’accueil',
+  },
+  notifications: {
+    title: 'Notifications',
+    empty: 'Rien de neuf pour l’instant.',
+    label: (n: number) => (n === 0 ? 'Notifications' : `Notifications, ${n} nouvelle${n > 1 ? 's' : ''}`),
+    renderStarted: (title: string) => `Le montage de « ${title} » a commencé.`,
+    renderDone: (title: string) => `« ${title} » est prête : regarde-la et télécharge-la.`,
+    renderExpiring: (title: string, minutes: number) => `« ${title} » sera supprimée dans ${minutes} min : pense à la télécharger.`,
+    renderDeleted: (title: string) => `La vidéo de « ${title} » a été supprimée.`,
+    packLike: (who: string, others: number, title: string) => (others === 0 ? `${who} a aimé « ${title} »` : `${who} et ${others} autre${others > 1 ? 's' : ''} ont aimé « ${title} »`),
+    packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} a commenté « ${title} »` : `${who} et ${others} autre${others > 1 ? 's' : ''} ont commenté « ${title} »`),
+    profileComment: (who: string, others: number) => (others === 0 ? `${who} a écrit sur ton profil` : `${who} et ${others} autre${others > 1 ? 's' : ''} ont écrit sur ton profil`),
+    reply: (who: string, others: number) => (others === 0 ? `${who} a répondu à ton commentaire` : `${who} et ${others} autre${others > 1 ? 's' : ''} ont répondu à ton commentaire`),
   },
 } as const;

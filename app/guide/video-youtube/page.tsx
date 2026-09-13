@@ -1,46 +1,45 @@
 import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  Clapperboard,
-  Download,
-  FileVideo,
-  Link2,
-  Timer,
-  Upload,
-} from 'lucide-react';
+import { ArrowRight, BookOpen, Check, Upload } from 'lucide-react';
 
 import { AccountMenu } from '@/components/account-menu';
 import { FaqList } from '@/components/faq-list';
 import { Footer } from '@/components/footer';
+import { GuideIcon, type GuideIconName } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
-import { getDictionary } from '@/lib/i18n-server';
+import { GuideStructuredData } from '@/components/guide-structured-data';
+import { currentLocale, getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 
 /** Le decalage d'une apparition, lu par la feuille de style. */
 const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 
-const ICONES_ETAPES = [Link2, Download, Timer, Upload] as const;
+const ICONES_ETAPES: GuideIconName[] = ['lien', 'telechargement', 'chrono', 'import'];
 
 /*
- * Une page d'aide, pas une page a trouver.
+ * Le guide d'import, ouvert aux moteurs.
  *
- * Elle explique comment recuperer une video YouTube : ce n'est pas ce
- * qu'on veut voir cite dans les resultats d'un moteur, et l'accueil reste
- * la seule porte d'entree publique. Ouverte sans compte, pour que le lien
- * de l'accueil ne mene pas a la connexion ; fermee aux robots.
+ * Il explique comment apporter sa video, quelle qu'en soit la source, sans
+ * rien heberger ni montrer d'une oeuvre : c'est une question qu'on tape
+ * avant de connaitre le produit, et la page qui y repond doit pouvoir etre
+ * trouvee.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getDictionary();
   return {
     title: t.guide.metaTitle,
     description: t.guide.heroBody,
-    robots: { index: false, follow: false },
+    robots: { index: true, follow: true },
+    alternates: { canonical: '/guide/video-youtube' },
+    openGraph: {
+      type: 'article',
+      title: t.guide.metaTitle,
+      description: t.guide.heroBody,
+      images: [{ url: '/illustrations/cinema/art-import.webp', width: 1000, height: 563 }],
+    },
   };
 }
 
@@ -54,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * rien ouvrir ; seules les reponses aux questions se deplient.
  */
 export default async function GuideVideoPage() {
-  const [user, t] = await Promise.all([currentUser(), getDictionary()]);
+  const [user, t, locale] = await Promise.all([currentUser(), getDictionary(), currentLocale()]);
   const g = t.guide;
 
   const boutonPlein =
@@ -64,10 +63,10 @@ export default async function GuideVideoPage() {
 
   // Le trajet d'une scene, en trois objets : une source, un fichier, un
   // lobby. La source peut etre n'importe laquelle, le format aussi.
-  const trajet = [
-    { Icone: Link2, titre: g.steps[0]?.title ?? '', detail: 'YouTube · TikTok · …' },
-    { Icone: FileVideo, titre: g.steps[1]?.title ?? '', detail: 'MP4 · MOV · MKV · < 50 MB' },
-    { Icone: Clapperboard, titre: g.steps[3]?.title ?? '', detail: t.status.lobby },
+  const trajet: { nom: GuideIconName; titre: string; detail: string }[] = [
+    { nom: 'lien', titre: g.steps[0]?.title ?? '', detail: 'YouTube · TikTok · …' },
+    { nom: 'fichier', titre: g.steps[1]?.title ?? '', detail: g.trajetFile },
+    { nom: 'clap', titre: g.steps[3]?.title ?? '', detail: t.status.lobby },
   ];
 
   return (
@@ -137,16 +136,16 @@ export default async function GuideVideoPage() {
                     className="absolute bottom-5 left-5 top-5 w-px -translate-x-1/2 bg-border-strong"
                     aria-hidden
                   />
-                  {trajet.map(({ Icone, titre, detail }, rang) => (
+                  {trajet.map(({ nom, titre, detail }, rang) => (
                     <li key={titre} className="relative flex items-center gap-4">
                       <span
                         className={
                           rang === trajet.length - 1
-                            ? 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink'
-                            : 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised text-text'
+                            ? 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-surface-raised'
+                            : 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised'
                         }
                       >
-                        <Icone className="h-4 w-4" aria-hidden />
+                        <GuideIcon nom={nom} className="h-7 w-7" />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-sm font-bold text-text">{titre}</span>
@@ -171,7 +170,7 @@ export default async function GuideVideoPage() {
               </h2>
               <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {g.steps.map((etape, rang) => {
-                  const Icone = ICONES_ETAPES[rang] ?? Check;
+                  const nom = ICONES_ETAPES[rang] ?? 'import';
                   return (
                     <li
                       key={etape.title}
@@ -182,13 +181,14 @@ export default async function GuideVideoPage() {
                     >
                       <span
                         aria-hidden
-                        className="pointer-events-none absolute -right-1 -top-5 select-none text-[6.5rem] font-black leading-none text-transparent opacity-50 [-webkit-text-stroke:1.5px_var(--color-border-strong)]"
+                        className="pointer-events-none absolute -right-1 -top-5 select-none text-[6.5rem] font-black leading-none text-text opacity-[0.06]"
                       >
                         {rang + 1}
                       </span>
-                      <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink">
-                        <Icone className="h-5 w-5" aria-hidden />
-                      </span>
+                      <GuideIcon
+                        nom={nom}
+                        className="relative h-14 w-14 drop-shadow-[0_10px_14px_rgb(0_0_0/0.55)]"
+                      />
                       <h3 className="relative text-base font-bold text-text">{etape.title}</h3>
                       <p className="relative text-sm leading-relaxed text-text-muted">
                         {etape.body}
@@ -295,6 +295,17 @@ export default async function GuideVideoPage() {
 
         <Footer />
       </div>
+
+      <GuideStructuredData
+        path="/guide/video-youtube"
+        name={g.metaTitle}
+        description={g.heroBody}
+        image="/illustrations/cinema/art-import.webp"
+        locale={locale}
+        hubName={t.guideHub.title}
+        steps={g.steps}
+        faq={g.faq}
+      />
     </div>
   );
 }

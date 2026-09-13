@@ -12,6 +12,7 @@ import { HeroRythmo } from '@/components/hero-rythmo';
 import { HomePacksCta } from '@/components/home-packs-cta';
 import { loadHomeDemo } from '@/lib/home-demo';
 import { ArtCharacters, ArtImport, ArtRender, ArtRythmo } from '@/components/home-art';
+import { SessionExpiredDialog } from '@/components/session-expired-dialog';
 import { SiteHeader } from '@/components/site-header';
 import { StructuredData } from '@/components/structured-data';
 import { TvSet } from '@/components/tv-set';
@@ -62,7 +63,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     // `absolute` : le gabarit ajoute « · Dub’Up » a tout titre de page,
     // et le nom du produit y figure deja.
-    title: { absolute: `${t.home.seoTitle} · ${APP_NAME}` },
+    // Le nom d'abord, puis ce que c'est : c'est ce qu'on lit dans l'onglet.
+    title: { absolute: `${APP_NAME} · ${t.home.seoTitle}` },
     description: t.home.heroBody,
     robots: {
       index: true,
@@ -85,20 +87,27 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: 'website',
       url: SITE_URL,
-      title: `${t.home.seoTitle} · ${APP_NAME}`,
+      title: `${APP_NAME} · ${t.home.seoTitle}`,
       description: t.home.heroBody,
       images: [{ url: '/illustrations/og-invitation.jpg', width: 1200, height: 630 }],
     },
   };
 }
 
-export default async function HomePage() {
-  const [user, t, locale, demo] = await Promise.all([
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ expiree?: string | string[] }>;
+}) {
+  const [user, t, locale, demo, params] = await Promise.all([
     currentUser(),
     getDictionary(),
     currentLocale(),
     loadHomeDemo(),
+    searchParams,
   ]);
+  // Arrivee depuis un studio ferme pour inactivite : on dit pourquoi.
+  const sessionExpiree = params.expiree === '1';
   /*
    * Ou mene le bouton plein.
    *
@@ -412,6 +421,7 @@ export default async function HomePage() {
       </div>
 
       <StructuredData t={t} locale={locale} />
+      {sessionExpiree ? <SessionExpiredDialog open /> : null}
     </div>
   );
 }

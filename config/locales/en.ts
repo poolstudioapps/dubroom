@@ -76,14 +76,14 @@ export const en = {
     heroTitle: 'Redub your favourite scenes',
     heroBody:
       'You pick a scene, each of you takes a character, and you record on your own time. The original music and atmosphere stay in place: only the voices change. You discover the result at the end, together.',
-    kicker: 'The dubbing studio for friends',
+    kicker: 'The dubbing game for friends',
     cta: 'Enter the studio',
     ctaSessions: 'See my scenes',
     ctaCommunity: 'Browse ready scenes',
     howTitle: 'How it works',
     reassure1: 'Nothing to install',
     reassure2: 'Record whenever you like',
-    reassure3: 'Nothing is published',
+    reassure3: 'Nothing is published without you',
 
     valueTitle: 'What you get',
     value1: {
@@ -95,8 +95,8 @@ export const en = {
       body: 'Your takes stay inaudible to everyone else until the final mix exists. Discovering it together at the end is the whole game.',
     },
     value3: {
-      title: 'An MP4 you keep',
-      body: 'At the end, a file that plays anywhere, with no burnt-in subtitles. The source scene itself is erased.',
+      title: 'A video you keep',
+      body: 'At the end, a video with your voices that plays anywhere and shares in one tap. Remember to download it within the hour.',
     },
 
     midCta: 'Pick a scene, hand out the roles, and see what comes out.',
@@ -107,7 +107,7 @@ export const en = {
     packsCtaAction: 'Prepare a scene',
 
     faqTitle: 'Questions we get',
-    seoTitle: 'Dub a film scene with friends',
+    seoTitle: 'The movie dubbing game to play with friends',
     defineTitle: 'What is dubbing a film scene?',
     defineBody:
       'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. Dub’Up is online dubbing software that does this work in the browser, with nothing to install.',
@@ -123,42 +123,50 @@ export const en = {
         a: 'Yes. Dub’Up is a personal project, with no ads, no subscription and no limit on scenes.',
       },
       {
-        q: 'How is this different from a normal video editor?',
-        a: 'A video editor hands you an empty timeline and leaves you to line up your takes by hand. Dub’Up starts from the scene: it separates the voices, finds the lines, assigns them to characters and automatically realigns your takes on the original voice.',
+        q: 'What is the community?',
+        a: 'The catalogue of scenes already prepared by other players: characters, text and timing are ready. You bring the video, and the lobby opens within minutes. Videos and voices are never shared.',
       },
       {
-        q: 'Can I dub an English scene from a French interface?',
-        a: 'Yes. The interface language and the scene language are independent. The transcribed text is a timing guide, you say whatever you like over it.',
+        q: 'How is it different from regular video editing?',
+        a: 'Editing software gives you an empty timeline. Dub’Up starts from the scene: it separates the voices from the music, finds the lines, assigns them to characters and lines up your takes by itself.',
+      },
+      {
+        q: 'Can we dub a scene in another language?',
+        a: 'Yes. The interface language and the scene language are independent. The transcribed text is a rhythm guide: say whatever you like over it.',
+      },
+      {
+        q: 'What if we take a break?',
+        a: 'A lobby or studio with no activity for twenty minutes closes by itself, so forgotten scenes don’t pile up. The host can reopen a lobby; for a studio, start a new scene.',
       },
       {
         q: 'How are voices separated from the music?',
-        a: 'By a source separation model running on the host machine, which returns two tracks: the voices on one side, the music and atmosphere on the other. Because the split comes from the scene itself, it stays locked to the picture.',
+        a: 'Automatically, as soon as you import: the scene is split in two, voices on one side, music and sound effects on the other. Only the voices are replaced, and everything else stays in sync with the picture.',
       },
     ] as const,
     faq: [
       {
-        q: 'What do I actually need?',
-        a: 'A headset with a microphone, and a browser. The headset is not a detail: without it your mic records the soundtrack again and the mix becomes unusable.',
+        q: 'What exactly do I need?',
+        a: 'A headset with a microphone and a browser, on a computer or a phone. The headset matters: without it, your mic records the scene’s music again.',
       },
       {
-        q: 'Do we all have to be there at once?',
-        a: 'No. Everyone records their lines whenever they want. The render starts once everyone is done.',
+        q: 'Do we all have to be there at the same time?',
+        a: 'No. Once the roles are picked, everyone records their lines on their own. The host starts the edit when everyone is done.',
       },
       {
         q: 'Do I need to know how to dub?',
-        a: 'No. The text scrolls under a playhead, the way it does in a real studio: you read, and you land on time. A bad take is redone exactly the same way.',
+        a: 'No. The text scrolls under a playhead, like in a real studio, and your take lines up with the original voice by itself. A missed take can be redone as many times as you like.',
       },
       {
         q: 'How long does it take?',
-        a: 'Count a few minutes of automatic preparation after the import, then as long as there are lines to say. A two-minute scene takes about half an hour with three people.',
+        a: 'Two to three minutes of preparation after the import, then the time it takes to say your lines. A two-minute scene is dubbed in about half an hour with three people.',
       },
       {
-        q: 'Are my recordings kept?',
-        a: 'No. They are erased along with the source video, as soon as the final mix exists.',
+        q: 'What do we keep at the end?',
+        a: 'A video with your voices, which you can download and share for one hour. After that it is deleted, like your recordings and the original video: nothing lingers on our servers.',
       },
       {
-        q: 'Can I invite anyone?',
-        a: 'Only addresses added to the guest list can get in. You add an address yourself from your account.',
+        q: 'Can I invite anyone I want?',
+        a: 'Access is by invitation: only addresses on the guest list can get in. To play a scene, you then just share its code or link.',
       },
     ] as const,
     slides: {
@@ -261,7 +269,7 @@ export const en = {
     remove: 'Remove from the catalogue',
     removeTitle: 'Remove this scene?',
     removeBody:
-      'The video, the separated tracks and the cut will be deleted. Scenes already started from it will stop working. There is no undo.',
+      'The listing and the timing will be deleted. Scenes already started from it will stop working. This cannot be undone.',
     publish: 'Publish to the community',
     published: 'This scene is in the community',
     seeInCommunity: 'See it in the community',
@@ -360,6 +368,9 @@ export const en = {
     publishLater: 'Not sharing this scene. You can change your mind at any time from this screen.',
     linkPlaceholder: 'https://www.youtube.com/watch?v=…',
     editedByCreator: (date: string) => `Edited by the creator on ${date}`,
+    previewMoreTitle: 'Plenty more scenes to dub',
+    previewMoreBody: (n: number) => (n > 0 ? `Create your account to browse all ${n} scenes in the catalogue, play them with friends and publish your own.` : 'Create your account to browse the catalogue, play scenes with friends and publish your own.'),
+    previewCta: 'See more scenes',
   },
 
   terms: {
@@ -372,7 +383,7 @@ export const en = {
     gateBody:
       'Before you start, you need to accept the terms of use. One checkbox and off you go.',
     gateGist:
-      'The short version: you answer for the clips you import and for what you do with them. Everything stays between invited people, nothing is published.',
+      'The gist: you are responsible for the clips you import and what you do with them. Nothing is published without your consent.',
     gateConfirm: 'Accept and continue',
   },
 
@@ -381,7 +392,7 @@ export const en = {
     privacy: 'Privacy',
     terms: 'Terms',
     usageNotice:
-      'Strictly private use, between invited people. No content is published or indexed.',
+      'Scenes and voices stay among guests: only the listings of shared packs are visible to the community.',
     contact: 'Contact',
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookies',
@@ -490,12 +501,12 @@ export const en = {
     storageWarning: 'Storage is running out. Delete old scenes to make room.',
     deleteConfirmTitle: 'Delete this scene?',
     deleteConfirmBody:
-      'The final mix, the takes and all the metadata will be erased. There is no undo.',
+      'The final video, the takes and everything about the scene will be erased. This cannot be undone.',
     joinByCode: 'Join with a code',
     join: 'Join',
     storageTitle: 'Storage used',
     storageHelp:
-      'The source video and the separated tracks are erased as soon as a render exists: only the final cut takes lasting room. Deleting a scene frees its own.',
+      'The original video and the recordings are erased as soon as the final video is ready: only that video takes up space, and for one hour only.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'No scene matches that code.',
     joining: 'Joining the scene…',
@@ -542,7 +553,7 @@ export const en = {
     subtitle: 'Two ways to start: import your video for a brand-new scene, or pick up a scene the group has already prepared.',
     introUpload: 'A brand-new scene, prepared from scratch from your video, wherever it comes from: a film, a series, a YouTube or TikTok clip, a screen recording…',
     introPack: 'Characters and lines are already set: you bring the video, and the lobby opens in about two minutes.',
-    introYoutube: 'Administrators only: the video is downloaded by the worker on the host’s PC, which must be running.',
+    introYoutube: 'Administrators only: the video is fetched by the host’s computer, which must be switched on.',
     limits: 'Any video format · 50 MB and 10 minutes at most',
     uploadStepsTitle: 'How it works',
     uploadSteps: [
@@ -567,9 +578,9 @@ export const en = {
     title: 'Preparing the scene',
     subtitle: 'The scene is being cut up. It takes a few minutes.',
     queued:
-      'Waiting for the worker.',
+      'Preparation starts in a moment.',
     queuedHelp:
-      'The scene starts as soon as the worker is running on the host’s PC: launch start.bat.',
+      'It usually starts within seconds. If the wait drags on, restart the import or let the host know.',
     failed: 'The import failed.',
     retry: 'Restart the import',
     neverStarted:
@@ -678,8 +689,8 @@ export const en = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Only the host can start the game.',
     closedTitle: 'Lobby closed',
-    closedBody: 'This lobby stayed open for more than an hour: it was closed automatically, and nobody can join it anymore.',
-    closedHost: 'You can reopen it for another hour, or delete the scene from “My scenes”.',
+    closedBody: 'This lobby had no activity for twenty minutes: it closed automatically, and nobody can join it anymore.',
+    closedHost: 'You can reopen it for another twenty minutes, or delete the scene from your scenes.',
     closedGuest: 'Only the host can reopen it.',
     closedBack: 'Back to my scenes',
     reopen: 'Reopen the lobby',
@@ -708,7 +719,7 @@ export const en = {
     next: 'Next',
     backingVolume: 'Background level',
     micOffset: 'Mic offset',
-    micOffsetHelp: 'Automatic alignment already places your take. If it still lands too late, lower the value; too early, raise it.',
+    micOffsetHelp: 'Your take is lined up automatically with the original voice. If it still lands a little late, lower the value; a little early, raise it. You can also drag your track on the waveform.',
     micDenied: 'The browser refused the microphone. Allow it, then reload the page.',
     headphonesRequired:
       'Headphones required. While recording you only hear the music, never the original voices.',
@@ -724,15 +735,14 @@ export const en = {
     fxReset: 'Flatten',
     fxReverb: 'Reverb',
     fxPitch: 'Pitch',
-    fxTune: 'Tuning',
-    fxHelp: 'Everything is heard right away in “My take”, and only affects the take shown. Effects are applied at the mix, never on the recording: you can change them until the render.',
+    fxHelp: 'Everything plays back instantly when you replay your take, exactly as in the final video. Effects never touch your recording: you can change them until the edit.',
     fxPresets: {
-      dry: 'Bare voice',
+      dry: 'Dry voice',
       room: 'Small room',
       cathedral: 'Cathedral',
       cartoon: 'Cartoon',
       deep: 'Deep voice',
-      cover: 'Cover',
+      monster: 'Monster',
     },
     emptyTake:
       'Nothing was recorded. Check that your microphone is plugged in and selected, then take it again.',
@@ -769,14 +779,6 @@ export const en = {
     cueIdle: 'Ready',
     originalTrace: 'The coloured trace shows when the original voice speaks.',
     micWindow: 'The mic only opens on your line.',
-    alignedBy: (ms: number) =>
-      ms === 0
-        ? 'Your take already landed on time.'
-        : ms > 0
-          ? `You were ${ms} ms late, that is fixed.`
-          : `You were ${-ms} ms early, that is fixed.`,
-    alignUnsure:
-      'Alignment found nothing clear on this take. It is placed as recorded.',
     fxGain: 'Volume',
     fxGainApplyAll: 'Apply this volume to all my takes',
     fxGainAppliedAll: 'Volume applied to all your takes',
@@ -801,6 +803,12 @@ export const en = {
     devicesDuringTake: 'Devices can be changed between takes.',
     deviceMicN: (n: number) => `Microphone ${n}`,
     deviceOutputN: (n: number) => `Output ${n}`,
+    fxKeep: 'Keep these effects for the next take',
+    fxKeepHelp: 'Unchecked, the next line starts with no effects.',
+    dragHint: 'Drag your track to realign it',
+    expiredTitle: 'Session expired',
+    expiredBody: 'No take was recorded for twenty minutes, so the session closed automatically. You can start a new one whenever you like.',
+    expiredOk: 'Got it',
   },
 
   progress: {
@@ -831,7 +839,7 @@ export const en = {
   render: {
     title: 'Rendering',
     queued:
-      'Waiting for the worker.',
+      'The edit starts in a moment.',
     frozen: 'The scene is frozen: takes can no longer be changed.',
     failed: 'The edit could not be completed.',
     retry: 'Restart the render',
@@ -842,17 +850,13 @@ export const en = {
     backgroundNotice: 'The edit keeps going without you: you can leave this page. In a few minutes the scene will be ready in My scenes and My account, for everyone who played in it.',
     ctaNewScene: 'Make another scene',
     ctaHome: 'Go to home',
+    keepNotice: (minutes: number) => `Once ready, your video stays available for ${minutes} minutes: remember to download it before it is deleted.`,
   },
 
   result: {
     title: 'The result',
-    download: 'Download the MP4',
+    download: 'Download the video',
     exportTitle: 'Take the scene with you',
-    formatWide: 'Wide format',
-    formatWideHint: 'For a computer screen or a television.',
-    formatVertical: 'Phone format',
-    formatVerticalHint: 'Cropped to the centre, for stories and reels.',
-    formatVerticalMissing: 'The phone version is not available for this scene.',
     share: 'Share',
     shareHelp:
       'On a phone, Share opens the system sheet: TikTok, Instagram and whatever else is installed show up there.',
@@ -880,7 +884,7 @@ export const en = {
     tooLarge: 'File too large: 50 MB max. Export the video again in 720p or 480p.',
     or: 'or',
     autoTitle: 'Automatic download',
-    autoBody: 'The host’s PC fetches the video from YouTube. start.bat has to be running on it.',
+    autoBody: 'The host’s computer fetches the video from YouTube: it must be switched on.',
     autoSubmit: 'Start the download',
     mediaBody: 'This scene is hosted here: it starts right away.',
     introMember: 'The catalogue only keeps this scene’s preparation: bring its video, and everything is prepared online with the pack’s text and characters.',
@@ -917,19 +921,19 @@ export const en = {
     checklistTitle: 'Before importing',
     checklist: [
       'The same clip as the pack’s scene, uncut',
-      'Any video format: MP4, MOV, MKV, WebM…',
+      'Any video format',
       '50 MB at most: 720p or 480p is enough',
       '10 minutes at most',
     ],
     whyTitle: 'Why this step?',
     whyBody: 'Dub’Up hosts no works: the catalogue keeps the preparation, never the video. And most platforms refuse downloads coming from servers. So you bring the file, and everything else happens online.',
     wayFileTitle: 'You import the file',
-    wayFileBody: 'Works at any time, even if nobody started start.bat. Preparation runs online, in about two minutes.',
+    wayFileBody: 'Works at any time, with nothing to install. Preparation runs online, in about two minutes.',
     faqTitle: 'Frequently asked questions',
     faq: [
       {
         q: 'Which formats are accepted?',
-        a: 'All common video formats: MP4, MOV, MKV, AVI, WebM and many more. The video is converted automatically on import, there is nothing to do.',
+        a: 'All common video formats. The video is converted automatically on import, there is nothing to do.',
       },
       {
         q: 'Which tool should I use to get a video?',
@@ -957,6 +961,7 @@ export const en = {
     homeBannerBody: 'YouTube, TikTok, a film on your drive, a screen recording: any video file can be imported, whatever its format. The guide shows how to get it and prepare it in five minutes.',
     homeBannerAction: 'Read the import guide',
     midLink: 'No video at hand yet? The guide explains how to get one.',
+    trajetFile: 'Any format · 50 MB max',
   },
 
   guideHub: {
@@ -991,28 +996,28 @@ export const en = {
     tipsTitle: 'The habits that change everything',
     tips: [
       {
-        title: 'Always wear headphones',
-        body: 'Without them, the music goes back into the mic and is heard twice in the render.',
+        title: 'Headphones, always',
+        body: 'Without headphones, the music goes back into the mic and is heard twice in the final video.',
       },
       {
         title: 'Listen to the original first',
-        body: 'The rhythm of the original line is your best cue.',
+        body: 'The rhythm of the original line is your best guide.',
       },
       {
-        title: 'Let the alignment work',
-        body: 'Your take is automatically placed back on the original voice.',
+        title: 'Let the auto-sync work',
+        body: 'Your take snaps to the original voice by itself; drag it by hand if needed.',
       },
       {
-        title: 'Replay with the effects',
-        body: '“My take” plays the voice exactly as it will sound in the render.',
+        title: 'Replay with effects',
+        body: 'Your take plays back exactly as it will sound in the video.',
       },
       {
-        title: 'One hour for the lobby',
-        body: 'A lobby open for more than an hour closes; the host can reopen it.',
+        title: 'Twenty idle minutes close it',
+        body: 'A lobby or studio with no activity for twenty minutes closes by itself.',
       },
       {
-        title: 'Download the render quickly',
-        body: 'The final video is erased one hour after the edit.',
+        title: 'Download your video quickly',
+        body: 'The final video is deleted one hour after the edit.',
       },
     ],
     finalTitle: 'Ready for your first scene?',
@@ -1021,7 +1026,7 @@ export const en = {
 
   admin: {
     title: 'Administrators',
-    help: 'An administrator can create a scene from a YouTube link: the video is downloaded by the worker on their PC. Other members import their videos, prepared online.',
+    help: 'An administrator can also create a scene from a YouTube link: the video is then fetched by their computer. Other members import their own videos, prepared online.',
     roleOwner: 'Owner',
     roleAdmin: 'Admin',
     roleUser: 'Member',
@@ -1055,7 +1060,7 @@ export const en = {
         },
         {
           title: 'Shape the voice in the console',
-          body: 'Volume, reverb, pitch, tuning: each setting applies to the take shown and is heard right away. Mic offset fixes a take that lands slightly early or late.',
+          body: 'Volume, reverb, pitch: each setting applies to the take on screen and plays back right away. Tick “Keep these effects” to carry them to the next line, and drag your track if it lands a little early or late.',
         },
       ],
       checklistTitle: 'Before starting the render',
@@ -1091,7 +1096,7 @@ export const en = {
         },
         {
           title: 'Open the lobby',
-          body: 'Share the code or the link. Everyone picks a character; the ones nobody takes keep their original voice. The lobby closes on its own after an hour.',
+          body: 'Share the code or the link. Everyone picks a character; the ones nobody takes keep their original voice. The lobby closes by itself after twenty minutes without activity.',
         },
       ],
       checklistTitle: 'A scene ready to play',
@@ -1250,5 +1255,18 @@ export const en = {
     pageNotFoundTitle: 'This page doesn’t exist',
     pageNotFoundBody: 'The link may be incomplete, or the page has moved. Find your way from the home page.',
     backHome: 'Back to home',
+  },
+  notifications: {
+    title: 'Notifications',
+    empty: 'Nothing new for now.',
+    label: (n: number) => (n === 0 ? 'Notifications' : `Notifications, ${n} new`),
+    renderStarted: (title: string) => `The edit of “${title}” has started.`,
+    renderDone: (title: string) => `“${title}” is ready: watch it and download it.`,
+    renderExpiring: (title: string, minutes: number) => `“${title}” will be deleted in ${minutes} min: remember to download it.`,
+    renderDeleted: (title: string) => `The video of “${title}” has been deleted.`,
+    packLike: (who: string, others: number, title: string) => (others === 0 ? `${who} liked “${title}”` : `${who} and ${others} other${others > 1 ? 's' : ''} liked “${title}”`),
+    packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} commented on “${title}”` : `${who} and ${others} other${others > 1 ? 's' : ''} commented on “${title}”`),
+    profileComment: (who: string, others: number) => (others === 0 ? `${who} wrote on your profile` : `${who} and ${others} other${others > 1 ? 's' : ''} wrote on your profile`),
+    reply: (who: string, others: number) => (others === 0 ? `${who} replied to your comment` : `${who} and ${others} other${others > 1 ? 's' : ''} replied to your comment`),
   },
 } satisfies Dictionary;

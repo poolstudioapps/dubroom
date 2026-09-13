@@ -234,3 +234,15 @@ export const RENDER_STEPS = ['fetch', 'mix', 'mux', 'upload', 'purge'] as const;
 
 export type IngestStep = (typeof INGEST_STEPS)[number];
 export type RenderStep = (typeof RENDER_STEPS)[number];
+
+/**
+ * Confiance minimale pour appliquer le calage mesure sur une prise.
+ *
+ * Le calage s'applique d'office : sous ce seuil, la mesure ne vaut pas
+ * mieux qu'un tirage, et c'est le retard habituel du joueur, releve sur ses
+ * prises nettes, qui la remplace.
+ */
+export const ALIGN_APPLY_MIN_CONFIDENCE = 0.2;
+
+/** Combien de minutes une video terminee reste telechargeable. */
+export const RENDER_KEEP_MINUTES = 60;

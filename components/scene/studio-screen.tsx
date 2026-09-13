@@ -16,6 +16,7 @@ import { WaveformView } from '@/components/scene/waveform-view';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
 import {
+  ALIGN_APPLY_MIN_CONFIDENCE,
   ALIGN_HISTORY,
   AUDIO_SYNC_TOLERANCE_MS,
   BUCKET_TAKES,
@@ -34,15 +35,7 @@ import { MicRecorder } from '@/lib/audio/recorder';
 import { seekAll, unlockMedia } from '@/lib/audio/media';
 import { alignTake, envelopeFromBlob, type Alignment } from '@/lib/audio/align';
 import { decodeEnvelope } from '@/lib/audio/envelope';
-import {
-  ECOUTE_HZ,
-  analyserHauteur,
-  cleReglages,
-  decoderPrise,
-  demandeAnalyse,
-  rendreVoix,
-  type AnalyseHauteur,
-} from '@/lib/audio/voice-fx';
+import { ECOUTE_HZ, cleReglages, decoderPrise, rendreVoix } from '@/lib/audio/voice-fx';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
 import { useMediaUrls, useTakes } from '@/lib/data';
 import { recallPreference, rememberPreference } from '@/lib/consent';
@@ -58,12 +51,20 @@ type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
 /** La case « partout » du decalage, retenue d'une scene a l'autre. */
 const OFFSET_PARTOUT_KEY = 'dubup.micOffsetEverywhere' as const;
+/** La case « garder ces effets pour la prise suivante ». */
+const GARDER_EFFETS_KEY = 'dubup.keepFx' as const;
+
+function mediane(valeurs: number[]): number {
+  const triees = [...valeurs].sort((a, b) => a - b);
+  const milieu = Math.floor(triees.length / 2);
+  return triees.length % 2 ? triees[milieu]! : (triees[milieu - 1]! + triees[milieu]!) / 2;
+}
 
 function reglagesDe(take: TakeRow): TakeSettings {
   return {
     reverb: take.fx_reverb ?? 0,
     pitch: take.fx_pitch ?? 0,
-    tune: take.fx_tune ?? 0,
+    tune: 0,
     gainDb: Number(take.gain_db ?? 0),
     micOffsetMs: take.mic_offset_ms ?? 0,
   };
@@ -114,9 +115,10 @@ export function StudioScreen() {
   const [error, setError] = useState<string | null>(null);
   const [micReady, setMicReady] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
-  /** Calage de la derniere prise, et memoire des precedentes. */
-  const [alignment, setAlignment] = useState<Alignment | null>(null);
+  /** Les retards mesures sur les dernieres prises nettes de ce joueur. */
   const lagHistory = useRef<number[]>([]);
+  /** Ou tombe le debut de la prise affichee dans la fenetre, calage compris. */
+  const [placement, setPlacement] = useState<number | null>(null);
   /**
    * Instant de la scene ou le micro s'est reellement ouvert.
    *
@@ -143,14 +145,15 @@ export function StudioScreen() {
   const [consoleErreur, setConsoleErreur] = useState<string | null>(null);
   const [gainPartout, setGainPartout] = useState<'idle' | 'pending' | 'done'>('idle');
   const [calcul, setCalcul] = useState(false);
+  /** Les effets passent a la replique suivante. */
+  const [garderEffets, setGarderEffets] = useState(false);
+  const garderEffetsRef = useRef(false);
+  garderEffetsRef.current = garderEffets;
 
   // ── L'ecoute de la prise, avec ses effets ──────────────────────────
   const audioCtx = useRef<AudioContext | null>(null);
   const voix = useRef<AudioBufferSourceNode | null>(null);
   const brut = useRef<PriseDecodee | null>(null);
-  const hauteur = useRef<{ source: Promise<Float32Array>; promesse: Promise<AnalyseHauteur> } | null>(
-    null,
-  );
   const rendu = useRef<{ source: Promise<Float32Array>; cle: string; buffer: AudioBuffer } | null>(
     null,
   );
@@ -188,6 +191,7 @@ export function StudioScreen() {
   // Une preference : relue seulement si on a accepte d'en garder.
   useEffect(() => {
     setOffsetPartout(recallPreference(OFFSET_PARTOUT_KEY) === '1');
+    setGarderEffets(recallPreference(GARDER_EFFETS_KEY) === '1');
   }, []);
 
   const poser = useCallback((suivants: TakeSettings) => {
@@ -204,8 +208,10 @@ export function StudioScreen() {
    * un objet neuf ramenait le curseur sous le doigt a sa valeur d'avant.
    *
    * Sans prise, les effets repartent de zero : une replique neuve ne
-   * reprend pas la cathedrale de la precedente. Le volume et le decalage
-   * repartent du reglage « partout » du joueur.
+   * reprend pas la cathedrale de la precedente — sauf si la case « garder
+   * ces effets » est cochee, et alors elle reprend exactement ceux qu'on
+   * vient d'entendre. Le volume et le decalage repartent du reglage
+   * « partout » du joueur.
    */
   const takeId = currentTake?.id ?? null;
   const serveur = currentTake
@@ -215,10 +221,18 @@ export function StudioScreen() {
   const defautOffset = me?.mic_offset_ms ?? 0;
 
   useEffect(() => {
+    const precedents = reglagesRef.current;
+    const garder = garderEffetsRef.current;
     poser(
       currentTake
         ? reglagesDe(currentTake)
-        : { reverb: 0, pitch: 0, tune: 0, gainDb: defautGain, micOffsetMs: defautOffset },
+        : {
+            reverb: garder ? precedents.reverb : 0,
+            pitch: garder ? precedents.pitch : 0,
+            tune: 0,
+            gainDb: defautGain,
+            micOffsetMs: defautOffset,
+          },
     );
     setConsoleErreur(null);
     setGainPartout('idle');
@@ -347,6 +361,7 @@ export function StudioScreen() {
     stopAll();
     setAnalysis(null);
     setHasTakeAudio(false);
+    setPlacement(null);
   }, [index, stopAll]);
 
   // Charge la prise retenue du clip courant pour l'afficher et la
@@ -358,12 +373,14 @@ export function StudioScreen() {
 
     if (brut.current?.cle === cle) {
       setHasTakeAudio(true);
+      setPlacement(brut.current.offsetMs);
       return;
     }
     const locale = priseLocale.current;
     if (locale && locale.takeId === cle) {
       brut.current = { cle, promesse: decoderPrise(locale.blob), offsetMs: currentTake.offset_ms };
       setHasTakeAudio(true);
+      setPlacement(currentTake.offset_ms);
       return;
     }
 
@@ -380,6 +397,7 @@ export function StudioScreen() {
         promesse.catch(() => undefined);
         brut.current = { cle, promesse, offsetMs: currentTake.offset_ms };
         setHasTakeAudio(true);
+        setPlacement(currentTake.offset_ms);
         const result = await analyzeTake(blob);
         if (!cancelled) setAnalysis(result);
       } catch {
@@ -454,7 +472,7 @@ export function StudioScreen() {
 
     setAnalysis(null);
     setHasTakeAudio(false);
-    setAlignment(null);
+    setPlacement(null);
     recStartedAtMs.current = null;
     setMode('recording');
 
@@ -510,11 +528,7 @@ export function StudioScreen() {
        */
       const voulu = reglagesRef.current;
       try {
-        if (
-          take.fx_reverb !== voulu.reverb ||
-          take.fx_pitch !== voulu.pitch ||
-          take.fx_tune !== voulu.tune
-        ) {
+        if (take.fx_reverb !== voulu.reverb || take.fx_pitch !== voulu.pitch) {
           await setTakeFx(take.id, voulu);
         }
         if (Number(take.gain_db) !== voulu.gainDb || take.mic_offset_ms !== voulu.micOffsetMs) {
@@ -582,21 +596,38 @@ export function StudioScreen() {
     let offsetMs = placedAtMs - clip.window_start_ms;
 
     const measured = await measureLag(blob, placedAtMs);
-    setAlignment(measured);
 
-    // Le calage automatique est toujours actif : il traite le retard
-    // mieux qu'aucun reglage manuel, et le decalage de la console
-    // corrige ce qui reste.
-    if (measured?.reliable) {
-      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(-ALIGN_HISTORY);
-      offsetMs -= measured.lagMs;
+    /*
+     * Le calage s'applique d'office, sans rien afficher.
+     *
+     * Il n'etait applique que sur un pic de correlation tres net, ce qui
+     * arrive rarement quand deux voix differentes lisent le meme texte :
+     * la plupart des prises restaient posees telles quelles. Il vaut
+     * maintenant des qu'il se detache un peu du bruit, et quand il ne se
+     * detache pas du tout, c'est le retard habituel du joueur, releve sur
+     * ses prises nettes, qui le remplace.
+     *
+     * Une prise calee n'a plus besoin du retard de base : il estime la
+     * latence de capture, et la mesure vient de la trouver pour de vrai.
+     * L'ajouter encore la faisait tomber quarante millisecondes trop tard.
+     */
+    let retard: number | null = null;
+    if (measured && measured.confidence >= ALIGN_APPLY_MIN_CONFIDENCE) {
+      retard = measured.lagMs;
+      if (measured.reliable) {
+        lagHistory.current = [...lagHistory.current, measured.lagMs].slice(-ALIGN_HISTORY);
+      }
+    } else if (lagHistory.current.length > 0) {
+      retard = mediane(lagHistory.current);
     }
+    if (retard !== null) offsetMs -= Math.round(retard) + MIC_OFFSET_BASELINE_MS;
 
     priseLocale.current = { takeId: null, blob };
     const promesse = decoderPrise(blob);
     promesse.catch(() => undefined);
     brut.current = { cle: 'locale', promesse, offsetMs };
     setHasTakeAudio(true);
+    setPlacement(offsetMs);
 
     const completes =
       !allDone && myClips.every((c) => c.id === clip.id || selectedTakes.has(c.id));
@@ -630,11 +661,10 @@ export function StudioScreen() {
   }
 
   /**
-   * La prise telle que le mixage la posera : effets, volume, reverbe.
+   * La prise telle que le mixage la posera : volume, pitch, reverb.
    *
    * Le resultat est garde pour les memes reglages : relire sa prise dix
-   * fois ne recalcule rien. L'analyse de hauteur, la seule partie lente,
-   * est gardee pour la prise entiere.
+   * fois ne recalcule rien.
    */
   async function voixPreparee(s: TakeSettings): Promise<AudioBuffer | null> {
     const prise = brut.current;
@@ -645,22 +675,18 @@ export function StudioScreen() {
     }
 
     const samples = await prise.promesse;
-    let analyse: AnalyseHauteur | null = null;
-    if (demandeAnalyse(s)) {
-      if (hauteur.current?.source !== prise.promesse) {
-        hauteur.current = { source: prise.promesse, promesse: analyserHauteur(samples) };
-      }
-      setCalcul(true);
-      try {
-        analyse = await hauteur.current.promesse;
-      } finally {
-        setCalcul(false);
-      }
-    }
-    // La prise a change pendant le calcul : ce tampon ne sert plus.
+    // La prise a change pendant le decodage : ce tampon ne sert plus.
     if (brut.current?.promesse !== prise.promesse) return null;
 
-    const sortie = rendreVoix(samples, analyse, s);
+    let sortie: Float32Array;
+    setCalcul(true);
+    try {
+      // Laisser l'indicateur s'afficher avant quelques dizaines de ms de calcul.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      sortie = rendreVoix(samples, s);
+    } finally {
+      setCalcul(false);
+    }
     const buffer = contexte().createBuffer(1, Math.max(1, sortie.length), ECOUTE_HZ);
     buffer.getChannelData(0).set(sortie);
     rendu.current = { source: prise.promesse, cle, buffer };
@@ -766,7 +792,7 @@ export function StudioScreen() {
     poser(suivants);
     setConsoleErreur(null);
 
-    const effets = 'reverb' in partiel || 'pitch' in partiel || 'tune' in partiel;
+    const effets = 'reverb' in partiel || 'pitch' in partiel;
     const gain = 'gainDb' in partiel;
     const decalage = 'micOffsetMs' in partiel;
 
@@ -794,6 +820,11 @@ export function StudioScreen() {
     } catch (e) {
       setConsoleErreur(humanizeError(e));
     }
+  }
+
+  function choisirGarderEffets(next: boolean) {
+    setGarderEffets(next);
+    rememberPreference(GARDER_EFFETS_KEY, next ? '1' : '0');
   }
 
   function choisirOffsetPartout(next: boolean) {
@@ -973,6 +1004,10 @@ export function StudioScreen() {
       onOffsetEverywhere={choisirOffsetPartout}
       onGainEverywhere={() => void appliquerGainPartout()}
       gainEverywhere={gainPartout}
+      keepFx={garderEffets}
+      onKeepFx={choisirGarderEffets}
+      backing={backing}
+      onBacking={setBacking}
     />
   );
 
@@ -1104,7 +1139,7 @@ export function StudioScreen() {
           La courbe de la prise, en dernier sur telephone : elle sert a
           verifier apres coup, pas a jouer.
         */}
-        <div className="order-7 shrink-0 space-y-2 lg:order-5">
+        <div className="order-7 shrink-0 lg:order-5">
           <WaveformView
             analysis={analysis}
             clip={clip}
@@ -1113,25 +1148,18 @@ export function StudioScreen() {
             voicePeaksHz={session.voice_peaks_hz}
             characterColor={character.color}
             height={narrow ? 52 : compact ? 68 : 96}
+            // La prise dessinee la ou le mixage la posera : retard de base
+            // compris, decalage micro ajoute par la bande elle-meme.
+            takeStartMs={placement === null ? null : placement + MIC_OFFSET_BASELINE_MS}
+            offsetMs={reglages.micOffsetMs}
+            draggable={!recording && hasTakeAudio}
+            onOffsetInput={(v) => {
+              const suivants = { ...reglagesRef.current, micOffsetMs: v };
+              reglagesRef.current = suivants;
+              setReglages(suivants);
+            }}
+            onOffsetCommit={(v) => void appliquer({ micOffsetMs: v })}
           />
-
-          {/*
-            Le calage de la derniere prise, sur une ligne qui ne se
-            replie jamais : `flex-wrap` la faisait passer sur deux lignes
-            des que le texte arrivait, et l'image perdait cinq pixels a
-            chaque enregistrement.
-          */}
-          <p className="flex h-5 items-center gap-x-3 overflow-hidden text-xs text-text-faint">
-            {alignment ? (
-              <span
-                className={cn('truncate', alignment.reliable && 'font-bold text-ok')}
-              >
-                {alignment.reliable
-                  ? t.studio.alignedBy(alignment.lagMs)
-                  : t.studio.alignUnsure}
-              </span>
-            ) : null}
-          </p>
         </div>
 
         {/*

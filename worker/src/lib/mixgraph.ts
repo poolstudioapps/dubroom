@@ -19,13 +19,6 @@
 /** Fondu applique aux bords d'un segment de VO reinjecte, en secondes. */
 const VO_FADE_S = 0.05;
 
-/** Les trois reflexions de la reverberation, a pleine intensite. */
-const REVERB_ECHOS = [
-  { ms: 47, decroissance: 0.5 },
-  { ms: 71, decroissance: 0.32 },
-  { ms: 103, decroissance: 0.2 },
-] as const;
-
 export interface TakePlacement {
   /** Index de l'entree ffmpeg correspondante. */
   inputIndex: number;
@@ -42,10 +35,6 @@ export interface TakePlacement {
    * scene. Zero laisse la prise telle quelle.
    */
   gainDb?: number;
-  /** Reverberation, 0 a 100. */
-  reverb?: number;
-  /** Transposition en demi-tons, -12 a +12. */
-  pitch?: number;
 }
 
 export interface VoSegment {
@@ -87,7 +76,7 @@ export function placeTake(
   takeOffsetMs: number,
   micOffsetMs: number,
   inputIndex: number,
-  effets: { gainDb?: number; reverb?: number; pitch?: number } = {},
+  effets: { gainDb?: number } = {},
 ): TakePlacement {
   const total = windowStartMs + takeOffsetMs + micOffsetMs;
   return {
@@ -99,56 +88,17 @@ export function placeTake(
 }
 
 /**
- * La chaine d'effets d'une prise, dans l'ordre ou l'on branche.
+ * Le niveau d'une prise.
  *
- * L'ordre n'est pas decoratif. La hauteur passe en premier parce qu'elle
- * travaille sur la voix seule ; le niveau ensuite, pour que la mesure
- * faite sur la prise brute reste valable ; la reverberation en dernier,
- * parce qu'une salle s'ajoute autour d'une voix deja reglee, jamais
- * avant.
+ * Le pitch et la reverb ne passent plus par ici : ils sont calcules avant
+ * le mixage, sur la prise decodee, avec le meme code que l'ecoute du studio
+ * (`lib/audio/voice-dsp.ts`). Le graphe ne pose plus que le volume.
  */
 function chaineEffets(take: TakePlacement): string {
-  const etapes: string[] = [];
-
-  if (take.pitch && take.pitch !== 0) {
-    // `rubberband` attend un rapport de frequences, pas des demi-tons.
-    const ratio = Math.pow(2, take.pitch / 12);
-    etapes.push(`rubberband=pitch=${ratio.toFixed(5)}`);
-  }
-
   if (take.gainDb && Math.abs(take.gainDb) >= 0.5) {
-    etapes.push(`volume=${take.gainDb.toFixed(1)}dB`);
+    return `volume=${take.gainDb.toFixed(1)}dB,`;
   }
-
-  if (take.reverb && take.reverb > 0) {
-    /*
-     * Une reverberation en trois reflexions.
-     *
-     * ffmpeg n'a pas de reverbe a convolution utilisable sans fichier
-     * d'empreinte ; trois echos rapproches et decroissants en donnent
-     * l'essentiel — la queue et la sensation de volume — pour rien. Le
-     * curseur pilote la part de son reflechi, de la voix seche a la
-     * grande salle.
-     *
-     * La voix directe passe a plein niveau. `aecho` multiplie TOUT le
-     * signal par son gain de sortie, voix comprise : l'ancien reglage
-     * (0,25 a 0,7) faisait perdre jusqu'a douze decibels a une prise des
-     * qu'on touchait au curseur. Le gain de sortie ne compense plus que
-     * l'energie ajoutee par les echos.
-     *
-     * Le studio rejoue exactement cette chaine a l'ecoute
-     * (`lib/audio/voice-fx.ts`) : garder les deux en accord.
-     */
-    const part = Math.min(1, take.reverb / 100);
-    const echos = REVERB_ECHOS.map((e) => e.decroissance * part);
-    const sortie = 1 / Math.sqrt(1 + echos.reduce((s, d) => s + d * d, 0));
-    etapes.push(
-      `aecho=1:${sortie.toFixed(3)}:${REVERB_ECHOS.map((e) => e.ms).join('|')}:` +
-        echos.map((d) => d.toFixed(3)).join('|'),
-    );
-  }
-
-  return etapes.length > 0 ? `${etapes.join(',')},` : '';
+  return '';
 }
 
 export function buildMixGraph(input: MixGraphInput): string {

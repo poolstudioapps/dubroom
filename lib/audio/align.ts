@@ -69,7 +69,7 @@ export async function envelopeFromBlob(
       const value = samples[j] ?? 0;
       sum += value * value;
     }
-    out[i] = Math.sqrt(sum / step);
+    out[i] = compresser(Math.sqrt(sum / step));
   }
   return out;
 }
@@ -91,9 +91,22 @@ function resampleOriginal(
   for (let i = 0; i < count; i += 1) {
     const tMs = fromMs + (i * 1000) / hz;
     const index = Math.round((tMs / 1000) * sourceHz);
-    out[i] = index >= 0 && index < envelope.length ? (envelope[index] ?? 0) / 255 : 0;
+    out[i] = index >= 0 && index < envelope.length ? compresser((envelope[index] ?? 0) / 255) : 0;
   }
   return out;
+}
+
+/**
+ * Tasse les crêtes avant de comparer.
+ *
+ * En lineaire, un seul cri pesait plus que toutes les syllabes d'une
+ * replique : la correlation se calait sur lui, et il suffisait que le
+ * joueur crie un peu plus tot que l'acteur pour que toute la prise glisse.
+ * La racine rapproche les attaques faibles des fortes, et c'est le rythme
+ * entier qui decide.
+ */
+function compresser(value: number): number {
+  return Math.sqrt(Math.max(0, value));
 }
 
 /** Centre et normalise : la correlation devient comparable d'un cas a l'autre. */
@@ -162,7 +175,15 @@ export function alignTake(
     for (let i = 0; i < takeEnvelope.length; i += 1) {
       dot += (take.data[i] ?? 0) * (other.data[i] ?? 0);
     }
-    const score = dot / (take.norm * other.norm);
+    /*
+     * A ressemblance egale, le plus petit decalage gagne.
+     *
+     * Une replique qui repete le meme motif — « non, non, non » — correle
+     * presque aussi bien une syllabe plus loin. Sans preference, la prise
+     * pouvait sauter d'un mot entier ; un leger penchant vers zero la
+     * garde sur le bon.
+     */
+    const score = dot / (take.norm * other.norm) - 0.06 * (Math.abs(lag) / maxLagSteps);
     scores.set(lag, score);
 
     if (score > bestScore) {

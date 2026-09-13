@@ -24,7 +24,12 @@ const PUBLIC_PATHS = ['/login', '/auth/callback', '/auth/confirm', '/auth/error'
 /** Ce qui ne s'adresse qu'aux machines, et ne connait pas de session. */
 const ROBOT_FILES = ['/robots.txt', '/sitemap.xml', '/llms.txt'] as readonly string[];
 
-const PUBLIC_EXACT = [...INDEXABLE_PATHS, ...ROBOT_FILES] as readonly string[];
+// La communaute se visite sans compte, mais seulement sa page d'accueil :
+// un apercu des scenes les mieux notees, sous un voile. Les fiches
+// `/communaute/[id]` restent derriere la connexion.
+const PUBLIC_PREVIEWS = ['/communaute'] as readonly string[];
+
+const PUBLIC_EXACT = [...INDEXABLE_PATHS, ...ROBOT_FILES, ...PUBLIC_PREVIEWS] as readonly string[];
 // /auth/callback/hash est couvert par le prefixe /auth/callback.
 
 /**

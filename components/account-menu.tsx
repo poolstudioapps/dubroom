@@ -7,6 +7,7 @@ import { Contact, LogOut, Package, Settings, User } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { Avatar } from '@/components/avatar';
+import { NotificationsBell } from '@/components/notifications-bell';
 
 import { profileHref } from '@/lib/creators';
 import { useMyPackCount, useMyProfile } from '@/lib/profile';
@@ -56,6 +57,9 @@ export function AccountMenu() {
   }
 
   return (
+    // La cloche a droite du compte : c'est la derniere chose de la ligne,
+    // la ou l'oeil finit sa lecture de l'en-tete.
+    <div className="flex items-center gap-2">
     <div ref={root} className="relative">
       <button
         type="button"
@@ -116,6 +120,8 @@ export function AccountMenu() {
           </button>
         </div>
       ) : null}
+    </div>
+    <NotificationsBell userId={profile.data?.user_id ?? null} />
     </div>
   );
 }

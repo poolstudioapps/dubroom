@@ -172,17 +172,14 @@ export function deleteCharacter(characterId: string) {
   });
 }
 
-/** Regle sa console de voix pour cette scene. */
 /** Les effets d'une prise, et d'elle seule. */
-export function setTakeFx(
-  takeId: string,
-  fx: { reverb: number; pitch: number; tune: number },
-) {
+export function setTakeFx(takeId: string, fx: { reverb: number; pitch: number }) {
   return rpc<TakeRow>('set_take_fx', {
     p_take_id: takeId,
     p_reverb: fx.reverb,
     p_pitch: fx.pitch,
-    p_tune: fx.tune,
+    // La correction de justesse n'existe plus : la colonne reste a zero.
+    p_tune: 0,
   });
 }
 

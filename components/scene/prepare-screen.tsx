@@ -573,6 +573,7 @@ export function PrepareScreen() {
             value={undefined}
             choices={characters}
             placeholder={t.prepare.reassign}
+            dropUp
             onPick={(target) => run(() => reassignLines(selectedLineIds, target))}
           />
 

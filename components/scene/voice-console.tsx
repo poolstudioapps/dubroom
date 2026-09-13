@@ -25,38 +25,32 @@ export const FX_NEUTRE = { reverb: 0, pitch: 0, tune: 0 } as const;
  * Les reglages tout faits.
  *
  * Ils ne remplacent pas les curseurs, ils donnent un point de depart.
- * Personne ne sait ce que valent « quarante de reverbe et deux
- * demi-tons » avant de l'avoir entendu ; « dessin anime », si.
+ * Personne ne sait ce que valent « quarante de reverb et deux demi-tons »
+ * avant de l'avoir entendu ; « dessin anime », si.
  */
 const PRESETS: {
   cle: keyof ReturnType<typeof useT>['studio']['fxPresets'];
-  fx: { reverb: number; pitch: number; tune: number };
+  fx: { reverb: number; pitch: number };
 }[] = [
-  { cle: 'dry', fx: { reverb: 0, pitch: 0, tune: 0 } },
-  { cle: 'room', fx: { reverb: 35, pitch: 0, tune: 0 } },
-  { cle: 'cathedral', fx: { reverb: 85, pitch: 0, tune: 0 } },
-  { cle: 'cartoon', fx: { reverb: 15, pitch: 5, tune: 0 } },
-  { cle: 'deep', fx: { reverb: 20, pitch: -5, tune: 0 } },
-  { cle: 'cover', fx: { reverb: 45, pitch: 0, tune: 90 } },
+  { cle: 'dry', fx: { reverb: 0, pitch: 0 } },
+  { cle: 'room', fx: { reverb: 30, pitch: 0 } },
+  { cle: 'cathedral', fx: { reverb: 85, pitch: 0 } },
+  { cle: 'cartoon', fx: { reverb: 10, pitch: 7 } },
+  { cle: 'deep', fx: { reverb: 15, pitch: -6 } },
+  { cle: 'monster', fx: { reverb: 45, pitch: -11 } },
 ];
 
 /**
  * La console de voix : tous les reglages de son de la prise affichee.
  *
- * Une tranche de table de mixage — volume, reverbe, hauteur, justesse —
- * puis le calage. Tout s'entend tout de suite dans « Ma prise » : le
- * studio rejoue la chaine du mixage a chaque curseur lache. Rien n'est
- * applique a l'enregistrement, qui reste brut : on peut tout changer
- * jusqu'au rendu.
+ * Volume, reverb, pitch, puis le calage et le fond sonore. Tout s'entend
+ * tout de suite dans « Ma prise » : le studio rejoue la chaine du rendu a
+ * chaque curseur lache. Rien n'est applique a l'enregistrement, qui reste
+ * brut : on peut tout changer jusqu'au montage.
  *
- * Chaque reglage vaut pour une prise. Le volume et le decalage peuvent
- * s'etendre a toutes ses prises, parce qu'un micro trop bas ou en retard
- * l'est sur toute la scene ; les effets, eux, se choisissent replique par
- * replique.
- *
- * Sans prise, la console regle la prochaine : les curseurs repartent de
- * zero a chaque replique, et ce qu'on y pose s'applique des
- * l'enregistrement.
+ * Sans prise, la console regle la prochaine. Les effets repartent de zero
+ * a chaque replique, sauf si l'on coche « garder ces effets » : la replique
+ * suivante reprend alors ceux de la precedente.
  *
  * Le composant ne garde aucun etat : le studio les tient, parce que c'est
  * lui qui joue la prise et qui sait quand elle change.
@@ -72,6 +66,10 @@ export function VoiceConsole({
   onOffsetEverywhere,
   onGainEverywhere,
   gainEverywhere,
+  keepFx,
+  onKeepFx,
+  backing,
+  onBacking,
 }: {
   value: TakeSettings;
   hasTake: boolean;
@@ -86,16 +84,22 @@ export function VoiceConsole({
   onOffsetEverywhere: (next: boolean) => void;
   onGainEverywhere: () => void;
   gainEverywhere: 'idle' | 'pending' | 'done';
+  /** Les effets passent a la replique suivante. */
+  keepFx: boolean;
+  onKeepFx: (next: boolean) => void;
+  /** Le volume du fond sonore pendant l'ecoute, de 0 a 1. */
+  backing: number;
+  onBacking: (value: number) => void;
 }) {
   const t = useT();
-  const actif = value.reverb > 0 || value.pitch !== 0 || value.tune > 0 || value.gainDb !== 0;
+  const actif = value.reverb > 0 || value.pitch !== 0 || value.gainDb !== 0;
   const decalage = useValidation((v: number) => onCommit({ micOffsetMs: v }));
 
   return (
     <Card className="space-y-4">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-bold">
-          <SlidersHorizontal className="h-4 w-4 text-text-muted" aria-hidden />
+          <SlidersHorizontal className="h-4 w-4 text-accent" aria-hidden />
           {t.studio.fxTitle}
         </h2>
         {actif ? (
@@ -122,7 +126,7 @@ export function VoiceConsole({
       </p>
 
       {/* ── La tranche ─────────────────────────────────────────────── */}
-      <div className="flex justify-between gap-1">
+      <div className="flex justify-around gap-1">
         <Fader
           label={t.studio.fxGain}
           value={value.gainDb}
@@ -151,15 +155,6 @@ export function VoiceConsole({
           onInput={(v) => onInput({ pitch: v })}
           onCommit={(v) => onCommit({ pitch: v })}
         />
-        <Fader
-          label={t.studio.fxTune}
-          value={value.tune}
-          min={0}
-          max={100}
-          format={(v) => `${v} %`}
-          onInput={(v) => onInput({ tune: v })}
-          onCommit={(v) => onCommit({ tune: v })}
-        />
       </div>
 
       <Button
@@ -175,18 +170,17 @@ export function VoiceConsole({
 
       <div className="flex flex-wrap gap-1.5">
         {PRESETS.map(({ cle, fx }) => {
-          const choisi =
-            value.reverb === fx.reverb && value.pitch === fx.pitch && value.tune === fx.tune;
+          const choisi = value.reverb === fx.reverb && value.pitch === fx.pitch;
           return (
             <button
               key={cle}
               type="button"
               aria-pressed={choisi}
-              onClick={() => onCommit(fx)}
+              onClick={() => onCommit({ ...fx, tune: 0 })}
               className={cn(
                 'rounded-full border px-2.5 py-1 text-xs font-bold transition-colors',
                 choisi
-                  ? 'border-select bg-select/15 text-select'
+                  ? 'border-accent bg-accent/15 text-accent'
                   : 'border-border-strong text-text-muted hover:bg-surface',
               )}
             >
@@ -195,6 +189,20 @@ export function VoiceConsole({
           );
         })}
       </div>
+
+      {/* Garder les effets d'une replique a l'autre. */}
+      <label className="flex cursor-pointer items-start gap-2 text-xs font-bold text-text-muted">
+        <input
+          type="checkbox"
+          checked={keepFx}
+          onChange={(e) => onKeepFx(e.target.checked)}
+          className="mt-0.5 h-4 w-4 accent-[var(--color-accent)]"
+        />
+        <span className="space-y-0.5">
+          <span className="block">{t.studio.fxKeep}</span>
+          <span className="block font-medium text-text-faint">{t.studio.fxKeepHelp}</span>
+        </span>
+      </label>
 
       {/* ── Le calage ──────────────────────────────────────────────── */}
       <div className="space-y-1.5 border-t border-border pt-3">
@@ -228,11 +236,31 @@ export function VoiceConsole({
             type="checkbox"
             checked={offsetEverywhere}
             onChange={(e) => onOffsetEverywhere(e.target.checked)}
-            className="h-4 w-4 accent-[var(--color-select)]"
+            className="h-4 w-4 accent-[var(--color-accent)]"
           />
           {t.studio.micOffsetEverywhere}
         </label>
         <p className="text-xs leading-relaxed text-text-faint">{t.studio.micOffsetHelp}</p>
+      </div>
+
+      {/* ── Le fond sonore, sous le calage ─────────────────────────── */}
+      <div className="space-y-1.5 border-t border-border pt-3">
+        <div className="flex items-center justify-between text-sm">
+          <label htmlFor="fond-sonore" className="font-bold">
+            {t.studio.backingVolume}
+          </label>
+          <span className="tabular-nums text-text-faint">{Math.round(backing * 100)} %</span>
+        </div>
+        <input
+          id="fond-sonore"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={backing}
+          onChange={(e) => onBacking(Number(e.target.value))}
+          className="w-full touch-none"
+        />
       </div>
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
@@ -245,15 +273,11 @@ export function VoiceConsole({
 /**
  * Quand un curseur doit-il enregistrer sa valeur ?
  *
- * Il le faisait au seul relachement du pointeur, et c'est ce qui rendait
- * la console muette : lache en dehors du curseur tourne, ou au doigt
- * quand le navigateur prenait le geste pour un defilement, le relachement
- * n'arrivait jamais au curseur. Rien n'etait enregistre, rien ne
- * s'entendait, et une seule prise en base avait jamais eu un effet.
- *
- * On valide donc de trois facons : au relachement quand il arrive, au
- * clavier, et de toute facon un tiers de seconde apres le dernier
- * mouvement. Une meme valeur n'est jamais envoyee deux fois.
+ * Au relachement quand il arrive, au clavier, et de toute facon un tiers
+ * de seconde apres le dernier mouvement : lache en dehors du curseur, ou
+ * au doigt quand le navigateur prenait le geste pour un defilement, le
+ * relachement n'arrivait jamais. Une meme valeur n'est jamais envoyee
+ * deux fois.
  */
 function useValidation(onCommit: (v: number) => void) {
   const minuteur = useRef<number | null>(null);
@@ -293,8 +317,7 @@ function useValidation(onCommit: (v: number) => void) {
  * Un curseur vertical, comme sur une tranche.
  *
  * `input[type=range]` tourne d'un quart de tour : c'est le meme controle
- * que partout ailleurs — au clavier, au doigt, au lecteur d'ecran — et
- * pas un glisser-deposer maison qui n'aurait su que la souris.
+ * que partout ailleurs — au clavier, au doigt, au lecteur d'ecran.
  */
 function Fader({
   label,
@@ -338,11 +361,9 @@ function Fader({
           }}
           onPointerUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
           onKeyUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
-          // Une rotation d'un quart de tour : la piste reste la piste,
-          // la poignee reste la poignee, et tout le comportement natif
-          // suit. La largeur devient la hauteur, d'ou le `w-28`. Sans
-          // `touch-none`, un glisse vertical au doigt faisait defiler la
-          // page au lieu de bouger le curseur.
+          // Un quart de tour : la largeur devient la hauteur, d'ou le
+          // `w-28`. `touch-none` : sans lui, un glisse vertical au doigt
+          // faisait defiler la page au lieu de bouger le curseur.
           className="w-28 origin-center -rotate-90 touch-none"
         />
       </span>

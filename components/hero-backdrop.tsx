@@ -2,22 +2,30 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+/** Les films de fond, et l'image fixe qui les remplace au besoin. */
+const FILMS = {
+  /** Quelqu'un qui double, casque sur les oreilles. */
+  cinema: { video: '/video/hero-cinema.mp4', image: '/video/hero-cinema.jpg' },
+  /** Une bande d'amis qui rit devant l'ecran. */
+  communaute: { video: '/video/communaute.mp4', image: '/video/communaute.jpg' },
+} as const;
+
 /**
  * La video plein cadre derriere les pages de presentation.
  *
  * Elle montre le geste avant qu'on ait lu une ligne : quelqu'un qui
- * double, casque sur les oreilles. C'est ce que font les sites de
- * production video dont la salle s'inspire, et c'est ce qui se comprend
- * le plus vite.
+ * double, casque sur les oreilles. La communaute a la sienne, des amis
+ * qui rient sur un canape : c'est ce qu'on vient y chercher.
  *
  * Trois cas ou elle cede la place a une image fixe : le mouvement reduit
  * demande par le systeme, l'economie de donnees, et une lecture
- * automatique refusee. Dans les trois, la premiere image du film tient
- * le meme role sans rien couter.
+ * automatique refusee. Dans les trois, une image du film tient le meme
+ * role sans rien couter.
  */
-export function HeroBackdrop() {
+export function HeroBackdrop({ variant = 'cinema' }: { variant?: keyof typeof FILMS }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [fixe, setFixe] = useState(false);
+  const film = FILMS[variant];
 
   useEffect(() => {
     const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -41,7 +49,7 @@ export function HeroBackdrop() {
     <div className="hero-fond" aria-hidden>
       {fixe ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src="/video/hero-cinema.jpg" alt="" />
+        <img src={film.image} alt="" />
       ) : (
         <video
           ref={ref}
@@ -50,13 +58,13 @@ export function HeroBackdrop() {
           loop
           playsInline
           preload="metadata"
-          poster="/video/hero-cinema.jpg"
+          poster={film.image}
         >
           {/*
             Un seul format. Le WebM compresse pesait plus lourd que le MP4
             a qualite egale, et Chrome l'aurait pris en premier.
           */}
-          <source src="/video/hero-cinema.mp4" type="video/mp4" />
+          <source src={film.video} type="video/mp4" />
         </video>
       )}
     </div>

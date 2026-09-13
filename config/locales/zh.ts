@@ -69,14 +69,14 @@ export const zh = {
     heroTitle: '把喜欢的片段重新配一遍',
     heroBody:
       '你们挑一个片段，每人认领一个角色，各自找时间录。原来的音乐和环境声照旧，只有声音换成你们的。结果留到最后，一起看。',
-    kicker: '朋友之间的配音棚',
+    kicker: '和朋友一起玩的配音游戏',
     cta: '进入录音棚',
     ctaSessions: '看我的片段',
     ctaCommunity: '浏览现成片段',
     howTitle: '怎么玩',
     reassure1: '不用装任何东西',
     reassure2: '各自想录就录',
-    reassure3: '不会被发布出去',
+    reassure3: '未经你同意不会公开',
 
     valueTitle: '做出来是什么',
     value1: {
@@ -88,8 +88,8 @@ export const zh = {
       body: '成片没出来之前，你录的东西别人听不见。最后一起揭晓，这就是整个玩法。',
     },
     value3: {
-      title: '留得下的一个 MP4',
-      body: '最后得到一个到处都能播的文件，字幕不会烧进去。原片这边则会被删掉。',
+      title: '可以保存的视频',
+      body: '最后得到一段带有你们声音的视频，随处可播，一键分享。请在一小时内下载。',
     },
 
     midCta: '挑一个片段，分好角色，看看能做出什么。',
@@ -100,7 +100,7 @@ export const zh = {
     packsCtaAction: '准备一个片段',
 
     faqTitle: '常被问到的',
-    seoTitle: '和朋友一起给电影片段配音',
+    seoTitle: '和朋友一起玩的电影配音游戏',
     defineTitle: '什么叫给电影片段配音',
     defineBody:
       '给电影片段配音，就是画面、音乐、音效、节奏全都留着，只把原来的人声换成自己的。它不是在上面加一层解说，而是同一个片段换一批演员重做一遍。Dub’Up 是一个在浏览器里完成这件事的在线配音软件，什么都不用装。',
@@ -113,45 +113,53 @@ export const zh = {
     faqExtra: [
       {
         q: '免费吗？',
-        a: '免费。Dub’Up 是个人项目，没有广告，没有订阅，片段数量也不设上限。',
+        a: '免费。Dub’Up 是个人项目，没有广告、没有订阅，也不限场景数量。',
       },
       {
-        q: '跟视频剪辑软件有什么不一样？',
-        a: '剪辑软件给你一条空时间轴，对齐录音得自己来。Dub’Up 从片段出发：分离人声、找出台词、分配角色，再把你的录音自动对回原声的位置。',
+        q: '社区是什么？',
+        a: '其他玩家已经准备好的场景目录：角色、台词和分段都已就绪。你带上视频，几分钟后大厅就会打开。视频和声音永远不会被分享。',
       },
       {
-        q: '能用中文界面配英文片段吗？',
-        a: '能。界面语言和片段语言互不相干。转写出来的文字只是节奏提示，你在上面说什么都行。',
+        q: '和普通视频剪辑有什么不同？',
+        a: '剪辑软件给你的是一条空时间线。Dub’Up 从场景出发：分离人声和音乐、找出台词、分配给角色，并自动对齐你的录音。',
       },
       {
-        q: '人声是怎么和音乐分开的？',
-        a: '由跑在房主电脑上的音源分离模型完成，返回两条轨：人声一条，音乐和环境声一条。因为分离取自片段本身，所以和画面不会错位。',
+        q: '可以为其他语言的场景配音吗？',
+        a: '可以。界面语言和场景语言互不影响。转写出的台词只是节奏参考，你想说什么都可以。',
+      },
+      {
+        q: '中途休息会怎样？',
+        a: '大厅或录音室二十分钟没有任何操作就会自动关闭，以免留下被遗忘的场景。主持人可以重新打开大厅；录音室则需要重新开始一个场景。',
+      },
+      {
+        q: '人声和音乐是怎么分开的？',
+        a: '导入时自动完成：场景被分成两部分，一边是人声，一边是音乐和音效。只替换人声，其余部分依旧与画面同步。',
       },
     ] as const,
     faq: [
       {
         q: '到底需要什么？',
-        a: '一副带麦克风的耳机，还有浏览器。耳机不是小事：不戴的话麦克风会把原声再录一遍，混出来就废了。',
+        a: '一副带麦克风的耳机和一个浏览器，电脑或手机都行。耳机很重要：没有它，麦克风会把场景里的音乐再录一遍。',
       },
       {
         q: '大家必须同时在线吗？',
-        a: '不用。各人想录的时候录自己的台词。所有人录完，才开始出片。',
+        a: '不用。选好角色后，每个人自己找时间录台词。所有人完成后，由主持人开始剪辑。',
       },
       {
         q: '需要会配音吗？',
-        a: '不需要。文字会在播放头下面走过，跟真录音棚一样：照着念就对得上。录砸了原样重来一次就行。',
+        a: '不需要。台词会像真正的录音棚那样在播放头下滚动，你的录音也会自动对齐原声。录坏了可以随便重录。',
       },
       {
-        q: '要花多久？',
-        a: '导入之后自动准备几分钟，之后就看台词有多少。两分钟的片段，三个人半小时左右能配完。',
+        q: '要花多长时间？',
+        a: '导入后准备两三分钟，之后就是念台词的时间。一段两分钟的场景，三个人大约半小时就能配完。',
       },
       {
-        q: '我的录音会留着吗？',
-        a: '不会。成片一出来，它们就跟原视频一起删掉。',
+        q: '最后能留下什么？',
+        a: '一段带有你们声音的视频，可以在一小时内下载和分享。之后它会和录音、原视频一样被删除：我们的服务器上什么都不会留下。',
       },
       {
-        q: '我能随便邀请人吗？',
-        a: '只有加进受邀名单的邮箱能进来。在账号页面你可以自己加。',
+        q: '可以随便邀请人吗？',
+        a: '采用邀请制：只有邀请名单上的邮箱才能进入。要一起玩某个场景，只需分享它的代码或链接。',
       },
     ] as const,
     slides: {
@@ -251,7 +259,7 @@ export const zh = {
     remove: '从目录里撤下',
     removeTitle: '撤下这个片段？',
     removeBody:
-      '视频、分离出来的音轨和切分都会被删除。已经由它开始的片段会失效。撤不回来。',
+      '介绍和分段将被删除。基于它已经开始的场景将无法继续。此操作无法撤销。',
     publish: '发布到社区',
     published: '这个片段已经在社区里',
     seeInCommunity: '去社区看看',
@@ -350,6 +358,9 @@ export const zh = {
     publishLater: '这个场景不分享。你可以随时在此页面改变主意。',
     linkPlaceholder: 'https://www.youtube.com/watch?v=…',
     editedByCreator: (date: string) => `创作者于 ${date} 修改`,
+    previewMoreTitle: '还有很多场景等你来配',
+    previewMoreBody: (n: number) => (n > 0 ? `创建账号即可浏览目录中的全部 ${n} 个场景，和朋友一起玩，并发布你自己的场景。` : '创建账号即可浏览目录，和朋友一起玩，并发布你自己的场景。'),
+    previewCta: '查看更多场景',
   },
 
   terms: {
@@ -362,7 +373,7 @@ export const zh = {
     gateBody:
       '开始之前，需要先接受使用条款。勾选一下即可。',
     gateGist:
-      '要点只有一条：你自己对导入的片段和它的用途负责。一切只在受邀的人之间，不会公开。',
+      '要点：你对自己导入的片段及其用途负责。未经你同意，任何内容都不会公开。',
     gateConfirm: '同意并继续',
   },
 
@@ -370,7 +381,7 @@ export const zh = {
     mentions: '法律信息',
     privacy: '隐私',
     terms: '使用条款',
-    usageNotice: '仅限受邀者之间的私人使用。任何内容都不公开传播，也不被收录。',
+    usageNotice: '场景和声音只在受邀者之间：社区只能看到被分享素材包的介绍。',
     contact: '联系',
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookie',
@@ -477,12 +488,12 @@ export const zh = {
     storageUsed: (used: string, total: string) => `${total} 中已用 ${used}`,
     storageWarning: '存储空间快满了。删掉旧片段腾点地方。',
     deleteConfirmTitle: '删除这个片段？',
-    deleteConfirmBody: '成片、录音和所有元数据都会被抹掉。撤不回来。',
+    deleteConfirmBody: '最终视频、录音以及与该场景相关的一切都将被删除，且无法撤销。',
     joinByCode: '用代码加入',
     join: '加入',
     storageTitle: '已用空间',
     storageHelp:
-      '原视频和分离出来的音轨在出片之后就删掉了，长期占地方的只有成片。删掉一个片段就腾出它那份。',
+      '最终视频完成后，原视频和录音会立即删除：只有最终视频占用空间，而且只保留一小时。',
     codePlaceholder: 'ABC234',
     codeNotFound: '没有片段对得上这个代码。',
     joining: '正在进入场景…',
@@ -526,7 +537,7 @@ export const zh = {
     subtitle: '两种开始方式：导入你的视频创建全新场景，或者接着用小组已经准备好的场景。',
     introUpload: '用你的视频从零开始准备一个新场景，来源不限：电影、剧集、YouTube 或 TikTok 片段、屏幕录像……',
     introPack: '角色和台词都已就绪：你提供视频，大约两分钟后大厅就会打开。',
-    introYoutube: '仅限管理员：视频由主持人电脑上的 worker 下载，worker 需要处于运行状态。',
+    introYoutube: '仅限管理员：视频由主持人的电脑下载，电脑需要保持开机。',
     limits: '任意视频格式 · 最大 50 MB、10 分钟',
     uploadStepsTitle: '流程',
     uploadSteps: [
@@ -551,9 +562,9 @@ export const zh = {
     title: '正在准备片段',
     subtitle: '正在切分片段，要几分钟。',
     queued:
-      '正在等待 worker。',
+      '准备马上开始。',
     queuedHelp:
-      '只要主持人的电脑上运行 worker，场景就会开始：请启动 start.bat。',
+      '通常几秒内就会开始。如果等待太久，请重新导入或告诉主持人。',
     failed: '导入失败。',
     retry: '重新导入',
     neverStarted: '导入根本没开始：多半是文件上传失败了。重来一次，或者从新片段开始。',
@@ -656,8 +667,8 @@ export const zh = {
     clipCount: (n: number) => `${n} 个片段`,
     hostOnly: '只有房主能开始。',
     closedTitle: '房间已关闭',
-    closedBody: '这个房间开放超过一小时，已自动关闭，任何人都无法再加入。',
-    closedHost: '你可以再开放一小时，或在“我的场景”中删除这个场景。',
+    closedBody: '这个大厅二十分钟没有任何操作，已自动关闭，其他人无法再加入。',
+    closedHost: '你可以再开放二十分钟，或在场景列表中删除该场景。',
     closedGuest: '只有主持人可以重新开放。',
     closedBack: '返回我的场景',
     reopen: '重新开放房间',
@@ -686,7 +697,7 @@ export const zh = {
     next: '下一个',
     backingVolume: '背景音',
     micOffset: '麦克风偏移',
-    micOffsetHelp: '自动对齐已经放好了你的录音。如果仍然偏晚，就调低数值；偏早就调高。',
+    micOffsetHelp: '你的录音会自动对齐原声。如果仍然稍晚，就调低数值；稍早，就调高。也可以在波形上直接拖动你的音轨。',
     micDenied: '浏览器拒绝了麦克风。允许之后刷新页面。',
     headphonesRequired: '必须戴耳机。录的时候只听得到音乐，听不到原声。',
     overflowWarning: '你录的超出了范围，结尾会被切掉。录短一点。',
@@ -699,15 +710,14 @@ export const zh = {
     fxReset: '全部归零',
     fxReverb: '混响',
     fxPitch: '音高',
-    fxTune: '音准',
-    fxHelp: '播放录音时立即就能听到效果，并且只作用于当前显示的录音。效果在混音时添加，不会改动录音本身：渲染前都可以修改。',
+    fxHelp: '回放你的录音时，立刻就能听到和最终视频完全一样的效果。效果不会改动录音本身：在剪辑开始前都可以随时调整。',
     fxPresets: {
-      dry: '原声',
+      dry: '干声',
       room: '小房间',
       cathedral: '大教堂',
-      cartoon: '动画声',
-      deep: '低音',
-      cover: '翻唱',
+      cartoon: '卡通',
+      deep: '低沉嗓音',
+      monster: '怪兽',
     },
     emptyTake: '没有录到声音。确认麦克风已接好并被选中，然后重录一次。',
     whereEveryoneIs: '大家的进度',
@@ -743,13 +753,6 @@ export const zh = {
     cueIdle: '待命',
     originalTrace: '有颜色的波形显示原声在什么时候说话。',
     micWindow: '麦克风只在你那句台词上打开。',
-    alignedBy: (ms: number) =>
-      ms === 0
-        ? '你录的本来就正好。'
-        : ms > 0
-          ? `你慢了 ${ms} 毫秒，已经补上了。`
-          : `你快了 ${-ms} 毫秒，已经补上了。`,
-    alignUnsure: '这一条没找到明确的对位点，就按原样放着。',
     fxGain: '音量',
     fxGainApplyAll: '将此音量应用到我所有的录音',
     fxGainAppliedAll: '已将音量应用到你所有的录音',
@@ -774,6 +777,12 @@ export const zh = {
     devicesDuringTake: '可以在两次录音之间更换设备。',
     deviceMicN: (n: number) => `麦克风 ${n}`,
     deviceOutputN: (n: number) => `输出 ${n}`,
+    fxKeep: '下一条录音沿用这些效果',
+    fxKeepHelp: '取消勾选后，下一句台词将不带效果。',
+    dragHint: '拖动音轨重新对齐',
+    expiredTitle: '会话已过期',
+    expiredBody: '二十分钟内没有录制任何片段，会话已自动关闭。你可以随时重新开始。',
+    expiredOk: '知道了',
   },
 
   progress: {
@@ -804,7 +813,7 @@ export const zh = {
   render: {
     title: '正在出片',
     queued:
-      '正在等待 worker。',
+      '剪辑马上开始。',
     frozen: '片段已经定下来了：录音不能再改。',
     failed: '剪辑未能完成。',
     retry: '重新出片',
@@ -815,17 +824,13 @@ export const zh = {
     backgroundNotice: '剪辑会在后台继续进行，你可以离开此页面。几分钟后，所有参与者都能在“我的场景”和“我的账户”中看到这个场景。',
     ctaNewScene: '再做一个场景',
     ctaHome: '返回首页',
+    keepNotice: (minutes: number) => `视频完成后可保留 ${minutes} 分钟：请在删除前下载。`,
   },
 
   result: {
     title: '成片',
-    download: '下载 MP4',
+    download: '下载视频',
     exportTitle: '把片段带走',
-    formatWide: '横版',
-    formatWideHint: '给电脑屏幕或电视看。',
-    formatVertical: '竖版',
-    formatVerticalHint: '居中裁切，适合快拍和 Reels。',
-    formatVerticalMissing: '此场景没有手机版。',
     share: '分享',
     shareHelp: '在手机上点分享会打开系统的分享面板，装了的抖音、Instagram 都在里面。',
     shareUnsupported: '这个浏览器不支持分享文件。先下载，再到应用里发。',
@@ -851,7 +856,7 @@ export const zh = {
     tooLarge: '文件太大：最大 50 MB。请以 720p 或 480p 重新导出视频。',
     or: '或',
     autoTitle: '自动下载',
-    autoBody: '由主持人的电脑从 YouTube 下载视频。那台电脑上需要运行 start.bat。',
+    autoBody: '由主持人的电脑从 YouTube 下载视频：电脑需要保持开机。',
     autoSubmit: '开始下载',
     mediaBody: '这个场景保存在这里，可以立即开始。',
     introMember: '目录只保存了这个场景的准备数据：准备好视频，就会用素材包的台词和角色在线完成准备。',
@@ -888,19 +893,19 @@ export const zh = {
     checklistTitle: '导入之前',
     checklist: [
       '与素材包场景相同的片段，没有剪切',
-      '任意视频格式：MP4、MOV、MKV、WebM…',
+      '任意视频格式',
       '最大 50 MB：720p 或 480p 就够了',
       '最长 10 分钟',
     ],
     whyTitle: '为什么需要这一步？',
     whyBody: 'Dub’Up 不托管任何作品：目录只保存准备数据，从不保存视频。而且大多数平台会拒绝来自服务器的下载。所以文件由你来准备，其余一切都在线完成。',
     wayFileTitle: '你导入文件',
-    wayFileBody: '随时可用，即使没有人启动 start.bat。准备在线完成，约两分钟。',
+    wayFileBody: '随时可用，无需安装任何东西。准备在线完成，约两分钟。',
     faqTitle: '常见问题',
     faq: [
       {
         q: '支持哪些格式？',
-        a: '所有常见视频格式：MP4、MOV、MKV、AVI、WebM 等等。视频在导入时会自动转换，你什么都不用做。',
+        a: '支持所有常见视频格式。导入时会自动转换，你什么都不用做。',
       },
       {
         q: '用什么工具获取视频？',
@@ -928,6 +933,7 @@ export const zh = {
     homeBannerBody: 'YouTube、TikTok、硬盘里的电影、屏幕录像：任何视频文件都能导入，格式不限。指南会教你在五分钟内获取并准备好。',
     homeBannerAction: '阅读导入指南',
     midLink: '手头还没有视频？指南会告诉你如何获取。',
+    trajetFile: '任意格式 · 最大 50 MB',
   },
 
   guideHub: {
@@ -963,27 +969,27 @@ export const zh = {
     tips: [
       {
         title: '一定要戴耳机',
-        body: '不戴耳机，音乐会被麦克风录进去，成品里会听到两遍。',
+        body: '不戴耳机，音乐会被麦克风再次录进去，最终视频里会听到两遍。',
       },
       {
         title: '先听原声',
-        body: '原台词的节奏是你最好的提示。',
+        body: '原台词的节奏是你最好的参考。',
       },
       {
         title: '交给自动对齐',
-        body: '你的录音会自动对齐到原声的位置。',
+        body: '录音会自动贴合原声；需要时可以手动拖动。',
       },
       {
-        title: '带效果重听',
-        body: '播放录音时，声音和成品里的一模一样。',
+        title: '带着效果回放',
+        body: '回放的声音和最终视频完全一样。',
       },
       {
-        title: '房间只开一小时',
-        body: '开放超过一小时的房间会关闭，主持人可以重新开放。',
+        title: '二十分钟不动就关闭',
+        body: '大厅或录音室二十分钟没有操作会自动关闭。',
       },
       {
-        title: '尽快下载成品',
-        body: '最终视频在剪辑一小时后删除。',
+        title: '尽快下载视频',
+        body: '最终视频会在剪辑完成一小时后删除。',
       },
     ],
     finalTitle: '准备好你的第一个场景了吗？',
@@ -992,7 +998,7 @@ export const zh = {
 
   admin: {
     title: '管理员',
-    help: '管理员可以通过 YouTube 链接创建场景：视频由其电脑上的 worker 下载。其他成员导入自己的视频，在线完成准备。',
+    help: '管理员也可以通过 YouTube 链接创建场景：此时视频由其电脑下载。其他成员导入自己的视频，并在线完成准备。',
     roleOwner: '所有者',
     roleAdmin: '管理员',
     roleUser: '成员',
@@ -1026,7 +1032,7 @@ export const zh = {
         },
         {
           title: '在控制台调整声音',
-          body: '音量、混响、音高、音准：每项设置只作用于当前录音，并立即可听。麦克风偏移可以修正稍早或稍晚的录音。',
+          body: '音量、混响、音高：每项设置都作用于当前显示的录音，立刻就能听到。勾选“下一条录音沿用这些效果”可带到下一句台词；如果录音稍早或稍晚，拖动音轨即可。',
         },
       ],
       checklistTitle: '开始渲染之前',
@@ -1062,7 +1068,7 @@ export const zh = {
         },
         {
           title: '开放房间',
-          body: '分享代码或链接。每人选择一个角色，没人选的角色保留原声。房间一小时后自动关闭。',
+          body: '分享代码或链接。每个人选一个角色，没人选的角色保留原声。大厅二十分钟没有操作会自动关闭。',
         },
       ],
       checklistTitle: '可以直接开玩的场景',
@@ -1220,5 +1226,18 @@ export const zh = {
     pageNotFoundTitle: '页面不存在',
     pageNotFoundBody: '链接可能不完整，或页面已移动。请从首页重新开始。',
     backHome: '返回首页',
+  },
+  notifications: {
+    title: '通知',
+    empty: '暂时没有新消息。',
+    label: (n: number) => (n === 0 ? '通知' : `通知，${n} 条新消息`),
+    renderStarted: (title: string) => `“${title}”已开始剪辑。`,
+    renderDone: (title: string) => `“${title}”已完成：去看看并下载吧。`,
+    renderExpiring: (title: string, minutes: number) => `“${title}”将在 ${minutes} 分钟后删除：记得下载。`,
+    renderDeleted: (title: string) => `“${title}”的视频已删除。`,
+    packLike: (who: string, others: number, title: string) => (others === 0 ? `${who} 赞了“${title}”` : `${who} 等 ${others + 1} 人赞了“${title}”`),
+    packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} 评论了“${title}”` : `${who} 等 ${others + 1} 人评论了“${title}”`),
+    profileComment: (who: string, others: number) => (others === 0 ? `${who} 在你的主页留言` : `${who} 等 ${others + 1} 人在你的主页留言`),
+    reply: (who: string, others: number) => (others === 0 ? `${who} 回复了你的评论` : `${who} 等 ${others + 1} 人回复了你的评论`),
   },
 } satisfies Dictionary;

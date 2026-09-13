@@ -21,10 +21,13 @@ export function AppShell({
   className,
   wide,
   fill: fillDemande,
+  backdrop,
 }: {
   children: React.ReactNode;
   className?: string;
   wide?: boolean;
+  /** Un film plein cadre derriere l'en-tete, comme sur l'accueil. */
+  backdrop?: React.ReactNode;
   /**
    * Tenir exactement dans l'ecran, sans defilement ni pied de page.
    *
@@ -60,8 +63,10 @@ export function AppShell({
       className={cn(
         'flex flex-col items-center px-3 sm:px-6',
         fill ? 'h-dvh overflow-hidden py-2' : 'min-h-dvh py-4 sm:py-6',
+        backdrop && 'relative isolate',
       )}
     >
+      {backdrop}
       {/*
         `flex-1` meme hors du studio : sur une page courte — un chargement,
         une scene qui demarre —, le poste s'etire jusqu'au pied de page au

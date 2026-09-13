@@ -33,6 +33,7 @@ export function CharacterPicker({
   onPick,
   compact,
   placeholder,
+  dropUp,
 }: {
   value: Choice | undefined;
   choices: Choice[];
@@ -40,6 +41,11 @@ export function CharacterPicker({
   compact?: boolean;
   /** Ce qu'on lit quand rien n'est choisi : le libelle d'une action. */
   placeholder?: string;
+  /**
+   * La liste s'ouvre vers le haut. Pour un bouton pose en bas de l'ecran,
+   * comme la barre de selection : vers le bas, elle sortait de la fenetre.
+   */
+  dropUp?: boolean;
 }) {
   const t = useT();
 
@@ -99,7 +105,10 @@ export function CharacterPicker({
       {open ? (
         <ul
           role="listbox"
-          className="absolute left-0 z-30 mt-1 max-h-64 w-48 overflow-y-auto rounded-2xl border border-border bg-surface-raised py-1 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.8)]"
+          className={cn(
+            'absolute left-0 z-30 max-h-64 w-48 overflow-y-auto rounded-2xl border border-border bg-surface-raised py-1 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.8)]',
+            dropUp ? 'bottom-full mb-2' : 'mt-1',
+          )}
         >
           {choices.map((choice) => (
             <li key={choice.id}>

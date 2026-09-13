@@ -1,25 +1,34 @@
 'use client';
 
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 
 import { useT } from '@/lib/i18n';
-import { WAVEFORM_BUCKETS } from '@/config/constants';
+import {
+  MIC_OFFSET_MAX_MS,
+  MIC_OFFSET_MIN_MS,
+  MIC_OFFSET_STEP_MS,
+  WAVEFORM_BUCKETS,
+} from '@/config/constants';
 
 import { decodeEnvelope, sliceEnvelope } from '@/lib/audio/envelope';
 import type { TakeAnalysis } from '@/lib/audio/waveform';
 import { resolveCharacterColor, resolveCssColor } from '@/lib/canvas-colors';
 import type { ClipRow } from '@/lib/supabase/database.types';
+import { cn } from '@/lib/utils';
 
 /**
  * Forme d'onde du clip (PRD §11.5).
  *
- * Elle repond a deux questions differentes, d'ou les deux traces :
+ * Elle repond a trois questions, d'ou les deux traces et le geste :
  *
  * - « quand dois-je parler ? » — l'enveloppe de la voix d'origine, en
  *   creux derriere, montre le debit de l'acteur avant meme d'avoir
  *   enregistre quoi que ce soit ;
- * - « ai-je deborde ? » — la prise, par-dessus, avec la zone de parole
- *   en surbrillance et les marges en grise.
+ * - « ma prise tombe-t-elle juste ? » — la prise, par-dessus, posee a
+ *   l'endroit exact ou le mixage la mettra ;
+ * - « et si elle tombe a cote ? » — on l'attrape et on la fait glisser.
+ *   C'est le decalage micro de la console, regle a l'oeil au lieu d'un
+ *   curseur : les deux restent synchronises.
  *
  * La tete de lecture suit `video.currentTime`, comme la bande rythmo :
  * une seule source de temps pour tout le studio.
@@ -32,6 +41,11 @@ export function WaveformView({
   voicePeaksHz,
   characterColor,
   height = 96,
+  takeStartMs = null,
+  offsetMs = 0,
+  draggable = false,
+  onOffsetInput,
+  onOffsetCommit,
 }: {
   analysis: TakeAnalysis | null;
   clip: ClipRow;
@@ -40,17 +54,36 @@ export function WaveformView({
   voicePeaksHz: number | null;
   characterColor: string;
   height?: number;
+  /**
+   * Ou tombe le debut de la prise dans la fenetre, en ms, hors decalage
+   * micro. `null` : on ne sait pas encore, la prise s'etale sur la bande.
+   */
+  takeStartMs?: number | null;
+  /** Le decalage micro de la prise, en ms. */
+  offsetMs?: number;
+  /** La prise peut etre deplacee a la souris ou au doigt. */
+  draggable?: boolean;
+  onOffsetInput?: (value: number) => void;
+  onOffsetCommit?: (value: number) => void;
 }) {
   const t = useT();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Lus par la boucle de dessin a chaque image : le glisse ne relance rien.
+  const offsetRef = useRef(offsetMs);
+  offsetRef.current = offsetMs;
+  const debutRef = useRef(takeStartMs);
+  debutRef.current = takeStartMs;
+  const glisse = useRef<{ x: number; depart: number; valeur: number } | null>(null);
+  const [enGlisse, setEnGlisse] = useState<number | null>(null);
+
+  const windowMs = Math.max(1, clip.window_end_ms - clip.window_start_ms);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
 
-    const windowMs = clip.window_end_ms - clip.window_start_ms;
     const speechStartRatio = (clip.speech_start_ms - clip.window_start_ms) / windowMs;
     const speechEndRatio = (clip.speech_end_ms - clip.window_start_ms) / windowMs;
 
@@ -131,20 +164,22 @@ export function WaveformView({
         ctx.globalAlpha = 1;
       }
 
-      // Prise du joueur, par-dessus, en barres.
+      // Prise du joueur, par-dessus, en barres, a sa place.
       if (analysis) {
+        const debut = debutRef.current;
+        const decalage = glisse.current?.valeur ?? offsetRef.current;
+        const x0 = debut === null ? 0 : ((debut + decalage) / windowMs) * width;
+        const largeur =
+          debut === null ? width : (Math.max(1, analysis.durationMs) / windowMs) * width;
         const buckets = analysis.peaks.length;
-        const barWidth = width / buckets;
+        const barWidth = largeur / buckets;
         ctx.fillStyle = takeColor;
-        ctx.globalAlpha = 0.9;
+        ctx.globalAlpha = glisse.current ? 1 : 0.9;
         for (let i = 0; i < buckets; i += 1) {
+          const x = x0 + i * barWidth;
+          if (x + barWidth < 0 || x > width) continue;
           const amplitude = (analysis.peaks[i] ?? 0) * (middle - 3);
-          ctx.fillRect(
-            i * barWidth,
-            middle - amplitude,
-            Math.max(1, barWidth - 0.5),
-            amplitude * 2,
-          );
+          ctx.fillRect(x, middle - amplitude, Math.max(1, barWidth - 0.5), amplitude * 2);
         }
         ctx.globalAlpha = 1;
       }
@@ -164,7 +199,21 @@ export function WaveformView({
 
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor]);
+  }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor, windowMs]);
+
+  const actif = draggable && !!analysis && takeStartMs !== null;
+
+  function borne(v: number) {
+    const arrondi = Math.round(v / MIC_OFFSET_STEP_MS) * MIC_OFFSET_STEP_MS;
+    return Math.max(MIC_OFFSET_MIN_MS, Math.min(MIC_OFFSET_MAX_MS, arrondi));
+  }
+
+  function terminer() {
+    const g = glisse.current;
+    glisse.current = null;
+    setEnGlisse(null);
+    if (g && g.valeur !== g.depart) onOffsetCommit?.(g.valeur);
+  }
 
   return (
     <div className="min-w-0 space-y-1">
@@ -178,16 +227,47 @@ export function WaveformView({
         s'elargissait d'autant, ce qui elargissait le canvas, et ainsi de
         suite. L'ecran du studio finissait deux fois trop large, rogne par
         le cadre du poste.
+
+        Le glisse n'est qu'un raccourci : le curseur « Décalage micro » de
+        la console reste le controle accessible au clavier.
       */}
       <canvas
         ref={canvasRef}
         style={{ height }}
-        className="block w-full min-w-0 max-w-full rounded-xl border border-border bg-stage"
+        className={cn(
+          'block w-full min-w-0 max-w-full rounded-xl border border-border bg-stage',
+          actif && 'cursor-grab touch-none',
+          enGlisse !== null && 'cursor-grabbing border-accent',
+        )}
         aria-hidden
+        onPointerDown={(e) => {
+          if (!actif) return;
+          e.currentTarget.setPointerCapture(e.pointerId);
+          glisse.current = { x: e.clientX, depart: offsetMs, valeur: offsetMs };
+          setEnGlisse(offsetMs);
+        }}
+        onPointerMove={(e) => {
+          const g = glisse.current;
+          if (!g) return;
+          const largeur = e.currentTarget.clientWidth || 1;
+          const valeur = borne(g.depart + ((e.clientX - g.x) / largeur) * windowMs);
+          if (valeur === g.valeur) return;
+          g.valeur = valeur;
+          setEnGlisse(valeur);
+          onOffsetInput?.(valeur);
+        }}
+        onPointerUp={terminer}
+        onPointerCancel={terminer}
       />
-      <div className="flex justify-between text-[10px] text-text-faint">
+      <div className="flex justify-between gap-2 text-[10px] text-text-faint">
         <span>{t.studio.margin}</span>
-        <span>{t.studio.speechZone}</span>
+        <span className={cn('truncate', enGlisse !== null && 'font-bold text-accent')}>
+          {enGlisse !== null
+            ? `${enGlisse > 0 ? '+' : ''}${enGlisse} ms`
+            : actif
+              ? t.studio.dragHint
+              : t.studio.speechZone}
+        </span>
         <span>{t.studio.margin}</span>
       </div>
     </div>

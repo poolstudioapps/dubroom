@@ -22,7 +22,7 @@ import type { ParticipantRow } from '@/lib/supabase/database.types';
  * decalage micro, calibrage — qui valaient pour toutes les prises a la
  * fois. Le calage est desormais toujours actif, et le decalage se regle
  * prise par prise dans la console de voix, avec tout le reste du son. Il
- * ne reste ici que le fond sonore, qui regle l'ecoute et pas le mixage.
+ * reste ici l'avancement du groupe et le lancement du montage.
  */
 export function StudioSidebar({
   backing,
@@ -72,27 +72,33 @@ export function StudioSidebar({
     <aside className="space-y-4">
       {devices}
 
-      <Card className="space-y-1.5">
-        <div className="flex items-center justify-between text-sm">
-          <span>{t.studio.backingVolume}</span>
-          <span className="text-text-faint">{Math.round(backing * 100)} %</span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={1}
-          step={0.05}
-          value={backing}
-          onChange={(e) => onBacking(Number(e.target.value))}
-          className="w-full"
-          aria-label={t.studio.backingVolume}
-        />
-      </Card>
+      {/*
+        Le fond sonore vit dans la console, sous le decalage. Sans console
+        — pas de role, ou toutes les prises faites — il garde sa carte.
+      */}
+      {voiceConsole ? null : (
+        <Card className="space-y-1.5">
+          <div className="flex items-center justify-between text-sm">
+            <span>{t.studio.backingVolume}</span>
+            <span className="text-text-faint">{Math.round(backing * 100)} %</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={backing}
+            onChange={(e) => onBacking(Number(e.target.value))}
+            className="w-full"
+            aria-label={t.studio.backingVolume}
+          />
+        </Card>
+      )}
 
       {/*
-        La console de la prise, sur ordinateur : juste apres le fond
-        sonore. Sur telephone elle vit sous les commandes, la ou l'on
-        vient d'ecouter ce qu'on a enregistre, d'ou le `hidden` ici.
+        La console de la prise, sur ordinateur. Sur telephone elle vit sous
+        les commandes, la ou l'on vient d'ecouter ce qu'on a enregistre,
+        d'ou le `hidden` ici.
       */}
       {voiceConsole ? <div className="hidden lg:block">{voiceConsole}</div> : null}
 

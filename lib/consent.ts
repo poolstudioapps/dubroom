@@ -29,6 +29,7 @@ export const PREFERENCE_STORAGE_KEYS = [
   'dubup.lastEmail',
   'dubup.loginMode',
   'dubup.micOffsetEverywhere',
+  'dubup.keepFx',
   'dubup.micOffsetMs',
   'dubup.micDevice',
   'dubup.outputDevice',
