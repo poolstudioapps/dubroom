@@ -129,6 +129,8 @@ export function StudioScreen() {
    * milliseconde. On releve donc l'heure exacte a l'ouverture.
    */
   const recStartedAtMs = useRef<number | null>(null);
+  /** Une fin de prise est en cours : un second appel ne doit rien arreter. */
+  const finissant = useRef(false);
 
   // ── La console de voix ─────────────────────────────────────────────
   // Deux etats : ce que montrent les curseurs, qui suit le doigt, et ce
@@ -298,6 +300,17 @@ export function StudioScreen() {
 
     const tick = () => {
       frame = requestAnimationFrame(tick);
+      /*
+       * Le mode a deja change : une prise vient de se terminer, et React
+       * n'a pas encore demonte cette boucle. Sans ce garde, l'image de
+       * retard voyait un micro ferme sur la replique et le rouvrait : une
+       * seconde « prise » vide suivait la vraie, et l'ecran affichait
+       * « Rien n'a été enregistré » sous une prise pourtant validee.
+       */
+      if (modeRef.current !== mode) {
+        cancelAnimationFrame(frame);
+        return;
+      }
       const video = videoRef.current;
       const music = musicRef.current;
       if (!video) return;
@@ -372,6 +385,8 @@ export function StudioScreen() {
     setAnalysis(null);
     setHasTakeAudio(false);
     setPlacement(null);
+    // Le message d'une autre replique n'a rien a faire sur celle-ci.
+    setError(null);
   }, [index, stopAll]);
 
   // Charge la prise retenue du clip courant pour l'afficher et la
@@ -589,12 +604,20 @@ export function StudioScreen() {
   });
 
   async function finishRecording() {
+    // La boucle et le bouton « Arrêter » peuvent appeler deux fois de suite.
+    if (finissant.current) return;
     if (!recorderRef.current.recording) {
       stopAll();
       recStartedAtMs.current = null;
       return;
     }
-    const blob = await recorderRef.current.stop();
+    finissant.current = true;
+    let blob: Blob;
+    try {
+      blob = await recorderRef.current.stop();
+    } finally {
+      finissant.current = false;
+    }
     const openedAtMs = recStartedAtMs.current;
     recStartedAtMs.current = null;
     stopAll();
