@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Clapperboard, Library, ThumbsUp, Users } from 'lucide-react';
 
+import { FaqList } from '@/components/faq-list';
 import { Footer } from '@/components/footer';
 import { GuideIcon } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
@@ -138,6 +139,14 @@ export async function CommunityPreview() {
                   </div>
                 </div>
               </div>
+            </section>
+
+            {/* Les memes questions que dans le catalogue, tout en bas. */}
+            <section className="mx-auto w-full max-w-3xl space-y-5">
+              <h2 className="titre titre-section text-center text-2xl sm:text-3xl">
+                {t.community.faqTitle}
+              </h2>
+              <FaqList items={t.community.faq} />
             </section>
           </main>
         </TvSet>
