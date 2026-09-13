@@ -36,8 +36,10 @@ export default function PrivacyPage() {
       <LegalSection title="Ce qui n’est pas fait">
         <p>
           Aucun traçage, aucun cookie publicitaire, aucune mesure d’audience, aucun
-          profilage. Les seuls cookies déposés sont ceux qui maintiennent votre session
-          ouverte. Rien n’est revendu ni partagé avec un tiers à des fins commerciales.
+          profilage. Les cookies déposés maintiennent votre session ouverte et, si vous
+          l’acceptez, retiennent vos préférences : leur liste complète est sur la page{' '}
+          <Link href="/cookies">Cookies</Link>. Rien n’est revendu ni partagé avec un
+          tiers à des fins commerciales.
         </p>
       </LegalSection>
 

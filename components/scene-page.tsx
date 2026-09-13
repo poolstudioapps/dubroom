@@ -47,7 +47,8 @@ export function ScenePage({
   code: string;
   userId: string;
   defaultName: string;
-  expect: SceneScreen;
+  /** L'ecran de cette route, ou `null` pour l'entree qui ne fait que rediriger. */
+  expect: SceneScreen | null;
   wide?: boolean;
   fill?: boolean;
   children: React.ReactNode;
@@ -77,14 +78,22 @@ export function ScenePage({
 
   const status = scene.data?.session.status;
   const isHost = scene.data?.session.host_id === userId;
+  const target = status ? screenForStatus(status, isHost) : null;
 
   useEffect(() => {
-    if (!status || !scene.data) return;
-    const target = screenForStatus(status, isHost);
-    if (target !== expect) router.replace(sceneHref(code, target));
-  }, [status, isHost, expect, code, router, scene.data]);
+    if (target && target !== expect) router.replace(sceneHref(code, target));
+  }, [target, expect, code, router]);
 
-  if (lookup.isLoading || (sessionId && scene.isLoading)) {
+  /*
+   * Tant qu'on n'est pas sur le bon ecran, on n'en montre aucun.
+   *
+   * L'ecran demande s'affichait le temps que la redirection parte : un
+   * lien de scene ouvrait une seconde la preparation d'une scene deja en
+   * studio, et un lobby qui passait en enregistrement restait visible,
+   * boutons compris, pendant qu'on changeait de page. On voyait des pages
+   * qui n'avaient plus rien a faire la.
+   */
+  if (lookup.isLoading || (sessionId && scene.isLoading) || (target && target !== expect)) {
     return (
       <AppShell wide={wide}>
         <div className="flex items-center gap-2 text-sm text-text-faint">

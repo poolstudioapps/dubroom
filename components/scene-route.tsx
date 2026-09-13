@@ -17,7 +17,7 @@ export async function SceneRoute({
   children,
 }: {
   code: string;
-  expect: SceneScreen;
+  expect: SceneScreen | null;
   wide?: boolean;
   fill?: boolean;
   children: React.ReactNode;

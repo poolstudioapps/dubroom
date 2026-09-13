@@ -527,6 +527,13 @@ export async function muxFinal(
  *
  * L'audio est recopie tel quel : c'est le meme mixage, il n'y a aucune
  * raison de le reencoder une seconde fois.
+ *
+ * En 720 × 1280, et avec un debit plafonne d'apres la duree. En 1080p a
+ * qualite libre, la version verticale pesait deux fois la version large :
+ * sur une scene de quatre minutes et demie elle depassait les 50 Mo que
+ * le stockage accepte par fichier, et n'etait jamais envoyee. Le plafond
+ * vise 46 Mo quelle que soit la duree ; une scene courte reste en
+ * qualite pleine, le plafond ne mord que sur les longues.
  */
 export async function muxVertical(
   input: string,
@@ -534,6 +541,14 @@ export async function muxVertical(
   durationMs: number,
   onProgress: (pct: number) => void,
 ): Promise<void> {
+  const TAILLE_VISEE_KBIT = 46 * 8 * 1024;
+  const AUDIO_KBPS = 192;
+  const secondes = Math.max(1, durationMs / 1000);
+  const videoKbps = Math.max(
+    500,
+    Math.min(4000, Math.floor(TAILLE_VISEE_KBIT / secondes) - AUDIO_KBPS),
+  );
+
   await ffmpeg(
     [
       '-i',
@@ -547,14 +562,18 @@ export async function muxVertical(
       // guillemets, ffmpeg y coupait la chaine de filtres, et aucune
       // version verticale n'etait jamais produite.
       "crop='min(iw,ih*9/16)':ih:(iw-ow)/2:0," +
-        'scale=1080:1920:flags=lanczos:force_original_aspect_ratio=decrease,' +
-        'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1',
+        'scale=720:1280:flags=lanczos:force_original_aspect_ratio=decrease,' +
+        'pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1',
       '-c:v',
       'libx264',
       '-preset',
       'veryfast',
       '-crf',
-      '21',
+      '23',
+      '-maxrate',
+      `${videoKbps}k`,
+      '-bufsize',
+      `${videoKbps * 2}k`,
       '-pix_fmt',
       'yuv420p',
       '-c:a',

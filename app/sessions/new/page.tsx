@@ -3,9 +3,18 @@ import { currentUser } from '@/lib/supabase/server';
 import { displayNameFromEmail } from '@/lib/utils';
 import { NewSessionForm } from './new-session-form';
 
-export default async function NewSessionPage() {
-  const user = await currentUser();
+export default async function NewSessionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ pour?: string }>;
+}) {
+  const [user, params] = await Promise.all([currentUser(), searchParams]);
   if (!user) redirect('/login');
 
-  return <NewSessionForm displayName={displayNameFromEmail(user.email)} />;
+  return (
+    <NewSessionForm
+      displayName={displayNameFromEmail(user.email)}
+      pourCommunaute={params.pour === 'communaute'}
+    />
+  );
 }

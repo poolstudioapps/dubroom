@@ -2,22 +2,24 @@
 
 import Link from 'next/link';
 
+import { CookieSettingsButton } from '@/components/cookie-consent';
 import { LocalePicker } from '@/components/locale-picker';
-import { ThemePicker } from '@/components/theme-picker';
 import { APP_NAME } from '@/config/strings';
 import { useT } from '@/lib/i18n';
+
+const LIEN =
+  'rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white';
 
 /**
  * Pied de page.
  *
- * Il porte deux choses : les liens obligatoires, et le rappel du cadre
- * d'usage. Ce dernier n'est pas decoratif — le produit manipule des
+ * Il porte trois choses : les liens obligatoires — dont les cookies et
+ * le moyen de revenir sur son choix —, le rappel du cadre d'usage, et la
+ * langue. Le cadre d'usage n'est pas decoratif : le produit manipule des
  * extraits d'oeuvres protegees, et c'est le caractere prive et non
  * diffuse de l'usage qui le rend tenable (PRD §14).
  *
- * Aucune largeur ici : c'est le gabarit qui la decide, et il l'a deja
- * fixee pour le reste de la page. Un `max-w` en plus donnait un pied de
- * page decale de ses propres contenus sur les pages legales.
+ * Aucune largeur ici : c'est le gabarit qui la decide.
  */
 export function Footer() {
   const t = useT();
@@ -31,31 +33,23 @@ export function Footer() {
         </p>
 
         <nav
-          aria-label="Liens de bas de page"
+          aria-label={t.legal.footerNav}
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs"
         >
-          <Link
-            href="/mentions-legales"
-            className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
-          >
+          <Link href="/mentions-legales" className={LIEN}>
             {t.legal.mentions}
           </Link>
-          <Link
-            href="/conditions"
-            className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
-          >
+          <Link href="/conditions" className={LIEN}>
             {t.legal.terms}
           </Link>
-          <Link
-            href="/confidentialite"
-            className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
-          >
+          <Link href="/confidentialite" className={LIEN}>
             {t.legal.privacy}
           </Link>
-          <a
-            href={`mailto:${t.legal.contactEmail}`}
-            className="rounded-sm py-1 text-[oklch(0.88_0.06_200)] underline underline-offset-4 hover:text-white"
-          >
+          <Link href="/cookies" className={LIEN}>
+            {t.legal.cookies}
+          </Link>
+          <CookieSettingsButton className={LIEN} />
+          <a href={`mailto:${t.legal.contactEmail}`} className={LIEN}>
             {t.legal.contact}
           </a>
           <span className="py-1 text-[oklch(0.7_0.03_300)]">
@@ -63,16 +57,10 @@ export function Footer() {
           </span>
         </nav>
 
-        {/*
-          Le choix de la langue sur sa propre ligne, avec un cadre.
-          Glisse entre les liens legaux, il se lisait comme l'un d'eux et
-          personne ne le voyait.
-        */}
-        {/* Les deux reglages de confort au meme endroit : la langue et
-            l'apparence se cherchent au meme moment, en bas de page. */}
+        {/* La langue sur sa propre ligne, avec un cadre : glissee entre
+            les liens legaux, elle se lisait comme l'un d'eux. */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
           <LocalePicker />
-          <ThemePicker />
         </div>
       </div>
     </footer>

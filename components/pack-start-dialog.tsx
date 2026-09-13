@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CircleHelp, ExternalLink, FileVideo, MonitorDown, Upload } from 'lucide-react';
 
 import { PhaseProgress } from '@/components/scene/phase-progress';
-import { Alert, Badge, Button, Dialog } from '@/components/ui';
+import { Alert, Button, Dialog } from '@/components/ui';
 import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
 import { humanizeError } from '@/lib/errors';
@@ -30,17 +30,13 @@ import { VIDEO_ACCEPT, checkVideoFile } from '@/lib/video-file';
 const ECART_TOLERE_MS = 2000;
 
 /**
- * Doubler une scene du catalogue : d'ou vient la video ?
+ * Doubler une scene du catalogue : on apporte la video, et c'est parti.
  *
- * Une scene publiee ne garde que son lien YouTube et sa preparation. Il
- * y avait un seul chemin, le telechargement par le PC de l'hote, et il
- * echouait en silence des que personne n'avait lance le worker. Il y en
- * a deux, et le plus sur est propose en premier : le joueur apporte le
- * fichier, et tout se prepare en ligne.
- *
- * On montre la duree attendue avant le choix du fichier, et on compare
- * apres : c'est la seule chose qui dise, sans rien lancer, qu'il s'agit
- * bien de la meme video.
+ * Choisir le fichier suffit : l'import demarre des qu'il est verifie, et
+ * la scene s'ouvre sur sa preparation, qui enchaine seule sur le lobby.
+ * Il y avait un second bouton a trouver apres le choix du fichier, qu'on
+ * ratait une fois sur deux. Il ne reste que pour le cas ou la duree ne
+ * colle pas : la on s'arrete, on previent, et on laisse decider.
  */
 export function PackStartDialog({
   pack,
@@ -79,13 +75,15 @@ export function PackStartDialog({
 
   const auto = useMutation({
     mutationFn: (p: Pack) => startFromPack(p.id, nom),
-    onSuccess: (session) => router.push(`/s/${session.code}/lobby`),
+    onSuccess: (session) => router.push(`/s/${session.code}`),
     onError: (e) => setError(humanizeError(e)),
   });
 
   const avecFichier = useMutation({
     mutationFn: ({ p, f }: { p: Pack; f: File }) =>
       startFromPackWithFile(p, f, nom, setProgress),
+    // La scene sait ou elle en est : l'entree la mene a la preparation,
+    // puis au lobby des qu'elle est prete.
     onSuccess: (session) => router.push(`/s/${session.code}`),
     onError: (e) => {
       setProgress(null);
@@ -96,6 +94,7 @@ export function PackStartDialog({
   const occupe = auto.isPending || avecFichier.isPending;
 
   async function choisir(picked: File | null) {
+    if (!pack || occupe) return;
     setError(null);
     setFile(null);
     setDuree(null);
@@ -107,25 +106,29 @@ export function PackStartDialog({
 
     if (problem === 'wrongType') {
       setError(t.create.wrongType);
-    } else if (problem === 'tooLarge') {
-      setError(t.packStart.tooLarge);
-    } else if (problem === 'tooLong') {
-      setError(t.create.durationWarning);
-    } else {
-      setFile(picked);
-      setDuree(durationMs);
+      return;
     }
+    if (problem === 'tooLarge') {
+      setError(t.packStart.tooLarge);
+      return;
+    }
+    if (problem === 'tooLong') {
+      setError(t.create.durationWarning);
+      return;
+    }
+
+    setFile(picked);
+    setDuree(durationMs);
+    const decale = durationMs !== null && Math.abs(durationMs - pack.duration_ms) > ECART_TOLERE_MS;
+    // La bonne video : on n'attend plus rien de la personne.
+    if (!decale) avecFichier.mutate({ p: pack, f: picked });
   }
 
   const recette = pack?.kind === 'url';
-  const ecart = pack && file && duree ? Math.abs(duree - pack.duration_ms) : 0;
+  const decale = !!pack && !!file && duree !== null && Math.abs(duree - pack.duration_ms) > ECART_TOLERE_MS;
 
   return (
-    <Dialog
-      open={!!pack}
-      onClose={occupe ? () => undefined : onClose}
-      title={pack?.title ?? ''}
-    >
+    <Dialog open={!!pack} onClose={occupe ? () => undefined : onClose} title={pack?.title ?? ''}>
       {pack ? (
         <div className="space-y-4">
           {error ? <Alert tone="danger">{error}</Alert> : null}
@@ -144,22 +147,14 @@ export function PackStartDialog({
             </>
           ) : (
             <>
-              <p className="leading-relaxed">
-                {admin ? t.packStart.intro : t.packStart.introMember}
-              </p>
+              <p className="leading-relaxed">{admin ? t.packStart.intro : t.packStart.introMember}</p>
 
-              {/* ── Premier chemin : le fichier ─────────────────────── */}
               <section className="panel space-y-3 p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="flex items-center gap-2 text-sm font-bold text-text">
-                    <FileVideo className="h-4 w-4 text-link" aria-hidden />
-                    {t.packStart.fileTitle}
-                  </h3>
-                  {admin ? <Badge tone="accent">{t.packStart.recommended}</Badge> : null}
-                </div>
-                <p className="text-xs leading-relaxed text-text-muted">
-                  {t.packStart.fileBody}
-                </p>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-text">
+                  <FileVideo className="h-4 w-4 text-link" aria-hidden />
+                  {t.packStart.fileTitle}
+                </h3>
+                <p className="text-xs leading-relaxed text-text-muted">{t.packStart.fileBody}</p>
 
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                   {pack.source_url ? (
@@ -173,8 +168,8 @@ export function PackStartDialog({
                       {t.packStart.openSource}
                     </a>
                   ) : null}
-                  {/* Dans un nouvel onglet : le fichier deja choisi et la
-                      scene ouverte ne doivent pas se perdre pour lire le guide. */}
+                  {/* Dans un nouvel onglet : la scene ouverte ne doit pas se
+                      perdre pour lire le guide. */}
                   <Link
                     href={GUIDE_VIDEO_HREF}
                     target="_blank"
@@ -197,7 +192,7 @@ export function PackStartDialog({
                 />
                 <button
                   type="button"
-                  disabled={occupe}
+                  disabled={occupe || verification}
                   onClick={() => fileInput.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -205,8 +200,8 @@ export function PackStartDialog({
                     void choisir(e.dataTransfer.files?.[0] ?? null);
                   }}
                   className={cn(
-                    'flex min-h-24 w-full flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border-strong px-3 py-4 text-center text-sm text-text-muted transition-colors',
-                    'hover:border-select hover:bg-select/5 hover:text-text disabled:opacity-60',
+                    'flex min-h-28 w-full flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border-strong px-3 py-4 text-center text-sm text-text-muted transition-colors',
+                    'hover:border-select hover:bg-select/5 hover:text-text disabled:cursor-wait',
                     file && 'border-select bg-select/10 text-text',
                   )}
                 >
@@ -229,13 +224,23 @@ export function PackStartDialog({
                   )}
                 </button>
 
-                {file && ecart > ECART_TOLERE_MS ? (
-                  <Alert tone="warn">
-                    {t.packStart.mismatch(
-                      formatDuration(pack.duration_ms),
-                      formatDuration(duree ?? 0),
-                    )}
-                  </Alert>
+                {decale && !avecFichier.isPending ? (
+                  <div className="space-y-2">
+                    <Alert tone="warn">
+                      {t.packStart.mismatch(formatDuration(pack.duration_ms), formatDuration(duree ?? 0))}
+                    </Alert>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="primary"
+                        onClick={() => file && avecFichier.mutate({ p: pack, f: file })}
+                      >
+                        {t.packStart.importAnyway}
+                      </Button>
+                      <Button variant="ghost" onClick={() => fileInput.current?.click()}>
+                        {t.packStart.otherFile}
+                      </Button>
+                    </div>
+                  </div>
                 ) : null}
 
                 {progress !== null ? (
@@ -245,49 +250,35 @@ export function PackStartDialog({
                     valeur={(progress * PART_ENVOI) / 100}
                   />
                 ) : null}
-
-                <Button
-                  variant="primary"
-                  className="w-full"
-                  disabled={!file || auto.isPending}
-                  loading={avecFichier.isPending}
-                  onClick={() => file && avecFichier.mutate({ p: pack, f: file })}
-                >
-                  {t.packStart.fileSubmit}
-                </Button>
               </section>
 
               {admin ? (
                 <>
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-text-faint">
-                <span className="h-px flex-1 bg-border" aria-hidden />
-                {t.packStart.or}
-                <span className="h-px flex-1 bg-border" aria-hidden />
-              </div>
+                  <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-text-faint">
+                    <span className="h-px flex-1 bg-border" aria-hidden />
+                    {t.packStart.or}
+                    <span className="h-px flex-1 bg-border" aria-hidden />
+                  </div>
 
-              {/* ── Second chemin : le PC de l'hote ─────────────────── */}
-              {/* Le texte garde une largeur minimale : sans elle, sur
-                  telephone, il se reduisait a un mot par ligne plutot que de
-                  laisser le bouton passer dessous. */}
-              <section className="flex flex-wrap items-center justify-between gap-3">
-                <div className="min-w-[13rem] flex-1 space-y-0.5">
-                  <h3 className="flex items-center gap-2 text-sm font-bold text-text">
-                    <MonitorDown className="h-4 w-4 text-text-faint" aria-hidden />
-                    {t.packStart.autoTitle}
-                  </h3>
-                  <p className="text-xs leading-relaxed text-text-muted">
-                    {t.packStart.autoBody}
-                  </p>
-                </div>
-                <Button
-                  variant="secondary"
-                  disabled={avecFichier.isPending}
-                  loading={auto.isPending}
-                  onClick={() => auto.mutate(pack)}
-                >
-                  {t.packStart.autoSubmit}
-                </Button>
-              </section>
+                  {/* Le texte garde une largeur minimale : sans elle, sur
+                      telephone, il se reduisait a un mot par ligne. */}
+                  <section className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="min-w-[13rem] flex-1 space-y-0.5">
+                      <h3 className="flex items-center gap-2 text-sm font-bold text-text">
+                        <MonitorDown className="h-4 w-4 text-text-faint" aria-hidden />
+                        {t.packStart.autoTitle}
+                      </h3>
+                      <p className="text-xs leading-relaxed text-text-muted">{t.packStart.autoBody}</p>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      disabled={avecFichier.isPending}
+                      loading={auto.isPending}
+                      onClick={() => auto.mutate(pack)}
+                    >
+                      {t.packStart.autoSubmit}
+                    </Button>
+                  </section>
                 </>
               ) : null}
             </>

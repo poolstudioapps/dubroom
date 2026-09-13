@@ -50,8 +50,9 @@ export const zh = {
     subtitle: '你发布过的片段。谁都可以再玩，只有你能撤下来。',
     sceneCount: (n: number) => `已发布 ${n} 个片段`,
     emptyTitle: '你还没发布过任何东西',
-    emptyBody:
-      '用链接导入的片段，做完之后可以发布：进入社区的只有链接和切分，视频不会跟着走。',
+    emptyBody: '完成一个场景后，在结果页面发布：准备数据会加入社区，不包括视频。',
+    kicker: '我的素材包',
+    browseAll: '浏览社区',
   },
 
   home: {
@@ -309,13 +310,26 @@ export const zh = {
     commentDelete: '删除',
     commentDeleteConfirm: '删除这条评论？',
     commentCharsLeft: (n: number) => `还剩 ${n} 个字符`,
-  },
-
-  theme: {
-    cinema: '影院',
-    label: '外观',
-    retro: '复古',
-    modern: '现代',
+    kicker: '社区',
+    createPack: '创建素材包',
+    myPacksCta: '我的素材包',
+    howTitle: '把场景加入目录',
+    howSteps: [
+      {
+        title: '导入你的视频',
+        body: '任意来源都能创建新场景。Dub’Up 会分离人声并切分台词。',
+      },
+      {
+        title: '和朋友一起配音',
+        body: '检查角色，邀请小组，录音，然后开始渲染。',
+      },
+      {
+        title: '发布素材包',
+        body: '在结果页面填写标题、语言、类型和标签。加入社区的只有准备数据，从不包括视频。',
+      },
+    ],
+    stats: (scenes: number, roles: number, langs: number) =>
+      `${scenes} 个场景 · ${roles} 个角色 · ${langs} 种语言`,
   },
 
   terms: {
@@ -339,6 +353,8 @@ export const zh = {
     usageNotice: '仅限受邀者之间的私人使用。任何内容都不公开传播，也不被收录。',
     contact: '联系',
     contactEmail: 'ienders.pro@gmail.com',
+    cookies: 'Cookie',
+    footerNav: '页脚链接',
   },
 
   status: {
@@ -480,6 +496,8 @@ export const zh = {
     ],
     adminBadge: '管理员',
     shareLater: '渲染完成后，你可以带上语言、类型和标签把场景发布到社区。',
+    communityTitle: '为社区创建素材包',
+    communityBody: '像平常一样导入视频并准备场景。渲染完成后，一键即可发布。',
   },
 
   ingest: {
@@ -670,6 +688,7 @@ export const zh = {
     waitAway: '还没到',
     waitSomeAway: (names: string) => `大家都录完了。还不在这个界面的人：${names}。你可以等一等，或者直接开始。`,
     launchAnyway: '不等了，直接开始',
+    clipsNav: '跳转到片段',
   },
 
   progress: {
@@ -702,8 +721,12 @@ export const zh = {
     queued:
       '正在等待 worker。',
     frozen: '片段已经定下来了：录音不能再改。',
-    failed: '出片失败了。',
+    failed: '剪辑未能完成。',
     retry: '重新出片',
+    failedTitle: '渲染失败',
+    failedHost: '你的录音完好无损：请重新开始渲染。如果再次失败，请把下面的详情告诉管理员。',
+    failedGuest: '你们的录音完好无损。主持人可以重新开始渲染。',
+    failedDetail: '技术详情',
   },
 
   result: {
@@ -714,7 +737,7 @@ export const zh = {
     formatWideHint: '给电脑屏幕或电视看。',
     formatVertical: '竖版',
     formatVerticalHint: '居中裁切，适合快拍和 Reels。',
-    formatVerticalMissing: '这个片段是在自动裁切之前合成的。重新合成一次就能拿到。',
+    formatVerticalMissing: '此场景没有手机版。',
     share: '分享',
     shareHelp: '在手机上点分享会打开系统的分享面板，装了的抖音、Instagram 都在里面。',
     shareUnsupported: '这个浏览器不支持分享文件。先下载，再到应用里发。',
@@ -730,22 +753,22 @@ export const zh = {
 
   packStart: {
     intro: '目录只保存了这个场景的准备数据：需要自备视频。有两种方式。',
-    recommended: '推荐',
-    fileTitle: '自己导入视频',
-    fileBody: '找到这个场景的视频，来源不限，然后把文件拖到这里，任意格式均可。大约两分钟即可在线准备完毕，素材包的台词和角色会原样沿用。',
+    fileTitle: '导入并配音',
+    fileBody: '拖入场景的视频，来源和格式都不限：导入会自动开始，然后打开场景。素材包的台词和角色会原样沿用。',
     openSource: '查看原始视频',
     howTo: '如何获取文件？',
     drop: '把视频拖到这里，或点击选择',
     expected: (d: string) => `预期时长：${d} · 任意视频格式，最大 50 MB`,
     mismatch: (expected: string, got: string) => `这个文件时长 ${got}，素材包的场景时长 ${expected}。如果不是完全相同的视频，台词会对不上。`,
     tooLarge: '文件太大：最大 50 MB。请以 720p 或 480p 重新导出视频。',
-    fileSubmit: '导入并配音',
     or: '或',
     autoTitle: '自动下载',
     autoBody: '由主持人的电脑从 YouTube 下载视频。那台电脑上需要运行 start.bat。',
     autoSubmit: '开始下载',
     mediaBody: '这个场景保存在这里，可以立即开始。',
     introMember: '目录只保存了这个场景的准备数据：准备好视频，就会用素材包的台词和角色在线完成准备。',
+    importAnyway: '仍然导入',
+    otherFile: '选择其他文件',
   },
 
   guide: {
@@ -821,11 +844,62 @@ export const zh = {
 
   guideHub: {
     title: '指南与帮助',
-    body: '准备场景、和朋友一起配音、拿到成品所需的一切。',
+    body: '导入场景、准备、与朋友一起配音并分享所需的一切。',
     guidesTitle: '指南',
     readGuide: '阅读指南',
     videoGuideSummary: '从任意来源获取视频，确认与台词匹配，然后导入。',
     readingTime: '约 5 分钟',
+    heroCreate: '创建场景',
+    heroCommunity: '浏览社区',
+    journeyTitle: '一个场景，从头到尾',
+    journey: [
+      {
+        title: '导入',
+        body: '任意来源的视频，或目录中的场景。',
+      },
+      {
+        title: '准备',
+        body: '检查角色和台词，然后开放房间。',
+      },
+      {
+        title: '配音',
+        body: '每个人戴上耳机录制自己的台词。',
+      },
+      {
+        title: '分享',
+        body: '下载成品，并为他人发布素材包。',
+      },
+    ],
+    guidesSubtitle: '从视频到发布素材包，每一步都有指南。',
+    tipsTitle: '改变一切的好习惯',
+    tips: [
+      {
+        title: '一定要戴耳机',
+        body: '不戴耳机，音乐会被麦克风录进去，成品里会听到两遍。',
+      },
+      {
+        title: '先听原声',
+        body: '原台词的节奏是你最好的提示。',
+      },
+      {
+        title: '交给自动对齐',
+        body: '你的录音会自动对齐到原声的位置。',
+      },
+      {
+        title: '带效果重听',
+        body: '播放录音时，声音和成品里的一模一样。',
+      },
+      {
+        title: '房间只开一小时',
+        body: '开放超过一小时的房间会关闭，主持人可以重新开放。',
+      },
+      {
+        title: '尽快下载成品',
+        body: '最终视频在剪辑一小时后删除。',
+      },
+    ],
+    finalTitle: '准备好你的第一个场景了吗？',
+    finalBody: '导入视频或从目录中选择场景：几分钟后房间就会开放。',
   },
 
   admin: {
@@ -837,6 +911,138 @@ export const zh = {
     promote: '设为管理员',
     demote: '取消管理员',
     noAccount: '尚未登录',
+  },
+
+  guides: {
+    back: '全部指南',
+    related: '其他指南',
+    noteTitle: '小贴士',
+    studio: {
+      title: '在工作室录出好声音',
+      summary: '耳机、先听原声、声音控制台：让台词听起来自然的要点。',
+      intro: '耳机、麦克风、对齐、声音控制台：让台词在成品中听起来自然的一切。几分钟就能从“还行吧”变成“像真的配音”。',
+      readingTime: '阅读约 4 分钟',
+      stepsTitle: '四个要点',
+      steps: [
+        {
+          title: '戴上耳机',
+          body: '录音时你只会听到场景的音乐。不戴耳机，麦克风会录进音乐，成品里会出现两遍。有线耳机还能避免蓝牙延迟。',
+        },
+        {
+          title: '先听原声',
+          body: '播放原场景会重放原台词。掌握节奏和呼吸，之后节奏条会提示你何时开口。',
+        },
+        {
+          title: '录音后重听',
+          body: '麦克风只在你的台词期间打开。录音会叠在场景上播放，与成品完全一致，包括效果。想录几遍都可以。',
+        },
+        {
+          title: '在控制台调整声音',
+          body: '音量、混响、音高、音准：每项设置只作用于当前录音，并立即可听。麦克风偏移可以修正稍早或稍晚的录音。',
+        },
+      ],
+      checklistTitle: '开始渲染之前',
+      checklist: [
+        '你的每句台词都有录音',
+        '你重听了拿不准的录音',
+        '各条录音的音量相近',
+        '所有人都在等待界面',
+      ],
+      note: '自动对齐会把每条录音与原声比较，并放到正确的位置：不必追求毫秒级精准，专注于表演就好。',
+      ctaTitle: '准备好录音了吗？',
+      ctaBody: '创建一个场景，或从目录中选一个。',
+      ctaLabel: '创建场景',
+    },
+    prepare: {
+      title: '在开放房间前准备场景',
+      summary: '重命名角色、合并重复、修改台词：邀请之前先把场景整理好。',
+      intro: '导入后，Dub’Up 会识别角色并切分台词。花几分钟检查一下，每个人都会清楚知道自己要演什么。',
+      readingTime: '阅读约 3 分钟',
+      stepsTitle: '四个步骤',
+      steps: [
+        {
+          title: '重命名角色',
+          body: '识别出的声音使用通用名称。给它们起角色名：玩家在房间里选择的就是这个名字。',
+        },
+        {
+          title: '合并重复',
+          body: '同一个声音可能被分成两个角色，比如先低语后大喊。把它们合并，让一位玩家来配。',
+        },
+        {
+          title: '修改台词',
+          body: '台词会在节奏条中滚动：错字或漏字在录音时很显眼。改正它，或删除无用的台词：它的原声会被保留。',
+        },
+        {
+          title: '开放房间',
+          body: '分享代码或链接。每人选择一个角色，没人选的角色保留原声。房间一小时后自动关闭。',
+        },
+      ],
+      checklistTitle: '可以直接开玩的场景',
+      checklist: [
+        '每个角色都有角色名',
+        '没有声音被分成两个角色',
+        '台词清晰、没有错字',
+        '无用的台词已删除',
+      ],
+      note: '从目录中选取的场景已经准备好：导入视频后就会直接进入房间。',
+      ctaTitle: '有要准备的场景吗？',
+      ctaBody: '导入视频：角色识别需要两到三分钟。',
+      ctaLabel: '创建场景',
+    },
+    publish: {
+      title: '与社区分享场景',
+      summary: '标题、语言、类型和标签：发布场景，让其他小组也能玩。',
+      intro: '准备得好的场景也能帮到其他小组。发布只会分享准备数据：角色、台词和时间点。从不分享视频，也从不分享你们的声音。',
+      readingTime: '阅读约 3 分钟',
+      stepsTitle: '四个步骤',
+      steps: [
+        {
+          title: '完成场景',
+          body: '渲染完成后，在结果页面发布。由主持人发布。',
+        },
+        {
+          title: '填写信息',
+          body: '标题、所说语言和类型为必填项，它们是目录的筛选条件。添加 #starwars 之类的标签，方便别人搜索到。',
+        },
+        {
+          title: '在社区中找到它',
+          body: '场景有自己的页面：角色阵容、台词开头、投票和评论。你可以在该页面编辑，或在“我的素材包”中移除。',
+        },
+        {
+          title: '让别人来玩',
+          body: '每个小组自备视频：准备数据原样沿用，几分钟后房间就会开放。',
+        },
+      ],
+      checklistTitle: '好的信息',
+      checklist: [
+        '一眼就能认出的标题',
+        '片段中实际使用的语言',
+        '两三个标签：作品、角色、风格',
+        '发布前检查过的准备数据',
+      ],
+      note: '评分高的素材包会排在目录前面。投票针对的是准备质量，而不是电影本身。',
+      ctaTitle: '想看看已有哪些场景？',
+      ctaBody: '浏览已发布的场景，或者创建第一个缺少的场景。',
+      ctaLabel: '查看社区',
+    },
+  },
+
+  cookies: {
+    bannerTitle: '关于 Cookie',
+    bannerBody: 'Dub’Up 只使用保持登录所必需的 Cookie。经你同意后，还会记住你的偏好：语言、登录地址和工作室设置。没有广告，没有追踪。',
+    policyLink: '了解更多',
+    customize: '自定义',
+    refuse: '拒绝',
+    accept: '全部接受',
+    settingsTitle: '管理 Cookie',
+    settingsBody: '选择 Dub’Up 可以在你的浏览器中保存的内容。你可以随时在每个页面底部更改。',
+    essentialTitle: '必要',
+    essentialBody: '你的登录会话和这项选择。必不可少，始终开启。',
+    preferencesTitle: '偏好',
+    preferencesBody: '在多次访问之间记住你的语言、上次的登录地址和工作室设置。',
+    save: '保存我的选择',
+    noTracking: '没有访问统计，也没有广告。',
+    manage: '管理 Cookie',
   },
 
   errors: {

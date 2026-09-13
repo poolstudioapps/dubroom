@@ -7,6 +7,7 @@ import { KeyRound } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Alert, Button, Card, Input, Label } from '@/components/ui';
 
+import { rememberPreference } from '@/lib/consent';
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -40,7 +41,7 @@ export function PasswordCard({ bare }: { bare?: boolean } = {}) {
     onSuccess: () => {
       setPassword('');
       setDone(true);
-      window.localStorage.setItem('dubup.loginMode', 'password');
+      rememberPreference('dubup.loginMode', 'password');
     },
     onError: (e) => setError(humanizeError(e)),
   });

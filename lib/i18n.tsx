@@ -13,7 +13,8 @@ import { pt } from '@/config/locales/pt';
 import { ru } from '@/config/locales/ru';
 import { zh } from '@/config/locales/zh';
 import type { Dictionary, Locale } from '@/config/i18n';
-import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALE_MAX_AGE } from '@/config/i18n';
+import { DEFAULT_LOCALE } from '@/config/i18n';
+import { localeCookie } from '@/lib/consent';
 
 /**
  * Les dictionnaires disponibles cote client.
@@ -86,6 +87,8 @@ export function useLocale(): Locale {
  * revoie la requete avec le nouveau cookie.
  */
 export function setLocale(locale: Locale) {
-  document.cookie = `${LOCALE_COOKIE}=${locale};path=/;max-age=${LOCALE_MAX_AGE};samesite=lax`;
+  // Persistant si les preferences sont acceptees, le temps de la visite
+  // sinon : voir `lib/consent.ts`.
+  document.cookie = localeCookie(locale);
   window.location.reload();
 }

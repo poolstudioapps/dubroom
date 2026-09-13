@@ -50,15 +50,12 @@ export async function runIngest(
   const workMp4 = path.join(workDir, 'work.mp4');
 
   /*
-   * Une preparation YouTube se fait en deux temps, sur deux machines.
+   * Une preparation YouTube deja telechargee repart du stockage.
    *
-   * Le PC de l'hote telecharge et normalise, parce que YouTube refuse les
-   * adresses de Google ; puis il met la video en ligne et rend la tache a
-   * la file. Google la reprend ici, video deja normalisee : il n'a plus
-   * qu'a la recuperer dans le stockage.
-   *
-   * Reserve aux liens : un fichier importe peut etre remplace entre deux
-   * essais, et la video d'un essai precedent ne serait plus la sienne.
+   * La video normalisee est mise en ligne des la fin du telechargement :
+   * si la preparation echoue ensuite et se relance, on ne retelecharge
+   * pas. Reserve aux liens : un fichier importe peut etre remplace entre
+   * deux essais, et la video d'un essai precedent ne serait plus la sienne.
    */
   const reprise =
     session.source_type === 'youtube' && !!session.video_path && !!session.duration_ms;
@@ -115,16 +112,9 @@ export async function runIngest(
       duration_ms: info.durationMs,
     });
     logger.info('vidéo normalisée', { step: 'encode', durationMs: info.durationMs });
-
-    // Le PC a fait ce que lui seul pouvait faire : la suite est pour
-    // Google. S'il ne repond pas, ce PC la reprendra apres le delai.
-    if (
-      session.source_type === 'youtube' &&
-      config.role === 'local' &&
-      config.cloudGraceSeconds > 0
-    ) {
-      return 'relais';
-    }
+    // Plus de relais vers Google apres le telechargement : une scene
+    // YouTube reste sur ce PC de bout en bout (migration
+    // 20260926090000_youtube_worker_local).
   }
 
   // ── 3. Extraction audio ─────────────────────────────────────────────

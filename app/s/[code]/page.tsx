@@ -1,15 +1,18 @@
 import { SceneRoute } from '@/components/scene-route';
-import { IngestScreen } from '@/components/scene/ingest-screen';
 
 /**
- * Point d'entree d'un lien partage. On ne connait pas encore le statut
- * de la scene ici : ScenePage le lit puis redirige vers le bon ecran.
+ * Point d'entree d'un lien partage.
+ *
+ * Il n'affiche aucun ecran : il lit le statut de la scene et envoie
+ * directement sur le bon. Il montrait l'ecran de preparation le temps de
+ * rediriger, ce qui faisait passer une scene en studio pour une scene
+ * encore en cours d'import.
  */
 export default async function Page({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   return (
-    <SceneRoute code={code} expect="ingest">
-      <IngestScreen />
+    <SceneRoute code={code} expect={null}>
+      {null}
     </SceneRoute>
   );
 }

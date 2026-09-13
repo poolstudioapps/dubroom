@@ -24,26 +24,11 @@
  * mise en page.
  */
 
-'use client';
-
-import { useLiveTheme } from '@/lib/theme';
-
 function Art({ nom, eager }: { nom: string; eager?: boolean }) {
-  // Chaque peau a sa serie : la premiere est violette et matierée, la
-  // seconde bleu nuit et plate. Servir l'une dans l'autre jurerait plus
-  // que de ne rien mettre.
-  const theme = useLiveTheme();
-  const dossier =
-    theme === 'modern'
-      ? '/illustrations/modern'
-      : theme === 'cinema'
-        ? '/illustrations/cinema'
-        : '/illustrations';
-
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`${dossier}/${nom}.webp`}
+      src={`/illustrations/cinema/${nom}.webp`}
       alt=""
       width={1000}
       height={563}

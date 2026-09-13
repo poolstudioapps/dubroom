@@ -50,7 +50,7 @@ export function IngestScreen() {
       <JobProgress
         state={jobState.data}
         kind="ingest"
-        needsLocal={session.source_type === 'youtube' && !session.video_path}
+        needsLocal={session.source_type === 'youtube'}
         // Une scene importee a deja fait l'envoi de sa video : la barre
         // reprend la ou celle de l'import s'est arretee.
         depart={session.source_type === 'upload' ? PART_ENVOI : 0}

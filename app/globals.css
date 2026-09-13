@@ -534,525 +534,6 @@
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════
-   PEAU MODERNE
-
-   Le produit s'adresse a deux publics. La peau d'origine parle a qui a
-   grandi avec les jeux televises du samedi soir : un poste, des plaques
-   vissees, des boutons qui s'enfoncent. Celle-ci vise l'autre bout, les
-   jeux de soiree en ligne d'aujourd'hui — Gartic Phone et sa famille.
-
-   Ce qui fait ce dessin-la, et qu'une premiere version avait manque en
-   se contentant d'aplats sages sur bleu nuit :
-
-    - le violet sature partout, jusqu'au bord de l'ecran, avec une lueur
-      magenta derriere. Pas un fond neutre sur lequel on pose des
-      cartes : une couleur qui crie ;
-    - un cadre rose vif de quatre pixels autour du plateau de jeu, avec
-      sa propre lueur. C'est la signature de ces jeux, celle qu'on
-      reconnait sur une vignette ;
-    - des cartes blanches franches posees dessus, tres arrondies, avec
-      une ombre dure sous elles. Le contraste blanc sur violet fait tout
-      le travail de hierarchie ;
-    - des boutons bonbon : couleur pleine, grand rayon, une levre
-      sombre de quatre pixels qu'on enfonce au clic ;
-    - des titres en capitales grasses cernees de violet fonce, comme
-      une enseigne de jeu.
-
-   L'INVERSION DE L'ENCRE, qui est la seule vraie difficulte.
-
-   L'ecran du poste est clair dans la peau d'origine et sombre ici. Le
-   texte pose dessus doit donc s'eclaircir, mais le texte pose dans une
-   carte blanche doit rester sombre : le meme jeton, `--color-text`, a
-   besoin de deux valeurs au meme instant.
-
-   C'est exactement ce que fait une variable CSS. Les cartes redeclarent
-   la serie claire pour elles et leurs descendants, et toutes les classes
-   d'utilitaires — `text-text-muted`, `bg-surface-sunken`, `border-border`
-   — suivent sans qu'aucun ecran soit retouche. Aucune regle ne cible un
-   ecran en particulier : s'il fallait en ecrire une, ce serait le signe
-   que les deux peaux ont commence a diverger.
-   ═══════════════════════════════════════════════════════════════════ */
-
-[data-theme='modern'] {
-  /* ── Le salon ────────────────────────────────────────────────────
-     Violet sature, vire magenta. La lueur du fond est posee dans la
-     couche `base` plus bas. */
-  --color-room: oklch(0.42 0.2 315);
-  --color-room-deep: oklch(0.27 0.16 300);
-  /* L'interieur du cadre, et le rose vif qui en fait le tour. */
-  --color-bezel: oklch(0.36 0.17 302);
-  --color-bezel-dark: oklch(0.66 0.26 350);
-  --color-console: oklch(0.7 0.17 200);
-  --color-console-dark: oklch(0.55 0.15 200);
-
-  /* ── Le plateau ──────────────────────────────────────────────────
-     Violet profond. Ce n'est plus une feuille de papier mais une table
-     de jeu, et les cartes se posent dessus. */
-  --color-screen: oklch(0.33 0.15 300);
-  --color-surface: oklch(0.4 0.15 300);
-  --color-surface-raised: oklch(0.44 0.15 300);
-  --color-surface-sunken: oklch(0.27 0.13 300);
-  --color-border: oklch(0.5 0.15 305);
-  --color-border-strong: oklch(0.64 0.2 330);
-
-  /* Clair sur violet. `faint` reste au-dessus de 4.5 sur le plateau. */
-  --color-text: oklch(0.99 0.01 300);
-  --color-text-muted: oklch(0.88 0.05 305);
-  --color-text-faint: oklch(0.78 0.08 312);
-
-  /* ── L'accent ────────────────────────────────────────────────────
-     Le rose du cadre, repris pour l'action.
-
-     Un vert trainait ici, herite d'une autre peau. Il ne se rattachait
-     a rien : cette scene-ci vit entre le violet 300, le cyan 200 et le
-     rose 350, et un accent a 148 tombait au milieu comme une faute de
-     frappe. Le rose, lui, est deja la couleur du cadre, de la LED et de
-     la selection — en faire aussi celle des boutons donne une peau d'un
-     seul tenant, ou tout ce qui est vivant est rose.
-
-     Mesure : texte blanc sur ce rose donne 4.81, un cheveu au-dessus du
-     vert qu'il remplace (4.71). Rien n'est perdu en lisibilite. */
-  --color-accent: oklch(0.58 0.25 350);
-  --color-accent-hover: oklch(0.52 0.25 350);
-  --color-accent-ink: oklch(1 0 0);
-  --color-link: oklch(0.86 0.15 200);
-  --color-select: oklch(0.7 0.24 350);
-  /* L'encre des pastilles va dans l'autre sens que sur la peau claire.
-
-     Une pastille, c'est l'accent a 30 % pose sur le plateau. Sur du
-     papier ce melange est presque blanc et reclame une encre sombre ;
-     ici le plateau est un violet profond, le melange reste sombre, et
-     une encre sombre par-dessus donnait 1.09 de contraste — autant dire
-     du texte invisible. Il faut donc l'inverse : une encre claire, qui
-     remonte a 6.3. */
-  --color-badge-accent-ink: oklch(0.92 0.08 350);
-
-  --color-ok: oklch(0.62 0.17 150);
-  --color-warn: oklch(0.72 0.16 78);
-  --color-danger: oklch(0.58 0.23 22);
-  --color-led: oklch(0.7 0.24 350);
-
-  --radius-card: 1.25rem;
-}
-
-@layer base {
-  [data-theme='modern'] body {
-    /* Deux lueurs rondes plutot qu'un degre de degrade : c'est ce qui
-       donne la profondeur de ces fonds-la. Le grain disparait, la
-       couleur le remplace. */
-    background-color: var(--color-room-deep);
-    background-image:
-      radial-gradient(
-        ellipse 70% 50% at 50% -5%,
-        oklch(0.62 0.27 350 / 0.55),
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 60% 45% at 85% 100%,
-        oklch(0.55 0.24 275 / 0.45),
-        transparent 70%
-      ),
-      linear-gradient(160deg, var(--color-room) 0%, var(--color-room-deep) 65%);
-  }
-
-  /* Les titres quittent la condensee d'enseigne pour l'arrondie du
-     texte, en tres gras : c'est la lettre de ces jeux-la. */
-  [data-theme='modern'] h1 {
-    font-family: var(--font-sans);
-    font-weight: 900;
-    letter-spacing: 0.01em;
-  }
-}
-
-@layer utilities {
-  /* ── Le bouton bonbon ────────────────────────────────────────────
-     Meme geste que la peau d'origine — une levre sombre qu'on enfonce
-     — mais plus rond, plus epais, et avec une lueur de couleur
-     dessous. */
-  [data-theme='modern'] .btn-3d {
-    border-radius: 1rem;
-    box-shadow:
-      0 5px 0 0 var(--btn-lip, oklch(0.32 0.12 300)),
-      0 10px 20px -8px oklch(0.1 0.08 300 / 0.75);
-    transition:
-      transform 90ms cubic-bezier(0.2, 0, 0, 1),
-      box-shadow 90ms ease-out,
-      background-color 120ms ease-out;
-  }
-
-  [data-theme='modern'] .btn-3d:active:not(:disabled) {
-    transform: translateY(5px);
-    box-shadow: 0 0 0 0 var(--btn-lip, oklch(0.32 0.12 300));
-  }
-
-  [data-theme='modern'] .btn-3d:disabled {
-    box-shadow: 0 4px 0 0 oklch(0.35 0.06 300);
-  }
-
-  /* Le bouton principal : le vert de depart de ces jeux, sur une levre
-     de vert sombre. La levre par defaut suit l'encre du bouton, et
-     l'encre est ici du blanc : sans cette reprise, le bouton reposait
-     sur une marche blanche. */
-  [data-theme='modern'] .btn-primary {
-    --btn-lip: oklch(0.34 0.13 148);
-  }
-
-  /* Le bouton secondaire ne peut pas etre une surface du theme : les
-     surfaces se retournent avec l'encre, et il serait violet sur le
-     plateau puis blanc sur une carte blanche. Il a donc sa couleur a
-     lui, un lavande clair qui tient des deux cotes. */
-  [data-theme='modern'] .btn-secondary {
-    background-color: oklch(0.92 0.045 320) !important;
-    color: oklch(0.26 0.12 305) !important;
-    --btn-lip: oklch(0.7 0.13 322);
-  }
-
-  [data-theme='modern'] .btn-secondary:hover:not(:disabled) {
-    background-color: oklch(0.96 0.03 320) !important;
-  }
-
-  /* Un bouton qui porte la couleur d'une marque ne suit pas la peau :
-     le bleu de Discord est ce qui le rend reconnaissable, et le
-     repeindre en lavande le deguise en bouton ordinaire. */
-  [data-theme='modern'] .btn-brand.btn-secondary,
-  [data-theme='modern'] .btn-brand.btn-secondary:hover:not(:disabled) {
-    background-color: #5865f2 !important;
-    color: oklch(1 0 0) !important;
-    --btn-lip: #3b45c4;
-  }
-
-  [data-theme='modern'] .btn-danger {
-    --btn-lip: oklch(0.38 0.17 22);
-  }
-
-  [data-theme='modern'] .btn-record {
-    --btn-lip: oklch(0.38 0.17 25);
-  }
-
-  /* Le bouton discret est partout : sur le plateau violet comme dans
-     une carte blanche. Sa couleur de survol est donc tiree de l'encre
-     du moment, qui vaut du blanc a un endroit et du violet sombre a
-     l'autre. Une valeur fixe faisait un pave blanc sur la carte. */
-  [data-theme='modern'] .btn-ghost {
-    color: var(--color-text-muted) !important;
-  }
-
-  [data-theme='modern'] .btn-ghost:hover:not(:disabled) {
-    background-color: color-mix(
-      in oklch,
-      var(--color-text) 14%,
-      transparent
-    ) !important;
-    color: var(--color-text) !important;
-  }
-
-  /* ── La carte ────────────────────────────────────────────────────
-     Blanc franc sur violet, un grand rayon, une ombre dure dessous.
-     C'est ici que l'encre se retourne : la carte redeclare la serie
-     claire pour tout ce qu'elle contient. */
-  [data-theme='modern'] .plate,
-  [data-theme='modern'] .panel {
-    --color-screen: oklch(1 0 0);
-    --color-surface: oklch(0.96 0.012 300);
-    --color-surface-raised: oklch(1 0 0);
-    --color-surface-sunken: oklch(0.93 0.018 300);
-    --color-border: oklch(0.88 0.02 300);
-    --color-border-strong: oklch(0.76 0.04 300);
-    --color-text: oklch(0.22 0.04 300);
-    --color-text-muted: oklch(0.43 0.04 300);
-    --color-text-faint: oklch(0.5 0.04 305);
-    --color-link: oklch(0.48 0.2 300);
-    --color-select: oklch(0.48 0.2 330);
-
-    background-color: var(--color-screen);
-    background-image: none;
-    color: var(--color-text);
-    border: 0;
-    border-radius: 1.25rem;
-    box-shadow:
-      0 5px 0 0 oklch(0.24 0.11 300 / 0.45),
-      0 22px 40px -24px oklch(0.1 0.08 300 / 0.8);
-  }
-
-  /* Une carte dans une carte n'a pas a refaire l'ombre : elle serait
-     posee sur du blanc et ne dirait plus rien. Un fond a peine gris
-     suffit a la detacher. */
-  [data-theme='modern'] .panel .panel,
-  [data-theme='modern'] .panel .plate,
-  [data-theme='modern'] .plate .panel,
-  [data-theme='modern'] .plate .plate {
-    background-color: var(--color-surface);
-    box-shadow: none;
-    border: 1px solid var(--color-border);
-  }
-
-  /* ── L'enseigne ──────────────────────────────────────────────────
-     Capitales tres grasses, cernees de violet fonce. C'est le titre de
-     ces jeux, et il ne tient que sur un fond sature — sur une carte
-     blanche, le cerne devient une bavure, d'ou la reprise juste
-     apres. */
-  [data-theme='modern'] .signage {
-    font-family: var(--font-sans);
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    color: oklch(1 0 0);
-    text-shadow:
-      0 3px 0 oklch(0.26 0.14 305),
-      0 5px 0 oklch(0.2 0.11 300),
-      0 10px 18px oklch(0.08 0.06 300 / 0.55);
-  }
-
-  [data-theme='modern'] .panel .signage,
-  [data-theme='modern'] .plate .signage {
-    color: var(--color-text);
-    text-shadow: none;
-  }
-
-  /* ── Le plateau de jeu ───────────────────────────────────────────
-     Le meuble de television devient le grand cadre arrondi de ces
-     jeux : un filet rose epais, une lueur de la meme couleur, et
-     l'ecran qui occupe toute la place. */
-  [data-theme='modern'] .tv-frame {
-    border-width: 4px !important;
-    border-color: var(--color-bezel-dark);
-    background-color: var(--color-bezel);
-    border-radius: 2rem;
-    box-shadow:
-      0 0 0 1px oklch(0.35 0.16 320 / 0.8),
-      0 0 60px -10px oklch(0.66 0.26 350 / 0.55),
-      0 30px 70px -28px oklch(0.08 0.06 300 / 0.85) !important;
-    padding: 0.875rem;
-  }
-
-  [data-theme='modern'] .tv-screen {
-    border-radius: 1.5rem;
-    box-shadow: none !important;
-  }
-
-  /* Ces trois-la portent des utilitaires d'affichage (`hidden lg:flex`,
-     `flex`) : sans `!important`, la regle conditionnelle de Tailwind
-     reprend la main au-dela de 1024 px. */
-  [data-theme='modern'] .tv-gloss,
-  [data-theme='modern'] .tv-speaker,
-  [data-theme='modern'] .tv-console {
-    display: none !important;
-  }
-
-  /* ── Les onglets ─────────────────────────────────────────────────
-     Des pilules posees au-dessus du plateau. L'actif est clair et
-     souleve, les autres sont violets et plats. */
-  [data-theme='modern'] .tab {
-    border-radius: 9999px;
-    border-width: 0 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-weight: 800;
-  }
-
-  [data-theme='modern'] .tab-on {
-    background-color: oklch(0.97 0.02 320) !important;
-    color: oklch(0.25 0.12 305) !important;
-    box-shadow: 0 4px 0 0 oklch(0.66 0.26 350);
-  }
-
-  [data-theme='modern'] .tab-off {
-    background-color: oklch(1 0 0 / 0.12) !important;
-    color: oklch(0.92 0.04 320) !important;
-    box-shadow: 0 4px 0 0 oklch(0 0 0 / 0.2);
-  }
-
-  [data-theme='modern'] .tab-off:hover {
-    background-color: oklch(1 0 0 / 0.24) !important;
-  }
-
-  /* ── Le champ de saisie ──────────────────────────────────────────
-     Blanc, arrondi, cerne de violet. Jamais encastre : ces jeux ne
-     creusent rien. */
-  [data-theme='modern'] .ui-input,
-  [data-theme='modern'] .ui-select {
-    border-radius: 0.875rem;
-    border-width: 2px;
-    border-color: oklch(0.78 0.08 320);
-    background-color: oklch(1 0 0) !important;
-    color: oklch(0.22 0.04 300) !important;
-    box-shadow: none !important;
-  }
-
-  [data-theme='modern'] .ui-input::placeholder {
-    color: oklch(0.55 0.04 305);
-    font-style: normal;
-  }
-
-  [data-theme='modern'] .ui-input:focus {
-    border-color: var(--color-select);
-    outline: none;
-  }
-
-  /* ── La pastille et le bandeau ───────────────────────────────────
-     Leur encre est sombre par construction, calculee pour un fond
-     clair. Posees sur le plateau violet elles disparaitraient : on
-     leur donne donc leur propre fond clair, quel que soit l'endroit. */
-  /* On leur donne un fond clair, donc il faut leur rendre l'encre
-     sombre qui va avec — et par le jeton, pas par une couleur ecrite en
-     dur : les tons `ok`, `warn` et `danger` portent deja leur propre
-     encre calculee, et une couleur imposee ici les ecraserait tous. La
-     pastille neutre, elle, lit `text-text-muted`, et c'est cette valeur
-     qu'on redeclare pour elle seule. */
-  [data-theme='modern'] .ui-badge,
-  [data-theme='modern'] .ui-alert {
-    --color-text: oklch(0.22 0.04 300);
-    --color-text-muted: oklch(0.43 0.04 300);
-    --color-border-strong: oklch(0.76 0.04 300);
-  }
-
-  [data-theme='modern'] .ui-badge {
-    /* Le fond est toujours clair ici : l'encre claire de la peau, faite
-       pour le plateau violet, rendait « La tienne » invisible. */
-    --color-badge-accent-ink: oklch(0.45 0.2 350);
-    border-width: 2px;
-    background-color: oklch(0.97 0.02 320) !important;
-    text-transform: uppercase;
-  }
-
-  /* Les pastilles de filtre sont posees sur le plateau violet, hors de
-     toute carte : elles prennent le blanc des champs, et leur propre
-     encre sombre. */
-  [data-theme='modern'] .filtre {
-    --color-text: oklch(0.22 0.04 300);
-    --color-text-faint: oklch(0.5 0.04 305);
-    border-color: oklch(0.78 0.08 320);
-    border-radius: 9999px;
-    background-color: oklch(1 0 0);
-    box-shadow: 0 3px 0 0 oklch(0.24 0.11 300 / 0.45);
-  }
-
-  [data-theme='modern'] .filtre:hover,
-  [data-theme='modern'] .filtre-actif {
-    border-color: oklch(0.66 0.26 350);
-  }
-
-  [data-theme='modern'] .filtre-actif {
-    background-color: oklch(0.96 0.04 350);
-  }
-
-  [data-theme='modern'] .source-onglet {
-    border-radius: 0.875rem;
-    font-weight: 800;
-  }
-
-  [data-theme='modern'] .source-onglet[aria-pressed='true'] {
-    background-color: oklch(0.58 0.25 350);
-    color: oklch(1 0 0);
-    box-shadow: 0 4px 0 0 oklch(0.38 0.18 345);
-  }
-
-  [data-theme='modern'] .ui-alert {
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 1rem;
-    background-color: oklch(0.98 0.012 320) !important;
-  }
-
-  /* ── La jauge ────────────────────────────────────────────────────
-     Une piste claire, un remplissage plein, des bords ronds. */
-  [data-theme='modern'] .ui-progress {
-    height: 1.125rem;
-    border-radius: 9999px;
-    border-width: 0;
-    background-color: color-mix(
-      in oklch,
-      var(--color-text) 18%,
-      transparent
-    ) !important;
-    box-shadow: none !important;
-  }
-
-  [data-theme='modern'] .ui-progress > * {
-    border-radius: 9999px;
-    background-image: none !important;
-  }
-
-  /* ── L'interrupteur ──────────────────────────────────────────────
-     Rond, sans creux, avec une pastille blanche qui glisse. */
-  [data-theme='modern'] .ui-toggle {
-    border-radius: 9999px;
-    border-width: 0;
-    box-shadow: none !important;
-  }
-
-  [data-theme='modern'] .ui-toggle-knob {
-    border-radius: 9999px;
-    border-width: 0;
-    background-color: oklch(1 0 0);
-  }
-
-  /* ── La boite de dialogue ────────────────────────────────────────
-     Le meme cadre rose que le plateau, en plus petit. */
-  [data-theme='modern'] .ui-dialog {
-    border-width: 4px !important;
-    border-color: var(--color-bezel-dark) !important;
-    background-color: var(--color-bezel) !important;
-    border-radius: 1.75rem;
-    padding: 0.75rem;
-    box-shadow: 0 0 60px -10px oklch(0.66 0.26 350 / 0.5);
-  }
-
-  /* ── L'etiquette du menu ─────────────────────────────────────────
-     La diode devient une pastille de couleur pleine, et l'etiquette
-     gravee une simple ligne de texte. */
-  [data-theme='modern'] .ui-menu-label {
-    border-width: 0;
-    background-color: transparent !important;
-    box-shadow: none !important;
-    padding-left: 0;
-  }
-
-  [data-theme='modern'] .led {
-    background: var(--color-led);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-led) 30%, transparent);
-  }
-
-  [data-theme='modern'] .led-on {
-    --color-led: oklch(0.72 0.2 148);
-  }
-
-  /* ── Ce qui n'a pas de sens ici ──────────────────────────────────
-     Le ruban adhesif et la grille du haut-parleur sont deux clins
-     d'oeil au materiel. */
-  [data-theme='modern'] .taped::before,
-  [data-theme='modern'] .taped::after {
-    display: none;
-  }
-
-  [data-theme='modern'] .grille {
-    background-image: none;
-  }
-
-  /* Le curseur du studio : une piste claire et une poignee ronde et
-     rose, assez grosse pour etre attrapee sans viser. */
-  [data-theme='modern'] input[type='range']::-webkit-slider-runnable-track {
-    background: color-mix(in oklch, var(--color-text) 20%, transparent);
-    box-shadow: none;
-  }
-
-  [data-theme='modern'] input[type='range']::-webkit-slider-thumb {
-    border: 0;
-    background: var(--color-select);
-    box-shadow: 0 2px 0 0 oklch(0.4 0.18 350);
-  }
-
-  [data-theme='modern'] input[type='range']::-moz-range-track {
-    background: color-mix(in oklch, var(--color-text) 20%, transparent);
-  }
-
-  [data-theme='modern'] input[type='range']::-moz-range-thumb {
-    border: 0;
-    background: var(--color-select);
-  }
-}
-
 @layer components {
   /*
    * Les icones dessinees, une par peau.
@@ -1076,24 +557,15 @@
   }
 
   .icone-voix {
-    background-image: url('/icones/retro-voix.png');
+    background-image: url('/icones/cinema-voix.png');
   }
   .icone-secret {
-    background-image: url('/icones/retro-secret.png');
+    background-image: url('/icones/cinema-secret.png');
   }
   .icone-fichier {
-    background-image: url('/icones/retro-fichier.png');
+    background-image: url('/icones/cinema-fichier.png');
   }
 
-  [data-theme='modern'] .icone-voix {
-    background-image: url('/icones/modern-voix.png');
-  }
-  [data-theme='modern'] .icone-secret {
-    background-image: url('/icones/modern-secret.png');
-  }
-  [data-theme='modern'] .icone-fichier {
-    background-image: url('/icones/modern-fichier.png');
-  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1380,13 +852,6 @@
     --btn-lip: var(--color-accent-ink);
   }
 
-  [data-theme='modern'] .btn-bascule:hover:not(:disabled),
-  [data-theme='modern'] .btn-bascule:focus-visible {
-    background-color: var(--color-accent) !important;
-    color: var(--color-accent-ink) !important;
-    --btn-lip: oklch(0.38 0.18 345);
-  }
-
   /* L'or ne se fond pas en changeant de fond : un degrade ne s'anime
      pas. Il est donc pose sous le texte, invisible, et c'est son opacite
      qui passe de zero a un. */
@@ -1517,28 +982,6 @@
     .menu-choix {
       animation: none;
     }
-  }
-
-  [data-theme='modern'] .menu-choix {
-    border: 0;
-    border-radius: 1rem;
-    background-color: oklch(1 0 0);
-    color: oklch(0.22 0.04 300);
-    box-shadow:
-      0 5px 0 0 oklch(0.24 0.11 300 / 0.45),
-      0 22px 40px -18px oklch(0.1 0.08 300 / 0.8);
-  }
-
-  [data-theme='modern'] .menu-choix-option {
-    border-radius: 0.75rem;
-  }
-
-  [data-theme='modern'] .menu-choix-option[data-actif='true'] {
-    background-color: oklch(0.95 0.04 350);
-  }
-
-  [data-theme='modern'] .menu-choix-option[aria-selected='true'] {
-    color: oklch(0.52 0.24 350);
   }
 
   [data-theme='cinema'] .menu-choix {
@@ -2226,5 +1669,31 @@
   html.reveal-pret[data-theme='cinema'] [data-reveal] {
     opacity: 1 !important;
     translate: none !important;
+  }
+}
+
+/* ── Le bandeau des cookies ───────────────────────────────────────────
+   Il monte du bas une seule fois, sans rebond : il demande une reponse,
+   pas l'attention. */
+@layer components {
+  .bandeau-cookies {
+    animation: bandeau-monte 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes bandeau-monte {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bandeau-cookies {
+      animation: none;
+    }
   }
 }

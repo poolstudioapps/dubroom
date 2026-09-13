@@ -36,7 +36,14 @@ type Mode = 'upload' | 'pack' | 'youtube';
  * telecharger. La base refuse ce chemin aux autres (`ADMIN_ONLY`) ; l'ecran
  * ne le montre donc pas, plutot que de proposer un bouton qui echouerait.
  */
-export function NewSessionForm({ displayName }: { displayName: string }) {
+export function NewSessionForm({
+  displayName,
+  pourCommunaute = false,
+}: {
+  displayName: string;
+  /** Arrivee par « Créer un pack pour la communauté ». */
+  pourCommunaute?: boolean;
+}) {
   const t = useT();
 
   const router = useRouter();
@@ -136,11 +143,31 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
     <AppShell className="space-y-6 sm:space-y-8">
       <header className="mx-auto w-full max-w-2xl space-y-5 text-center">
         <div className="space-y-2">
-          <h1 className="titre text-3xl sm:text-4xl">{t.create.title}</h1>
+          <h1 className="titre text-3xl sm:text-4xl">
+            {pourCommunaute ? t.create.communityTitle : t.create.title}
+          </h1>
           <p className="text-balance text-sm leading-relaxed text-text-muted">
-            {t.create.subtitle}
+            {pourCommunaute ? t.create.communityBody : t.create.subtitle}
           </p>
         </div>
+
+        {/* Venue du bouton de la communaute : la suite est dite avant de
+            commencer, sinon on cherche en vain un bouton « publier » ici. */}
+        {pourCommunaute ? (
+          <ol className="panel grid gap-3 p-4 text-left sm:grid-cols-3">
+            {t.community.howSteps.map((etape, rang) => (
+              <li key={etape.title} className="flex gap-3 sm:flex-col sm:gap-1.5">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-ink">
+                  {rang + 1}
+                </span>
+                <span className="space-y-0.5">
+                  <span className="block text-sm font-bold text-text">{etape.title}</span>
+                  <span className="block text-xs leading-relaxed text-text-muted">{etape.body}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : null}
 
         {/*
           Un selecteur segmente, pas des boutons : les cases se partagent la

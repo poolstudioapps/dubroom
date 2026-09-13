@@ -43,6 +43,7 @@ import {
 } from '@/lib/audio/voice-fx';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
 import { useMediaUrls, useTakes } from '@/lib/data';
+import { recallPreference, rememberPreference } from '@/lib/consent';
 import { humanizeError } from '@/lib/errors';
 import { useWaitingRoom } from '@/lib/presence';
 import { clipsForParticipant, selectedTakeByClip } from '@/lib/scene-stats';
@@ -54,7 +55,7 @@ import { useNarrowViewport, useShortViewport } from '@/lib/viewport';
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
 /** La case « partout » du decalage, retenue d'une scene a l'autre. */
-const OFFSET_PARTOUT_KEY = 'dubup.micOffsetEverywhere';
+const OFFSET_PARTOUT_KEY = 'dubup.micOffsetEverywhere' as const;
 
 function reglagesDe(take: TakeRow): TakeSettings {
   return {
@@ -178,12 +179,9 @@ export function StudioScreen() {
     (acknowledged && allDone) || myClips.length === 0,
   );
 
+  // Une preference : relue seulement si on a accepte d'en garder.
   useEffect(() => {
-    try {
-      setOffsetPartout(window.localStorage.getItem(OFFSET_PARTOUT_KEY) === '1');
-    } catch {
-      // Stockage indisponible : la case reste decochee.
-    }
+    setOffsetPartout(recallPreference(OFFSET_PARTOUT_KEY) === '1');
   }, []);
 
   const poser = useCallback((suivants: TakeSettings) => {
@@ -767,11 +765,7 @@ export function StudioScreen() {
 
   function choisirOffsetPartout(next: boolean) {
     setOffsetPartout(next);
-    try {
-      window.localStorage.setItem(OFFSET_PARTOUT_KEY, next ? '1' : '0');
-    } catch {
-      // Stockage indisponible : le choix vaut pour cette visite.
-    }
+    rememberPreference(OFFSET_PARTOUT_KEY, next ? '1' : '0');
     if (!next) return;
     // Cocher la case applique tout de suite la valeur affichee.
     void (async () => {
@@ -970,19 +964,34 @@ export function StudioScreen() {
             <span className="text-sm text-text-faint">
               {t.studio.clipProgress(index + 1, myClips.length)}
             </span>
-            <div className="flex gap-1" aria-hidden>
+            {/*
+              Les pastilles menent chacune a son clip. La zone de clic
+              deborde la pastille : huit pixels ne se visent pas au doigt.
+            */}
+            <div className="flex flex-wrap items-center" role="group" aria-label={t.studio.clipsNav}>
               {myClips.map((c, i) => (
-                <span
+                <button
                   key={c.id}
-                  className={cn(
-                    'h-2 w-2 rounded-full',
-                    selectedTakes.has(c.id)
-                      ? 'bg-ok'
-                      : i === index
-                        ? 'bg-accent'
-                        : 'bg-border-strong',
-                  )}
-                />
+                  type="button"
+                  disabled={recording}
+                  aria-current={i === index ? 'step' : undefined}
+                  aria-label={t.studio.clipProgress(i + 1, myClips.length)}
+                  title={t.studio.clipProgress(i + 1, myClips.length)}
+                  onClick={() => setIndex(i)}
+                  className="group flex h-6 w-5 items-center justify-center disabled:cursor-not-allowed"
+                >
+                  <span
+                    className={cn(
+                      'h-2 w-2 rounded-full transition-transform group-hover:scale-150 group-disabled:scale-100',
+                      i === index && 'ring-2 ring-accent ring-offset-2 ring-offset-transparent',
+                      selectedTakes.has(c.id)
+                        ? 'bg-ok'
+                        : i === index
+                          ? 'bg-accent'
+                          : 'bg-border-strong',
+                    )}
+                  />
+                </button>
               ))}
             </div>
           </div>

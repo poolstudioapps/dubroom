@@ -54,8 +54,9 @@ export const fr = {
       'Les scènes que tu as publiées. Tout le monde peut les rejouer, et toi seul peux les retirer.',
     sceneCount: (n: number) => (n === 1 ? '1 scène publiée' : `${n} scènes publiées`),
     emptyTitle: 'Tu n’as encore rien publié',
-    emptyBody:
-      'À la fin d’une scène importée par lien, tu peux la publier : le lien et le découpage rejoignent la communauté, sans la vidéo.',
+    emptyBody: 'Termine une scène, puis publie-la depuis l’écran du résultat : son découpage rejoint la communauté, sans la vidéo.',
+    kicker: 'Mes packs',
+    browseAll: 'Parcourir la communauté',
   },
 
   home: {
@@ -318,13 +319,26 @@ export const fr = {
     commentDelete: 'Supprimer',
     commentDeleteConfirm: 'Supprimer ce commentaire ?',
     commentCharsLeft: (n: number) => (n === 1 ? '1 caractère restant' : `${n} caractères restants`),
-  },
-
-  theme: {
-    cinema: 'Cinéma',
-    label: 'Apparence',
-    retro: 'Rétro',
-    modern: 'Moderne',
+    kicker: 'Communauté',
+    createPack: 'Créer un pack',
+    myPacksCta: 'Mes packs',
+    howTitle: 'Ajouter une scène au catalogue',
+    howSteps: [
+      {
+        title: 'Importe ta vidéo',
+        body: 'Une scène neuve, depuis n’importe quelle source. Dub’Up sépare les voix et découpe les répliques.',
+      },
+      {
+        title: 'Doublez-la entre amis',
+        body: 'Vérifie les personnages, invite ton groupe, enregistrez, lancez le rendu.',
+      },
+      {
+        title: 'Publie le pack',
+        body: 'Depuis l’écran du résultat : titre, langue, genre et tags. Le découpage rejoint la communauté, jamais la vidéo.',
+      },
+    ],
+    stats: (scenes: number, roles: number, langs: number) =>
+      `${scenes} scène${scenes > 1 ? 's' : ''} · ${roles} rôle${roles > 1 ? 's' : ''} · ${langs} langue${langs > 1 ? 's' : ''}`,
   },
 
   terms: {
@@ -349,6 +363,8 @@ export const fr = {
       'Usage strictement privé, entre personnes invitées. Aucun contenu n’est diffusé publiquement ni indexé.',
     contact: 'Contact',
     contactEmail: 'ienders.pro@gmail.com',
+    cookies: 'Cookies',
+    footerNav: 'Liens de bas de page',
   },
 
   status: {
@@ -499,6 +515,8 @@ export const fr = {
     ],
     adminBadge: 'Admin',
     shareLater: 'Après le rendu, tu pourras publier la scène dans la communauté, avec sa langue, son genre et ses tags.',
+    communityTitle: 'Créer un pack pour la communauté',
+    communityBody: 'Importe ta vidéo et prépare la scène comme d’habitude. Une fois le rendu fait, tu la publieras en un clic.',
   },
 
   ingest: {
@@ -702,6 +720,7 @@ export const fr = {
     waitAway: 'pas encore là',
     waitSomeAway: (names: string) => `Tout le monde a fini. Pas encore sur cet écran : ${names}. Tu peux attendre, ou lancer sans attendre.`,
     launchAnyway: 'Lancer sans attendre',
+    clipsNav: 'Aller à un clip',
   },
 
   progress: {
@@ -735,8 +754,12 @@ export const fr = {
     queued:
       'En attente du worker.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
-    failed: 'Le rendu a échoué.',
+    failed: 'Le montage n’a pas pu aller au bout.',
     retry: 'Relancer le rendu',
+    failedTitle: 'Le rendu a échoué',
+    failedHost: 'Tes prises sont intactes : relance le rendu. Si ça recommence, préviens l’administrateur avec le détail ci-dessous.',
+    failedGuest: 'Vos prises sont intactes. L’hôte peut relancer le rendu.',
+    failedDetail: 'Détail technique',
   },
 
   result: {
@@ -747,8 +770,7 @@ export const fr = {
     formatWideHint: 'Pour un écran d’ordinateur ou une télévision.',
     formatVertical: 'Format téléphone',
     formatVerticalHint: 'Recadré au centre, pour les stories et les reels.',
-    formatVerticalMissing:
-      'Cette scène a été rendue avant le recadrage automatique. Relance un rendu pour l’obtenir.',
+    formatVerticalMissing: 'La version téléphone n’est pas disponible pour cette scène.',
     share: 'Partager',
     shareHelp:
       'Sur téléphone, « Partager » ouvre la feuille du système : TikTok, Instagram et les autres applications installées y apparaissent.',
@@ -766,22 +788,22 @@ export const fr = {
 
   packStart: {
     intro: 'Le catalogue ne garde que le découpage de cette scène : sa vidéo doit être apportée. Deux façons de faire.',
-    recommended: 'Recommandé',
-    fileTitle: 'Importer la vidéo toi-même',
-    fileBody: 'Retrouve la vidéo de la scène, d’où qu’elle vienne, puis dépose le fichier ici, dans n’importe quel format. Tout se prépare en ligne, en deux minutes environ. Le texte et les personnages du pack sont repris tels quels.',
+    fileTitle: 'Importer et doubler',
+    fileBody: 'Dépose la vidéo de la scène, d’où qu’elle vienne et dans n’importe quel format : l’import démarre tout seul, puis la scène s’ouvre. Le texte et les personnages du pack sont repris tels quels.',
     openSource: 'Voir la vidéo d’origine',
     howTo: 'Comment récupérer le fichier ?',
     drop: 'Dépose la vidéo ici, ou clique pour la choisir',
     expected: (d: string) => `Durée attendue : ${d} · tous formats vidéo, 50 Mo maximum`,
     mismatch: (attendue: string, recue: string) => `Ce fichier dure ${recue}, la scène du pack ${attendue}. Si ce n’est pas exactement la même vidéo, les répliques tomberont à côté.`,
     tooLarge: 'Fichier trop lourd : 50 Mo maximum. Réexporte la vidéo en 720p ou en 480p.',
-    fileSubmit: 'Importer et doubler',
     or: 'ou',
     autoTitle: 'Téléchargement automatique',
     autoBody: 'Le PC de l’hôte récupère la vidéo depuis YouTube. Il faut que start.bat y tourne.',
     autoSubmit: 'Lancer le téléchargement',
     mediaBody: 'Cette scène est hébergée ici : elle démarre tout de suite.',
     introMember: 'Le catalogue ne garde que le découpage de cette scène : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
+    importAnyway: 'Importer quand même',
+    otherFile: 'Choisir un autre fichier',
   },
 
   guide: {
@@ -857,11 +879,62 @@ export const fr = {
 
   guideHub: {
     title: 'Guides et aide',
-    body: 'Tout ce qu’il faut pour préparer une scène, la doubler entre amis et récupérer le résultat.',
+    body: 'Tout ce qu’il faut pour importer une scène, la préparer, la doubler entre amis et la partager.',
     guidesTitle: 'Les guides',
     readGuide: 'Lire le guide',
     videoGuideSummary: 'Récupérer une vidéo de n’importe quelle source, vérifier qu’elle colle au texte, et l’importer.',
     readingTime: '5 min de lecture',
+    heroCreate: 'Créer une scène',
+    heroCommunity: 'Parcourir la communauté',
+    journeyTitle: 'Une scène, du début à la fin',
+    journey: [
+      {
+        title: 'Importer',
+        body: 'Une vidéo de n’importe quelle source, ou une scène du catalogue.',
+      },
+      {
+        title: 'Préparer',
+        body: 'Vérifier les personnages et le texte, puis ouvrir le lobby.',
+      },
+      {
+        title: 'Doubler',
+        body: 'Chacun enregistre ses répliques, casque sur les oreilles.',
+      },
+      {
+        title: 'Partager',
+        body: 'Télécharger le rendu, et publier le pack pour les autres.',
+      },
+    ],
+    guidesSubtitle: 'Un guide pour chaque étape, de la vidéo au pack publié.',
+    tipsTitle: 'Les réflexes qui changent tout',
+    tips: [
+      {
+        title: 'Un casque, toujours',
+        body: 'Sans casque, la musique repasse dans le micro et s’entend deux fois au rendu.',
+      },
+      {
+        title: 'Écoute la VO d’abord',
+        body: 'Le rythme de la réplique d’origine est ta meilleure indication.',
+      },
+      {
+        title: 'Laisse faire le calage',
+        body: 'Ta prise est replacée automatiquement sur la voix d’origine.',
+      },
+      {
+        title: 'Réécoute avec les effets',
+        body: '« Ma prise » rejoue la voix telle qu’elle sortira au rendu.',
+      },
+      {
+        title: 'Une heure pour le lobby',
+        body: 'Un salon ouvert plus d’une heure se ferme ; l’hôte peut le rouvrir.',
+      },
+      {
+        title: 'Télécharge vite le rendu',
+        body: 'La vidéo finale est effacée une heure après le montage.',
+      },
+    ],
+    finalTitle: 'Prêt pour ta première scène ?',
+    finalBody: 'Importe une vidéo ou choisis une scène du catalogue : le lobby s’ouvre en quelques minutes.',
   },
 
   admin: {
@@ -873,6 +946,138 @@ export const fr = {
     promote: 'Nommer admin',
     demote: 'Retirer l’admin',
     noAccount: 'pas encore connecté',
+  },
+
+  guides: {
+    back: 'Tous les guides',
+    related: 'Les autres guides',
+    noteTitle: 'Bon à savoir',
+    studio: {
+      title: 'Réussir ses prises au studio',
+      summary: 'Casque, écoute de la VO, console de voix : les gestes qui font sonner une réplique juste.',
+      intro: 'Casque, micro, calage, console de voix : tout ce qui fait qu’une réplique sonne juste au rendu. Quelques minutes pour passer de « ça ira » à « on dirait la VF ».',
+      readingTime: '4 min de lecture',
+      stepsTitle: 'En quatre gestes',
+      steps: [
+        {
+          title: 'Branche un casque',
+          body: 'Pendant une prise, tu n’entends que la musique de la scène. Sans casque, le micro la recapte et elle sort deux fois au rendu. Un casque filaire évite aussi le petit retard du Bluetooth.',
+        },
+        {
+          title: 'Écoute la VO avant de jouer',
+          body: '« Lire la scène (VO) » rejoue la réplique d’origine. Repère le rythme et la respiration : la bande rythmo te montrera ensuite quand entrer.',
+        },
+        {
+          title: 'Enregistre, puis réécoute',
+          body: 'Le micro ne s’ouvre que sur ta réplique. « Ma prise » la rejoue posée sur la scène, exactement comme au rendu, effets compris. Refais-la autant de fois que tu veux.',
+        },
+        {
+          title: 'Règle la voix dans la console',
+          body: 'Volume, réverbe, hauteur, justesse : chaque réglage vaut pour la prise affichée et s’entend tout de suite. Le décalage micro corrige une prise qui tombe un peu tôt ou un peu tard.',
+        },
+      ],
+      checklistTitle: 'Avant de lancer le rendu',
+      checklist: [
+        'Toutes tes répliques ont une prise',
+        'Tu as réécouté les prises où tu hésitais',
+        'Le volume est homogène d’une prise à l’autre',
+        'Tout le monde est sur l’écran d’attente',
+      ],
+      note: 'Le calage automatique compare chaque prise à la voix d’origine et la replace au bon endroit : inutile de viser la milliseconde, concentre-toi sur le jeu.',
+      ctaTitle: 'Prêt à enregistrer ?',
+      ctaBody: 'Crée une scène, ou reprends-en une du catalogue.',
+      ctaLabel: 'Créer une scène',
+    },
+    prepare: {
+      title: 'Préparer une scène avant le lobby',
+      summary: 'Renommer les personnages, fusionner les doublons, corriger le texte : la scène au propre avant d’inviter.',
+      intro: 'Après l’import, Dub’Up détecte les personnages et découpe les répliques. Quelques minutes de vérification, et chacun saura exactement quoi jouer.',
+      readingTime: '3 min de lecture',
+      stepsTitle: 'En quatre étapes',
+      steps: [
+        {
+          title: 'Renomme les personnages',
+          body: 'Les voix détectées arrivent sous des noms génériques. Donne-leur le nom du rôle : c’est ce que les joueurs choisiront dans le lobby.',
+        },
+        {
+          title: 'Fusionne les doublons',
+          body: 'Une même voix peut être coupée en deux personnages, par exemple quand elle chuchote puis crie. Fusionne-les pour qu’un seul joueur la double.',
+        },
+        {
+          title: 'Corrige les répliques',
+          body: 'Le texte défile dans la bande rythmo : une faute ou un mot manquant se voit pendant la prise. Corrige-le, ou supprime une réplique inutile : sa VO sera conservée.',
+        },
+        {
+          title: 'Ouvre le lobby',
+          body: 'Partage le code ou le lien. Chacun prend un personnage ; ceux que personne ne prend gardent leur voix d’origine. Le salon se ferme tout seul après une heure.',
+        },
+      ],
+      checklistTitle: 'Une scène prête à jouer',
+      checklist: [
+        'Chaque personnage porte le nom de son rôle',
+        'Aucune voix n’est coupée en deux',
+        'Le texte est lisible et sans faute',
+        'Les répliques inutiles sont retirées',
+      ],
+      note: 'Une scène reprise du catalogue arrive déjà préparée : elle passe directement au lobby dès que sa vidéo est importée.',
+      ctaTitle: 'Une scène à préparer ?',
+      ctaBody: 'Importe une vidéo : la détection des personnages prend deux à trois minutes.',
+      ctaLabel: 'Créer une scène',
+    },
+    publish: {
+      title: 'Partager une scène avec la communauté',
+      summary: 'Titre, langue, genre et tags : publier une scène pour que d’autres groupes la rejouent.',
+      intro: 'Une scène bien préparée peut servir à d’autres groupes. Publier ne partage que le découpage : les personnages, le texte et les repères. Jamais la vidéo, jamais vos voix.',
+      readingTime: '3 min de lecture',
+      stepsTitle: 'En quatre étapes',
+      steps: [
+        {
+          title: 'Termine la scène',
+          body: 'On publie depuis l’écran du résultat, une fois le rendu produit. C’est l’hôte qui publie.',
+        },
+        {
+          title: 'Renseigne la fiche',
+          body: 'Titre, langue parlée et genre sont obligatoires : ce sont les filtres du catalogue. Ajoute des tags comme #starwars pour qu’on la retrouve dans la recherche.',
+        },
+        {
+          title: 'Retrouve-la dans la communauté',
+          body: 'La scène a sa page : distribution, début du texte, votes et commentaires. Tu peux la modifier depuis cette page, ou la retirer depuis Mes packs.',
+        },
+        {
+          title: 'Laisse les autres la rejouer',
+          body: 'Chaque groupe apporte sa vidéo : la préparation est reprise telle quelle, et le lobby s’ouvre en quelques minutes.',
+        },
+      ],
+      checklistTitle: 'Une bonne fiche',
+      checklist: [
+        'Un titre qu’on reconnaît au premier coup d’œil',
+        'La langue réellement parlée dans l’extrait',
+        'Deux ou trois tags : l’œuvre, les personnages, le ton',
+        'Un découpage vérifié avant publication',
+      ],
+      note: 'Un pack bien noté remonte en tête du catalogue. Le vote porte sur la qualité du découpage, pas sur le film.',
+      ctaTitle: 'Envie de voir ce qui existe ?',
+      ctaBody: 'Parcours les scènes publiées, ou crée la première qui manque.',
+      ctaLabel: 'Voir la communauté',
+    },
+  },
+
+  cookies: {
+    bannerTitle: 'Un mot sur les cookies',
+    bannerBody: 'Dub’Up n’utilise que les cookies nécessaires à ta connexion. Avec ton accord, il retient aussi tes préférences : ta langue, ton adresse de connexion, tes réglages du studio. Aucune pub, aucun suivi.',
+    policyLink: 'En savoir plus',
+    customize: 'Personnaliser',
+    refuse: 'Refuser',
+    accept: 'Tout accepter',
+    settingsTitle: 'Gérer les cookies',
+    settingsBody: 'Choisis ce que Dub’Up peut garder dans ton navigateur. Tu peux changer d’avis à tout moment depuis le bas de chaque page.',
+    essentialTitle: 'Essentiels',
+    essentialBody: 'Ta session de connexion et ce choix. Indispensables, toujours actifs.',
+    preferencesTitle: 'Préférences',
+    preferencesBody: 'Retenir ta langue, ta dernière adresse de connexion et tes réglages du studio d’une visite à l’autre.',
+    save: 'Enregistrer mes choix',
+    noTracking: 'Aucune mesure d’audience ni publicité.',
+    manage: 'Gérer les cookies',
   },
 
   errors: {

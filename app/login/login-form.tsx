@@ -8,14 +8,15 @@ import { DiscordButton } from '@/components/discord-button';
 import { TermsNotice } from '@/components/terms-consent';
 import { Alert, Button, Input, Label } from '@/components/ui';
 
+import { recallPreference, rememberPreference } from '@/lib/consent';
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
 type Mode = 'password' | 'link';
 
 /** Se souvient du dernier mode utilise : un habitue ne rechoisit pas. */
-const MODE_KEY = 'dubup.loginMode';
-const EMAIL_KEY = 'dubup.lastEmail';
+const MODE_KEY = 'dubup.loginMode' as const;
+const EMAIL_KEY = 'dubup.lastEmail' as const;
 
 export function LoginForm() {
   const t = useT();
@@ -32,13 +33,10 @@ export function LoginForm() {
   useEffect(() => {
     // Le premier passage se fait forcement par lien : personne n'a de mot
     // de passe avant d'etre entre une fois.
-    const storedMode =
-      window.localStorage.getItem(MODE_KEY) ??
-      window.localStorage.getItem('dubroom.loginMode');
+    // Des preferences : relues seulement si on a accepte d'en garder.
+    const storedMode = recallPreference(MODE_KEY) ?? recallPreference('dubroom.loginMode');
     if (storedMode === 'password') setMode('password');
-    const storedEmail =
-      window.localStorage.getItem(EMAIL_KEY) ??
-      window.localStorage.getItem('dubroom.lastEmail');
+    const storedEmail = recallPreference(EMAIL_KEY) ?? recallPreference('dubroom.lastEmail');
     if (storedEmail) setEmail(storedEmail);
   }, []);
 
@@ -66,7 +64,7 @@ export function LoginForm() {
     setState('working');
 
     const address = email.trim().toLowerCase();
-    window.localStorage.setItem(EMAIL_KEY, address);
+    rememberPreference(EMAIL_KEY, address);
     const supabase = supabaseBrowser();
 
     if (mode === 'password') {
@@ -87,7 +85,7 @@ export function LoginForm() {
         setState('idle');
         return;
       }
-      window.localStorage.setItem(MODE_KEY, 'password');
+      rememberPreference(MODE_KEY, 'password');
       // Navigation dure : le serveur doit voir les cookies fraichement poses.
       window.location.replace(next);
       return;
@@ -108,7 +106,7 @@ export function LoginForm() {
       setState('idle');
       return;
     }
-    window.localStorage.setItem(MODE_KEY, 'link');
+    rememberPreference(MODE_KEY, 'link');
     setState('sent');
   }
 

@@ -33,6 +33,7 @@ export const INDEXABLE_PATHS = [
   '/mentions-legales',
   '/confidentialite',
   '/conditions',
+  '/cookies',
 ] as const;
 
 /**
@@ -49,6 +50,7 @@ export const ROBOTS_ALLOW = [
   '/mentions-legales',
   '/confidentialite',
   '/conditions',
+  '/cookies',
 ] as const;
 
 export function isIndexable(pathname: string): boolean {

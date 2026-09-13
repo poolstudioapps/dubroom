@@ -2,18 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { useLiveTheme } from '@/lib/theme';
-
 /**
- * La video plein cadre derriere l'accueil, pour la peau cinema.
+ * La video plein cadre derriere les pages de presentation.
  *
  * Elle montre le geste avant qu'on ait lu une ligne : quelqu'un qui
- * double, casque sur les oreilles. C'est ce que font les sites dont la
- * peau s'inspire, et c'est ce qui se comprend le plus vite.
- *
- * Rendue par un composant et non cachee en CSS : une balise `video` en
- * `display: none` peut quand meme etre telechargee, et les deux autres
- * peaux n'ont rien a faire de quelques megaoctets de film.
+ * double, casque sur les oreilles. C'est ce que font les sites de
+ * production video dont la peau s'inspire, et c'est ce qui se comprend
+ * le plus vite.
  *
  * Trois cas ou elle cede la place a une image fixe : le mouvement reduit
  * demande par le systeme, l'economie de donnees, et une lecture
@@ -21,7 +16,6 @@ import { useLiveTheme } from '@/lib/theme';
  * le meme role sans rien couter.
  */
 export function HeroBackdrop() {
-  const theme = useLiveTheme();
   const ref = useRef<HTMLVideoElement>(null);
   const [fixe, setFixe] = useState(false);
 
@@ -41,9 +35,7 @@ export function HeroBackdrop() {
     // lecture automatique.
     video.muted = true;
     video.play().catch(() => setFixe(true));
-  }, [theme, fixe]);
-
-  if (theme !== 'cinema') return null;
+  }, [fixe]);
 
   return (
     <div className="hero-fond" aria-hidden>

@@ -57,8 +57,9 @@ export const en = {
     sceneCount: (n: number) =>
       n === 1 ? '1 scene published' : `${n} scenes published`,
     emptyTitle: 'You have not published anything yet',
-    emptyBody:
-      'At the end of a scene imported from a link, you can publish it: the link and the cut join the community, without the video.',
+    emptyBody: 'Finish a scene, then publish it from the result screen: its preparation joins the community, without the video.',
+    kicker: 'My packs',
+    browseAll: 'Browse the community',
   },
 
   home: {
@@ -320,13 +321,26 @@ export const en = {
     commentDelete: 'Delete',
     commentDeleteConfirm: 'Delete this comment?',
     commentCharsLeft: (n: number) => (n === 1 ? '1 character left' : `${n} characters left`),
-  },
-
-  theme: {
-    cinema: 'Cinema',
-    label: 'Look',
-    retro: 'Retro',
-    modern: 'Modern',
+    kicker: 'Community',
+    createPack: 'Create a pack',
+    myPacksCta: 'My packs',
+    howTitle: 'Add a scene to the catalogue',
+    howSteps: [
+      {
+        title: 'Import your video',
+        body: 'A brand-new scene, from any source. Dub’Up separates the voices and splits the lines.',
+      },
+      {
+        title: 'Dub it with friends',
+        body: 'Check the characters, invite your group, record, start the render.',
+      },
+      {
+        title: 'Publish the pack',
+        body: 'From the result screen: title, language, genre and tags. The preparation joins the community, never the video.',
+      },
+    ],
+    stats: (scenes: number, roles: number, langs: number) =>
+      `${scenes} scene${scenes === 1 ? '' : 's'} · ${roles} role${roles === 1 ? '' : 's'} · ${langs} language${langs === 1 ? '' : 's'}`,
   },
 
   terms: {
@@ -351,6 +365,8 @@ export const en = {
       'Strictly private use, between invited people. No content is published or indexed.',
     contact: 'Contact',
     contactEmail: 'ienders.pro@gmail.com',
+    cookies: 'Cookies',
+    footerNav: 'Footer links',
   },
 
   status: {
@@ -497,6 +513,8 @@ export const en = {
     ],
     adminBadge: 'Admin',
     shareLater: 'After the render, you can publish the scene to the community, with its language, genre and tags.',
+    communityTitle: 'Create a pack for the community',
+    communityBody: 'Import your video and prepare the scene as usual. Once the render is done, you publish it in one click.',
   },
 
   ingest: {
@@ -698,6 +716,7 @@ export const en = {
     waitAway: 'not here yet',
     waitSomeAway: (names: string) => `Everyone has finished. Not on this screen yet: ${names}. You can wait, or start without waiting.`,
     launchAnyway: 'Start without waiting',
+    clipsNav: 'Go to a clip',
   },
 
   progress: {
@@ -730,8 +749,12 @@ export const en = {
     queued:
       'Waiting for the worker.',
     frozen: 'The scene is frozen: takes can no longer be changed.',
-    failed: 'The render failed.',
+    failed: 'The edit could not be completed.',
     retry: 'Restart the render',
+    failedTitle: 'The render failed',
+    failedHost: 'Your takes are safe: start the render again. If it happens again, tell the administrator and include the details below.',
+    failedGuest: 'Your takes are safe. The host can start the render again.',
+    failedDetail: 'Technical details',
   },
 
   result: {
@@ -742,8 +765,7 @@ export const en = {
     formatWideHint: 'For a computer screen or a television.',
     formatVertical: 'Phone format',
     formatVerticalHint: 'Cropped to the centre, for stories and reels.',
-    formatVerticalMissing:
-      'This scene was rendered before automatic cropping. Run the render again to get it.',
+    formatVerticalMissing: 'The phone version is not available for this scene.',
     share: 'Share',
     shareHelp:
       'On a phone, Share opens the system sheet: TikTok, Instagram and whatever else is installed show up there.',
@@ -761,22 +783,22 @@ export const en = {
 
   packStart: {
     intro: 'The catalogue only keeps this scene’s preparation: its video has to be brought. Two ways to do it.',
-    recommended: 'Recommended',
-    fileTitle: 'Import the video yourself',
-    fileBody: 'Find the scene’s video, wherever it comes from, then drop the file here, in any format. Everything is prepared online in about two minutes. The pack’s text and characters are reused as they are.',
+    fileTitle: 'Import and dub',
+    fileBody: 'Drop the scene’s video, whatever its source or format: the import starts on its own, then the scene opens. The pack’s text and characters are reused as they are.',
     openSource: 'See the original video',
     howTo: 'How do I get the file?',
     drop: 'Drop the video here, or click to choose it',
     expected: (d: string) => `Expected duration: ${d} · any video format, 50 MB max`,
     mismatch: (expected: string, got: string) => `This file lasts ${got}, the pack’s scene ${expected}. If it is not exactly the same video, the lines will land in the wrong place.`,
     tooLarge: 'File too large: 50 MB max. Export the video again in 720p or 480p.',
-    fileSubmit: 'Import and dub',
     or: 'or',
     autoTitle: 'Automatic download',
     autoBody: 'The host’s PC fetches the video from YouTube. start.bat has to be running on it.',
     autoSubmit: 'Start the download',
     mediaBody: 'This scene is hosted here: it starts right away.',
     introMember: 'The catalogue only keeps this scene’s preparation: bring its video, and everything is prepared online with the pack’s text and characters.',
+    importAnyway: 'Import anyway',
+    otherFile: 'Choose another file',
   },
 
   guide: {
@@ -852,11 +874,62 @@ export const en = {
 
   guideHub: {
     title: 'Guides and help',
-    body: 'Everything you need to prepare a scene, dub it with friends and get the result.',
+    body: 'Everything you need to import a scene, prepare it, dub it with friends and share it.',
     guidesTitle: 'Guides',
     readGuide: 'Read the guide',
     videoGuideSummary: 'Get a video from any source, check that it matches the text, and import it.',
     readingTime: '5 min read',
+    heroCreate: 'Create a scene',
+    heroCommunity: 'Browse the community',
+    journeyTitle: 'A scene, from start to finish',
+    journey: [
+      {
+        title: 'Import',
+        body: 'A video from any source, or a scene from the catalogue.',
+      },
+      {
+        title: 'Prepare',
+        body: 'Check the characters and the text, then open the lobby.',
+      },
+      {
+        title: 'Dub',
+        body: 'Everyone records their lines, headphones on.',
+      },
+      {
+        title: 'Share',
+        body: 'Download the render, and publish the pack for others.',
+      },
+    ],
+    guidesSubtitle: 'One guide for each step, from the video to the published pack.',
+    tipsTitle: 'The habits that change everything',
+    tips: [
+      {
+        title: 'Always wear headphones',
+        body: 'Without them, the music goes back into the mic and is heard twice in the render.',
+      },
+      {
+        title: 'Listen to the original first',
+        body: 'The rhythm of the original line is your best cue.',
+      },
+      {
+        title: 'Let the alignment work',
+        body: 'Your take is automatically placed back on the original voice.',
+      },
+      {
+        title: 'Replay with the effects',
+        body: '“My take” plays the voice exactly as it will sound in the render.',
+      },
+      {
+        title: 'One hour for the lobby',
+        body: 'A lobby open for more than an hour closes; the host can reopen it.',
+      },
+      {
+        title: 'Download the render quickly',
+        body: 'The final video is erased one hour after the edit.',
+      },
+    ],
+    finalTitle: 'Ready for your first scene?',
+    finalBody: 'Import a video or pick a scene from the catalogue: the lobby opens in a few minutes.',
   },
 
   admin: {
@@ -868,6 +941,138 @@ export const en = {
     promote: 'Make admin',
     demote: 'Remove admin',
     noAccount: 'not signed in yet',
+  },
+
+  guides: {
+    back: 'All guides',
+    related: 'Other guides',
+    noteTitle: 'Good to know',
+    studio: {
+      title: 'Nail your takes in the studio',
+      summary: 'Headphones, listening to the original, voice console: the habits that make a line sound right.',
+      intro: 'Headphones, mic, alignment, voice console: everything that makes a line sound right in the render. A few minutes to go from “good enough” to “sounds like the real dub”.',
+      readingTime: '4 min read',
+      stepsTitle: 'In four moves',
+      steps: [
+        {
+          title: 'Plug in headphones',
+          body: 'During a take you only hear the scene’s music. Without headphones, the mic picks it up and it plays twice in the render. Wired headphones also avoid Bluetooth lag.',
+        },
+        {
+          title: 'Listen to the original first',
+          body: 'Playing the original scene replays the original line. Catch the rhythm and the breathing: the rhythm band then shows you when to come in.',
+        },
+        {
+          title: 'Record, then listen back',
+          body: 'The mic only opens on your line. “My take” plays it back on the scene, exactly as in the render, effects included. Redo it as often as you like.',
+        },
+        {
+          title: 'Shape the voice in the console',
+          body: 'Volume, reverb, pitch, tuning: each setting applies to the take shown and is heard right away. Mic offset fixes a take that lands slightly early or late.',
+        },
+      ],
+      checklistTitle: 'Before starting the render',
+      checklist: [
+        'All your lines have a take',
+        'You listened back to the takes you were unsure about',
+        'The volume is even from one take to the next',
+        'Everyone is on the waiting screen',
+      ],
+      note: 'Automatic alignment compares each take with the original voice and puts it back in the right place: no need to aim for the millisecond, focus on the acting.',
+      ctaTitle: 'Ready to record?',
+      ctaBody: 'Create a scene, or pick one from the catalogue.',
+      ctaLabel: 'Create a scene',
+    },
+    prepare: {
+      title: 'Prepare a scene before the lobby',
+      summary: 'Rename characters, merge duplicates, fix the text: a clean scene before you invite anyone.',
+      intro: 'After the import, Dub’Up detects the characters and splits the lines. A few minutes of checking, and everyone will know exactly what to play.',
+      readingTime: '3 min read',
+      stepsTitle: 'In four steps',
+      steps: [
+        {
+          title: 'Rename the characters',
+          body: 'Detected voices arrive with generic names. Give them the role’s name: that is what players pick in the lobby.',
+        },
+        {
+          title: 'Merge duplicates',
+          body: 'One voice can be split into two characters, for example when it whispers then shouts. Merge them so a single player dubs it.',
+        },
+        {
+          title: 'Fix the lines',
+          body: 'The text scrolls in the rhythm band: a typo or a missing word shows during the take. Fix it, or delete a useless line: its original voice is kept.',
+        },
+        {
+          title: 'Open the lobby',
+          body: 'Share the code or the link. Everyone picks a character; the ones nobody takes keep their original voice. The lobby closes on its own after an hour.',
+        },
+      ],
+      checklistTitle: 'A scene ready to play',
+      checklist: [
+        'Every character has its role’s name',
+        'No voice is split in two',
+        'The text is readable and error-free',
+        'Useless lines are removed',
+      ],
+      note: 'A scene taken from the catalogue arrives already prepared: it goes straight to the lobby once its video is imported.',
+      ctaTitle: 'A scene to prepare?',
+      ctaBody: 'Import a video: detecting the characters takes two to three minutes.',
+      ctaLabel: 'Create a scene',
+    },
+    publish: {
+      title: 'Share a scene with the community',
+      summary: 'Title, language, genre and tags: publish a scene so other groups can replay it.',
+      intro: 'A well-prepared scene can serve other groups. Publishing only shares the preparation: characters, text and timings. Never the video, never your voices.',
+      readingTime: '3 min read',
+      stepsTitle: 'In four steps',
+      steps: [
+        {
+          title: 'Finish the scene',
+          body: 'You publish from the result screen, once the render is done. The host publishes.',
+        },
+        {
+          title: 'Fill in the card',
+          body: 'Title, spoken language and genre are required: they are the catalogue filters. Add tags such as #starwars so people find it in the search.',
+        },
+        {
+          title: 'Find it in the community',
+          body: 'The scene gets its own page: cast, start of the script, votes and comments. Edit it from that page, or remove it from My packs.',
+        },
+        {
+          title: 'Let others replay it',
+          body: 'Each group brings its own video: the preparation is reused as is, and the lobby opens in a few minutes.',
+        },
+      ],
+      checklistTitle: 'A good card',
+      checklist: [
+        'A title people recognise at a glance',
+        'The language actually spoken in the clip',
+        'Two or three tags: the work, the characters, the tone',
+        'A preparation checked before publishing',
+      ],
+      note: 'A well-rated pack rises to the top of the catalogue. The vote is about the quality of the preparation, not the film.',
+      ctaTitle: 'Curious about what exists?',
+      ctaBody: 'Browse the published scenes, or create the first one that is missing.',
+      ctaLabel: 'See the community',
+    },
+  },
+
+  cookies: {
+    bannerTitle: 'A word about cookies',
+    bannerBody: 'Dub’Up only uses the cookies needed to keep you signed in. With your consent, it also remembers your preferences: your language, your sign-in address, your studio settings. No ads, no tracking.',
+    policyLink: 'Learn more',
+    customize: 'Customize',
+    refuse: 'Refuse',
+    accept: 'Accept all',
+    settingsTitle: 'Manage cookies',
+    settingsBody: 'Choose what Dub’Up may keep in your browser. You can change your mind at any time from the bottom of every page.',
+    essentialTitle: 'Essential',
+    essentialBody: 'Your sign-in session and this choice. Required, always on.',
+    preferencesTitle: 'Preferences',
+    preferencesBody: 'Remember your language, your last sign-in address and your studio settings from one visit to the next.',
+    save: 'Save my choices',
+    noTracking: 'No analytics, no advertising.',
+    manage: 'Manage cookies',
   },
 
   errors: {

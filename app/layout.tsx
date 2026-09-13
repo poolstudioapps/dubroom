@@ -4,7 +4,8 @@ import { Anton, Instrument_Serif, Inter, Nunito } from 'next/font/google';
 import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
 import { APP_NAME } from '@/config/strings';
-import { currentLocale, currentTheme, getDictionary } from '@/lib/i18n-server';
+import { CookieConsent } from '@/components/cookie-consent';
+import { currentLocale, getDictionary } from '@/lib/i18n-server';
 import { REVEAL_SCRIPT } from '@/lib/reveal-script';
 import { Providers } from './providers';
 import './globals.css';
@@ -26,24 +27,25 @@ const display = Anton({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-display',
   display: 'swap',
+  // Ne servent plus qu'aux rares accroches qui les nomment encore : le
+  // cinema a ses propres polices, prechargees, elles.
+  preload: false,
 });
 
 const body = Nunito({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-body',
   display: 'swap',
+  preload: false,
 });
 
 /*
- * Et deux de plus, pour la peau cinema.
+ * Les polices du site.
  *
  * Instrument Serif pour les titres : un serif fin et haut, celui des
  * affiches et des generiques. Inter pour le texte : neutre, net, fait
- * pour l'ecran.
- *
- * `preload: false` : elles ne servent qu'a une peau sur trois. Les
- * precharger ferait payer deux polices a chaque visiteur des deux autres
- * peaux ; elles ne se chargent donc que lorsqu'une regle les demande.
+ * pour l'ecran. La peau cinema etant desormais la seule, elles sont
+ * prechargees : ce sont elles que chaque page affiche en premier.
  */
 const serif = Instrument_Serif({
   weight: '400',
@@ -51,14 +53,12 @@ const serif = Instrument_Serif({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-serif',
   display: 'swap',
-  preload: false,
 });
 
 const grotesk = Inter({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-grotesk',
   display: 'swap',
-  preload: false,
 });
 
 /**
@@ -131,7 +131,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#2a1b47',
+  themeColor: '#0e0d0b',
   width: 'device-width',
   initialScale: 1,
 };
@@ -142,14 +142,14 @@ export default async function RootLayout({
   // La langue est choisie ici, une fois par requete, puis descendue a
   // tout l'arbre. Le `lang` de la page suit : c'est lui qui fait la
   // cesure et la synthese vocale correctes.
-  const [locale, theme] = await Promise.all([currentLocale(), currentTheme()]);
+  const locale = await currentLocale();
 
   return (
     <html
       lang={locale}
-      // La peau est posee des le rendu serveur : sans cela, on verrait la
-      // peau par defaut le temps que le client se reveille.
-      data-theme={theme}
+      // Une seule peau, le cinema. L'attribut reste : toute la feuille de
+      // styles s'y accroche.
+      data-theme="cinema"
       className={`${display.variable} ${body.variable} ${serif.variable} ${grotesk.variable}`}
       // Le script d'apparition ajoute sa classe avant l'hydratation.
       suppressHydrationWarning
@@ -159,8 +159,9 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
       </head>
       <body className="min-h-dvh antialiased">
-        <Providers locale={locale} theme={theme}>
+        <Providers locale={locale}>
           {children}
+          <CookieConsent />
         </Providers>
       </body>
     </html>
