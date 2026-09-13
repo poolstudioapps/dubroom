@@ -138,6 +138,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4)$).*)',
+    // Les fichiers statiques ne passent pas par la session : le son des
+    // notifications repondait par une redirection vers la connexion.
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|mp3)$).*)',
   ],
 };
