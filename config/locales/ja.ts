@@ -567,7 +567,7 @@ export const ja = {
     titleLabel: 'シーンの題名',
     titlePlaceholder: '橋の上の決闘',
     dropzone: '動画をここにドロップするか、クリックして選択',
-    fileTooLarge: 'ファイルが大きすぎます。40 MB までです。',
+    fileTooLarge: 'ファイルが大きすぎます。50 MB までです。',
     wrongType: 'このファイルは動画ではありません。MP4、MOV、MKV、AVI、WebM など、すべての動画形式に対応しています。',
     youtubeLabel: '動画のリンク',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -583,7 +583,7 @@ export const ja = {
     introUpload: 'あなたの動画から一から準備する新しいシーン。映画、ドラマ、YouTube や TikTok のクリップ、画面録画など、入手元は問いません。',
     introPack: 'キャラクター、セリフ、音声は準備済みです。動画を持ち込めば、約1分でロビーが開きます。',
     introYoutube: '管理者専用：動画はホストのパソコンがダウンロードします。電源を入れておいてください。',
-    limits: 'すべての動画形式 · 最大50MB・5分',
+    limits: 'すべての動画形式 · 最大50MB・10分',
     uploadStepsTitle: '流れ',
     uploadSteps: [
       '動画を選んでタイトルを付けます。',
@@ -959,7 +959,7 @@ export const ja = {
       'パックのシーンと同じ部分で、カットなし',
       'どんな動画形式でもOK',
       '最大50MB：720p か 480p で十分',
-      '最大5分',
+      '最大10分',
     ],
     whyTitle: 'なぜこの手順が必要？',
     whyBody: 'Dubblersは動画を保存しません。カタログにあるのは区切りと音声だけで、映像はありません。また多くのプラットフォームはサーバーからのダウンロードを拒否します。そのためファイルはあなたが持ち込み、あとはすべてオンラインで進みます。',
@@ -997,7 +997,7 @@ export const ja = {
     homeBannerBody: 'YouTube、TikTok、ディスク上の映画、画面録画。形式を問わず、どんな動画ファイルでも読み込めます。入手と準備の方法を、ガイドで5分で紹介します。',
     homeBannerAction: '読み込みガイドを読む',
     midLink: 'まだ動画がない？入手方法はガイドで説明しています。',
-    trajetFile: '形式自由・最大40 MB',
+    trajetFile: '形式自由・最大50 MB',
   },
 
   guideHub: {

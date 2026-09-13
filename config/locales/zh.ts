@@ -558,14 +558,14 @@ export const zh = {
     titleLabel: '片段标题',
     titlePlaceholder: '桥上的决斗',
     dropzone: '把视频拖到这里，或点击选择',
-    fileTooLarge: '文件太大：最多 40 MB。',
+    fileTooLarge: '文件太大：最多 50 MB。',
     wrongType: '这个文件不是视频。支持所有视频格式：MP4、MOV、MKV、AVI、WebM…',
     youtubeLabel: '视频链接',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
     youtubeWarning:
       '从 YouTube 下载只是图方便，不保证成功，经常会挂。不行的话就直接导入文件。',
     multiTrackWarning: '如果源里有多条音轨（配音、原声、评论），会拿第一条来配。',
-    durationWarning: '片段要短于 5 分钟。',
+    durationWarning: '片段要短于 10 分钟。',
     submitUpload: '导入并准备',
     submitYoutube: '下载并准备',
     uploading: '正在上传文件…',
@@ -573,7 +573,7 @@ export const zh = {
     introUpload: '用你的视频从零开始准备一个新场景，来源不限：电影、剧集、YouTube 或 TikTok 片段、屏幕录像……',
     introPack: '角色、台词和声音都已就绪：带上视频，大约一分钟后大厅就会打开。',
     introYoutube: '仅限管理员：视频由主持人的电脑下载，电脑需要保持开机。',
-    limits: '任意视频格式 · 最大 40 MB、5 分钟',
+    limits: '任意视频格式 · 最大 50 MB、10 分钟',
     uploadStepsTitle: '流程',
     uploadSteps: [
       '选择视频并起个标题。',
@@ -894,9 +894,9 @@ export const zh = {
     openSource: '查看原始视频',
     howTo: '如何获取文件？',
     drop: '把视频拖到这里，或点击选择',
-    expected: (d: string) => `预期时长：${d} · 任意视频格式，最大 40 MB`,
+    expected: (d: string) => `预期时长：${d} · 任意视频格式，最大 50 MB`,
     mismatch: (expected: string, got: string) => `这个文件时长 ${got}，素材包的场景时长 ${expected}。如果不是完全相同的视频，台词会对不上。`,
-    tooLarge: '文件太大：最大 40 MB。请以 720p 或 480p 重新导出视频。',
+    tooLarge: '文件太大：最大 50 MB。请以 720p 或 480p 重新导出视频。',
     or: '或',
     autoTitle: '自动下载',
     autoBody: '由主持人的电脑从 YouTube 下载视频：电脑需要保持开机。',
@@ -922,7 +922,7 @@ export const zh = {
       },
       {
         title: '获取文件',
-        body: '用你喜欢的工具保存视频，或使用已有的文件。任何格式都可以。建议 720p，文件超过 40 MB 时用 480p。',
+        body: '用你喜欢的工具保存视频，或使用已有的文件。任何格式都可以。建议 720p，文件超过 50 MB 时用 480p。',
       },
       {
         title: '检查时长',
@@ -937,8 +937,8 @@ export const zh = {
     checklist: [
       '与素材包场景相同的片段，没有剪切',
       '任意视频格式',
-      '最大 40 MB：720p 或 480p 就够了',
-      '最长 5 分钟',
+      '最大 50 MB：720p 或 480p 就够了',
+      '最长 10 分钟',
     ],
     whyTitle: '为什么需要这一步？',
     whyBody: 'Dubblers 不存放视频：目录只保存分段和声音，从不保存画面。而且大多数平台会拒绝来自服务器的下载。所以文件由你提供，其余一切都在线完成。',
@@ -955,7 +955,7 @@ export const zh = {
         a: '任何能把视频保存为文件的工具都可以，网站不限。避免要求安装陌生扩展或软件的工具，并且只获取你有权私人使用的视频。',
       },
       {
-        q: '我的文件超过 40 MB',
+        q: '我的文件超过 50 MB',
         a: '用更低的画质重新导出：720p，长场景用 480p。在工作室里画面依然清晰，声音也不受影响。',
       },
       {
@@ -976,7 +976,7 @@ export const zh = {
     homeBannerBody: 'YouTube、TikTok、硬盘里的电影、屏幕录像：任何视频文件都能导入，格式不限。指南会教你在五分钟内获取并准备好。',
     homeBannerAction: '阅读导入指南',
     midLink: '手头还没有视频？指南会告诉你如何获取。',
-    trajetFile: '任意格式 · 最大 40 MB',
+    trajetFile: '任意格式 · 最大 50 MB',
   },
 
   guideHub: {
@@ -1264,7 +1264,7 @@ export const zh = {
     hostOnly: '只有房主能这么做。',
     noAudioTrack: '这个文件没有音轨。',
     noVideoTrack: '这个文件没有视频。',
-    tooLong: '片段太长了：最多 5 分钟。',
+    tooLong: '片段太长了：最多 10 分钟。',
     youtubeFailed: '从 YouTube 下载失败了。直接导入视频文件吧。',
     pageNotFoundTitle: '页面不存在',
     pageNotFoundBody: '链接可能不完整，或页面已移动。请从首页重新开始。',

@@ -571,7 +571,7 @@ export const it = {
     titleLabel: 'Titolo della scena',
     titlePlaceholder: 'Il duello sul ponte',
     dropzone: 'Trascina qui il tuo video, o clicca per sceglierlo',
-    fileTooLarge: 'File troppo pesante: 40 MB al massimo.',
+    fileTooLarge: 'File troppo pesante: 50 MB al massimo.',
     wrongType: 'Questo file non è un video. Sono accettati tutti i formati video: MP4, MOV, MKV, AVI, WebM…',
     youtubeLabel: 'Link del video',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -579,7 +579,7 @@ export const it = {
       'Il download da YouTube è una comodità, non una garanzia: si guasta di frequente. Se non funziona, importa direttamente il file.',
     multiTrackWarning:
       'Se la tua fonte ha più tracce audio (doppiata, originale, commenti), viene doppiata la prima.',
-    durationWarning: 'La scena deve durare meno di 5 minuti.',
+    durationWarning: 'La scena deve durare meno di 10 minuti.',
     submitUpload: 'Importa e prepara',
     submitYoutube: 'Scarica e prepara',
     uploading: 'Invio del file…',
@@ -587,7 +587,7 @@ export const it = {
     introUpload: 'Una scena nuova, preparata da zero dal tuo video, da qualunque fonte arrivi: un film, una serie, una clip di YouTube o TikTok, una registrazione dello schermo…',
     introPack: 'Personaggi, battute e audio sono già pronti: porti il video e la lobby si apre in circa un minuto.',
     introYoutube: 'Solo per gli amministratori: il video viene scaricato dal computer dell’host, che deve essere acceso.',
-    limits: 'Qualsiasi formato video · al massimo 40 MB e 5 minuti',
+    limits: 'Qualsiasi formato video · al massimo 50 MB e 10 minuti',
     uploadStepsTitle: 'Come funziona',
     uploadSteps: [
       'Scegli il tuo video e gli dai un titolo.',
@@ -923,9 +923,9 @@ export const it = {
     openSource: 'Vedi il video originale',
     howTo: 'Come recupero il file?',
     drop: 'Trascina qui il video o clicca per sceglierlo',
-    expected: (d: string) => `Durata attesa: ${d} · qualsiasi formato video, max 40 MB`,
+    expected: (d: string) => `Durata attesa: ${d} · qualsiasi formato video, max 50 MB`,
     mismatch: (prevista: string, ricevuta: string) => `Questo file dura ${ricevuta}, la scena del pack ${prevista}. Se non è esattamente lo stesso video, le battute cadranno fuori tempo.`,
-    tooLarge: 'File troppo pesante: max 40 MB. Esporta di nuovo il video in 720p o 480p.',
+    tooLarge: 'File troppo pesante: max 50 MB. Esporta di nuovo il video in 720p o 480p.',
     or: 'oppure',
     autoTitle: 'Download automatico',
     autoBody: 'Il computer dell’host scarica il video da YouTube: deve essere acceso.',
@@ -951,7 +951,7 @@ export const it = {
       },
       {
         title: 'Recupera il file',
-        body: 'Salva il video con lo strumento che preferisci, o usa un file che hai già. Va bene qualsiasi formato. Punta a 720p, o 480p se il file supera i 40 MB.',
+        body: 'Salva il video con lo strumento che preferisci, o usa un file che hai già. Va bene qualsiasi formato. Punta a 720p, o 480p se il file supera i 50 MB.',
       },
       {
         title: 'Controlla la durata',
@@ -966,8 +966,8 @@ export const it = {
     checklist: [
       'Lo stesso spezzone della scena del pack, senza tagli',
       'Qualsiasi formato video',
-      'Al massimo 40 MB: bastano 720p o 480p',
-      'Al massimo 5 minuti',
+      'Al massimo 50 MB: bastano 720p o 480p',
+      'Al massimo 10 minuti',
     ],
     whyTitle: 'Perché questo passaggio?',
     whyBody: 'Dubblers non ospita video: il catalogo conserva i tagli e l’audio, mai l’immagine. E la maggior parte delle piattaforme rifiuta i download che provengono dai server. Porti quindi tu il file, e tutto il resto avviene online.',
@@ -984,7 +984,7 @@ export const it = {
         a: 'Qualsiasi strumento che salvi il video in un file, da qualunque sito. Evita quelli che chiedono di installare un’estensione o un programma sconosciuto, e recupera solo video che hai il diritto di usare privatamente.',
       },
       {
-        q: 'Il mio file supera i 40 MB',
+        q: 'Il mio file supera i 50 MB',
         a: 'Esportalo di nuovo con una qualità più bassa: 720p, o 480p per una scena lunga. L’immagine resta nitida nello studio e il suono non ne risente.',
       },
       {
@@ -1005,7 +1005,7 @@ export const it = {
     homeBannerBody: 'YouTube, TikTok, un film sul tuo disco, una registrazione dello schermo: qualsiasi file video si può importare, di qualunque formato. La guida mostra come recuperarlo e prepararlo in cinque minuti.',
     homeBannerAction: 'Leggi la guida all’importazione',
     midLink: 'Non hai ancora un video a portata di mano? La guida spiega come recuperarne uno.',
-    trajetFile: 'Qualsiasi formato · max 40 MB',
+    trajetFile: 'Qualsiasi formato · max 50 MB',
   },
 
   guideHub: {
@@ -1293,7 +1293,7 @@ export const it = {
     hostOnly: 'Può farlo solo l’ospite.',
     noAudioTrack: 'Questo file non ha traccia audio.',
     noVideoTrack: 'Questo file non ha video.',
-    tooLong: 'Scena troppo lunga: 5 minuti al massimo.',
+    tooLong: 'Scena troppo lunga: 10 minuti al massimo.',
     youtubeFailed:
       'Il download da YouTube è fallito. Importa direttamente il file video.',
     pageNotFoundTitle: 'Questa pagina non esiste',

@@ -570,7 +570,7 @@ export const pt = {
     titleLabel: 'Título da cena',
     titlePlaceholder: 'O duelo na ponte',
     dropzone: 'Solte seu vídeo aqui, ou clique para escolher',
-    fileTooLarge: 'Arquivo pesado demais: no máximo 40 MB.',
+    fileTooLarge: 'Arquivo pesado demais: no máximo 50 MB.',
     wrongType: 'Este arquivo não é um vídeo. Todos os formatos de vídeo são aceitos: MP4, MOV, MKV, AVI, WebM…',
     youtubeLabel: 'Link do vídeo',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -578,7 +578,7 @@ export const pt = {
       'Baixar do YouTube é uma conveniência, não uma garantia: quebra com frequência. Se não der certo, importe o arquivo direto.',
     multiTrackWarning:
       'Se a sua fonte tiver várias faixas de áudio (dublada, original, comentários), a dublada é a primeira.',
-    durationWarning: 'A cena precisa ter menos de 5 minutos.',
+    durationWarning: 'A cena precisa ter menos de 10 minutos.',
     submitUpload: 'Importar e preparar',
     submitYoutube: 'Baixar e preparar',
     uploading: 'Enviando o arquivo…',
@@ -586,7 +586,7 @@ export const pt = {
     introUpload: 'Uma cena nova, preparada do zero a partir do seu vídeo, venha de onde vier: um filme, uma série, um clipe do YouTube ou do TikTok, uma gravação de tela…',
     introPack: 'Personagens, falas e som já estão prontos: você traz o vídeo e o lobby abre em cerca de um minuto.',
     introYoutube: 'Só para administradores: o vídeo é baixado pelo computador do anfitrião, que precisa estar ligado.',
-    limits: 'Qualquer formato de vídeo · no máximo 40 MB e 5 minutos',
+    limits: 'Qualquer formato de vídeo · no máximo 50 MB e 10 minutos',
     uploadStepsTitle: 'Como funciona',
     uploadSteps: [
       'Você escolhe o vídeo e dá um título.',
@@ -918,9 +918,9 @@ export const pt = {
     openSource: 'Ver o vídeo original',
     howTo: 'Como obtenho o arquivo?',
     drop: 'Solte o vídeo aqui ou clique para escolhê-lo',
-    expected: (d: string) => `Duração esperada: ${d} · qualquer formato de vídeo, máximo 40 MB`,
+    expected: (d: string) => `Duração esperada: ${d} · qualquer formato de vídeo, máximo 50 MB`,
     mismatch: (esperada: string, recebida: string) => `Este arquivo dura ${recebida}; a cena do pack, ${esperada}. Se não for exatamente o mesmo vídeo, as falas vão cair fora do tempo.`,
-    tooLarge: 'Arquivo muito pesado: máximo 40 MB. Exporte o vídeo de novo em 720p ou 480p.',
+    tooLarge: 'Arquivo muito pesado: máximo 50 MB. Exporte o vídeo de novo em 720p ou 480p.',
     or: 'ou',
     autoTitle: 'Download automático',
     autoBody: 'O computador do anfitrião baixa o vídeo do YouTube: ele precisa estar ligado.',
@@ -946,7 +946,7 @@ export const pt = {
       },
       {
         title: 'Pegue o arquivo',
-        body: 'Salve o vídeo com a ferramenta que preferir, ou use um arquivo que você já tem. Qualquer formato serve. Mire em 720p, ou 480p se o arquivo passar de 40 MB.',
+        body: 'Salve o vídeo com a ferramenta que preferir, ou use um arquivo que você já tem. Qualquer formato serve. Mire em 720p, ou 480p se o arquivo passar de 50 MB.',
       },
       {
         title: 'Confira a duração',
@@ -961,8 +961,8 @@ export const pt = {
     checklist: [
       'O mesmo trecho da cena do pack, sem cortes',
       'Qualquer formato de vídeo',
-      'No máximo 40 MB: 720p ou 480p bastam',
-      'No máximo 5 minutos',
+      'No máximo 50 MB: 720p ou 480p bastam',
+      'No máximo 10 minutos',
     ],
     whyTitle: 'Por que esta etapa?',
     whyBody: 'O Dubblers não hospeda vídeos: o catálogo guarda os cortes e o som, nunca a imagem. E a maioria das plataformas recusa downloads vindos de servidores. Então você traz o arquivo, e todo o resto acontece online.',
@@ -979,7 +979,7 @@ export const pt = {
         a: 'Qualquer ferramenta que salve o vídeo em arquivo, seja qual for o site. Evite as que pedem para instalar uma extensão ou um programa desconhecido, e só pegue vídeos que você tem o direito de usar em privado.',
       },
       {
-        q: 'Meu arquivo passa de 40 MB',
+        q: 'Meu arquivo passa de 50 MB',
         a: 'Exporte de novo com qualidade menor: 720p, ou 480p para uma cena longa. A imagem continua nítida no estúdio e o som não perde nada.',
       },
       {
@@ -1000,7 +1000,7 @@ export const pt = {
     homeBannerBody: 'YouTube, TikTok, um filme no seu disco, uma gravação de tela: qualquer arquivo de vídeo pode ser importado, seja qual for o formato. O guia mostra como pegar e preparar em cinco minutos.',
     homeBannerAction: 'Ler o guia de importação',
     midLink: 'Ainda não tem um vídeo em mãos? O guia explica como conseguir um.',
-    trajetFile: 'Qualquer formato · até 40 MB',
+    trajetFile: 'Qualquer formato · até 50 MB',
   },
 
   guideHub: {
@@ -1288,7 +1288,7 @@ export const pt = {
     hostOnly: 'Só o anfitrião pode fazer isso.',
     noAudioTrack: 'Este arquivo não tem faixa de áudio.',
     noVideoTrack: 'Este arquivo não tem vídeo.',
-    tooLong: 'Cena longa demais: no máximo 5 minutos.',
+    tooLong: 'Cena longa demais: no máximo 10 minutos.',
     youtubeFailed: 'O download do YouTube falhou. Importe o arquivo de vídeo direto.',
     pageNotFoundTitle: 'Esta página não existe',
     pageNotFoundBody: 'O link pode estar incompleto, ou a página mudou de lugar. Recomece pelo início.',

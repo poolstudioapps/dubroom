@@ -565,7 +565,7 @@ export const ko = {
     titleLabel: '장면 제목',
     titlePlaceholder: '다리 위의 결투',
     dropzone: '영상을 여기에 놓거나 클릭해서 선택하세요',
-    fileTooLarge: '파일이 너무 큽니다. 최대 40 MB입니다.',
+    fileTooLarge: '파일이 너무 큽니다. 최대 50 MB입니다.',
     wrongType: '이 파일은 영상이 아닙니다. MP4, MOV, MKV, AVI, WebM 등 모든 영상 형식을 지원합니다.',
     youtubeLabel: '영상 링크',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -573,7 +573,7 @@ export const ko = {
       'YouTube에서 받아오는 건 편의 기능이지 보장이 아닙니다. 자주 실패합니다. 안 되면 파일을 직접 가져오세요.',
     multiTrackWarning:
       '소스에 오디오 트랙이 여러 개면(더빙, 원어, 코멘터리 등) 첫 번째가 더빙 대상입니다.',
-    durationWarning: '장면은 5분 미만이어야 합니다.',
+    durationWarning: '장면은 10분 미만이어야 합니다.',
     submitUpload: '가져와서 준비',
     submitYoutube: '받아와서 준비',
     uploading: '파일 보내는 중…',
@@ -581,7 +581,7 @@ export const ko = {
     introUpload: '내 영상으로 처음부터 준비하는 새 장면. 영화, 드라마, 유튜브나 틱톡 클립, 화면 녹화 등 출처는 상관없습니다.',
     introPack: '캐릭터, 대사, 소리가 모두 준비돼 있어요. 영상을 가져오면 약 1분 안에 로비가 열려요.',
     introYoutube: '관리자 전용: 영상은 호스트의 컴퓨터가 내려받으며, 컴퓨터가 켜져 있어야 해요.',
-    limits: '모든 영상 형식 · 최대 50MB, 5분',
+    limits: '모든 영상 형식 · 최대 50MB, 10분',
     uploadStepsTitle: '진행 방식',
     uploadSteps: [
       '영상을 고르고 제목을 붙입니다.',
@@ -953,7 +953,7 @@ export const ko = {
       '팩의 장면과 같은 구간, 편집 없이',
       '어떤 영상 형식이든 가능',
       '최대 50MB: 720p나 480p면 충분',
-      '최대 5분',
+      '최대 10분',
     ],
     whyTitle: '왜 이 단계가 필요한가요?',
     whyBody: 'Dubblers는 영상을 저장하지 않아요. 카탈로그에는 구간 정보와 소리만 있고 화면은 없어요. 게다가 대부분의 플랫폼은 서버에서 오는 다운로드를 거부해요. 그래서 파일은 직접 가져오고, 나머지는 모두 온라인에서 진행돼요.',
@@ -991,7 +991,7 @@ export const ko = {
     homeBannerBody: '유튜브, 틱톡, 디스크의 영화, 화면 녹화. 형식에 상관없이 모든 영상 파일을 불러올 수 있습니다. 가이드에서 5분 만에 구하고 준비하는 방법을 알려 드립니다.',
     homeBannerAction: '불러오기 가이드 읽기',
     midLink: '아직 영상이 없나요? 가이드에서 구하는 방법을 설명합니다.',
-    trajetFile: '형식 무관 · 최대 40 MB',
+    trajetFile: '형식 무관 · 최대 50 MB',
   },
 
   guideHub: {
@@ -1279,7 +1279,7 @@ export const ko = {
     hostOnly: '호스트만 할 수 있습니다.',
     noAudioTrack: '이 파일에는 오디오 트랙이 없습니다.',
     noVideoTrack: '이 파일에는 영상이 없습니다.',
-    tooLong: '장면이 너무 깁니다. 최대 5분입니다.',
+    tooLong: '장면이 너무 깁니다. 최대 10분입니다.',
     youtubeFailed: 'YouTube에서 받아오지 못했습니다. 영상 파일을 직접 가져오세요.',
     pageNotFoundTitle: '존재하지 않는 페이지입니다',
     pageNotFoundBody: '링크가 불완전하거나 페이지가 옮겨졌을 수 있어요. 홈에서 다시 찾아보세요.',
