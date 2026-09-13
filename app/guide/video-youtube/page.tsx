@@ -71,7 +71,7 @@ export default async function GuideVideoPage() {
 
   return (
     <div className="relative isolate flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
-      <HeroBackdrop />
+      <HeroBackdrop variant="guides" />
       <div className="w-full max-w-[min(84rem,94vw)]">
         <SiteHeader signedIn={!!user} right={user ? <AccountMenu /> : undefined} />
 

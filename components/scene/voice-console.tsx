@@ -32,12 +32,13 @@ const PRESETS: {
   cle: keyof ReturnType<typeof useT>['studio']['fxPresets'];
   fx: { reverb: number; pitch: number };
 }[] = [
+  // Reverb sur l'echelle ou 100 est une grande salle, pas un bain.
   { cle: 'dry', fx: { reverb: 0, pitch: 0 } },
-  { cle: 'room', fx: { reverb: 30, pitch: 0 } },
-  { cle: 'cathedral', fx: { reverb: 85, pitch: 0 } },
-  { cle: 'cartoon', fx: { reverb: 10, pitch: 7 } },
-  { cle: 'deep', fx: { reverb: 15, pitch: -6 } },
-  { cle: 'monster', fx: { reverb: 45, pitch: -11 } },
+  { cle: 'room', fx: { reverb: 45, pitch: 0 } },
+  { cle: 'cathedral', fx: { reverb: 100, pitch: 0 } },
+  { cle: 'cartoon', fx: { reverb: 15, pitch: 7 } },
+  { cle: 'deep', fx: { reverb: 25, pitch: -6 } },
+  { cle: 'monster', fx: { reverb: 70, pitch: -11 } },
 ];
 
 /**

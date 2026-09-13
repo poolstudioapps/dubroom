@@ -76,28 +76,46 @@ export async function readWavMono(chemin: string): Promise<Wav> {
 }
 
 export async function writeWavMono(chemin: string, wav: Wav): Promise<void> {
-  const n = wav.samples.length;
-  const buffer = Buffer.alloc(44 + n * 2);
+  await writeWav(chemin, wav.sampleRate, [wav.samples]);
+}
+
+/**
+ * Ecrit un WAV d'autant de canaux qu'on lui en donne.
+ *
+ * La lecture reste mono — une prise de micro l'est toujours — mais la
+ * sortie des effets ne l'est plus : la reverb ouvre la salle en stereo.
+ */
+export async function writeWav(
+  chemin: string,
+  sampleRate: number,
+  canaux: Float32Array[],
+): Promise<void> {
+  const nc = Math.max(1, canaux.length);
+  const n = canaux[0]?.length ?? 0;
+  const octets = n * nc * 2;
+  const buffer = Buffer.alloc(44 + octets);
 
   buffer.write('RIFF', 0, 'ascii');
-  buffer.writeUInt32LE(36 + n * 2, 4);
+  buffer.writeUInt32LE(36 + octets, 4);
   buffer.write('WAVE', 8, 'ascii');
   buffer.write('fmt ', 12, 'ascii');
   buffer.writeUInt32LE(16, 16);
   buffer.writeUInt16LE(1, 20); // PCM
-  buffer.writeUInt16LE(1, 22); // mono
-  buffer.writeUInt32LE(wav.sampleRate, 24);
-  buffer.writeUInt32LE(wav.sampleRate * 2, 28);
-  buffer.writeUInt16LE(2, 32);
+  buffer.writeUInt16LE(nc, 22);
+  buffer.writeUInt32LE(sampleRate, 24);
+  buffer.writeUInt32LE(sampleRate * nc * 2, 28);
+  buffer.writeUInt16LE(nc * 2, 32);
   buffer.writeUInt16LE(16, 34);
   buffer.write('data', 36, 'ascii');
-  buffer.writeUInt32LE(n * 2, 40);
+  buffer.writeUInt32LE(octets, 40);
 
   for (let i = 0; i < n; i += 1) {
-    // Bornage avant conversion : un depassement reboucle en entier
-    // signe, et un clic tres fort remplace un leger ecretage.
-    const v = Math.max(-1, Math.min(1, wav.samples[i]!));
-    buffer.writeInt16LE(Math.round(v * 32767), 44 + i * 2);
+    for (let c = 0; c < nc; c += 1) {
+      // Bornage avant conversion : un depassement reboucle en entier
+      // signe, et un clic tres fort remplace un leger ecretage.
+      const v = Math.max(-1, Math.min(1, canaux[c]![i] ?? 0));
+      buffer.writeInt16LE(Math.round(v * 32767), 44 + (i * nc + c) * 2);
+    }
   }
 
   await fs.writeFile(chemin, buffer);

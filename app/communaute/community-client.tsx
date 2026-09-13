@@ -6,7 +6,6 @@ import { FolderHeart, Library, Plus, Search, X } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
-import { GuideIcon, type GuideIconName } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LinkButton } from '@/components/link-button';
 import { PackCard, packGridClass } from '@/components/pack-card';
@@ -25,9 +24,9 @@ import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
+import { CommunityHero } from './community-hero';
 
 const CREER_UN_PACK = '/sessions/new?pour=communaute';
-const ICONES_ETAPES: GuideIconName[] = ['fiche', 'script', 'partage'];
 
 /**
  * Le catalogue des scenes preparees.
@@ -113,28 +112,32 @@ export function CommunityClient({
       className="space-y-10 sm:space-y-12"
       backdrop={scope === 'all' ? <HeroBackdrop variant="communaute" /> : undefined}
     >
-      {/* ── Les deux portes ─────────────────────────────────────────── */}
-      <section className="grid items-center gap-8 lg:grid-cols-[1.25fr_1fr]">
-        <div className="space-y-5">
-          <p className="accroche inline-flex items-center gap-2 rounded-full border-2 border-border-strong bg-surface-raised px-3 py-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+      {/* ── Les deux portes, dans la composition de l'accueil ──────── */}
+      <CommunityHero
+        kicker={
+          <>
             {scope === 'mine' ? (
               <FolderHeart className="h-3.5 w-3.5" aria-hidden />
             ) : (
               <Library className="h-3.5 w-3.5" aria-hidden />
             )}
             {scope === 'mine' ? t.myPacks.kicker : t.community.kicker}
-          </p>
-          <h1 className="titre text-balance text-4xl leading-[1.02] sm:text-5xl">{strings.title}</h1>
-          <p className="max-w-xl text-base leading-relaxed text-text-muted">{strings.subtitle}</p>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <LinkButton href={CREER_UN_PACK}>
-              <Plus className="h-4 w-4" aria-hidden />
+          </>
+        }
+        title={strings.title}
+        subtitle={strings.subtitle}
+        howTitle={t.community.howTitle}
+        howSteps={t.community.howSteps}
+        footnote={mine.length > 0 ? t.community.stats(mine.length, roles, langues) : undefined}
+        actions={
+          <>
+            <LinkButton href={CREER_UN_PACK} size="lg">
+              <Plus className="h-5 w-5" aria-hidden />
               {t.community.createPack}
             </LinkButton>
             {scope === 'all' ? (
-              <LinkButton href="/mes-packs" variant="secondary">
-                <FolderHeart className="h-4 w-4" aria-hidden />
+              <LinkButton href="/mes-packs" variant="secondary" size="lg">
+                <FolderHeart className="h-5 w-5" aria-hidden />
                 {t.community.myPacksCta}
                 {mesPacks.length > 0 ? (
                   <span className="rounded-full bg-accent/20 px-2 py-0.5 text-xs tabular-nums">
@@ -143,53 +146,14 @@ export function CommunityClient({
                 ) : null}
               </LinkButton>
             ) : (
-              <LinkButton href="/communaute" variant="secondary">
-                <Library className="h-4 w-4" aria-hidden />
+              <LinkButton href="/communaute" variant="secondary" size="lg">
+                <Library className="h-5 w-5" aria-hidden />
                 {t.myPacks.browseAll}
               </LinkButton>
             )}
-          </div>
-
-          {mine.length > 0 ? (
-            <p className="text-sm font-semibold text-text-faint">
-              {t.community.stats(mine.length, roles, langues)}
-            </p>
-          ) : null}
-        </div>
-
-        {/* Comment une scene rejoint la communaute : trois etapes, dites
-            avant qu'on se demande ou est le bouton « publier ». */}
-        <aside className="panel space-y-5 p-6 sm:p-7">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-text-faint">
-            {t.community.howTitle}
-          </h2>
-          <ol className="relative space-y-6">
-            <span
-              className="absolute bottom-5 left-5 top-5 w-px -translate-x-1/2 bg-border-strong"
-              aria-hidden
-            />
-            {t.community.howSteps.map((etape, rang) => {
-              const nom = ICONES_ETAPES[rang] ?? 'partage';
-              return (
-                <li key={etape.title} className="relative flex gap-4">
-                  <span
-                    className={cn(
-                      'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-surface-raised',
-                      rang === t.community.howSteps.length - 1 ? 'border-accent' : 'border-border-strong',
-                    )}
-                  >
-                    <GuideIcon nom={nom} className="h-7 w-7" />
-                  </span>
-                  <span className="min-w-0 space-y-0.5 pt-0.5">
-                    <span className="block text-sm font-bold text-text">{etape.title}</span>
-                    <span className="block text-xs leading-relaxed text-text-muted">{etape.body}</span>
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-        </aside>
-      </section>
+          </>
+        }
+      />
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
 

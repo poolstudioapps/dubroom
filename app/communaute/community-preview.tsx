@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Clapperboard, Library, ThumbsUp } from 'lucide-react';
 
 import { Footer } from '@/components/footer';
-import { GuideIcon, type GuideIconName } from '@/components/guide-icon';
+import { GuideIcon } from '@/components/guide-icon';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
@@ -12,6 +12,7 @@ import { characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
 import { getDictionary } from '@/lib/i18n-server';
 import { supabaseServer } from '@/lib/supabase/server';
+import { CommunityHero } from './community-hero';
 
 interface PackPublic {
   id: string;
@@ -31,7 +32,6 @@ interface PackPublic {
 /** Combien de scenes on va chercher : trois nettes, le reste sous le voile. */
 const APERCU = 9;
 const NETTES = 3;
-const ICONES_ETAPES: GuideIconName[] = ['fiche', 'script', 'partage'];
 
 /**
  * La communaute, vue sans compte.
@@ -63,58 +63,27 @@ export async function CommunityPreview() {
 
         <TvSet>
           <main className="space-y-10 sm:space-y-12">
-            <section className="hero-accueil grid items-center gap-8 lg:grid-cols-[1.25fr_1fr]">
-              <div className="space-y-5 text-center lg:text-left">
-                <p className="accroche inline-flex items-center gap-2 rounded-full border-2 border-border-strong bg-surface-raised px-3 py-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+            <CommunityHero
+              kicker={
+                <>
                   <Library className="h-3.5 w-3.5" aria-hidden />
                   {t.community.kicker}
-                </p>
-                <h1 className="signage hero-titre text-balance text-4xl leading-[0.98] sm:text-6xl">
-                  {t.community.title}
-                </h1>
-                <p className="mx-auto max-w-xl text-balance text-base leading-relaxed text-text-muted lg:mx-0">
-                  {t.community.subtitle}
-                </p>
-                <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
-                  <Link
-                    href={connexion}
-                    className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold text-accent-ink"
-                  >
-                    {t.community.previewCta}
-                    <ArrowRight className="h-5 w-5" aria-hidden />
-                  </Link>
-                </div>
-              </div>
-
-              <aside className="panel space-y-5 p-6 sm:p-7">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-text-faint">
-                  {t.community.howTitle}
-                </h2>
-                <ol className="relative space-y-6">
-                  <span
-                    className="absolute bottom-5 left-5 top-5 w-px -translate-x-1/2 bg-border-strong"
-                    aria-hidden
-                  />
-                  {t.community.howSteps.map((etape, rang) => (
-                    <li key={etape.title} className="relative flex gap-4">
-                      <span
-                        className={
-                          rang === t.community.howSteps.length - 1
-                            ? 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-surface-raised'
-                            : 'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised'
-                        }
-                      >
-                        <GuideIcon nom={ICONES_ETAPES[rang] ?? 'partage'} className="h-7 w-7" />
-                      </span>
-                      <span className="min-w-0 space-y-0.5 pt-0.5">
-                        <span className="block text-sm font-bold text-text">{etape.title}</span>
-                        <span className="block text-xs leading-relaxed text-text-muted">{etape.body}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              </aside>
-            </section>
+                </>
+              }
+              title={t.community.title}
+              subtitle={t.community.subtitle}
+              howTitle={t.community.howTitle}
+              howSteps={t.community.howSteps}
+              actions={
+                <Link
+                  href={connexion}
+                  className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold text-accent-ink"
+                >
+                  {t.community.previewCta}
+                  <ArrowRight className="h-5 w-5" aria-hidden />
+                </Link>
+              }
+            />
 
             <section className="space-y-4 sm:space-y-5">
               <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">

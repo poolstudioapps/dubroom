@@ -9,7 +9,7 @@
  * entend dans « Ma prise » est ce qui sort dans la video.
  *
  * Aucune dependance, aucun acces au navigateur ni au disque : des
- * echantillons en entree, des echantillons en sortie.
+ * echantillons en entree, des canaux en sortie.
  */
 
 export interface VoiceFx {
@@ -28,8 +28,13 @@ export function demandeTraitement(fx: VoiceFx): boolean {
   return Math.round(fx.pitch) !== 0 || fx.reverb > 0;
 }
 
-/** La prise avec ses effets : pitch, puis reverb. */
-export function traiterVoix(entree: Float32Array, sampleRate: number, fx: VoiceFx): Float32Array {
+/**
+ * La prise avec ses effets : pitch, puis reverb.
+ *
+ * Un canal sans reverb, deux avec : la voix reste au centre, et c'est la
+ * salle autour d'elle qui s'ouvre a gauche et a droite.
+ */
+export function traiterVoix(entree: Float32Array, sampleRate: number, fx: VoiceFx): Float32Array[] {
   const transposee = transposer(entree, sampleRate, fx.pitch);
   return reverberer(transposee, sampleRate, fx.reverb);
 }
@@ -162,81 +167,159 @@ export function transposer(x: Float32Array, sampleRate: number, demiTons: number
 /** Longueurs des filtres en peigne et passe-tout, a 44,1 kHz (Freeverb). */
 const PEIGNES = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617];
 const PASSE_TOUT = [556, 441, 341, 225];
+/** Le canal droit a des filtres un peu plus longs : c'est ce qui ouvre l'espace. */
+const ECART_STEREO = 23;
 
 /**
- * Une vraie reverberation : huit filtres en peigne amortis, puis quatre
- * passe-tout, la structure de Freeverb.
- *
- * Les trois echos d'avant sonnaient comme un tuyau. Ici le curseur agrandit
- * la salle — une queue plus longue, un retard initial plus grand — et monte
- * la part de son reflechi. Le niveau du son reflechi est cale sur celui de
- * la voix, ce qui tient la reverb audible a bas reglage sans jamais noyer
- * la voix a fond.
+ * Les premieres reflexions : les murs proches, avant la queue.
+ * [delai en ms, gain, canal] — alternees, pour que la salle ait des cotes.
  */
-export function reverberer(x: Float32Array, sampleRate: number, montant: number): Float32Array {
-  const part = clamp(montant, 0, 100) / 100;
-  if (part <= 0 || x.length === 0) return x;
+const REFLEXIONS: readonly [number, number, 0 | 1][] = [
+  [7, 0.62, 0],
+  [11, 0.56, 1],
+  [16, 0.48, 0],
+  [23, 0.42, 1],
+  [31, 0.34, 0],
+  [41, 0.28, 1],
+  [53, 0.21, 0],
+  [67, 0.15, 1],
+];
 
-  const echelle = sampleRate / 44100;
-  const salle = 0.8 + 0.17 * part;
-  const amorti = 0.3 - 0.12 * part;
-  const preDelai = Math.round(sampleRate * (0.01 + 0.03 * part));
-  const queue = Math.round(sampleRate * (0.5 + 2.5 * part));
-  const total = x.length + preDelai + queue;
+/** Filtre du premier ordre : `passeHaut` retire le grave, sinon le laisse seul. */
+function premierOrdre(x: Float32Array, sampleRate: number, coupure: number, passeHaut: boolean) {
+  const a = Math.exp((-2 * Math.PI * coupure) / sampleRate);
+  const y = new Float32Array(x.length);
+  let bas = 0;
+  for (let i = 0; i < x.length; i += 1) {
+    bas = (1 - a) * x[i]! + a * bas;
+    y[i] = passeHaut ? x[i]! - bas : bas;
+  }
+  return y;
+}
 
-  const peignes = PEIGNES.map((l) => ({
-    tampon: new Float32Array(Math.max(1, Math.round(l * echelle))),
+function energie(x: Float32Array): number {
+  let somme = 0;
+  for (let i = 0; i < x.length; i += 1) somme += x[i]! * x[i]!;
+  return somme;
+}
+
+interface Ligne {
+  tampon: Float32Array;
+  i: number;
+  filtre: number;
+}
+
+function lignes(longueurs: number[], ecart: number, echelle: number): Ligne[] {
+  return longueurs.map((l) => ({
+    tampon: new Float32Array(Math.max(1, Math.round((l + ecart) * echelle))),
     i: 0,
     filtre: 0,
   }));
-  const passes = PASSE_TOUT.map((l) => ({
-    tampon: new Float32Array(Math.max(1, Math.round(l * echelle))),
-    i: 0,
-  }));
+}
 
-  const humide = new Float32Array(total);
+/**
+ * Une vraie salle, en stereo.
+ *
+ * Trois etages. D'abord la voix est adoucie avant d'entrer dans la salle :
+ * sans son grave, qui faisait gronder la queue, ni ses sifflantes, qui la
+ * rendaient metallique — la voix directe, elle, reste intacte. Puis les
+ * premieres reflexions, qui disent la taille de la piece. Enfin la queue,
+ * huit filtres en peigne amortis et quatre passe-tout par canal (la
+ * structure de Freeverb), le canal droit legerement decale du gauche.
+ *
+ * L'echelle du curseur a ete divisee par deux : 100 vaut ce que 50 valait
+ * dans la premiere version, ou le maximum noyait la voix. Le son reflechi
+ * monte en douceur depuis zero, sans marche au premier cran.
+ */
+export function reverberer(x: Float32Array, sampleRate: number, montant: number): Float32Array[] {
+  const p = clamp(montant, 0, 100) / 100;
+  if (p <= 0 || x.length === 0) return [x];
+
+  const echelle = sampleRate / 44100;
+  const salle = 0.8 + 0.085 * p;
+  const amorti = 0.3 - 0.06 * p;
+  const preDelai = Math.round(sampleRate * (0.01 + 0.015 * p));
+
+  // La queue dure le temps que les peignes perdent soixante decibels.
+  const delaiMoyen = 1350 / 44100;
+  const rt60 = (3 * delaiMoyen) / -Math.log10(salle);
+  const queue = Math.round(sampleRate * (rt60 + 0.25));
+  const total = x.length + preDelai + queue;
+
+  const entree = premierOrdre(premierOrdre(x, sampleRate, 160, true), sampleRate, 6500, false);
+
+  // ── La queue ──
+  const peignes = [lignes(PEIGNES, 0, echelle), lignes(PEIGNES, ECART_STEREO, echelle)];
+  const passes = [lignes(PASSE_TOUT, 0, echelle), lignes(PASSE_TOUT, ECART_STEREO, echelle)];
+  const tardive = [new Float32Array(total), new Float32Array(total)];
+
   for (let t = 0; t < total; t += 1) {
     const s = t - preDelai;
-    const entree = s >= 0 && s < x.length ? x[s]! * 0.015 : 0;
-
-    let somme = 0;
-    for (const p of peignes) {
-      const lu = p.tampon[p.i]!;
-      p.filtre = lu * (1 - amorti) + p.filtre * amorti;
-      p.tampon[p.i] = entree + p.filtre * salle;
-      p.i = p.i + 1 === p.tampon.length ? 0 : p.i + 1;
-      somme += lu;
+    const v = s >= 0 && s < x.length ? entree[s]! * 0.015 : 0;
+    for (let c = 0; c < 2; c += 1) {
+      let somme = 0;
+      for (const pg of peignes[c]!) {
+        const lu = pg.tampon[pg.i]!;
+        pg.filtre = lu * (1 - amorti) + pg.filtre * amorti;
+        pg.tampon[pg.i] = v + pg.filtre * salle;
+        pg.i = pg.i + 1 === pg.tampon.length ? 0 : pg.i + 1;
+        somme += lu;
+      }
+      for (const pa of passes[c]!) {
+        const lu = pa.tampon[pa.i]!;
+        const sortie = -somme + lu;
+        pa.tampon[pa.i] = somme + lu * 0.5;
+        pa.i = pa.i + 1 === pa.tampon.length ? 0 : pa.i + 1;
+        somme = sortie;
+      }
+      tardive[c]![t] = somme;
     }
-    for (const p of passes) {
-      const lu = p.tampon[p.i]!;
-      const sortie = -somme + lu;
-      p.tampon[p.i] = somme + lu * 0.5;
-      p.i = p.i + 1 === p.tampon.length ? 0 : p.i + 1;
-      somme = sortie;
-    }
-    humide[t] = somme;
   }
 
-  // Le son reflechi a la meme energie moyenne que la voix, puis dose.
-  let energieVoix = 0;
-  for (let i = 0; i < x.length; i += 1) energieVoix += x[i]! * x[i]!;
-  let energieHumide = 0;
-  for (let i = 0; i < total; i += 1) energieHumide += humide[i]! * humide[i]!;
-  const egalise =
-    energieHumide > 1e-12 ? Math.sqrt(energieVoix / x.length / (energieHumide / total)) : 0;
-  const niveauHumide = egalise * (0.25 + 0.75 * Math.pow(part, 0.8)) * 0.95;
-  const niveauSec = 1 - 0.35 * part;
+  // ── Les premieres reflexions, espacees selon la taille de la salle ──
+  const precoces = [new Float32Array(total), new Float32Array(total)];
+  const espace = 0.7 + 0.6 * p;
+  for (const [ms, gain, c] of REFLEXIONS) {
+    const d = Math.round((ms * espace * sampleRate) / 1000);
+    const cible = precoces[c]!;
+    for (let s = 0; s < x.length && s + d < total; s += 1) cible[s + d]! += entree[s]! * gain;
+  }
 
-  const sortie = new Float32Array(total);
+  // ── Le dosage ──
+  // Chaque etage est ramene a l'energie moyenne de la voix, puis dose : la
+  // reverb garde le meme poids quel que soit le niveau de la prise.
+  const voix = energie(x) / x.length;
+  const egaliser = (a: Float32Array, b: Float32Array) => {
+    const e = (energie(a) + energie(b)) / (2 * total);
+    return e > 1e-12 ? Math.sqrt(voix / e) : 0;
+  };
+  const gainTardive = egaliser(tardive[0]!, tardive[1]!) * 0.88;
+  const gainPrecoces = egaliser(precoces[0]!, precoces[1]!) * 0.4;
+  const niveauHumide = 0.65 * Math.pow(p, 0.7);
+  const niveauSec = 1 - 0.18 * p;
+
+  // La fin de la queue s'eteint en douceur, jamais sur un clic.
+  const fondu = Math.min(queue, Math.round(sampleRate * 0.3));
+
+  const sorties = [new Float32Array(total), new Float32Array(total)];
   let crete = 0;
-  for (let t = 0; t < total; t += 1) {
-    const v = (t < x.length ? x[t]! * niveauSec : 0) + humide[t]! * niveauHumide;
-    sortie[t] = v;
-    crete = Math.max(crete, Math.abs(v));
+  for (let c = 0; c < 2; c += 1) {
+    const out = sorties[c]!;
+    const tard = tardive[c]!;
+    const tot = precoces[c]!;
+    for (let t = 0; t < total; t += 1) {
+      const sec = t < x.length ? x[t]! * niveauSec : 0;
+      let humide = (tard[t]! * gainTardive + tot[t]! * gainPrecoces) * niveauHumide;
+      const avantFin = total - t;
+      if (avantFin < fondu) humide *= 0.5 - 0.5 * Math.cos((Math.PI * avantFin) / fondu);
+      const v = sec + humide;
+      out[t] = v;
+      crete = Math.max(crete, Math.abs(v));
+    }
   }
   if (crete > 0.99) {
     const reduction = 0.99 / crete;
-    for (let t = 0; t < total; t += 1) sortie[t] = sortie[t]! * reduction;
+    for (const out of sorties) for (let t = 0; t < total; t += 1) out[t] = out[t]! * reduction;
   }
-  return sortie;
+  return sorties;
 }

@@ -80,6 +80,29 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
     };
   }, [open]);
 
+  /*
+   * Un son quand une notification arrive.
+   *
+   * On compare aux non lues deja connues, compte compris : un like de
+   * plus sur une ligne regroupee sonne aussi. Rien au premier chargement —
+   * ouvrir une page ne doit pas tinter pour des nouvelles d'hier — ni quand
+   * elles passent a « lues ». Un navigateur qui refuse la lecture avant
+   * tout geste sur la page reste muet, sans erreur.
+   */
+  const connues = useRef<Set<string> | null>(null);
+  const son = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    if (!liste.data) return;
+    const cles = new Set(liste.data.filter((n) => !n.read_at).map((n) => `${n.id}:${n.count}`));
+    const avant = connues.current;
+    connues.current = cles;
+    if (!avant || ![...cles].some((cle) => !avant.has(cle))) return;
+    son.current ??= new Audio('/sons/notification.mp3');
+    son.current.volume = 0.7;
+    son.current.currentTime = 0;
+    void son.current.play().catch(() => undefined);
+  }, [liste.data]);
+
   if (!userId) return null;
 
   const items = liste.data ?? [];
@@ -134,15 +157,23 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
         aria-expanded={open}
         aria-label={t.notifications.label(nonLues.length)}
         onClick={basculer}
-        className="btn-3d btn-secondary relative flex h-11 w-11 items-center justify-center"
+        className="btn-3d btn-secondary flex h-11 w-11 items-center justify-center"
       >
         <Bell className="h-5 w-5" aria-hidden />
-        {nonLues.length > 0 ? (
-          <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold tabular-nums text-accent-ink shadow">
-            {nonLues.length > 9 ? '9+' : nonLues.length}
-          </span>
-        ) : null}
       </button>
+      {/*
+        La pastille est posee a cote du bouton, pas dedans : les boutons
+        rognent ce qui depasse de leur arrondi, et elle etait coupee sous
+        le bord. Ici elle passe par-dessus le coin.
+      */}
+      {nonLues.length > 0 ? (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-1.5 -top-1.5 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold tabular-nums text-accent-ink shadow-[0_2px_6px_rgb(0_0_0/0.6)] ring-2 ring-black/70"
+        >
+          {nonLues.length > 9 ? '9+' : nonLues.length}
+        </span>
+      ) : null}
 
       {open ? (
         <div

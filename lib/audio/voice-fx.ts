@@ -42,14 +42,19 @@ export async function decoderPrise(blob: Blob): Promise<Float32Array> {
   return mono;
 }
 
-/** La prise telle que le mixage la posera, effets et volume compris. */
-export function rendreVoix(brut: Float32Array, s: VoiceSettings): Float32Array {
-  const voix = traiterVoix(brut, ECOUTE_HZ, { pitch: s.pitch, reverb: s.reverb });
+/**
+ * La prise telle que le mixage la posera, effets et volume compris.
+ * Un canal sans reverb, deux avec.
+ */
+export function rendreVoix(brut: Float32Array, s: VoiceSettings): Float32Array[] {
+  const canaux = traiterVoix(brut, ECOUTE_HZ, { pitch: s.pitch, reverb: s.reverb });
   const gain = Math.pow(10, (s.gainDb || 0) / 20);
-  if (gain === 1) return voix;
-  const sortie = new Float32Array(voix.length);
-  for (let i = 0; i < voix.length; i += 1) sortie[i] = voix[i]! * gain;
-  return sortie;
+  if (gain === 1) return canaux;
+  return canaux.map((canal) => {
+    const sortie = new Float32Array(canal.length);
+    for (let i = 0; i < canal.length; i += 1) sortie[i] = canal[i]! * gain;
+    return sortie;
+  });
 }
 
 /** Une cle stable pour ne pas recalculer deux fois le meme reglage. */

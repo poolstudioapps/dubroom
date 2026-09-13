@@ -19,7 +19,7 @@ import {
   mixWithGraph,
   muxFinal,
 } from '../lib/ffmpeg.ts';
-import { readWavMono, writeWavMono } from '../lib/wav.ts';
+import { readWavMono, writeWav } from '../lib/wav.ts';
 import { buildMixGraph, placeTake, type VoSegment } from '../lib/mixgraph.ts';
 import { buildPack } from './pack.ts';
 import * as storage from '../lib/storage.ts';
@@ -205,12 +205,8 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
         const traite = path.join(takesDir, `${take.id}-fx.wav`);
         await decodeTakeToWav(local, brut);
         const wav = await readWavMono(brut);
-        const samples = traiterVoix(
-          Float32Array.from(wav.samples),
-          wav.sampleRate,
-          effets,
-        );
-        await writeWavMono(traite, { sampleRate: wav.sampleRate, samples });
+        const canaux = traiterVoix(Float32Array.from(wav.samples), wav.sampleRate, effets);
+        await writeWav(traite, wav.sampleRate, canaux);
         fichier = traite;
       } catch (error) {
         // Un effet rate ne vaut pas un rendu perdu : la prise part

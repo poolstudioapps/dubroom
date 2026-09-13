@@ -678,7 +678,7 @@ export function StudioScreen() {
     // La prise a change pendant le decodage : ce tampon ne sert plus.
     if (brut.current?.promesse !== prise.promesse) return null;
 
-    let sortie: Float32Array;
+    let sortie: Float32Array[];
     setCalcul(true);
     try {
       // Laisser l'indicateur s'afficher avant quelques dizaines de ms de calcul.
@@ -687,8 +687,12 @@ export function StudioScreen() {
     } finally {
       setCalcul(false);
     }
-    const buffer = contexte().createBuffer(1, Math.max(1, sortie.length), ECOUTE_HZ);
-    buffer.getChannelData(0).set(sortie);
+    const buffer = contexte().createBuffer(
+      sortie.length,
+      Math.max(1, sortie[0]?.length ?? 0),
+      ECOUTE_HZ,
+    );
+    sortie.forEach((canal, c) => buffer.getChannelData(c).set(canal));
     rendu.current = { source: prise.promesse, cle, buffer };
     return buffer;
   }

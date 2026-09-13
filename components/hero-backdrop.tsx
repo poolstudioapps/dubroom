@@ -8,6 +8,8 @@ const FILMS = {
   cinema: { video: '/video/hero-cinema.mp4', image: '/video/hero-cinema.jpg' },
   /** Une bande d'amis qui rit devant l'ecran. */
   communaute: { video: '/video/communaute.mp4', image: '/video/communaute.jpg' },
+  /** Quelqu'un qui prepare une scene, concentre devant son ecran. */
+  guides: { video: '/video/guides.mp4', image: '/video/guides.jpg' },
 } as const;
 
 /**
