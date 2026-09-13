@@ -582,7 +582,7 @@ export const de = {
       'Der YouTube-Download ist eine Bequemlichkeit, keine Garantie: er fällt regelmäßig aus. Wenn es nicht klappt, importiere die Datei direkt.',
     multiTrackWarning:
       'Hat deine Quelle mehrere Tonspuren (synchronisiert, Original, Kommentar), wird die erste synchronisiert.',
-    durationWarning: 'Die Szene muss unter 10 Minuten bleiben.',
+    durationWarning: 'Die Szene muss unter 5 Minuten bleiben.',
     submitUpload: 'Importieren und vorbereiten',
     submitYoutube: 'Herunterladen und vorbereiten',
     uploading: 'Datei wird hochgeladen…',
@@ -590,7 +590,7 @@ export const de = {
     introUpload: 'Eine neue Szene, von Grund auf aus deinem Video vorbereitet, egal woher es stammt: ein Film, eine Serie, ein YouTube- oder TikTok-Clip, eine Bildschirmaufnahme…',
     introPack: 'Figuren, Sätze und Ton sind schon fertig: Du bringst das Video mit, und die Lobby öffnet sich in etwa einer Minute.',
     introYoutube: 'Nur für Administratoren: Das Video lädt der Computer des Gastgebers herunter, der eingeschaltet sein muss.',
-    limits: 'Jedes Videoformat · höchstens 50 MB und 10 Minuten',
+    limits: 'Jedes Videoformat · höchstens 50 MB und 5 Minuten',
     uploadStepsTitle: 'So läuft es ab',
     uploadSteps: [
       'Du wählst dein Video aus und gibst ihm einen Titel.',
@@ -971,7 +971,7 @@ export const de = {
       'Derselbe Ausschnitt wie die Szene im Pack, ungeschnitten',
       'Jedes Videoformat',
       'Höchstens 50 MB: 720p oder 480p reichen',
-      'Höchstens 10 Minuten',
+      'Höchstens 5 Minuten',
     ],
     whyTitle: 'Warum dieser Schritt?',
     whyBody: 'Dubblers speichert keine Videos: Der Katalog behält Timing und Ton, nie das Bild. Und die meisten Plattformen lehnen Downloads von Servern ab. Du bringst also die Datei mit, und alles andere passiert online.',
@@ -1297,7 +1297,7 @@ export const de = {
     hostOnly: 'Das kann nur der Gastgeber.',
     noAudioTrack: 'Diese Datei hat keine Tonspur.',
     noVideoTrack: 'Diese Datei hat kein Video.',
-    tooLong: 'Szene zu lang: höchstens 10 Minuten.',
+    tooLong: 'Szene zu lang: höchstens 5 Minuten.',
     youtubeFailed:
       'Der YouTube-Download ist fehlgeschlagen. Importiere die Videodatei stattdessen direkt.',
     pageNotFoundTitle: 'Diese Seite existiert nicht',

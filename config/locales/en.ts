@@ -580,7 +580,7 @@ export const en = {
       'YouTube downloading is a convenience, not a guarantee: it breaks regularly. If it fails, import the file directly.',
     multiTrackWarning:
       'If your source has several audio tracks (dubbed, original, commentary), the first one is the one that gets dubbed.',
-    durationWarning: 'The scene must be under 10 minutes.',
+    durationWarning: 'The scene must be under 5 minutes.',
     submitUpload: 'Import and prepare',
     submitYoutube: 'Download and prepare',
     uploading: 'Uploading the file…',
@@ -588,7 +588,7 @@ export const en = {
     introUpload: 'A brand-new scene, prepared from scratch from your video, wherever it comes from: a film, a series, a YouTube or TikTok clip, a screen recording…',
     introPack: 'Characters, lines and sound are ready: you bring the video, and the lobby opens in about a minute.',
     introYoutube: 'Administrators only: the video is fetched by the host’s computer, which must be switched on.',
-    limits: 'Any video format · 50 MB and 10 minutes at most',
+    limits: 'Any video format · 50 MB and 5 minutes at most',
     uploadStepsTitle: 'How it works',
     uploadSteps: [
       'You pick your video and give it a title.',
@@ -965,7 +965,7 @@ export const en = {
       'The same clip as the pack’s scene, uncut',
       'Any video format',
       '50 MB at most: 720p or 480p is enough',
-      '10 minutes at most',
+      '5 minutes at most',
     ],
     whyTitle: 'Why this step?',
     whyBody: 'Dubblers does not host videos: the catalogue keeps the timing and the sound, never the picture. And most platforms refuse downloads coming from servers. So you bring the file, and everything else happens online.',
@@ -1291,7 +1291,7 @@ export const en = {
     hostOnly: 'Only the host can do that.',
     noAudioTrack: 'This file has no audio track.',
     noVideoTrack: 'This file has no video.',
-    tooLong: 'Scene too long: 10 minutes maximum.',
+    tooLong: 'Scene too long: 5 minutes maximum.',
     youtubeFailed:
       'The YouTube download failed. Import the video file directly instead.',
     pageNotFoundTitle: 'This page doesn’t exist',

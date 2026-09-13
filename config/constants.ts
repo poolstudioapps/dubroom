@@ -22,7 +22,7 @@ export const CLIP_MARGIN_MS = 2_000;
 export const CLIP_MAX_MS = 15_000;
 
 // ── Garde-fous d'ingestion (PRD §6.2) ──────────────────────────────────
-export const MAX_VIDEO_DURATION_MS = 600_000; // 10 min
+export const MAX_VIDEO_DURATION_MS = 300_000; // 5 min
 export const MAX_UPLOAD_BYTES = 2_147_483_648; // 2 Go
 
 /**
