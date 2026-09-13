@@ -396,15 +396,31 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     render_size_bytes: size,
   });
 
+  /*
+   * La version verticale est un bonus : son envoi ne fait jamais echouer
+   * le rendu.
+   *
+   * Sur une scene de quatre minutes et demie, elle depassait la taille
+   * maximale d'un fichier du stockage alors que la version large passait.
+   * L'envoi levait, le job repartait trois fois, et la scene finissait en
+   * echec avec un rendu principal pourtant deja en ligne.
+   */
   if (verticalOk) {
     const droitPath = `${session.id}/final-vertical.mp4`;
-    await storage.upload(BUCKET_RENDERS, droitPath, verticalPath, 'video/mp4');
-    const droitSize = await storage.verifyUploaded(BUCKET_RENDERS, droitPath);
-    await updateSession(session.id, {
-      render_vertical_path: droitPath,
-      render_vertical_size_bytes: droitSize,
-    });
-    logger.info('version verticale envoyée', { step: 'upload', bytes: droitSize });
+    try {
+      await storage.upload(BUCKET_RENDERS, droitPath, verticalPath, 'video/mp4');
+      const droitSize = await storage.verifyUploaded(BUCKET_RENDERS, droitPath);
+      await updateSession(session.id, {
+        render_vertical_path: droitPath,
+        render_vertical_size_bytes: droitSize,
+      });
+      logger.info('version verticale envoyée', { step: 'upload', bytes: droitSize });
+    } catch (error) {
+      logger.warn('version verticale non envoyée', {
+        step: 'upload',
+        detail: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   await setJobStep(job.id, 'upload', 100);
