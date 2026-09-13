@@ -338,6 +338,14 @@ export const pt = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `${scenes} ${scenes === 1 ? 'cena' : 'cenas'} · ${roles} ${roles === 1 ? 'papel' : 'papéis'} · ${langs} ${langs === 1 ? 'idioma' : 'idiomas'}`,
+    byAuthor: (name: string) => `por ${name}`,
+    commentReply: 'Responder',
+    commentReplyPlaceholder: 'Sua resposta…',
+    commentReport: 'Denunciar',
+    commentReportTitle: 'Denunciar este comentário?',
+    commentReportBody: 'A denúncia é anônima. Na quinta, o comentário é retirado e o autor recebe um aviso; no terceiro aviso, o acesso dele é suspenso.',
+    commentReportedThanks: 'Obrigado, denúncia enviada.',
+    commentRemovedAfterReports: 'Obrigado. Denunciado por vários membros, este comentário foi retirado.',
   },
 
   terms: {
@@ -435,6 +443,17 @@ export const pt = {
     passwordSave: 'Salvar a senha',
     passwordSaved: 'Senha salva. Dá para usar já no próximo acesso.',
     passwordTooShort: 'No mínimo oito caracteres.',
+    sentTitle: 'Confira seu e-mail',
+    sentBody: (email: string) => `Enviamos um link e um código para ${email}.`,
+    sentBodyLink: (email: string) => `Enviamos um link de acesso para ${email}.`,
+    linkHelp: 'Abra neste navegador: esta página continua sozinha. Também funciona em outro aparelho.',
+    codeLabel: 'Código de 6 dígitos',
+    codeHelp: 'Digite o código para ficar nesta aba. Prefere o link? Abra neste navegador: esta página continua sozinha.',
+    codeSubmit: 'Confirmar código',
+    codeInvalid: 'Este código não funciona: confira ou peça um novo e-mail.',
+    resend: 'Reenviar e-mail',
+    changeEmail: 'Usar outro endereço',
+    spamHint: 'Nada depois de um minuto? Veja na pasta de spam.',
   },
 
   guests: {
@@ -444,6 +463,7 @@ export const pt = {
     joined: 'Já veio',
     pending: 'Nunca veio',
     remove: 'Tirar da lista',
+    banned: 'Suspenso',
   },
 
   sessions: {
@@ -465,6 +485,14 @@ export const pt = {
       'O vídeo de origem e as faixas separadas são apagados assim que existe uma renderização: só o resultado final ocupa espaço de forma duradoura. Excluir uma cena libera o espaço dela.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Nenhuma cena corresponde a esse código.',
+    joining: 'Entrando na cena…',
+    rendersTitle: 'Renderizações em andamento',
+    rendersBody: 'A montagem roda em segundo plano. Cada cena aparece aqui assim que fica pronta, para todos que participaram.',
+    rendersQueued: 'Na fila',
+    rendersRunning: 'Montando…',
+    rendersReady: 'Pronta para assistir',
+    rendersSoon: 'Pronta em alguns minutos',
+    rendersWatch: 'Assistir',
   },
 
   create: {
@@ -513,6 +541,8 @@ export const pt = {
     shareLater: 'Depois da renderização, você poderá publicar a cena na comunidade, com idioma, gênero e tags.',
     communityTitle: 'Criar um pack para a comunidade',
     communityBody: 'Importe seu vídeo e prepare a cena como sempre. Com a renderização pronta, você publica com um clique.',
+    langLabel: 'Idioma falado no vídeo',
+    langHelp: 'Ele ajusta a transcrição e depois serve de filtro quando a cena é publicada na comunidade.',
   },
 
   ingest: {
@@ -572,6 +602,25 @@ export const pt = {
     noSelection: 'Selecione falas para movê-las.',
     restoreLine: 'Restaurar a fala',
     deletedBadge: 'Excluída, áudio original mantido',
+    howSteps: [
+      'Renomeie os personagens e junte as vozes que a detecção separou.',
+      'Filtre por personagem para reler as falas e corrija quem diz o quê.',
+      'Apague as falas inúteis: a voz original delas fica na mixagem.',
+    ],
+    charactersHelp: 'Renomeie, ouça um trecho ou marque duas vozes para juntá-las.',
+    filterLabel: 'Filtrar falas por personagem',
+    filterAll: 'Todas',
+    filterDeleted: 'Apagadas',
+    searchLabel: 'Buscar no texto',
+    searchPlaceholder: 'Buscar uma palavra nas falas…',
+    noMatch: 'Nenhuma fala aqui.',
+    selectionLabel: (n: number) => (n === 1 ? `1 fala selecionada` : `${n} falas selecionadas`),
+    clearSelection: 'Limpar seleção',
+    restoreShort: 'Restaurar',
+    deletedToast: (n: number) => (n === 1 ? `Fala apagada.` : `${n} falas apagadas.`),
+    undo: 'Desfazer',
+    splitBody: (n: number) => (n === 1 ? `1 fala vai para um novo personagem.` : `${n} falas vão para um novo personagem.`),
+    defaultCharacterName: (n: number) => `Personagem ${n}`,
   },
 
   lobby: {
@@ -751,6 +800,9 @@ export const pt = {
     failedHost: 'Suas gravações estão intactas: inicie a renderização de novo. Se acontecer outra vez, avise o administrador com o detalhe abaixo.',
     failedGuest: 'As gravações de vocês estão intactas. O anfitrião pode iniciar a renderização de novo.',
     failedDetail: 'Detalhe técnico',
+    backgroundNotice: 'A montagem continua sem você: pode sair desta página. Em alguns minutos a cena estará pronta em Minhas cenas e em Minha conta, para todos que participaram.',
+    ctaNewScene: 'Fazer outra cena',
+    ctaHome: 'Ir para o início',
   },
 
   result: {
@@ -1051,6 +1103,42 @@ export const pt = {
       ctaBody: 'Explore as cenas publicadas, ou crie a primeira que falta.',
       ctaLabel: 'Ver a comunidade',
     },
+    certify: {
+      title: 'Tornar-se criador certificado',
+      summary: 'O selo dourado dos criadores cujas cenas são referência: os dois caminhos para conseguir.',
+      intro: 'A certificação destaca os criadores cujos packs conquistaram a comunidade. Não se pede: se conquista, automaticamente, assim que um dos dois limites é atingido.',
+      readingTime: '3 min de leitura',
+      stepsTitle: 'O caminho em quatro passos',
+      steps: [
+        {
+          title: 'Publique cenas caprichadas',
+          body: 'Cada pack conta: uma preparação limpa, personagens bem nomeados, um texto legível. É isso que a comunidade avalia, não o filme.',
+        },
+        {
+          title: 'Preencha bem a ficha',
+          body: 'Um título reconhecível, o idioma certo, o gênero certo e duas ou três tags: cena que se encontra é cena que se joga.',
+        },
+        {
+          title: 'Junte votos positivos',
+          body: 'Dois limites, basta um: 50 packs com pelo menos 10 votos positivos cada, ou 5000 votos positivos no total em todas as suas cenas.',
+        },
+        {
+          title: 'Receba seu selo',
+          body: 'Assim que um limite é ultrapassado, o selo aparece ao lado do seu nome: no perfil público, nos packs e nos comentários.',
+        },
+      ],
+      checklistTitle: 'Acompanhar o progresso',
+      checklist: [
+        'Seu progresso aparece no seu perfil público, e só você vê',
+        'Votos negativos não tiram nada, mas aparecem',
+        'Packs retirados deixam de contar',
+        'Responda aos comentários: é ali que as cenas melhoram',
+      ],
+      note: 'A certificação é recalculada o tempo todo: ela acompanha os votos. Um pack retirado ou votos que mudam podem fazer você perdê-la.',
+      ctaTitle: 'Pronto para publicar sua próxima cena?',
+      ctaBody: 'Explore a comunidade para ver o que agrada, ou crie um pack que está faltando.',
+      ctaLabel: 'Ir para a comunidade',
+    },
   },
 
   cookies: {
@@ -1069,6 +1157,45 @@ export const pt = {
     save: 'Salvar minhas escolhas',
     noTracking: 'Sem medição de audiência, sem publicidade.',
     manage: 'Gerenciar cookies',
+  },
+
+  creators: {
+    certified: 'Criador certificado',
+    back: 'Voltar para a comunidade',
+    memberSince: (date: string) => `Membro desde ${date}`,
+    editProfile: 'Editar meu perfil',
+    myPublicProfile: 'Meu perfil público',
+    statPacks: 'Packs publicados',
+    statUp: 'Votos positivos',
+    statDown: 'Votos negativos',
+    packsTitle: (name: string) => `Packs de ${name}`,
+    packsTitleMine: 'Meus packs publicados',
+    packsEmpty: 'Nenhum pack publicado ainda.',
+    packsEmptyMine: 'Você ainda não publicou nada. Termine uma cena e publique pela tela do resultado.',
+    commentsIntro: (name: string) => `Uma palavra para ${name}: um agradecimento, uma ideia de cena, uma pergunta sobre a preparação.`,
+    commentsIntroMine: 'O que a comunidade escreve para você. Responda, vote e apague o que não tem nada a ver aqui.',
+    notFound: 'Este perfil não existe',
+    notFoundBody: 'O link pode estar incompleto, ou a conta não existe mais.',
+    certTitle: 'Certificação',
+    certDoneTitle: 'Você é um criador certificado',
+    certDoneBody: 'Seu selo aparece ao lado do seu nome: no perfil, nos packs e nos comentários.',
+    certProgressTitle: 'Rumo à certificação',
+    certProgressBody: 'Dois caminhos possíveis, basta um.',
+    certPathPacks: (min: number, goal: number) => `${goal} packs com pelo menos ${min} votos positivos cada`,
+    certPathVotes: (goal: number) => `${goal} votos positivos no total em todos os seus packs`,
+    certOr: 'ou',
+    certGuide: 'Como conseguir a certificação',
+    certifiedPublic: 'Criador certificado: os packs conquistaram a comunidade.',
+  },
+
+  moderation: {
+    warningTitle: 'Aviso',
+    warningBody: (n: number) => (n === 1 ? `Um dos seus comentários foi denunciado por cinco membros: ele foi retirado.` : `${n} dos seus comentários foram denunciados por cinco membros cada: eles foram retirados.`),
+    warningCount: (n: number) => `Aviso ${n} de 3. No terceiro, seu acesso é suspenso.`,
+    warningExcerpt: 'Comentário retirado',
+    acknowledge: 'Entendi',
+    bannedTitle: 'Acesso suspenso',
+    bannedBody: 'Depois de três avisos, sua conta foi suspensa. Se acha que é um engano, escreva para o responsável pelo site.',
   },
 
   errors: {

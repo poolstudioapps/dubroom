@@ -7,7 +7,8 @@ import { ArrowLeft, ArrowRight, Clapperboard, FileVideo, Pencil } from 'lucide-r
 
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
-import { PackComments } from '@/components/pack-comments';
+import { CertifiedBadge } from '@/components/certified-badge';
+import { CommentThread } from '@/components/comment-thread';
 import { PackFacetsDialog } from '@/components/pack-facets-dialog';
 import { PackStartDialog } from '@/components/pack-start-dialog';
 import { PackVote } from '@/components/pack-vote';
@@ -15,6 +16,7 @@ import { UrlPreview } from '@/components/url-preview';
 import { Button, Card, Spinner } from '@/components/ui';
 import { GUIDE_VIDEO_HREF, characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
+import { profileHref } from '@/lib/creators';
 import { useLocale, useT } from '@/lib/i18n';
 import { PACKS_QUERY, listPackLines } from '@/lib/packs';
 
@@ -157,10 +159,18 @@ export function PackDetailClient({
               </div>
             </div>
 
-            <p className="flex flex-wrap items-center gap-2 text-sm text-text-muted">
+            {/* Le createur mene a son profil : ses autres scenes, ses votes,
+                et un endroit pour lui ecrire. */}
+            <Link
+              href={profileHref(pack.author_id)}
+              className="group inline-flex flex-wrap items-center gap-2 text-sm text-text-muted hover:text-text"
+            >
               <Avatar name={pack.author_name} path={pack.author_avatar} size="sm" />
-              {t.community.detailPublishedBy(pack.author_name, date)}
-            </p>
+              <span className="group-hover:underline group-hover:underline-offset-4">
+                {t.community.detailPublishedBy(pack.author_name, date)}
+              </span>
+              {pack.author_certified ? <CertifiedBadge withLabel /> : null}
+            </Link>
 
             {pack.tags.length > 0 ? (
               <ul className="flex flex-wrap gap-2" aria-label={t.community.tagsLabel}>
@@ -283,7 +293,7 @@ export function PackDetailClient({
             </section>
           ) : null}
 
-          <PackComments packId={pack.id} />
+          <CommentThread target={{ kind: 'pack', id: pack.id }} />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useEffect, useRef } from 'react';
 import { Check, SlidersHorizontal } from 'lucide-react';
 
 import { Alert, Button, Card, Spinner } from '@/components/ui';
@@ -88,6 +89,7 @@ export function VoiceConsole({
 }) {
   const t = useT();
   const actif = value.reverb > 0 || value.pitch !== 0 || value.tune > 0 || value.gainDb !== 0;
+  const decalage = useValidation((v: number) => onCommit({ micOffsetMs: v }));
 
   return (
     <Card variant="plate" className="space-y-4">
@@ -212,10 +214,14 @@ export function VoiceConsole({
           max={MIC_OFFSET_MAX_MS}
           step={MIC_OFFSET_STEP_MS}
           value={value.micOffsetMs}
-          onChange={(e) => onInput({ micOffsetMs: Number(e.target.value) })}
-          onPointerUp={(e) => onCommit({ micOffsetMs: Number(e.currentTarget.value) })}
-          onKeyUp={(e) => onCommit({ micOffsetMs: Number(e.currentTarget.value) })}
-          className="w-full"
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            onInput({ micOffsetMs: v });
+            decalage.plusTard(v);
+          }}
+          onPointerUp={(e) => decalage.maintenant(Number(e.currentTarget.value))}
+          onKeyUp={(e) => decalage.maintenant(Number(e.currentTarget.value))}
+          className="w-full touch-none"
         />
         <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-text-muted">
           <input
@@ -234,6 +240,53 @@ export function VoiceConsole({
       <p className="text-xs leading-relaxed text-text-faint">{t.studio.fxHelp}</p>
     </Card>
   );
+}
+
+/**
+ * Quand un curseur doit-il enregistrer sa valeur ?
+ *
+ * Il le faisait au seul relachement du pointeur, et c'est ce qui rendait
+ * la console muette : lache en dehors du curseur tourne, ou au doigt
+ * quand le navigateur prenait le geste pour un defilement, le relachement
+ * n'arrivait jamais au curseur. Rien n'etait enregistre, rien ne
+ * s'entendait, et une seule prise en base avait jamais eu un effet.
+ *
+ * On valide donc de trois facons : au relachement quand il arrive, au
+ * clavier, et de toute facon un tiers de seconde apres le dernier
+ * mouvement. Une meme valeur n'est jamais envoyee deux fois.
+ */
+function useValidation(onCommit: (v: number) => void) {
+  const minuteur = useRef<number | null>(null);
+  const derniere = useRef<number | null>(null);
+  const rappel = useRef(onCommit);
+  rappel.current = onCommit;
+
+  useEffect(
+    () => () => {
+      if (minuteur.current !== null) window.clearTimeout(minuteur.current);
+    },
+    [],
+  );
+
+  const maintenant = useCallback((v: number) => {
+    if (minuteur.current !== null) {
+      window.clearTimeout(minuteur.current);
+      minuteur.current = null;
+    }
+    if (derniere.current === v) return;
+    derniere.current = v;
+    rappel.current(v);
+  }, []);
+
+  const plusTard = useCallback(
+    (v: number) => {
+      if (minuteur.current !== null) window.clearTimeout(minuteur.current);
+      minuteur.current = window.setTimeout(() => maintenant(v), 320);
+    },
+    [maintenant],
+  );
+
+  return { maintenant, plusTard };
 }
 
 /**
@@ -262,6 +315,8 @@ function Fader({
   onInput: (v: number) => void;
   onCommit: (v: number) => void;
 }) {
+  const valider = useValidation(onCommit);
+
   return (
     <label className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
       <span className="max-w-full truncate text-[11px] font-bold uppercase tracking-wide text-text-muted">
@@ -276,13 +331,19 @@ function Fader({
           step={step}
           value={value}
           aria-label={label}
-          onChange={(e) => onInput(Number(e.target.value))}
-          onPointerUp={(e) => onCommit(Number(e.currentTarget.value))}
-          onKeyUp={(e) => onCommit(Number(e.currentTarget.value))}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            onInput(v);
+            valider.plusTard(v);
+          }}
+          onPointerUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
+          onKeyUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
           // Une rotation d'un quart de tour : la piste reste la piste,
           // la poignee reste la poignee, et tout le comportement natif
-          // suit. La largeur devient la hauteur, d'ou le `w-28`.
-          className="w-28 origin-center -rotate-90"
+          // suit. La largeur devient la hauteur, d'ou le `w-28`. Sans
+          // `touch-none`, un glisse vertical au doigt faisait defiler la
+          // page au lieu de bouger le curseur.
+          className="w-28 origin-center -rotate-90 touch-none"
         />
       </span>
 

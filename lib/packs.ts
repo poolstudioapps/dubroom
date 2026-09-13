@@ -47,6 +47,9 @@ export interface Pack {
   /** Son auteur, ou un administrateur. */
   can_edit: boolean;
   comment_count: number;
+  author_id: string;
+  /** L'auteur est un createur certifie. */
+  author_certified: boolean;
 }
 
 /** La page d'une scene du catalogue. */
@@ -331,26 +334,45 @@ export function publishRecipePack(sessionId: string, facets: PackFacets) {
 
 export interface PackComment {
   id: string;
+  /** Le commentaire auquel celui-ci repond, ou `null` pour un premier niveau. */
+  parent_id: string | null;
   body: string;
   created_at: string;
+  author_id: string;
   author_name: string;
   author_avatar: string | null;
+  author_certified: boolean;
   is_mine: boolean;
   can_delete: boolean;
+  /** Ni le sien, ni deja signale par moi. */
+  can_report: boolean;
   score: number;
   up_count: number;
   down_count: number;
   my_vote: number;
 }
 
-export const packCommentsKey = (packId: string) => ['pack-comments', packId] as const;
+/** Ou vit un fil de commentaires : sous une scene, ou sur un profil. */
+export type CommentTarget = { kind: 'pack'; id: string } | { kind: 'profile'; id: string };
 
-export function listPackComments(packId: string): Promise<PackComment[]> {
-  return rpc<PackComment[]>('list_pack_comments', { p_pack_id: packId });
+export const commentsKey = (target: CommentTarget) =>
+  ['comments', target.kind, target.id] as const;
+
+export function listComments(target: CommentTarget): Promise<PackComment[]> {
+  return target.kind === 'pack'
+    ? rpc<PackComment[]>('list_pack_comments', { p_pack_id: target.id })
+    : rpc<PackComment[]>('list_profile_comments', { p_user_id: target.id });
 }
 
-export function addPackComment(packId: string, body: string) {
-  return rpc<string>('add_pack_comment', { p_pack_id: packId, p_body: body });
+export function addComment(target: CommentTarget, body: string, parentId: string | null = null) {
+  return target.kind === 'pack'
+    ? rpc<string>('add_pack_comment', { p_pack_id: target.id, p_body: body, p_parent_id: parentId })
+    : rpc<string>('add_profile_comment', { p_user_id: target.id, p_body: body, p_parent_id: parentId });
+}
+
+/** Au cinquieme signalement, le commentaire disparait. */
+export function reportComment(commentId: string) {
+  return rpc<{ removed: boolean; reports: number }>('report_comment', { p_comment_id: commentId });
 }
 
 export function deletePackComment(commentId: string) {

@@ -37,6 +37,16 @@ export const MAX_SOURCE_FILE_BYTES = 50 * 1024 * 1024;
 /** Le guide pour doubler une scene du catalogue avec sa propre video. */
 export const GUIDE_VIDEO_HREF = '/guide/video-youtube';
 
+/**
+ * Le courriel de connexion contient-il un code a six chiffres ?
+ *
+ * Pas encore : sans serveur d'envoi a nous (SMTP), Supabase impose son
+ * gabarit, qui ne porte que le lien. Des qu'un SMTP est configure et le
+ * gabarit Dub'Up applique, passer a `true` fait apparaitre la saisie du
+ * code sur la page de connexion.
+ */
+export const EMAIL_CODE_ENABLED = false;
+
 // ── Studio (PRD §11) ───────────────────────────────────────────────────
 /** Bornes du reglage de latence micro, en ms. */
 export const MIC_OFFSET_MIN_MS = -300;

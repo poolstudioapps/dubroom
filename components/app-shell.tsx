@@ -2,6 +2,7 @@
 
 import { AccountMenu } from '@/components/account-menu';
 import { Footer } from '@/components/footer';
+import { ModerationGate } from '@/components/moderation-gate';
 import { SiteHeader } from '@/components/site-header';
 import { TermsGate } from '@/components/terms-gate';
 import { TvSet } from '@/components/tv-set';
@@ -61,14 +62,19 @@ export function AppShell({
         fill ? 'h-dvh overflow-hidden py-2' : 'min-h-dvh py-4 sm:py-6',
       )}
     >
-      <div className={cn('flex w-full flex-col', width, fill && 'min-h-0 flex-1')}>
+      {/*
+        `flex-1` meme hors du studio : sur une page courte — un chargement,
+        une scene qui demarre —, le poste s'etire jusqu'au pied de page au
+        lieu de le laisser flotter au milieu de l'ecran.
+      */}
+      <div className={cn('flex w-full flex-1 flex-col', width, fill && 'min-h-0')}>
         <SiteHeader
           signedIn
           right={<AccountMenu />}
           className={fill ? 'mb-2' : undefined}
         />
 
-        <TvSet slim={wide} fill={fill}>
+        <TvSet slim={wide} fill={fill} grow={!fill}>
           <main
             className={cn(
               fill ? 'flex min-h-0 flex-1 flex-col' : 'min-h-[26rem]',
@@ -84,6 +90,8 @@ export function AppShell({
 
       {/* Par-dessus tout, et seulement quand il manque une acceptation. */}
       <TermsGate />
+      {/* Avertissements de moderation, ou acces suspendu. */}
+      <ModerationGate />
     </div>
   );
 }

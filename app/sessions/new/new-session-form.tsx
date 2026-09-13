@@ -6,16 +6,18 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { CircleHelp, FileVideo, Library, Link2, Upload } from 'lucide-react';
 
-import { useT } from '@/lib/i18n';
+import { useLocale, useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { PackMatch } from '@/components/pack-match';
 import { PackSourcePicker } from '@/components/pack-source-picker';
 import { PhaseProgress } from '@/components/scene/phase-progress';
+import { SelectMenu } from '@/components/select-menu';
 import { Alert, Badge, Button, Card, Input, Label, Toggle } from '@/components/ui';
 import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
 import { humanizeError } from '@/lib/errors';
+import { PACK_LANGS } from '@/lib/packs';
 import { PART_ENVOI } from '@/lib/progress';
 import { isAdmin, useMyRole } from '@/lib/roles';
 import { cn } from '@/lib/utils';
@@ -45,6 +47,7 @@ export function NewSessionForm({
   pourCommunaute?: boolean;
 }) {
   const t = useT();
+  const locale = useLocale();
 
   const router = useRouter();
   const role = useMyRole();
@@ -66,6 +69,11 @@ export function NewSessionForm({
    */
   const [ecarte, setEcarte] = useState('');
   const [isSong, setIsSong] = useState(false);
+  // La langue de l'interface par defaut : c'est le cas de la plupart des
+  // scenes. Le champ reste la, bien visible, pour la changer.
+  const [langue, setLangue] = useState<string>(
+    (PACK_LANGS as readonly string[]).includes(locale) ? locale : '',
+  );
 
   // Un membre sans le role ne reste pas sur un onglet qui n'existe pas
   // pour lui.
@@ -106,6 +114,7 @@ export function NewSessionForm({
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
         isSong,
+        sourceLang: langue,
       });
 
       if (mode === 'upload') {
@@ -124,7 +133,7 @@ export function NewSessionForm({
     },
   });
 
-  const canSubmit = mode === 'upload' ? !!file : youtubeUrl.trim().length > 10;
+  const canSubmit = !!langue && (mode === 'upload' ? !!file : youtubeUrl.trim().length > 10);
 
   const sources: { mode: Mode; icon: typeof FileVideo; label: string }[] = [
     { mode: 'upload', icon: FileVideo, label: t.create.tabUpload },
@@ -240,6 +249,27 @@ export function NewSessionForm({
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t.create.titlePlaceholder}
             />
+          </div>
+
+          {/*
+            La langue, demandee des le depart : elle regle la transcription
+            et, une fois la scene publiee, son filtre dans la communaute.
+            Demandee seulement a la publication, elle arrivait trop tard
+            pour la premiere et etait souvent laissee au hasard.
+          */}
+          <div className="space-y-1.5">
+            <Label>{t.create.langLabel}</Label>
+            <SelectMenu
+              label={t.create.langLabel}
+              value={langue}
+              placeholder={t.community.pickLang}
+              onChange={setLangue}
+              options={PACK_LANGS.map((code) => ({
+                value: code as string,
+                label: t.community.langNames[code] ?? code,
+              }))}
+            />
+            <p className="text-xs text-text-faint">{t.create.langHelp}</p>
           </div>
 
           {mode === 'upload' ? (

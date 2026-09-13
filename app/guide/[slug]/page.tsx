@@ -174,7 +174,7 @@ export default async function GuideArticlePage({
               <h2 data-reveal suppressHydrationWarning className="titre titre-section text-center text-2xl sm:text-3xl">
                 {t.guides.related}
               </h2>
-              <ul className="grid gap-5 sm:grid-cols-3">
+              <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {autres.map((guide, rang) => {
                   const fiche = ficheGuide(t, guide.cle);
                   return (

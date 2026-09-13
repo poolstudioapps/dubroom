@@ -46,6 +46,8 @@ export async function createSession(input: {
   displayName: string;
   keepAsPack?: boolean;
   isSong?: boolean;
+  /** Langue parlee (ISO 639-1) : elle guide la transcription, puis le filtre du catalogue. */
+  sourceLang?: string;
 }): Promise<SessionRow> {
   // Le code est tire cote client depuis l'alphabet de constants.ts ;
   // l'unicite est tenue par la contrainte en base, d'ou ces essais.
@@ -59,6 +61,7 @@ export async function createSession(input: {
         p_display_name: input.displayName,
         p_keep_as_pack: input.keepAsPack ?? false,
         p_is_song: input.isSong ?? false,
+        p_source_lang: input.sourceLang ?? null,
       });
     } catch (error) {
       const message = humanizeError(error);

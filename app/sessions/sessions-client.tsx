@@ -8,6 +8,7 @@ import { Plus, Trash2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { PendingRenders } from '@/components/pending-renders';
 import { StatusBadge } from '@/components/status-badge';
 import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES, STORAGE_WARN_RATIO } from '@/config/constants';
@@ -81,6 +82,9 @@ export function SessionsClient({
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
       {crowded ? <Alert tone="warn">{t.sessions.storageWarning}</Alert> : null}
+
+      {/* Les montages qui tournent sans nous : on les retrouve ici. */}
+      <PendingRenders />
 
       {/* Les scenes, d'abord : c'est pour elles qu'on vient. */}
       <section className="space-y-3">

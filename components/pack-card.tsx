@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { Clapperboard, MessageSquare, Trash2 } from 'lucide-react';
 
+import { CertifiedBadge } from '@/components/certified-badge';
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
 import { Button } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
+import { profileHref } from '@/lib/creators';
 import { useT } from '@/lib/i18n';
 import { packHref, type Pack } from '@/lib/packs';
 
@@ -53,6 +55,7 @@ export function PackCard({
   locked = false,
   showMine = true,
   showVote = true,
+  showAuthor = true,
 }: {
   pack: Pack;
   onPlay: () => void;
@@ -64,6 +67,8 @@ export function PackCard({
   locked?: boolean;
   showMine?: boolean;
   showVote?: boolean;
+  /** Inutile sur le profil du createur : toutes les cartes sont de lui. */
+  showAuthor?: boolean;
 }) {
   const t = useT();
 
@@ -133,6 +138,17 @@ export function PackCard({
                 </span>
               ) : null}
             </p>
+            {/* Le createur, au-dessus du lien de la carte : son nom mene a
+                son profil, pas a la scene. */}
+            {showAuthor ? (
+              <Link
+                href={profileHref(pack.author_id)}
+                className="relative z-10 mt-1 inline-flex max-w-full items-center gap-1 text-xs font-semibold text-text-muted hover:text-text hover:underline"
+              >
+                <span className="truncate">{t.community.byAuthor(pack.author_name)}</span>
+                {pack.author_certified ? <CertifiedBadge /> : null}
+              </Link>
+            ) : null}
           </div>
           {showVote ? (
             <div className="relative z-10">

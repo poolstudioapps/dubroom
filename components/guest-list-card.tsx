@@ -14,6 +14,10 @@ interface Guest {
   email: string;
   added_at: string;
   has_account: boolean;
+  role: 'owner' | 'admin' | 'user';
+  banned: boolean;
+  /** Decide par la base : un administrateur ne retire ni un autre ni un proprietaire. */
+  can_remove: boolean;
 }
 
 /**
@@ -24,6 +28,10 @@ interface Guest {
  * qu'on avait prevue, tout le monde attend. Avoir la liste dans
  * l'application evite d'aller chercher un terminal au milieu d'une
  * soiree.
+ *
+ * La croix n'apparait que la ou elle peut servir. Elle etait sur chaque
+ * ligne, et retirer un proprietaire ou un autre administrateur echouait
+ * seulement apres le clic.
  */
 export function GuestListCard({ bare }: { bare?: boolean } = {}) {
   const t = useT();
@@ -36,19 +44,14 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
     queryKey: ['guests'],
     queryFn: async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error: queryError } = await (supabaseBrowser().rpc as any)(
-        'list_guests',
-      );
+      const { data, error: queryError } = await (supabaseBrowser().rpc as any)('list_guests');
       if (queryError) throw queryError;
       return (data ?? []) as Guest[];
     },
   });
 
   const mutate = useMutation({
-    mutationFn: async (input: {
-      fn: 'allow_guest' | 'revoke_guest';
-      email: string;
-    }) => {
+    mutationFn: async (input: { fn: 'allow_guest' | 'revoke_guest'; email: string }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error: rpcError } = await (supabaseBrowser().rpc as any)(input.fn, {
         p_email: input.email,
@@ -62,8 +65,6 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
     onError: (e) => setError(humanizeError(e)),
   });
 
-  // Dans un tiroir, le titre est deja porte par l'entete du tiroir : le
-  // repeter ferait deux fois le meme mot a deux lignes d'intervalle.
   const Shell = bare ? BareShell : Card;
 
   return (
@@ -91,11 +92,7 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
           onChange={(e) => setEmail(e.target.value)}
           className="min-w-48 flex-1"
         />
-        <Button
-          type="submit"
-          loading={mutate.isPending}
-          disabled={!email.includes('@')}
-        >
+        <Button type="submit" loading={mutate.isPending} disabled={!email.includes('@')}>
           {t.guests.add}
         </Button>
       </form>
@@ -107,27 +104,37 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
       ) : (
         <ul className="space-y-1">
           {guests.data?.map((guest) => (
-            <li
-              key={guest.email}
-              className="flex items-center justify-between gap-2 text-sm"
-            >
-              <span className="truncate">{guest.email}</span>
+            <li key={guest.email} className="flex min-h-9 items-center justify-between gap-2 text-sm">
+              <span className="min-w-0 truncate">{guest.email}</span>
               <div className="flex shrink-0 items-center gap-1">
-                <Badge tone={guest.has_account ? 'ok' : 'neutral'}>
-                  {guest.has_account ? t.guests.joined : t.guests.pending}
-                </Badge>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label={t.guests.remove}
-                  title={t.guests.remove}
-                  onClick={() => {
-                    setError(null);
-                    mutate.mutate({ fn: 'revoke_guest', email: guest.email });
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                {guest.role !== 'user' ? (
+                  <Badge tone="accent">
+                    {guest.role === 'owner' ? t.admin.roleOwner : t.admin.roleAdmin}
+                  </Badge>
+                ) : null}
+                {guest.banned ? (
+                  <Badge tone="danger">{t.guests.banned}</Badge>
+                ) : (
+                  <Badge tone={guest.has_account ? 'ok' : 'neutral'}>
+                    {guest.has_account ? t.guests.joined : t.guests.pending}
+                  </Badge>
+                )}
+                {guest.can_remove ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`${t.guests.remove} : ${guest.email}`}
+                    title={t.guests.remove}
+                    onClick={() => {
+                      setError(null);
+                      mutate.mutate({ fn: 'revoke_guest', email: guest.email });
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <span className="h-9 w-9" aria-hidden />
+                )}
               </div>
             </li>
           ))}
@@ -138,12 +145,6 @@ export function GuestListCard({ bare }: { bare?: boolean } = {}) {
 }
 
 /** Le meme contenu, sans la plaque : le tiroir en fournit deja une. */
-function BareShell({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
+function BareShell({ className, children }: { className?: string; children: React.ReactNode }) {
   return <div className={className}>{children}</div>;
 }

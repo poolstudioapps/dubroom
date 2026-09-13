@@ -13,6 +13,7 @@ export const GUIDE_ARTICLES = {
   'bien-enregistrer': { cle: 'studio', image: '/illustrations/cinema/art-rythmo.webp', cta: '/sessions/new' },
   'preparer-la-scene': { cle: 'prepare', image: '/illustrations/cinema/art-characters.webp', cta: '/sessions/new' },
   'publier-un-pack': { cle: 'publish', image: '/illustrations/cinema/art-render.webp', cta: '/communaute' },
+  'devenir-certifie': { cle: 'certify', image: '/illustrations/cinema/art-certification.webp', cta: '/communaute' },
 } as const;
 
 export type GuideSlug = keyof typeof GUIDE_ARTICLES;
@@ -28,4 +29,7 @@ export const GUIDE_ORDER = [
   { href: '/guide/preparer-la-scene', cle: 'prepare', image: GUIDE_ARTICLES['preparer-la-scene'].image },
   { href: '/guide/bien-enregistrer', cle: 'studio', image: GUIDE_ARTICLES['bien-enregistrer'].image },
   { href: '/guide/publier-un-pack', cle: 'publish', image: GUIDE_ARTICLES['publier-un-pack'].image },
+  { href: '/guide/devenir-certifie', cle: 'certify', image: GUIDE_ARTICLES['devenir-certifie'].image },
 ] as const;
+
+export const CERTIFICATION_GUIDE_HREF = '/guide/devenir-certifie';

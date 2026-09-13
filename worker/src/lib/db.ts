@@ -45,6 +45,8 @@ export interface Session {
   keep_as_pack: boolean;
   from_pack_id: string | null;
   is_song: boolean;
+  /** Langue parlee, choisie a la creation (ISO 639-1), ou `null`. */
+  source_lang: string | null;
 }
 
 /**

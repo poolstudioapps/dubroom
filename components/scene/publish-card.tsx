@@ -33,7 +33,8 @@ export function PublishCard() {
   const { session, isHost, refetch } = useSceneCtx();
   const [facets, setFacets] = useState<PackFacets>({
     title: session.title ?? '',
-    sourceLang: '',
+    // Choisie a la creation : on ne la redemande pas.
+    sourceLang: session.source_lang ?? '',
     genre: '',
     tags: [],
   });

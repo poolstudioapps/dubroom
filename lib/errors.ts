@@ -45,8 +45,9 @@ const MESSAGES: Record<string, string> = {
   LOBBY_CLOSED:
     'Ce salon est fermé : il est resté ouvert plus d’une heure. L’hôte peut le rouvrir.',
   PACK_HAS_MEDIA: 'Cette scène démarre sans vidéo à fournir.',
-  ADMIN_ONLY:
-    'Réservé aux administrateurs. Importe plutôt la vidéo : elle sera préparée en ligne.',
+  ADMIN_ONLY: 'Réservé aux administrateurs.',
+  PROFILE_NOT_FOUND: 'Ce profil n’existe pas.',
+  CANNOT_REPORT_SELF: 'Tu ne peux pas signaler ton propre commentaire.',
   OWNER_ONLY: 'Réservé aux propriétaires du projet.',
   OWNER_LOCKED: 'Le rôle d’un propriétaire ne se change pas depuis l’application.',
   INVALID_ROLE: 'Ce rôle n’existe pas.',

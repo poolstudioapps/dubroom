@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
@@ -11,6 +11,7 @@ import { Alert, Button, Card, Input, Label, Spinner } from '@/components/ui';
 import { joinSession } from '@/lib/actions';
 import { useScene, type SceneData } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
+import { useMyProfile } from '@/lib/profile';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { sceneHref, screenForStatus, type SceneScreen } from '@/lib/routes';
 
@@ -144,17 +145,44 @@ export function ScenePage({
   );
 }
 
+/**
+ * Entrer dans une scene par son lien.
+ *
+ * On entre directement, sous le pseudo du profil : demander de confirmer
+ * un nom deja choisi une fois pour toutes faisait un ecran de plus a
+ * chaque invitation. Le formulaire ne revient que si l'entree echoue —
+ * salon ferme, code inconnu —, pour dire pourquoi et laisser reessayer.
+ */
 function JoinForm({ code, defaultName }: { code: string; defaultName: string }) {
   const t = useT();
   const qc = useQueryClient();
+  const profile = useMyProfile();
   const [name, setName] = useState(defaultName);
   const [error, setError] = useState<string | null>(null);
+  const tente = useRef(false);
 
   const join = useMutation({
-    mutationFn: () => joinSession(code, name.trim() || defaultName),
+    mutationFn: (nom: string) => joinSession(code, nom.trim() || defaultName),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['session-by-code', code] }),
     onError: (e) => setError(humanizeError(e)),
   });
+
+  useEffect(() => {
+    if (tente.current || profile.isLoading) return;
+    tente.current = true;
+    const pseudo = profile.data?.display_name?.trim() || defaultName;
+    setName(pseudo);
+    join.mutate(pseudo);
+  }, [profile.isLoading, profile.data?.display_name, defaultName, join]);
+
+  if (!error) {
+    return (
+      <Card className="mx-auto flex max-w-sm items-center justify-center gap-3 py-8 text-sm text-text-muted">
+        <Spinner />
+        {t.sessions.joining}
+      </Card>
+    );
+  }
 
   return (
     <Card className="mx-auto max-w-sm space-y-4">
@@ -183,7 +211,7 @@ function JoinForm({ code, defaultName }: { code: string; defaultName: string }) 
         loading={join.isPending}
         onClick={() => {
           setError(null);
-          join.mutate();
+          join.mutate(name);
         }}
       >
         Rejoindre

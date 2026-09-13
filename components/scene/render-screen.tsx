@@ -2,9 +2,10 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { RotateCcw, TriangleAlert } from 'lucide-react';
+import { Clock, House, Plus, RotateCcw, TriangleAlert } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
+import { LinkButton } from '@/components/link-button';
 import { JobProgress } from '@/components/scene/job-progress';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Button, Card } from '@/components/ui';
@@ -79,12 +80,36 @@ export function RenderScreen() {
           ) : null}
         </div>
       ) : (
-        <JobProgress
-          state={jobState.data}
-          kind="render"
-          // Une scene YouTube se monte sur le PC de l'hote, et seulement la.
-          needsLocal={session.source_type === 'youtube'}
-        />
+        <div className="space-y-5">
+          <JobProgress
+            state={jobState.data}
+            kind="render"
+            // Une scene YouTube se monte sur le PC de l'hote, et seulement la.
+            needsLocal={session.source_type === 'youtube'}
+          />
+
+          {/*
+            Le montage tourne sans personne : inutile de rester devant la
+            barre. On le dit, on dit ou retrouver la scene, et on propose
+            la suite plutot qu'une attente.
+          */}
+          <div className="space-y-3 rounded-card border border-border bg-surface-sunken p-4">
+            <p className="flex gap-2 text-sm leading-relaxed text-text-muted">
+              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              {t.render.backgroundNotice}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <LinkButton href="/sessions/new">
+                <Plus className="h-4 w-4" aria-hidden />
+                {t.render.ctaNewScene}
+              </LinkButton>
+              <LinkButton href="/" variant="secondary">
+                <House className="h-4 w-4" aria-hidden />
+                {t.render.ctaHome}
+              </LinkButton>
+            </div>
+          </div>
+        </div>
       )}
 
       {error ? <Alert tone="danger">{error}</Alert> : null}

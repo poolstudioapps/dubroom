@@ -339,6 +339,14 @@ export const es = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `${scenes} escena${scenes === 1 ? '' : 's'} · ${roles} ${roles === 1 ? 'papel' : 'papeles'} · ${langs} idioma${langs === 1 ? '' : 's'}`,
+    byAuthor: (name: string) => `de ${name}`,
+    commentReply: 'Responder',
+    commentReplyPlaceholder: 'Tu respuesta…',
+    commentReport: 'Denunciar',
+    commentReportTitle: '¿Denunciar este comentario?',
+    commentReportBody: 'La denuncia es anónima. A la quinta, el comentario se retira y su autor recibe un aviso; al tercer aviso, su acceso se suspende.',
+    commentReportedThanks: 'Gracias, queda denunciado.',
+    commentRemovedAfterReports: 'Gracias. Denunciado por varios miembros, este comentario se ha retirado.',
   },
 
   terms: {
@@ -436,6 +444,17 @@ export const es = {
     passwordSave: 'Guardar la contraseña',
     passwordSaved: 'Contraseña guardada. Puedes usarla desde la próxima vez.',
     passwordTooShort: 'Ocho caracteres como mínimo.',
+    sentTitle: 'Mira tu correo',
+    sentBody: (email: string) => `Hemos enviado un enlace y un código a ${email}.`,
+    sentBodyLink: (email: string) => `Hemos enviado un enlace de acceso a ${email}.`,
+    linkHelp: 'Ábrelo en este navegador: esta página seguirá sola. También funciona en otro dispositivo.',
+    codeLabel: 'Código de 6 cifras',
+    codeHelp: 'Escribe el código para quedarte en esta pestaña. ¿Prefieres el enlace? Ábrelo en este navegador: esta página seguirá sola.',
+    codeSubmit: 'Validar el código',
+    codeInvalid: 'Este código no funciona: revísalo o pide un nuevo correo.',
+    resend: 'Reenviar el correo',
+    changeEmail: 'Cambiar de dirección',
+    spamHint: '¿Nada después de un minuto? Mira en la carpeta de spam.',
   },
 
   guests: {
@@ -445,6 +464,7 @@ export const es = {
     joined: 'Ya ha venido',
     pending: 'Nunca ha venido',
     remove: 'Quitar de la lista',
+    banned: 'Suspendido',
   },
 
   sessions: {
@@ -467,6 +487,14 @@ export const es = {
       'El vídeo original y las pistas separadas se borran en cuanto existe un montaje: solo el resultado final ocupa sitio de forma duradera. Eliminar una escena libera el suyo.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Ninguna escena coincide con ese código.',
+    joining: 'Entrando en la escena…',
+    rendersTitle: 'Renders en curso',
+    rendersBody: 'El montaje funciona en segundo plano. Cada escena aparece aquí en cuanto está lista, para todos los que participaron.',
+    rendersQueued: 'En espera',
+    rendersRunning: 'Montando…',
+    rendersReady: 'Lista para ver',
+    rendersSoon: 'Lista en unos minutos',
+    rendersWatch: 'Ver',
   },
 
   create: {
@@ -515,6 +543,8 @@ export const es = {
     shareLater: 'Tras el render, podrás publicar la escena en la comunidad, con su idioma, su género y sus etiquetas.',
     communityTitle: 'Crear un pack para la comunidad',
     communityBody: 'Importa tu vídeo y prepara la escena como siempre. Cuando el render esté hecho, la publicarás en un clic.',
+    langLabel: 'Idioma hablado en el vídeo',
+    langHelp: 'Ajusta la transcripción y luego sirve de filtro cuando la escena se publica en la comunidad.',
   },
 
   ingest: {
@@ -577,6 +607,25 @@ export const es = {
     noSelection: 'Selecciona frases para moverlas.',
     restoreLine: 'Restaurar la frase',
     deletedBadge: 'Eliminada, audio original guardado',
+    howSteps: [
+      'Renombra los personajes y fusiona las voces que la detección separó.',
+      'Filtra por personaje para releer sus frases y corrige quién dice qué.',
+      'Borra las frases inútiles: su voz original se queda en la mezcla.',
+    ],
+    charactersHelp: 'Renombra, escucha un fragmento o marca dos voces para fusionarlas.',
+    filterLabel: 'Filtrar frases por personaje',
+    filterAll: 'Todas',
+    filterDeleted: 'Borradas',
+    searchLabel: 'Buscar en el texto',
+    searchPlaceholder: 'Buscar una palabra en las frases…',
+    noMatch: 'No hay frases aquí.',
+    selectionLabel: (n: number) => (n === 1 ? `1 frase seleccionada` : `${n} frases seleccionadas`),
+    clearSelection: 'Quitar la selección',
+    restoreShort: 'Restaurar',
+    deletedToast: (n: number) => (n === 1 ? `Frase borrada.` : `${n} frases borradas.`),
+    undo: 'Deshacer',
+    splitBody: (n: number) => (n === 1 ? `1 frase pasará a un personaje nuevo.` : `${n} frases pasarán a un personaje nuevo.`),
+    defaultCharacterName: (n: number) => `Personaje ${n}`,
   },
 
   lobby: {
@@ -757,6 +806,9 @@ export const es = {
     failedHost: 'Tus tomas están intactas: vuelve a lanzar el render. Si vuelve a pasar, avisa al administrador con el detalle de abajo.',
     failedGuest: 'Vuestras tomas están intactas. El anfitrión puede volver a lanzar el render.',
     failedDetail: 'Detalle técnico',
+    backgroundNotice: 'El montaje sigue sin ti: puedes salir de esta página. En unos minutos la escena estará lista en Mis escenas y en Mi cuenta, para todos los que participaron.',
+    ctaNewScene: 'Hacer otra escena',
+    ctaHome: 'Ir al inicio',
   },
 
   result: {
@@ -1057,6 +1109,42 @@ export const es = {
       ctaBody: 'Explora las escenas publicadas, o crea la primera que falta.',
       ctaLabel: 'Ver la comunidad',
     },
+    certify: {
+      title: 'Convertirse en creador certificado',
+      summary: 'La insignia dorada de los creadores cuyas escenas son referencia: los dos caminos para conseguirla.',
+      intro: 'La certificación distingue a los creadores cuyos packs han convencido a la comunidad. No se pide: se gana, automáticamente, en cuanto se alcanza uno de los dos umbrales.',
+      readingTime: '3 min de lectura',
+      stepsTitle: 'El camino en cuatro pasos',
+      steps: [
+        {
+          title: 'Publica escenas cuidadas',
+          body: 'Cada pack cuenta: un desglose limpio, personajes bien nombrados, un texto legible. Eso es lo que vota la comunidad, no la película.',
+        },
+        {
+          title: 'Rellena bien la ficha',
+          body: 'Un título reconocible, el idioma correcto, el género correcto y dos o tres etiquetas: una escena que se encuentra es una escena que se juega.',
+        },
+        {
+          title: 'Suma votos positivos',
+          body: 'Dos umbrales, basta con uno: 50 packs con al menos 10 votos positivos cada uno, o 5000 votos positivos en total en todas tus escenas.',
+        },
+        {
+          title: 'Recibe tu insignia',
+          body: 'En cuanto cruzas un umbral, la insignia aparece junto a tu nombre: en tu perfil público, tus packs y tus comentarios.',
+        },
+      ],
+      checklistTitle: 'Seguir tu progreso',
+      checklist: [
+        'Tu progreso aparece en tu perfil público, y solo tú lo ves',
+        'Los votos negativos no restan, pero se ven',
+        'Los packs retirados dejan de contar',
+        'Responde a los comentarios: ahí es donde mejoran las escenas',
+      ],
+      note: 'La certificación se recalcula todo el tiempo: sigue a los votos. Un pack retirado o votos que cambian pueden hacer que la pierdas.',
+      ctaTitle: '¿Listo para publicar tu próxima escena?',
+      ctaBody: 'Recorre la comunidad para ver qué gusta, o crea un pack que falte.',
+      ctaLabel: 'Ir a la comunidad',
+    },
   },
 
   cookies: {
@@ -1075,6 +1163,45 @@ export const es = {
     save: 'Guardar mis opciones',
     noTracking: 'Sin medición de audiencia ni publicidad.',
     manage: 'Gestionar las cookies',
+  },
+
+  creators: {
+    certified: 'Creador certificado',
+    back: 'Volver a la comunidad',
+    memberSince: (date: string) => `Miembro desde ${date}`,
+    editProfile: 'Editar mi perfil',
+    myPublicProfile: 'Mi perfil público',
+    statPacks: 'Packs publicados',
+    statUp: 'Votos positivos',
+    statDown: 'Votos negativos',
+    packsTitle: (name: string) => `Los packs de ${name}`,
+    packsTitleMine: 'Mis packs publicados',
+    packsEmpty: 'Aún no hay packs publicados.',
+    packsEmptyMine: 'Aún no has publicado nada. Termina una escena y publícala desde la pantalla del resultado.',
+    commentsIntro: (name: string) => `Unas palabras para ${name}: un agradecimiento, una idea de escena, una pregunta sobre un desglose.`,
+    commentsIntroMine: 'Lo que la comunidad te escribe. Responde, vota y borra lo que no pinta nada aquí.',
+    notFound: 'Este perfil no existe',
+    notFoundBody: 'Puede que el enlace esté incompleto o que la cuenta ya no exista.',
+    certTitle: 'Certificación',
+    certDoneTitle: 'Eres creador certificado',
+    certDoneBody: 'Tu insignia aparece junto a tu nombre: en tu perfil, tus packs y tus comentarios.',
+    certProgressTitle: 'Camino a la certificación',
+    certProgressBody: 'Dos caminos posibles, basta con uno.',
+    certPathPacks: (min: number, goal: number) => `${goal} packs con al menos ${min} votos positivos cada uno`,
+    certPathVotes: (goal: number) => `${goal} votos positivos en total en todos tus packs`,
+    certOr: 'o',
+    certGuide: 'Cómo conseguir la certificación',
+    certifiedPublic: 'Creador certificado: sus packs han convencido a la comunidad.',
+  },
+
+  moderation: {
+    warningTitle: 'Aviso',
+    warningBody: (n: number) => (n === 1 ? `Cinco miembros denunciaron uno de tus comentarios: se ha retirado.` : `${n} de tus comentarios fueron denunciados por cinco miembros cada uno: se han retirado.`),
+    warningCount: (n: number) => `Aviso ${n} de 3. Al tercero, tu acceso se suspende.`,
+    warningExcerpt: 'Comentario retirado',
+    acknowledge: 'Entendido',
+    bannedTitle: 'Acceso suspendido',
+    bannedBody: 'Tras tres avisos, tu cuenta ha sido suspendida. Si crees que es un error, escribe al editor del sitio.',
   },
 
   errors: {

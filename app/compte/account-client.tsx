@@ -1,9 +1,11 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import {
+  ArrowRight,
   Crown,
   HardDrive,
   KeyRound,
@@ -18,8 +20,11 @@ import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
 import { AdminCard } from '@/components/admin-card';
+import { CertificationCard } from '@/components/certification-card';
+import { CertifiedBadge } from '@/components/certified-badge';
 import { GuestListCard } from '@/components/guest-list-card';
 import { PasswordCard } from '@/components/password-card';
+import { PendingRenders } from '@/components/pending-renders';
 import {
   Alert,
   Badge,
@@ -33,6 +38,7 @@ import {
 } from '@/components/ui';
 import { STORAGE_QUOTA_BYTES } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
+import { profileHref, useCreatorProfile } from '@/lib/creators';
 import { useStorageUsage } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import {
@@ -117,6 +123,7 @@ export function AccountClient({
   }
 
   const role = useMyRole();
+  const createur = useCreatorProfile(userId);
   const used = usage.data ?? 0;
   const dirty = name !== null && name.trim() !== current?.display_name;
   const viaDiscord = providers.includes('discord');
@@ -218,6 +225,28 @@ export function AccountClient({
             {saved ? <Alert tone="ok">{t.account.saved}</Alert> : null}
           </div>
         </Card>
+      ) : null}
+
+      {/* ── Mes rendus, puis ce que je publie ────────────────────────── */}
+      <PendingRenders />
+
+      {createur.data ? (
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 text-sm font-bold">
+              {t.creators.certTitle}
+              {createur.data.certified ? <CertifiedBadge /> : null}
+            </h2>
+            <Link
+              href={profileHref(userId)}
+              className="inline-flex min-h-9 items-center gap-1 text-sm font-bold text-link underline underline-offset-4"
+            >
+              {t.creators.myPublicProfile}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+          <CertificationCard profile={createur.data} />
+        </section>
       ) : null}
 
       {/* ── Comment j'entre ──────────────────────────────────────────── */}

@@ -341,6 +341,14 @@ export const en = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `${scenes} scene${scenes === 1 ? '' : 's'} · ${roles} role${roles === 1 ? '' : 's'} · ${langs} language${langs === 1 ? '' : 's'}`,
+    byAuthor: (name: string) => `by ${name}`,
+    commentReply: 'Reply',
+    commentReplyPlaceholder: 'Your reply…',
+    commentReport: 'Report',
+    commentReportTitle: 'Report this comment?',
+    commentReportBody: 'Reports are anonymous. After five, the comment is removed and its author gets a warning; after three warnings, their access is suspended.',
+    commentReportedThanks: 'Thanks, it’s been reported.',
+    commentRemovedAfterReports: 'Thanks. Reported by several members, this comment has been removed.',
   },
 
   terms: {
@@ -437,6 +445,17 @@ export const en = {
     passwordSave: 'Save password',
     passwordSaved: 'Password saved. You can use it from your next sign-in.',
     passwordTooShort: 'Eight characters minimum.',
+    sentTitle: 'Check your inbox',
+    sentBody: (email: string) => `We sent a link and a code to ${email}.`,
+    sentBodyLink: (email: string) => `We sent a sign-in link to ${email}.`,
+    linkHelp: 'Open it in this browser: this page will carry on by itself. It also works on another device.',
+    codeLabel: '6-digit code',
+    codeHelp: 'Type the code to stay in this tab. Prefer the link? Open it in this browser: this page will carry on by itself.',
+    codeSubmit: 'Confirm code',
+    codeInvalid: 'That code doesn’t work: check it, or ask for a new email.',
+    resend: 'Resend email',
+    changeEmail: 'Use another address',
+    spamHint: 'Nothing after a minute? Check your spam folder.',
   },
 
   guests: {
@@ -446,6 +465,7 @@ export const en = {
     joined: 'Has been here',
     pending: 'Never been here',
     remove: 'Remove from the list',
+    banned: 'Suspended',
   },
 
   sessions: {
@@ -467,6 +487,14 @@ export const en = {
       'The source video and the separated tracks are erased as soon as a render exists: only the final cut takes lasting room. Deleting a scene frees its own.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'No scene matches that code.',
+    joining: 'Joining the scene…',
+    rendersTitle: 'Renders in progress',
+    rendersBody: 'Editing runs in the background. Each scene shows up here as soon as it’s ready, for everyone who played in it.',
+    rendersQueued: 'Waiting',
+    rendersRunning: 'Editing…',
+    rendersReady: 'Ready to watch',
+    rendersSoon: 'Ready in a few minutes',
+    rendersWatch: 'Watch',
   },
 
   create: {
@@ -515,6 +543,8 @@ export const en = {
     shareLater: 'After the render, you can publish the scene to the community, with its language, genre and tags.',
     communityTitle: 'Create a pack for the community',
     communityBody: 'Import your video and prepare the scene as usual. Once the render is done, you publish it in one click.',
+    langLabel: 'Language spoken in the video',
+    langHelp: 'It tunes the transcription, then works as a filter once the scene is published to the community.',
   },
 
   ingest: {
@@ -576,6 +606,25 @@ export const en = {
     noSelection: 'Select lines to move them.',
     restoreLine: 'Restore the line',
     deletedBadge: 'Deleted, original audio kept',
+    howSteps: [
+      'Rename the characters and merge voices the detection split apart.',
+      'Filter by character to read their lines and fix who says what.',
+      'Delete useless lines: their original voice stays in the mix.',
+    ],
+    charactersHelp: 'Rename, play a clip, or tick two voices to merge them.',
+    filterLabel: 'Filter lines by character',
+    filterAll: 'All',
+    filterDeleted: 'Deleted',
+    searchLabel: 'Search the text',
+    searchPlaceholder: 'Search for a word in the lines…',
+    noMatch: 'No lines here.',
+    selectionLabel: (n: number) => (n === 1 ? `1 line selected` : `${n} lines selected`),
+    clearSelection: 'Clear selection',
+    restoreShort: 'Restore',
+    deletedToast: (n: number) => (n === 1 ? `Line deleted.` : `${n} lines deleted.`),
+    undo: 'Undo',
+    splitBody: (n: number) => (n === 1 ? `1 line will move to a new character.` : `${n} lines will move to a new character.`),
+    defaultCharacterName: (n: number) => `Character ${n}`,
   },
 
   lobby: {
@@ -755,6 +804,9 @@ export const en = {
     failedHost: 'Your takes are safe: start the render again. If it happens again, tell the administrator and include the details below.',
     failedGuest: 'Your takes are safe. The host can start the render again.',
     failedDetail: 'Technical details',
+    backgroundNotice: 'The edit keeps going without you: you can leave this page. In a few minutes the scene will be ready in My scenes and My account, for everyone who played in it.',
+    ctaNewScene: 'Make another scene',
+    ctaHome: 'Go to home',
   },
 
   result: {
@@ -1055,6 +1107,42 @@ export const en = {
       ctaBody: 'Browse the published scenes, or create the first one that is missing.',
       ctaLabel: 'See the community',
     },
+    certify: {
+      title: 'Becoming a certified creator',
+      summary: 'The gold badge for creators whose scenes set the standard: the two ways to earn it.',
+      intro: 'Certification recognizes creators whose packs have won over the community. You don’t apply for it: you earn it, automatically, as soon as one of the two thresholds is reached.',
+      readingTime: '3 min read',
+      stepsTitle: 'The path in four steps',
+      steps: [
+        {
+          title: 'Publish careful scenes',
+          body: 'Every pack counts: a clean breakdown, well-named characters, readable text. That’s what the community rates, not the film.',
+        },
+        {
+          title: 'Fill in the card well',
+          body: 'A recognizable title, the right language, the right genre and two or three tags: a scene people find is a scene people play.',
+        },
+        {
+          title: 'Collect upvotes',
+          body: 'Two thresholds, only one is needed: 50 packs with at least 10 upvotes each, or 5,000 upvotes in total across all your scenes.',
+        },
+        {
+          title: 'Get your badge',
+          body: 'As soon as a threshold is crossed, the badge appears next to your name: on your public profile, your packs and your comments.',
+        },
+      ],
+      checklistTitle: 'Tracking your progress',
+      checklist: [
+        'Your progress shows on your public profile, and only you can see it',
+        'Downvotes don’t take anything away, but they are visible',
+        'Removed packs no longer count',
+        'Reply to comments: that’s where scenes get better',
+      ],
+      note: 'Certification is recalculated all the time: it follows the votes. A removed pack or changing votes can make you lose it.',
+      ctaTitle: 'Ready to publish your next scene?',
+      ctaBody: 'Browse the community to see what people like, or create a pack that’s missing.',
+      ctaLabel: 'Go to the community',
+    },
   },
 
   cookies: {
@@ -1073,6 +1161,45 @@ export const en = {
     save: 'Save my choices',
     noTracking: 'No analytics, no advertising.',
     manage: 'Manage cookies',
+  },
+
+  creators: {
+    certified: 'Certified creator',
+    back: 'Back to the community',
+    memberSince: (date: string) => `Member since ${date}`,
+    editProfile: 'Edit my profile',
+    myPublicProfile: 'My public profile',
+    statPacks: 'Published packs',
+    statUp: 'Upvotes',
+    statDown: 'Downvotes',
+    packsTitle: (name: string) => `Packs by ${name}`,
+    packsTitleMine: 'My published packs',
+    packsEmpty: 'No published packs yet.',
+    packsEmptyMine: 'You haven’t published anything yet. Finish a scene, then publish it from the result screen.',
+    commentsIntro: (name: string) => `A word for ${name}: a thank-you, a scene idea, a question about a breakdown.`,
+    commentsIntroMine: 'What the community writes to you. Reply, vote, and delete what doesn’t belong here.',
+    notFound: 'This profile doesn’t exist',
+    notFoundBody: 'The link may be incomplete, or the account no longer exists.',
+    certTitle: 'Certification',
+    certDoneTitle: 'You’re a certified creator',
+    certDoneBody: 'Your badge shows next to your name: on your profile, your packs and your comments.',
+    certProgressTitle: 'On the way to certification',
+    certProgressBody: 'Two possible paths, only one is needed.',
+    certPathPacks: (min: number, goal: number) => `${goal} packs with at least ${min} upvotes each`,
+    certPathVotes: (goal: number) => `${goal} upvotes in total across all your packs`,
+    certOr: 'or',
+    certGuide: 'How to get certified',
+    certifiedPublic: 'Certified creator: their packs have won over the community.',
+  },
+
+  moderation: {
+    warningTitle: 'Warning',
+    warningBody: (n: number) => (n === 1 ? `One of your comments was reported by five members: it has been removed.` : `${n} of your comments were each reported by five members: they have been removed.`),
+    warningCount: (n: number) => `Warning ${n} of 3. On the third, your access is suspended.`,
+    warningExcerpt: 'Removed comment',
+    acknowledge: 'Got it',
+    bannedTitle: 'Access suspended',
+    bannedBody: 'After three warnings, your account has been suspended. If you think this is a mistake, write to the site publisher.',
   },
 
   errors: {

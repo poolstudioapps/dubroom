@@ -18,6 +18,7 @@ export function TvSet({
   children,
   slim,
   fill,
+  grow,
 }: {
   children: React.ReactNode;
   slim?: boolean;
@@ -29,15 +30,23 @@ export function TvSet({
    * rater la fin de la replique.
    */
   fill?: boolean;
+  /**
+   * Prendre au moins la hauteur libre, sans s'y limiter.
+   *
+   * Le contraire de `fill` : le contenu peut depasser et la page defile,
+   * mais un contenu court ne laisse plus le pied de page remonter.
+   */
+  grow?: boolean;
 }) {
+  const etire = fill || grow;
   return (
-    <div className={['flex flex-col', fill ? 'min-h-0 flex-1' : ''].join(' ')}>
+    <div className={['flex flex-col', fill ? 'min-h-0 flex-1' : grow ? 'flex-1' : ''].join(' ')}>
       <div
         className={[
           'tv-frame flex gap-3 rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel',
           'shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)]',
           slim ? 'p-3' : 'p-4 sm:p-6',
-          fill ? 'min-h-0 flex-1' : '',
+          fill ? 'min-h-0 flex-1' : etire ? 'flex-1' : '',
         ].join(' ')}
       >
         {/* L'ecran. Le contenu de l'application vit ici. */}

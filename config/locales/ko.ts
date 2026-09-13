@@ -334,6 +334,14 @@ export const ko = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `장면 ${scenes}개 · 역할 ${roles}개 · 언어 ${langs}개`,
+    byAuthor: (name: string) => `${name} 제작`,
+    commentReply: '답글',
+    commentReplyPlaceholder: '답글을 입력하세요…',
+    commentReport: '신고',
+    commentReportTitle: '이 댓글을 신고할까요?',
+    commentReportBody: '신고는 익명입니다. 신고가 5건 쌓이면 댓글이 삭제되고 작성자에게 경고가 갑니다. 경고가 3회가 되면 접근이 정지됩니다.',
+    commentReportedThanks: '감사합니다. 신고했습니다.',
+    commentRemovedAfterReports: '감사합니다. 여러 멤버에게 신고되어 이 댓글은 삭제되었습니다.',
   },
 
   terms: {
@@ -430,6 +438,17 @@ export const ko = {
     passwordSave: '비밀번호 저장',
     passwordSaved: '비밀번호를 저장했습니다. 다음 로그인부터 쓸 수 있습니다.',
     passwordTooShort: '최소 여덟 자입니다.',
+    sentTitle: '메일함을 확인하세요',
+    sentBody: (email: string) => `${email}(으)로 링크와 코드를 보냈습니다.`,
+    sentBodyLink: (email: string) => `${email}(으)로 로그인 링크를 보냈습니다.`,
+    linkHelp: '이 브라우저에서 열면 이 페이지가 자동으로 넘어갑니다. 다른 기기에서도 사용할 수 있습니다.',
+    codeLabel: '6자리 코드',
+    codeHelp: '이 탭에서 계속하려면 코드를 입력하세요. 링크를 쓰려면 이 브라우저에서 여세요. 이 페이지가 자동으로 넘어갑니다.',
+    codeSubmit: '코드 확인',
+    codeInvalid: '이 코드는 사용할 수 없습니다. 다시 확인하거나 메일을 다시 받으세요.',
+    resend: '메일 다시 보내기',
+    changeEmail: '다른 주소 사용',
+    spamHint: '1분이 지나도 오지 않으면 스팸함을 확인하세요.',
   },
 
   guests: {
@@ -439,6 +458,7 @@ export const ko = {
     joined: '들어온 적 있음',
     pending: '들어온 적 없음',
     remove: '목록에서 빼기',
+    banned: '정지됨',
   },
 
   sessions: {
@@ -460,6 +480,14 @@ export const ko = {
       '원본 영상과 분리한 트랙은 렌더링이 끝나는 즉시 지워집니다. 오래 남는 것은 완성본뿐입니다. 장면을 지우면 그만큼 비워집니다.',
     codePlaceholder: 'ABC234',
     codeNotFound: '이 코드에 맞는 장면이 없습니다.',
+    joining: '장면에 들어가는 중…',
+    rendersTitle: '진행 중인 렌더링',
+    rendersBody: '편집은 백그라운드에서 진행됩니다. 장면이 완성되면 참여한 모두에게 여기에 표시됩니다.',
+    rendersQueued: '대기 중',
+    rendersRunning: '편집 중…',
+    rendersReady: '시청 가능',
+    rendersSoon: '몇 분 뒤 완성',
+    rendersWatch: '보기',
   },
 
   create: {
@@ -508,6 +536,8 @@ export const ko = {
     shareLater: '렌더링 후 언어, 장르, 태그와 함께 장면을 커뮤니티에 공개할 수 있습니다.',
     communityTitle: '커뮤니티용 팩 만들기',
     communityBody: '평소처럼 영상을 불러와 장면을 준비하세요. 렌더링이 끝나면 클릭 한 번으로 공개할 수 있습니다.',
+    langLabel: '영상에서 사용하는 언어',
+    langHelp: '대본 인식을 맞추고, 장면을 커뮤니티에 공개하면 필터로도 쓰입니다.',
   },
 
   ingest: {
@@ -566,6 +596,25 @@ export const ko = {
     noSelection: '옮길 대사를 고르세요.',
     restoreLine: '대사 되돌리기',
     deletedBadge: '삭제됨, 원래 음성 유지',
+    howSteps: [
+      '캐릭터 이름을 바꾸고, 감지 과정에서 나뉜 목소리를 합치세요.',
+      '캐릭터별로 걸러 대사를 읽고, 누가 무엇을 말하는지 바로잡으세요.',
+      '필요 없는 대사를 삭제하세요. 원래 목소리는 믹스에 남습니다.',
+    ],
+    charactersHelp: '이름 바꾸기, 발췌 듣기, 두 목소리를 선택해 합치기를 할 수 있어요.',
+    filterLabel: '캐릭터별 대사 필터',
+    filterAll: '전체',
+    filterDeleted: '삭제됨',
+    searchLabel: '대사 검색',
+    searchPlaceholder: '대사에서 단어 검색…',
+    noMatch: '대사가 없습니다.',
+    selectionLabel: (n: number) => `대사 ${n}개 선택됨`,
+    clearSelection: '선택 해제',
+    restoreShort: '복원',
+    deletedToast: (n: number) => `대사 ${n}개를 삭제했습니다.`,
+    undo: '실행 취소',
+    splitBody: (n: number) => `대사 ${n}개가 새 캐릭터로 이동합니다.`,
+    defaultCharacterName: (n: number) => `캐릭터 ${n}`,
   },
 
   lobby: {
@@ -742,6 +791,9 @@ export const ko = {
     failedHost: '테이크는 안전합니다. 렌더링을 다시 시작하세요. 또 실패하면 아래 세부 정보를 관리자에게 알려 주세요.',
     failedGuest: '테이크는 안전합니다. 호스트가 렌더링을 다시 시작할 수 있습니다.',
     failedDetail: '기술 세부 정보',
+    backgroundNotice: '편집은 백그라운드에서 계속됩니다. 이 페이지를 나가도 괜찮아요. 몇 분 뒤 참여한 모두의 내 장면과 내 계정에서 장면을 볼 수 있습니다.',
+    ctaNewScene: '다른 장면 만들기',
+    ctaHome: '홈으로',
   },
 
   result: {
@@ -1042,6 +1094,42 @@ export const ko = {
       ctaBody: '공개된 장면을 둘러보거나, 아직 없는 장면을 처음으로 만들어 보세요.',
       ctaLabel: '커뮤니티 보기',
     },
+    certify: {
+      title: '인증 크리에이터 되기',
+      summary: '본보기가 되는 장면을 만든 크리에이터의 금색 배지: 받는 방법 두 가지.',
+      intro: '인증은 커뮤니티의 마음을 사로잡은 팩을 만든 크리에이터를 위한 표시입니다. 신청할 필요 없이, 두 기준 중 하나에 도달하면 자동으로 받습니다.',
+      readingTime: '3분 분량',
+      stepsTitle: '네 단계로 가는 길',
+      steps: [
+        {
+          title: '정성 들인 장면 공개하기',
+          body: '모든 팩이 중요합니다. 깔끔한 분할, 알기 쉬운 캐릭터 이름, 읽기 쉬운 대사. 커뮤니티가 평가하는 건 영화가 아니라 이 준비입니다.',
+        },
+        {
+          title: '정보 잘 채우기',
+          body: '알아보기 쉬운 제목, 정확한 언어와 장르, 태그 두세 개. 찾기 쉬운 장면이 많이 플레이됩니다.',
+        },
+        {
+          title: '추천 모으기',
+          body: '기준은 두 가지, 하나면 충분합니다. 추천 10개 이상인 팩 50개, 또는 모든 장면 합계 추천 5000개.',
+        },
+        {
+          title: '배지 받기',
+          body: '기준을 넘는 순간 공개 프로필, 팩, 댓글에서 이름 옆에 배지가 나타납니다.',
+        },
+      ],
+      checklistTitle: '진행 상황 확인하기',
+      checklist: [
+        '진행 상황은 공개 프로필에 표시되며 나만 볼 수 있습니다',
+        '비추천은 점수를 깎지 않지만 표시됩니다',
+        '삭제한 팩은 더 이상 집계되지 않습니다',
+        '댓글에 답하세요. 장면은 거기서 좋아집니다',
+      ],
+      note: '인증은 계속 다시 계산되며 추천을 따라갑니다. 팩을 삭제하거나 추천이 바뀌면 인증을 잃을 수 있습니다.',
+      ctaTitle: '다음 장면을 공개할 준비가 되셨나요?',
+      ctaBody: '커뮤니티에서 인기 있는 장면을 둘러보거나, 아직 없는 팩을 만들어 보세요.',
+      ctaLabel: '커뮤니티로 가기',
+    },
   },
 
   cookies: {
@@ -1060,6 +1148,45 @@ export const ko = {
     save: '선택 저장',
     noTracking: '방문자 분석도 광고도 없습니다.',
     manage: '쿠키 관리',
+  },
+
+  creators: {
+    certified: '인증 크리에이터',
+    back: '커뮤니티로 돌아가기',
+    memberSince: (date: string) => `${date}부터 멤버`,
+    editProfile: '내 프로필 수정',
+    myPublicProfile: '내 공개 프로필',
+    statPacks: '공개한 팩',
+    statUp: '추천',
+    statDown: '비추천',
+    packsTitle: (name: string) => `${name}의 팩`,
+    packsTitleMine: '내가 공개한 팩',
+    packsEmpty: '아직 공개된 팩이 없습니다.',
+    packsEmptyMine: '아직 공개한 것이 없어요. 장면을 완성한 뒤 결과 화면에서 공개하세요.',
+    commentsIntro: (name: string) => `${name}에게 한마디: 감사 인사, 장면 아이디어, 준비에 대한 질문.`,
+    commentsIntroMine: '커뮤니티가 남긴 글입니다. 답글을 달고, 추천하고, 어울리지 않는 글은 삭제하세요.',
+    notFound: '존재하지 않는 프로필입니다',
+    notFoundBody: '링크가 불완전하거나 계정이 더 이상 없을 수 있습니다.',
+    certTitle: '인증',
+    certDoneTitle: '인증 크리에이터입니다',
+    certDoneBody: '프로필, 팩, 댓글에서 이름 옆에 배지가 표시됩니다.',
+    certProgressTitle: '인증까지의 진행 상황',
+    certProgressBody: '두 가지 조건 중 하나만 채우면 됩니다.',
+    certPathPacks: (min: number, goal: number) => `추천 ${min}개 이상인 팩 ${goal}개`,
+    certPathVotes: (goal: number) => `모든 팩 합계 추천 ${goal}개`,
+    certOr: '또는',
+    certGuide: '인증 받는 방법',
+    certifiedPublic: '인증 크리에이터: 커뮤니티가 인정한 팩을 만들었습니다.',
+  },
+
+  moderation: {
+    warningTitle: '경고',
+    warningBody: (n: number) => `내 댓글 ${n}개가 각각 멤버 5명에게 신고되어 삭제되었습니다.`,
+    warningCount: (n: number) => `경고 ${n}/3. 세 번째 경고에서 접근이 정지됩니다.`,
+    warningExcerpt: '삭제된 댓글',
+    acknowledge: '확인했습니다',
+    bannedTitle: '접근 정지',
+    bannedBody: '경고가 3회 누적되어 계정이 정지되었습니다. 잘못되었다고 생각되면 사이트 운영자에게 연락하세요.',
   },
 
   errors: {

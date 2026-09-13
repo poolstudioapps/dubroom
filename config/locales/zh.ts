@@ -330,6 +330,14 @@ export const zh = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `${scenes} 个场景 · ${roles} 个角色 · ${langs} 种语言`,
+    byAuthor: (name: string) => `作者：${name}`,
+    commentReply: '回复',
+    commentReplyPlaceholder: '写下你的回复…',
+    commentReport: '举报',
+    commentReportTitle: '举报这条评论？',
+    commentReportBody: '举报是匿名的。累计五次举报后，评论会被删除，作者会收到警告；累计三次警告后，其账号将被停用。',
+    commentReportedThanks: '谢谢，已举报。',
+    commentRemovedAfterReports: '谢谢。这条评论被多位成员举报，已被删除。',
   },
 
   terms: {
@@ -424,6 +432,17 @@ export const zh = {
     passwordSave: '保存密码',
     passwordSaved: '密码已保存，下次登录就能用。',
     passwordTooShort: '至少八个字符。',
+    sentTitle: '请查收邮件',
+    sentBody: (email: string) => `我们已向 ${email} 发送了链接和验证码。`,
+    sentBodyLink: (email: string) => `我们已向 ${email} 发送了登录链接。`,
+    linkHelp: '在这个浏览器中打开，此页面会自动继续。在其他设备上打开也可以登录。',
+    codeLabel: '6 位验证码',
+    codeHelp: '输入验证码即可留在此标签页。想用链接？在这个浏览器中打开，此页面会自动继续。',
+    codeSubmit: '确认验证码',
+    codeInvalid: '验证码无效：请检查，或重新发送邮件。',
+    resend: '重新发送邮件',
+    changeEmail: '更换邮箱',
+    spamHint: '一分钟后仍未收到？请查看垃圾邮件文件夹。',
   },
 
   guests: {
@@ -433,6 +452,7 @@ export const zh = {
     joined: '来过',
     pending: '没来过',
     remove: '从名单里移除',
+    banned: '已停用',
   },
 
   sessions: {
@@ -453,6 +473,14 @@ export const zh = {
       '原视频和分离出来的音轨在出片之后就删掉了，长期占地方的只有成片。删掉一个片段就腾出它那份。',
     codePlaceholder: 'ABC234',
     codeNotFound: '没有片段对得上这个代码。',
+    joining: '正在进入场景…',
+    rendersTitle: '正在渲染',
+    rendersBody: '剪辑在后台进行。场景一完成就会显示在这里，所有参与者都能看到。',
+    rendersQueued: '排队中',
+    rendersRunning: '剪辑中…',
+    rendersReady: '可以观看',
+    rendersSoon: '几分钟后完成',
+    rendersWatch: '观看',
   },
 
   create: {
@@ -498,6 +526,8 @@ export const zh = {
     shareLater: '渲染完成后，你可以带上语言、类型和标签把场景发布到社区。',
     communityTitle: '为社区创建素材包',
     communityBody: '像平常一样导入视频并准备场景。渲染完成后，一键即可发布。',
+    langLabel: '视频中所说的语言',
+    langHelp: '它用于调整转写，并在场景发布到社区后作为筛选条件。',
   },
 
   ingest: {
@@ -554,6 +584,25 @@ export const zh = {
     noSelection: '选中一些台词才能移动。',
     restoreLine: '恢复这句',
     deletedBadge: '已删除，原声保留',
+    howSteps: [
+      '重命名角色，并合并被识别拆开的声音。',
+      '按角色筛选以查看其台词，并修正谁说了什么。',
+      '删除无用的台词：它们的原声会保留在混音中。',
+    ],
+    charactersHelp: '可以重命名、试听片段，或勾选两个声音进行合并。',
+    filterLabel: '按角色筛选台词',
+    filterAll: '全部',
+    filterDeleted: '已删除',
+    searchLabel: '搜索文本',
+    searchPlaceholder: '在台词中搜索…',
+    noMatch: '这里没有台词。',
+    selectionLabel: (n: number) => `已选 ${n} 句台词`,
+    clearSelection: '取消选择',
+    restoreShort: '恢复',
+    deletedToast: (n: number) => `已删除 ${n} 句台词。`,
+    undo: '撤销',
+    splitBody: (n: number) => `${n} 句台词将移到一个新角色。`,
+    defaultCharacterName: (n: number) => `角色 ${n}`,
   },
 
   lobby: {
@@ -727,6 +776,9 @@ export const zh = {
     failedHost: '你的录音完好无损：请重新开始渲染。如果再次失败，请把下面的详情告诉管理员。',
     failedGuest: '你们的录音完好无损。主持人可以重新开始渲染。',
     failedDetail: '技术详情',
+    backgroundNotice: '剪辑会在后台继续进行，你可以离开此页面。几分钟后，所有参与者都能在“我的场景”和“我的账户”中看到这个场景。',
+    ctaNewScene: '再做一个场景',
+    ctaHome: '返回首页',
   },
 
   result: {
@@ -1025,6 +1077,42 @@ export const zh = {
       ctaBody: '浏览已发布的场景，或者创建第一个缺少的场景。',
       ctaLabel: '查看社区',
     },
+    certify: {
+      title: '成为认证创作者',
+      summary: '授予场景堪称典范的创作者的金色徽章：两种获得方式。',
+      intro: '认证属于素材包赢得社区认可的创作者。无需申请：只要达到两个门槛中的任意一个，就会自动获得。',
+      readingTime: '阅读约 3 分钟',
+      stepsTitle: '四步之路',
+      steps: [
+        {
+          title: '发布用心的场景',
+          body: '每个素材包都很重要：干净的切分、清楚的角色名、易读的台词。社区评价的是准备质量，而不是电影本身。',
+        },
+        {
+          title: '认真填写信息',
+          body: '好认的标题、正确的语言和类型，再加两三个标签：容易找到的场景，才会有人玩。',
+        },
+        {
+          title: '收集好评',
+          body: '两个门槛，满足其一即可：50 个素材包各有至少 10 个好评，或所有场景累计 5000 个好评。',
+        },
+        {
+          title: '获得徽章',
+          body: '一旦跨过门槛，徽章就会出现在你的名字旁边：公开主页、素材包和评论中都能看到。',
+        },
+      ],
+      checklistTitle: '查看进度',
+      checklist: [
+        '进度显示在你的公开主页上，只有你自己能看到',
+        '差评不会扣减数量，但会显示出来',
+        '已移除的素材包不再计入',
+        '回复评论：场景正是在交流中变得更好',
+      ],
+      note: '认证会持续重新计算，跟随投票变化。移除素材包或投票变化都可能让你失去认证。',
+      ctaTitle: '准备发布下一个场景了吗？',
+      ctaBody: '浏览社区看看大家喜欢什么，或者创建一个还没有的素材包。',
+      ctaLabel: '前往社区',
+    },
   },
 
   cookies: {
@@ -1043,6 +1131,45 @@ export const zh = {
     save: '保存我的选择',
     noTracking: '没有访问统计，也没有广告。',
     manage: '管理 Cookie',
+  },
+
+  creators: {
+    certified: '认证创作者',
+    back: '返回社区',
+    memberSince: (date: string) => `${date} 加入`,
+    editProfile: '编辑我的资料',
+    myPublicProfile: '我的公开主页',
+    statPacks: '已发布素材包',
+    statUp: '好评',
+    statDown: '差评',
+    packsTitle: (name: string) => `${name} 的素材包`,
+    packsTitleMine: '我发布的素材包',
+    packsEmpty: '还没有发布的素材包。',
+    packsEmptyMine: '你还没有发布任何内容。完成一个场景后，在结果页面发布。',
+    commentsIntro: (name: string) => `给 ${name} 留言：一句感谢、一个场景点子，或关于准备的问题。`,
+    commentsIntroMine: '社区写给你的话。回复、投票，并删除不合适的内容。',
+    notFound: '该主页不存在',
+    notFoundBody: '链接可能不完整，或该账号已不存在。',
+    certTitle: '认证',
+    certDoneTitle: '你是认证创作者',
+    certDoneBody: '你的徽章会显示在名字旁边：主页、素材包和评论中都有。',
+    certProgressTitle: '认证进度',
+    certProgressBody: '两个条件，满足其一即可。',
+    certPathPacks: (min: number, goal: number) => `${goal} 个素材包，每个至少 ${min} 个好评`,
+    certPathVotes: (goal: number) => `所有素材包累计 ${goal} 个好评`,
+    certOr: '或',
+    certGuide: '如何获得认证',
+    certifiedPublic: '认证创作者：其素材包深受社区好评。',
+  },
+
+  moderation: {
+    warningTitle: '警告',
+    warningBody: (n: number) => `你有 ${n} 条评论各被五位成员举报，已被删除。`,
+    warningCount: (n: number) => `第 ${n} 次警告（共 3 次）。第三次警告后，你的账号将被停用。`,
+    warningExcerpt: '被删除的评论',
+    acknowledge: '我知道了',
+    bannedTitle: '账号已停用',
+    bannedBody: '由于累计三次警告，你的账号已被停用。如果你认为这是误判，请联系网站运营者。',
   },
 
   errors: {

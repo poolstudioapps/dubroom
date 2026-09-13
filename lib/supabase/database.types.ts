@@ -61,6 +61,8 @@ export interface SessionRow {
   closed_at: string | null;
   /** Quand le salon a ouvert : c'est de la que court l'heure. */
   lobby_opened_at: string | null;
+  /** Langue parlee, choisie a la creation (ISO 639-1). */
+  source_lang: string | null;
   created_at: string;
 }
 

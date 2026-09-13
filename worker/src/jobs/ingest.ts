@@ -285,7 +285,9 @@ export async function runIngest(
   // reconnaissance y est nettement meilleur (PRD §6.4).
   const sttWav = path.join(workDir, 'audio_16k.wav');
   await downmixForStt(voicePath, sttWav);
-  const words = await transcribe(sttWav, workDir, logger);
+  // La langue choisie a la creation ; le francais pour les scenes d'avant.
+  // Scribe accepte le code a deux lettres aussi bien qu'a trois.
+  const words = await transcribe(sttWav, workDir, logger, session.source_lang ?? 'fra');
   await setJobStep(job.id, 'transcribe', 90);
 
   // ── 6. Decoupage ────────────────────────────────────────────────────

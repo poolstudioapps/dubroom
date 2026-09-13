@@ -336,6 +336,14 @@ export const ja = {
     ],
     stats: (scenes: number, roles: number, langs: number) =>
       `シーン ${scenes} · 役 ${roles} · 言語 ${langs}`,
+    byAuthor: (name: string) => `${name} 作`,
+    commentReply: '返信',
+    commentReplyPlaceholder: '返信を書く…',
+    commentReport: '通報',
+    commentReportTitle: 'このコメントを通報しますか？',
+    commentReportBody: '通報は匿名です。5件の通報でコメントは削除され、投稿者に警告が送られます。警告が3回になると、アクセスが停止されます。',
+    commentReportedThanks: 'ありがとうございます。通報しました。',
+    commentRemovedAfterReports: 'ありがとうございます。複数のメンバーから通報されたため、このコメントは削除されました。',
   },
 
   terms: {
@@ -432,6 +440,17 @@ export const ja = {
     passwordSave: 'パスワードを保存',
     passwordSaved: 'パスワードを保存しました。次回のログインから使えます。',
     passwordTooShort: '8 文字以上にしてください。',
+    sentTitle: 'メールを確認してください',
+    sentBody: (email: string) => `${email} にリンクとコードを送信しました。`,
+    sentBodyLink: (email: string) => `${email} にログインリンクを送信しました。`,
+    linkHelp: 'このブラウザで開くと、このページが自動で進みます。別の端末で開いてもログインできます。',
+    codeLabel: '6桁のコード',
+    codeHelp: 'このタブのまま続けるにはコードを入力してください。リンクを使う場合は、このブラウザで開けば、このページが自動で進みます。',
+    codeSubmit: 'コードを確認',
+    codeInvalid: 'このコードは使えません。確認するか、メールを再送してください。',
+    resend: 'メールを再送',
+    changeEmail: '別のアドレスを使う',
+    spamHint: '1分たっても届かない場合は、迷惑メールフォルダを確認してください。',
   },
 
   guests: {
@@ -441,6 +460,7 @@ export const ja = {
     joined: '参加済み',
     pending: '未参加',
     remove: 'リストから外す',
+    banned: '停止中',
   },
 
   sessions: {
@@ -462,6 +482,14 @@ export const ja = {
       'もとの動画と分離した音声は、書き出しができた時点で消去されます。長く残るのは完成した映像だけです。シーンを削除すればその分が空きます。',
     codePlaceholder: 'ABC234',
     codeNotFound: 'このコードに合うシーンはありません。',
+    joining: 'シーンに参加しています…',
+    rendersTitle: 'レンダリング中',
+    rendersBody: '編集はバックグラウンドで進みます。完成したシーンは、参加した全員のこの欄に表示されます。',
+    rendersQueued: '待機中',
+    rendersRunning: '編集中…',
+    rendersReady: '視聴できます',
+    rendersSoon: '数分で完成します',
+    rendersWatch: '見る',
   },
 
   create: {
@@ -510,6 +538,8 @@ export const ja = {
     shareLater: 'レンダリング後、言語・ジャンル・タグを付けてシーンをコミュニティに公開できます。',
     communityTitle: 'コミュニティ用のパックを作成',
     communityBody: 'いつも通り動画を読み込み、シーンを準備してください。レンダリングが終わったら、ワンクリックで公開できます。',
+    langLabel: '動画で話されている言語',
+    langHelp: '文字起こしの精度を高め、コミュニティに公開したときの絞り込みにも使われます。',
   },
 
   ingest: {
@@ -568,6 +598,25 @@ export const ja = {
     noSelection: '移動するせりふを選んでください。',
     restoreLine: 'せりふを戻す',
     deletedBadge: '削除済み、もとの音声は保持',
+    howSteps: [
+      'キャラクター名を変更し、検出で分かれてしまった声を統合します。',
+      'キャラクターで絞り込んでセリフを読み、誰が何を言うかを直します。',
+      '不要なセリフを削除します。元の声はミックスに残ります。',
+    ],
+    charactersHelp: '名前の変更、抜粋の再生、2つの声にチェックを入れて統合ができます。',
+    filterLabel: 'キャラクターでセリフを絞り込む',
+    filterAll: 'すべて',
+    filterDeleted: '削除済み',
+    searchLabel: 'テキストを検索',
+    searchPlaceholder: 'セリフ内の言葉を検索…',
+    noMatch: 'セリフがありません。',
+    selectionLabel: (n: number) => `${n} 件のセリフを選択中`,
+    clearSelection: '選択を解除',
+    restoreShort: '元に戻す',
+    deletedToast: (n: number) => `${n} 件のセリフを削除しました。`,
+    undo: '取り消す',
+    splitBody: (n: number) => `${n} 件のセリフを新しいキャラクターに移動します。`,
+    defaultCharacterName: (n: number) => `キャラクター ${n}`,
   },
 
   lobby: {
@@ -749,6 +798,9 @@ export const ja = {
     failedHost: 'テイクは無事です。レンダリングをやり直してください。再発する場合は、下の詳細を添えて管理者に知らせてください。',
     failedGuest: 'テイクは無事です。ホストがレンダリングをやり直せます。',
     failedDetail: '技術的な詳細',
+    backgroundNotice: '編集はバックグラウンドで続きます。このページを離れても大丈夫です。数分後、参加した全員の「マイシーン」と「アカウント」にシーンが表示されます。',
+    ctaNewScene: '別のシーンを作る',
+    ctaHome: 'ホームへ',
   },
 
   result: {
@@ -1049,6 +1101,42 @@ export const ja = {
       ctaBody: '公開されたシーンを見るか、まだないシーンを最初に作りましょう。',
       ctaLabel: 'コミュニティを見る',
     },
+    certify: {
+      title: '認定クリエイターになる',
+      summary: 'お手本となるシーンを作るクリエイターに贈られる金色のバッジ。2つの獲得方法を紹介します。',
+      intro: '認定は、パックがコミュニティに高く評価されたクリエイターの証です。申請は不要。2つの基準のどちらかに達した時点で、自動的に認定されます。',
+      readingTime: '3分で読めます',
+      stepsTitle: '4つのステップ',
+      steps: [
+        {
+          title: '丁寧なシーンを公開する',
+          body: 'どのパックも大切です。きれいな分割、分かりやすいキャラクター名、読みやすいテキスト。評価されるのは映画ではなく、この準備の質です。',
+        },
+        {
+          title: '情報をきちんと入力する',
+          body: '分かりやすいタイトル、正しい言語とジャンル、2〜3個のタグ。見つけやすいシーンほど遊ばれます。',
+        },
+        {
+          title: '高評価を集める',
+          body: '基準は2つ、どちらか1つで十分です。高評価10以上のパックを50個、または全シーン合計で高評価5000。',
+        },
+        {
+          title: 'バッジを受け取る',
+          body: '基準を超えるとすぐに、公開プロフィール、パック、コメントで名前の横にバッジが表示されます。',
+        },
+      ],
+      checklistTitle: '進み具合を確認する',
+      checklist: [
+        '進み具合は公開プロフィールに表示され、本人だけが見られます',
+        '低評価で数が減ることはありませんが、表示はされます',
+        '削除したパックは数に含まれません',
+        'コメントに返信しましょう。シーンはそこで良くなります',
+      ],
+      note: '認定は常に再計算され、評価の変化に連動します。パックの削除や評価の変化によって、認定が外れることもあります。',
+      ctaTitle: '次のシーンを公開しますか？',
+      ctaBody: 'コミュニティで人気のシーンを見るか、まだないパックを作りましょう。',
+      ctaLabel: 'コミュニティへ',
+    },
   },
 
   cookies: {
@@ -1067,6 +1155,45 @@ export const ja = {
     save: '選択を保存',
     noTracking: 'アクセス解析も広告もありません。',
     manage: 'Cookie の管理',
+  },
+
+  creators: {
+    certified: '認定クリエイター',
+    back: 'コミュニティに戻る',
+    memberSince: (date: string) => `${date} から参加`,
+    editProfile: 'プロフィールを編集',
+    myPublicProfile: '公開プロフィール',
+    statPacks: '公開パック',
+    statUp: '高評価',
+    statDown: '低評価',
+    packsTitle: (name: string) => `${name} のパック`,
+    packsTitleMine: '公開したパック',
+    packsEmpty: '公開されたパックはまだありません。',
+    packsEmptyMine: 'まだ何も公開していません。シーンを完成させ、結果画面から公開しましょう。',
+    commentsIntro: (name: string) => `${name} へのメッセージ：お礼、シーンのアイデア、準備についての質問など。`,
+    commentsIntroMine: 'コミュニティからのメッセージです。返信や評価をしたり、不要なものを削除したりできます。',
+    notFound: 'このプロフィールは存在しません',
+    notFoundBody: 'リンクが不完全か、アカウントが削除された可能性があります。',
+    certTitle: '認定',
+    certDoneTitle: '認定クリエイターです',
+    certDoneBody: 'プロフィール、パック、コメントで、名前の横にバッジが表示されます。',
+    certProgressTitle: '認定までの道のり',
+    certProgressBody: '条件は2つ。どちらか1つを満たせば認定されます。',
+    certPathPacks: (min: number, goal: number) => `高評価 ${min} 以上のパックを ${goal} 個`,
+    certPathVotes: (goal: number) => `全パック合計で高評価 ${goal}`,
+    certOr: 'または',
+    certGuide: '認定を受けるには',
+    certifiedPublic: '認定クリエイター：パックがコミュニティに高く評価されています。',
+  },
+
+  moderation: {
+    warningTitle: '警告',
+    warningBody: (n: number) => `あなたのコメント ${n} 件が、それぞれ5人のメンバーから通報されたため削除されました。`,
+    warningCount: (n: number) => `警告 ${n} / 3。3回目でアクセスが停止されます。`,
+    warningExcerpt: '削除されたコメント',
+    acknowledge: '了解しました',
+    bannedTitle: 'アクセス停止',
+    bannedBody: '警告が3回に達したため、アカウントが停止されました。誤りだと思われる場合は、サイト運営者にご連絡ください。',
   },
 
   errors: {

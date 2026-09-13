@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { LogOut, Package, Settings, User } from 'lucide-react';
+import { Contact, LogOut, Package, Settings, User } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { Avatar } from '@/components/avatar';
 
+import { profileHref } from '@/lib/creators';
 import { useMyPackCount, useMyProfile } from '@/lib/profile';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -84,6 +85,13 @@ export function AccountMenu() {
             <User className="h-4 w-4" aria-hidden />
             {t.account.title}
           </MenuItem>
+
+          {profile.data?.user_id ? (
+            <MenuItem href={profileHref(profile.data.user_id)} onSelect={() => setOpen(false)}>
+              <Contact className="h-4 w-4" aria-hidden />
+              {t.creators.myPublicProfile}
+            </MenuItem>
+          ) : null}
 
           {(packs.data ?? 0) > 0 ? (
             <MenuItem href="/mes-packs" onSelect={() => setOpen(false)}>
