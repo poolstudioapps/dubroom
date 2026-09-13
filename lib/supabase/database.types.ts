@@ -58,7 +58,7 @@ export interface SessionRow {
   published_pack_id: string | null;
   purged_at: string | null;
   /**
-   * Salon ou studio ferme apres vingt minutes sans activite. L'hote peut
+   * Salon ou studio ferme apres trente minutes sans activite. L'hote peut
    * rouvrir un salon ; un studio ferme renvoie ses joueurs a l'accueil.
    */
   closed_at: string | null;

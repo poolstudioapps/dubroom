@@ -134,7 +134,7 @@ export const es = {
       },
       {
         q: '¿Y si hacemos una pausa?',
-        a: 'Una sala o un estudio sin actividad durante veinte minutos se cierra solo, para no acumular escenas olvidadas. El anfitrión puede reabrir una sala; para un estudio, hay que empezar una escena nueva.',
+        a: 'Una sala o un estudio sin actividad durante treinta minutos se cierra solo, para no acumular escenas olvidadas. El anfitrión puede reabrir una sala; para un estudio, hay que empezar una escena nueva.',
       },
       {
         q: '¿Cómo se separan las voces de la música?',
@@ -698,6 +698,11 @@ export const es = {
     addVoice: 'Añadir una voz a esta frase',
     addVoiceHint: 'Para una frase dicha a la vez: cada personaje la dobla por su lado y las voces se superponen en el resultado.',
     removeVoice: (nom: string) => `Quitar a ${nom} de esta frase`,
+    cutLine: 'Cortar la frase',
+    cutHelp: 'Haz clic entre dos palabras para cortar. La segunda parte pasa a ser una frase aparte que puedes dar a otro personaje.',
+    cutAfter: (mot: string) => `Cortar después de «${mot}»`,
+    cutSecondBy: 'Segunda parte dicha por',
+    cutConfirm: 'Cortar',
   },
 
   lobby: {
@@ -727,8 +732,8 @@ export const es = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Solo el anfitrión puede empezar la partida.',
     closedTitle: 'Sala cerrada',
-    closedBody: 'Esta sala estuvo veinte minutos sin actividad: se cerró automáticamente y ya nadie puede unirse.',
-    closedHost: 'Puedes reabrirla veinte minutos más, o borrar la escena desde tu lista de escenas.',
+    closedBody: 'Esta sala estuvo treinta minutos sin actividad: se cerró automáticamente y ya nadie puede unirse.',
+    closedHost: 'Puedes reabrirla treinta minutos más, o borrar la escena desde tu lista de escenas.',
     closedGuest: 'Solo el anfitrión puede volver a abrirla.',
     closedBack: 'Volver a mis escenas',
     reopen: 'Volver a abrir la sala',
@@ -846,7 +851,7 @@ export const es = {
     fxKeepHelp: 'Sin marcar, la siguiente frase empieza sin efectos.',
     dragHint: 'Arrastra tu pista para realinearla',
     expiredTitle: 'Sesión caducada',
-    expiredBody: 'No se grabó ninguna toma en veinte minutos: la sesión se cerró automáticamente. Puedes empezar otra cuando quieras.',
+    expiredBody: 'No se grabó ninguna toma en treinta minutos: la sesión se cerró automáticamente. Puedes empezar otra cuando quieras.',
     expiredOk: 'Entendido',
     takeDragHelp: 'Tu toma está colocada. Para moverla, arrastra su pista sobre la forma de onda.',
     allTakesSavedStay: 'Todas tus tomas están guardadas. Vuelve a escucharlas o repite alguna si quieres, y termina cuando estés listo.',
@@ -854,6 +859,8 @@ export const es = {
     waitingSubtitle: 'Tus tomas están a salvo. Aquí ves quién dobla a quién y cómo va cada uno.',
     keptVo: 'Conservan su voz original',
     noRole: 'Sin papel',
+    fxKeepCharacter: (nom: string) => `Guardar estos ajustes para ${nom}`,
+    fxKeepCharacterHelp: 'Tono, reverb y volumen: cada nueva toma de este personaje los usa.',
   },
 
   progress: {
@@ -1065,7 +1072,7 @@ export const es = {
       },
       {
         title: 'Veinte minutos sin actividad y se cierra',
-        body: 'Una sala o un estudio sin actividad durante veinte minutos se cierra solo.',
+        body: 'Una sala o un estudio sin actividad durante treinta minutos se cierra solo.',
       },
       {
         title: 'Descarga pronto tu vídeo',
@@ -1148,7 +1155,7 @@ export const es = {
         },
         {
           title: 'Abre la sala',
-          body: 'Comparte el código o el enlace. Cada uno elige un personaje; los que nadie coge conservan su voz original. La sala se cierra sola tras veinte minutos sin actividad.',
+          body: 'Comparte el código o el enlace. Cada uno elige un personaje; los que nadie coge conservan su voz original. La sala se cierra sola tras treinta minutos sin actividad.',
         },
       ],
       checklistTitle: 'Una escena lista para jugar',

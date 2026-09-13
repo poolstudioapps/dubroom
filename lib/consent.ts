@@ -30,6 +30,7 @@ export const PREFERENCE_STORAGE_KEYS = [
   'dubup.loginMode',
   'dubup.micOffsetEverywhere',
   'dubup.keepFx',
+  'dubup.fxPerso',
   'dubup.micOffsetMs',
   'dubup.micDevice',
   'dubup.outputDevice',

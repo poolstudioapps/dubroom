@@ -134,7 +134,7 @@ export const it = {
       },
       {
         q: 'E se facciamo una pausa?',
-        a: 'Una lobby o uno studio senza attività per venti minuti si chiude da solo, per non accumulare scene dimenticate. L’host può riaprire una lobby; per uno studio bisogna avviare una nuova scena.',
+        a: 'Una lobby o uno studio senza attività per trenta minuti si chiude da solo, per non accumulare scene dimenticate. L’host può riaprire una lobby; per uno studio bisogna avviare una nuova scena.',
       },
       {
         q: 'Come vengono separate le voci dalla musica?',
@@ -696,6 +696,11 @@ export const it = {
     addVoice: 'Aggiungi una voce a questa battuta',
     addVoiceHint: 'Per una battuta detta insieme: ogni personaggio la doppia per conto suo e le voci si sovrappongono nel risultato.',
     removeVoice: (nom: string) => `Togli ${nom} da questa battuta`,
+    cutLine: 'Dividi la battuta',
+    cutHelp: 'Clicca tra due parole per dividere. La seconda parte diventa una battuta a sé, che puoi dare a un altro personaggio.',
+    cutAfter: (mot: string) => `Dividi dopo «${mot}»`,
+    cutSecondBy: 'Seconda parte detta da',
+    cutConfirm: 'Dividi',
   },
 
   lobby: {
@@ -725,8 +730,8 @@ export const it = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clip`),
     hostOnly: 'Solo l’ospite può avviare la partita.',
     closedTitle: 'Lobby chiusa',
-    closedBody: 'Questa lobby è rimasta venti minuti senza attività: si è chiusa automaticamente e nessuno può più entrare.',
-    closedHost: 'Puoi riaprirla per altri venti minuti, o eliminare la scena dall’elenco delle tue scene.',
+    closedBody: 'Questa lobby è rimasta trenta minuti senza attività: si è chiusa automaticamente e nessuno può più entrare.',
+    closedHost: 'Puoi riaprirla per altri trenta minuti, o eliminare la scena dall’elenco delle tue scene.',
     closedGuest: 'Solo l’host può riaprirla.',
     closedBack: 'Torna alle mie scene',
     reopen: 'Riapri la lobby',
@@ -845,7 +850,7 @@ export const it = {
     fxKeepHelp: 'Senza spunta, la battuta successiva riparte senza effetti.',
     dragHint: 'Trascina la traccia per riallinearla',
     expiredTitle: 'Sessione scaduta',
-    expiredBody: 'Nessuna ripresa registrata per venti minuti: la sessione si è chiusa automaticamente. Puoi avviarne un’altra quando vuoi.',
+    expiredBody: 'Nessuna ripresa registrata per trenta minuti: la sessione si è chiusa automaticamente. Puoi avviarne un’altra quando vuoi.',
     expiredOk: 'Ho capito',
     takeDragHelp: 'La tua ripresa è al suo posto. Per spostarla, trascina la traccia sulla forma d’onda.',
     allTakesSavedStay: 'Tutte le tue riprese sono salvate. Riascoltale o rifanne una se vuoi, poi termina quando sei pronto.',
@@ -853,6 +858,8 @@ export const it = {
     waitingSubtitle: 'Le tue riprese sono al sicuro. Ecco chi doppia chi e a che punto è ognuno.',
     keptVo: 'Mantengono la voce originale',
     noRole: 'Nessun ruolo',
+    fxKeepCharacter: (nom: string) => `Mantieni queste impostazioni per ${nom}`,
+    fxKeepCharacterHelp: 'Pitch, riverbero e volume: ogni nuova ripresa di questo personaggio li usa.',
   },
 
   progress: {
@@ -1065,7 +1072,7 @@ export const it = {
       },
       {
         title: 'Venti minuti fermi e si chiude',
-        body: 'Una lobby o uno studio senza attività per venti minuti si chiude da solo.',
+        body: 'Una lobby o uno studio senza attività per trenta minuti si chiude da solo.',
       },
       {
         title: 'Scarica presto il video',
@@ -1148,7 +1155,7 @@ export const it = {
         },
         {
           title: 'Apri la lobby',
-          body: 'Condividi il codice o il link. Ognuno sceglie un personaggio; quelli che nessuno prende mantengono la voce originale. La lobby si chiude da sola dopo venti minuti senza attività.',
+          body: 'Condividi il codice o il link. Ognuno sceglie un personaggio; quelli che nessuno prende mantengono la voce originale. La lobby si chiude da sola dopo trenta minuti senza attività.',
         },
       ],
       checklistTitle: 'Una scena pronta da giocare',

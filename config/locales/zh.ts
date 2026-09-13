@@ -129,7 +129,7 @@ export const zh = {
       },
       {
         q: '中途休息会怎样？',
-        a: '大厅或录音室二十分钟没有任何操作就会自动关闭，以免留下被遗忘的场景。主持人可以重新打开大厅；录音室则需要重新开始一个场景。',
+        a: '大厅或录音室三十分钟没有任何操作就会自动关闭，以免留下被遗忘的场景。主持人可以重新打开大厅；录音室则需要重新开始一个场景。',
       },
       {
         q: '人声和音乐是怎么分开的？',
@@ -677,6 +677,11 @@ export const zh = {
     addVoice: '为这句台词添加一个声音',
     addVoiceHint: '适用于多人一起说的台词：每个角色各自配音，成片中声音会叠在一起。',
     removeVoice: (nom: string) => `从这句台词中移除 ${nom}`,
+    cutLine: '拆分台词',
+    cutHelp: '点击两个词之间即可拆分。后半部分会成为单独的台词，可以分配给其他角色。',
+    cutAfter: (mot: string) => `在“${mot}”之后拆分`,
+    cutSecondBy: '后半部分由谁说',
+    cutConfirm: '拆分',
   },
 
   lobby: {
@@ -705,8 +710,8 @@ export const zh = {
     clipCount: (n: number) => `${n} 个片段`,
     hostOnly: '只有房主能开始。',
     closedTitle: '房间已关闭',
-    closedBody: '这个大厅二十分钟没有任何操作，已自动关闭，其他人无法再加入。',
-    closedHost: '你可以再开放二十分钟，或在场景列表中删除该场景。',
+    closedBody: '这个大厅三十分钟没有任何操作，已自动关闭，其他人无法再加入。',
+    closedHost: '你可以再开放三十分钟，或在场景列表中删除该场景。',
     closedGuest: '只有主持人可以重新开放。',
     closedBack: '返回我的场景',
     reopen: '重新开放房间',
@@ -819,7 +824,7 @@ export const zh = {
     fxKeepHelp: '取消勾选后，下一句台词将不带效果。',
     dragHint: '拖动音轨重新对齐',
     expiredTitle: '会话已过期',
-    expiredBody: '二十分钟内没有录制任何片段，会话已自动关闭。你可以随时重新开始。',
+    expiredBody: '三十分钟内没有录制任何片段，会话已自动关闭。你可以随时重新开始。',
     expiredOk: '知道了',
     takeDragHelp: '录音已放好。要移动它，请在波形上拖动音轨。',
     allTakesSavedStay: '你的所有录音都已保存。可以回听或重录，准备好后再点击完成。',
@@ -827,6 +832,8 @@ export const zh = {
     waitingSubtitle: '你的录音已安全保存。这里可以看到谁为谁配音，以及每个人的进度。',
     keptVo: '保留原声',
     noRole: '无角色',
+    fxKeepCharacter: (nom: string) => `为${nom}保留这些设置`,
+    fxKeepCharacterHelp: '音高、混响和音量：该角色的每条新录音都会沿用。',
   },
 
   progress: {
@@ -1035,8 +1042,8 @@ export const zh = {
         body: '回放的声音和最终视频完全一样。',
       },
       {
-        title: '二十分钟不动就关闭',
-        body: '大厅或录音室二十分钟没有操作会自动关闭。',
+        title: '三十分钟不动就关闭',
+        body: '大厅或录音室三十分钟没有操作会自动关闭。',
       },
       {
         title: '尽快下载视频',
@@ -1119,7 +1126,7 @@ export const zh = {
         },
         {
           title: '开放房间',
-          body: '分享代码或链接。每个人选一个角色，没人选的角色保留原声。大厅二十分钟没有操作会自动关闭。',
+          body: '分享代码或链接。每个人选一个角色，没人选的角色保留原声。大厅三十分钟没有操作会自动关闭。',
         },
       ],
       checklistTitle: '可以直接开玩的场景',

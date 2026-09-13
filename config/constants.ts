@@ -52,6 +52,18 @@ export const EMAIL_CODE_ENABLED = false;
 export const MIC_OFFSET_MIN_MS = -300;
 export const MIC_OFFSET_MAX_MS = 300;
 export const MIC_OFFSET_STEP_MS = 10;
+
+/**
+ * Jusqu'ou la prise se fait glisser sur la forme d'onde, dans chaque sens.
+ *
+ * Le curseur de la console reste fin, a trois cents millisecondes : il
+ * corrige un calage presque juste. Le glisse, lui, rattrape une prise que
+ * le calage a posee loin de sa replique, parfois hors des marges du clip.
+ */
+export const MIC_OFFSET_DRAG_MAX_MS = 6_000;
+
+/** Ce que la forme d'onde montre au-dela des marges du clip, de chaque cote. */
+export const WAVEFORM_EXTRA_MS = 2_000;
 /** Volume par defaut du stem fond pendant l'enregistrement (0..1). */
 export const DEFAULT_BACKING_VOLUME = 0.6;
 /** Position horizontale de la tete de lecture de la bande rythmo (0..1). */

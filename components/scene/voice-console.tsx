@@ -67,6 +67,9 @@ export function VoiceConsole({
   gainEverywhere,
   keepFx,
   onKeepFx,
+  characterName,
+  keepForCharacter,
+  onKeepForCharacter,
   backing,
   onBacking,
 }: {
@@ -84,6 +87,12 @@ export function VoiceConsole({
   /** Les effets passent a la replique suivante. */
   keepFx: boolean;
   onKeepFx: (next: boolean) => void;
+  /** Le personnage de la prise, pour la case qui garde ses reglages. */
+  characterName?: string;
+  /** Pitch, reverb et volume gardes pour ce personnage. */
+  keepForCharacter?: boolean;
+  /** Absent : le joueur ne double qu'un personnage, la case n'a pas lieu d'etre. */
+  onKeepForCharacter?: (next: boolean) => void;
   /** Le volume du fond sonore pendant l'ecoute, de 0 a 1. */
   backing: number;
   onBacking: (value: number) => void;
@@ -201,6 +210,24 @@ export function VoiceConsole({
         </span>
       </label>
 
+      {/* Garder les reglages d'un personnage, pour qui en double plusieurs :
+          le meme principe que la case du dessus, mais attache au personnage
+          plutot qu'a la replique d'avant. */}
+      {onKeepForCharacter && characterName ? (
+        <label className="flex cursor-pointer items-start gap-2 text-xs font-bold text-text-muted">
+          <input
+            type="checkbox"
+            checked={!!keepForCharacter}
+            onChange={(e) => onKeepForCharacter(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-accent)]"
+          />
+          <span className="space-y-0.5">
+            <span className="block">{t.studio.fxKeepCharacter(characterName)}</span>
+            <span className="block font-medium text-text-faint">{t.studio.fxKeepCharacterHelp}</span>
+          </span>
+        </label>
+      ) : null}
+
       {/* ── Le calage ──────────────────────────────────────────────── */}
       <div className="space-y-1.5 border-t border-border pt-3">
         <div className="flex items-center justify-between text-sm">
@@ -215,8 +242,10 @@ export function VoiceConsole({
         <input
           id="decalage-micro"
           type="range"
-          min={MIC_OFFSET_MIN_MS}
-          max={MIC_OFFSET_MAX_MS}
+          // Fin a trois cents millisecondes ; elargi si la prise a ete
+          // glissee plus loin sur la forme d'onde, pour ne pas la rabattre.
+          min={Math.min(MIC_OFFSET_MIN_MS, value.micOffsetMs)}
+          max={Math.max(MIC_OFFSET_MAX_MS, value.micOffsetMs)}
           step={MIC_OFFSET_STEP_MS}
           value={value.micOffsetMs}
           onChange={(e) => {
@@ -304,8 +333,16 @@ function useValidation(onCommit: (v: number) => void) {
 /**
  * Un curseur vertical, comme sur une tranche.
  *
- * `input[type=range]` tourne d'un quart de tour : c'est le meme controle
- * que partout ailleurs — au clavier, au doigt, au lecteur d'ecran.
+ * Un vrai `input[type=range]` vertical, par le sens d'ecriture : c'est le
+ * meme controle que partout ailleurs — au clavier, au doigt, au lecteur
+ * d'ecran.
+ *
+ * Il etait tourne d'un quart de tour par une transformation. Sa boite, elle,
+ * restait couchee : le navigateur ne voyait qu'une bande horizontale de
+ * quelques pixels de haut sous un curseur dessine debout. Descendre la
+ * jauge sortait de cette bande, et le glisse partait en defilement de la
+ * colonne. Debout pour de vrai, la boite est celle qu'on voit, et le geste
+ * reste au curseur.
  */
 function Fader({
   label,
@@ -334,7 +371,7 @@ function Fader({
         {label}
       </span>
 
-      <span className="flex h-28 w-10 items-center justify-center">
+      <span className="flex h-28 w-10 touch-none items-center justify-center overscroll-contain">
         <input
           type="range"
           min={min}
@@ -342,6 +379,7 @@ function Fader({
           step={step}
           value={value}
           aria-label={label}
+          aria-orientation="vertical"
           onChange={(e) => {
             const v = Number(e.target.value);
             onInput(v);
@@ -349,10 +387,11 @@ function Fader({
           }}
           onPointerUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
           onKeyUp={(e) => valider.maintenant(Number(e.currentTarget.value))}
-          // Un quart de tour : la largeur devient la hauteur, d'ou le
-          // `w-28`. `touch-none` : sans lui, un glisse vertical au doigt
-          // faisait defiler la page au lieu de bouger le curseur.
-          className="w-28 origin-center -rotate-90 touch-none"
+          // Debout par le sens d'ecriture, le minimum en bas (`rtl`).
+          // `touch-none` : un glisse vertical au doigt bouge le curseur au
+          // lieu de faire defiler la page.
+          style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+          className="h-28 w-6 touch-none"
         />
       </span>
 

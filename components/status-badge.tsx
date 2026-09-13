@@ -27,7 +27,7 @@ const TONS: Record<SessionStatus, 'neutral' | 'ok' | 'warn' | 'danger' | 'accent
 /**
  * Le statut d'une scene.
  *
- * `closed` : la base a ferme la scene apres vingt minutes sans activite.
+ * `closed` : la base a ferme la scene apres trente minutes sans activite.
  * Un salon ferme se rouvre, un studio ferme est perdu ; les deux ne se
  * lisent donc plus « Lobby ouvert » ni « Enregistrement ».
  */

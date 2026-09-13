@@ -134,7 +134,7 @@ export const de = {
       },
       {
         q: 'Und wenn wir eine Pause machen?',
-        a: 'Eine Lobby oder ein Studio ohne Aktivität schließt sich nach zwanzig Minuten von selbst, damit sich keine vergessenen Szenen ansammeln. Der Gastgeber kann eine Lobby wieder öffnen; für ein Studio startest du eine neue Szene.',
+        a: 'Eine Lobby oder ein Studio ohne Aktivität schließt sich nach dreißig Minuten von selbst, damit sich keine vergessenen Szenen ansammeln. Der Gastgeber kann eine Lobby wieder öffnen; für ein Studio startest du eine neue Szene.',
       },
       {
         q: 'Wie werden Stimmen und Musik getrennt?',
@@ -700,6 +700,11 @@ export const de = {
     addVoice: 'Diesem Satz eine Stimme hinzufügen',
     addVoiceHint: 'Für einen Satz, den mehrere gemeinsam sagen: Jede Figur synchronisiert ihn für sich, und die Stimmen liegen im Ergebnis übereinander.',
     removeVoice: (nom: string) => `${nom} von diesem Satz entfernen`,
+    cutLine: 'Satz teilen',
+    cutHelp: 'Klicke zwischen zwei Wörter, um zu teilen. Der zweite Teil wird ein eigener Satz, den du einer anderen Figur geben kannst.',
+    cutAfter: (mot: string) => `Nach „${mot}“ teilen`,
+    cutSecondBy: 'Zweiter Teil gesprochen von',
+    cutConfirm: 'Teilen',
   },
 
   lobby: {
@@ -729,8 +734,8 @@ export const de = {
     clipCount: (n: number) => (n === 1 ? '1 Clip' : `${n} Clips`),
     hostOnly: 'Nur der Gastgeber kann die Partie starten.',
     closedTitle: 'Lobby geschlossen',
-    closedBody: 'Diese Lobby war zwanzig Minuten ohne Aktivität: Sie wurde automatisch geschlossen, und niemand kann mehr beitreten.',
-    closedHost: 'Du kannst sie für weitere zwanzig Minuten öffnen oder die Szene in deiner Szenenliste löschen.',
+    closedBody: 'Diese Lobby war dreißig Minuten ohne Aktivität: Sie wurde automatisch geschlossen, und niemand kann mehr beitreten.',
+    closedHost: 'Du kannst sie für weitere dreißig Minuten öffnen oder die Szene in deiner Szenenliste löschen.',
     closedGuest: 'Nur der Gastgeber kann sie wieder öffnen.',
     closedBack: 'Zurück zu meinen Szenen',
     reopen: 'Lobby wieder öffnen',
@@ -857,6 +862,8 @@ export const de = {
     waitingSubtitle: 'Deine Aufnahmen sind sicher. Hier siehst du, wer wen spricht und wie weit alle sind.',
     keptVo: 'Behalten ihre Originalstimme',
     noRole: 'Keine Rolle',
+    fxKeepCharacter: (nom: string) => `Diese Einstellungen für ${nom} behalten`,
+    fxKeepCharacterHelp: 'Tonhöhe, Hall und Lautstärke: Jede neue Aufnahme dieser Figur übernimmt sie.',
   },
 
   progress: {
@@ -1069,7 +1076,7 @@ export const de = {
       },
       {
         title: 'Zwanzig Minuten Stillstand schließen',
-        body: 'Eine Lobby oder ein Studio ohne Aktivität schließt sich nach zwanzig Minuten von selbst.',
+        body: 'Eine Lobby oder ein Studio ohne Aktivität schließt sich nach dreißig Minuten von selbst.',
       },
       {
         title: 'Lade dein Video schnell herunter',
@@ -1152,7 +1159,7 @@ export const de = {
         },
         {
           title: 'Öffne die Lobby',
-          body: 'Teile den Code oder den Link. Jeder nimmt sich eine Figur; die, die keiner nimmt, behalten ihre Originalstimme. Die Lobby schließt sich nach zwanzig Minuten ohne Aktivität von selbst.',
+          body: 'Teile den Code oder den Link. Jeder nimmt sich eine Figur; die, die keiner nimmt, behalten ihre Originalstimme. Die Lobby schließt sich nach dreißig Minuten ohne Aktivität von selbst.',
         },
       ],
       checklistTitle: 'Eine spielbereite Szene',

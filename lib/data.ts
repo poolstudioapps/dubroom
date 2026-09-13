@@ -314,7 +314,7 @@ export function useRenderUrl(session: SessionRow | undefined) {
 /**
  * Mes scenes, tenues a jour sans recharger.
  *
- * La base ferme d'elle-meme un salon ou un studio reste vingt minutes
+ * La base ferme d'elle-meme un salon ou un studio reste trente minutes
  * sans activite : la liste suit par le canal temps reel, et un
  * rafraichissement chaque minute rattrape un evenement manque.
  */

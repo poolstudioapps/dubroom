@@ -4,10 +4,10 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 
 import { useT } from '@/lib/i18n';
 import {
-  MIC_OFFSET_MAX_MS,
-  MIC_OFFSET_MIN_MS,
+  MIC_OFFSET_DRAG_MAX_MS,
   MIC_OFFSET_STEP_MS,
   WAVEFORM_BUCKETS,
+  WAVEFORM_EXTRA_MS,
 } from '@/config/constants';
 
 import { decodeEnvelope, sliceEnvelope } from '@/lib/audio/envelope';
@@ -78,14 +78,20 @@ export function WaveformView({
   const [enGlisse, setEnGlisse] = useState<number | null>(null);
 
   const windowMs = Math.max(1, clip.window_end_ms - clip.window_start_ms);
+  // La vue deborde des marges du clip : une prise que le calage a posee
+  // loin se voit, et s'attrape, meme hors de la fenetre.
+  const vueDebutMs = Math.max(0, clip.window_start_ms - WAVEFORM_EXTRA_MS);
+  const vueMs = Math.max(1, clip.window_end_ms + WAVEFORM_EXTRA_MS - vueDebutMs);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
 
-    const speechStartRatio = (clip.speech_start_ms - clip.window_start_ms) / windowMs;
-    const speechEndRatio = (clip.speech_end_ms - clip.window_start_ms) / windowMs;
+    const speechStartRatio = (clip.speech_start_ms - vueDebutMs) / vueMs;
+    const speechEndRatio = (clip.speech_end_ms - vueDebutMs) / vueMs;
+    const fenetreDebutRatio = (clip.window_start_ms - vueDebutMs) / vueMs;
+    const fenetreFinRatio = (clip.window_end_ms - vueDebutMs) / vueMs;
 
     const envelope = decodeEnvelope(voicePeaks);
     const original =
@@ -93,8 +99,8 @@ export function WaveformView({
         ? sliceEnvelope(
             envelope,
             voicePeaksHz,
-            clip.window_start_ms,
-            clip.window_end_ms,
+            vueDebutMs,
+            vueDebutMs + vueMs,
             WAVEFORM_BUCKETS,
           )
         : null;
@@ -134,6 +140,17 @@ export function WaveformView({
 
       const middle = height / 2;
 
+      // La fenetre du clip, a peine eclairee : ce qui deborde reste sombre,
+      // mais la prise peut y etre posee.
+      ctx.fillStyle = zoneColor;
+      ctx.globalAlpha = 0.22;
+      ctx.fillRect(
+        width * fenetreDebutRatio,
+        0,
+        width * (fenetreFinRatio - fenetreDebutRatio),
+        height,
+      );
+
       // Zone de parole en clair, marges laissees sombres.
       ctx.fillStyle = zoneColor;
       ctx.globalAlpha = 0.5;
@@ -168,9 +185,12 @@ export function WaveformView({
       if (analysis) {
         const debut = debutRef.current;
         const decalage = glisse.current?.valeur ?? offsetRef.current;
-        const x0 = debut === null ? 0 : ((debut + decalage) / windowMs) * width;
+        const fenetreX = fenetreDebutRatio * width;
+        const x0 = debut === null ? fenetreX : fenetreX + ((debut + decalage) / vueMs) * width;
         const largeur =
-          debut === null ? width : (Math.max(1, analysis.durationMs) / windowMs) * width;
+          debut === null
+            ? (windowMs / vueMs) * width
+            : (Math.max(1, analysis.durationMs) / vueMs) * width;
         const buckets = analysis.peaks.length;
         const barWidth = largeur / buckets;
         ctx.fillStyle = takeColor;
@@ -186,7 +206,7 @@ export function WaveformView({
 
       // Tete de lecture, uniquement quand on est dans la fenetre du clip.
       const nowMs = (videoRef.current?.currentTime ?? 0) * 1000;
-      const ratio = (nowMs - clip.window_start_ms) / windowMs;
+      const ratio = (nowMs - vueDebutMs) / vueMs;
       if (ratio >= 0 && ratio <= 1) {
         ctx.strokeStyle = playheadColor;
         ctx.lineWidth = 2;
@@ -199,13 +219,13 @@ export function WaveformView({
 
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor, windowMs]);
+  }, [analysis, clip, height, videoRef, voicePeaks, voicePeaksHz, characterColor, windowMs, vueDebutMs, vueMs]);
 
   const actif = draggable && !!analysis && takeStartMs !== null;
 
   function borne(v: number) {
     const arrondi = Math.round(v / MIC_OFFSET_STEP_MS) * MIC_OFFSET_STEP_MS;
-    return Math.max(MIC_OFFSET_MIN_MS, Math.min(MIC_OFFSET_MAX_MS, arrondi));
+    return Math.max(-MIC_OFFSET_DRAG_MAX_MS, Math.min(MIC_OFFSET_DRAG_MAX_MS, arrondi));
   }
 
   function terminer() {
@@ -250,7 +270,7 @@ export function WaveformView({
           const g = glisse.current;
           if (!g) return;
           const largeur = e.currentTarget.clientWidth || 1;
-          const valeur = borne(g.depart + ((e.clientX - g.x) / largeur) * windowMs);
+          const valeur = borne(g.depart + ((e.clientX - g.x) / largeur) * vueMs);
           if (valeur === g.valeur) return;
           g.valeur = valeur;
           setEnGlisse(valeur);

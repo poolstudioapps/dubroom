@@ -136,7 +136,7 @@ export const en = {
       },
       {
         q: 'What if we take a break?',
-        a: 'A lobby or studio with no activity for twenty minutes closes by itself, so forgotten scenes don’t pile up. The host can reopen a lobby; for a studio, start a new scene.',
+        a: 'A lobby or studio with no activity for thirty minutes closes by itself, so forgotten scenes don’t pile up. The host can reopen a lobby; for a studio, start a new scene.',
       },
       {
         q: 'How are voices separated from the music?',
@@ -697,6 +697,11 @@ export const en = {
     addVoice: 'Add a voice to this line',
     addVoiceHint: 'For a line said together: each character dubs it on their side, and the voices overlap in the render.',
     removeVoice: (nom: string) => `Remove ${nom} from this line`,
+    cutLine: 'Cut the line',
+    cutHelp: 'Click between two words to cut. The second part becomes a separate line that you can give to another character.',
+    cutAfter: (mot: string) => `Cut after “${mot}”`,
+    cutSecondBy: 'Second part said by',
+    cutConfirm: 'Cut',
   },
 
   lobby: {
@@ -726,8 +731,8 @@ export const en = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Only the host can start the game.',
     closedTitle: 'Lobby closed',
-    closedBody: 'This lobby had no activity for twenty minutes: it closed automatically, and nobody can join it anymore.',
-    closedHost: 'You can reopen it for another twenty minutes, or delete the scene from your scenes.',
+    closedBody: 'This lobby had no activity for thirty minutes: it closed automatically, and nobody can join it anymore.',
+    closedHost: 'You can reopen it for another thirty minutes, or delete the scene from your scenes.',
     closedGuest: 'Only the host can reopen it.',
     closedBack: 'Back to my scenes',
     reopen: 'Reopen the lobby',
@@ -844,7 +849,7 @@ export const en = {
     fxKeepHelp: 'Unchecked, the next line starts with no effects.',
     dragHint: 'Drag your track to realign it',
     expiredTitle: 'Session expired',
-    expiredBody: 'No take was recorded for twenty minutes, so the session closed automatically. You can start a new one whenever you like.',
+    expiredBody: 'No take was recorded for thirty minutes, so the session closed automatically. You can start a new one whenever you like.',
     expiredOk: 'Got it',
     takeDragHelp: 'Your take is in place. To shift it, drag its track on the waveform.',
     allTakesSavedStay: 'All your takes are saved. Listen back or redo one if you like, then finish when you are ready.',
@@ -852,6 +857,8 @@ export const en = {
     waitingSubtitle: 'Your takes are safe. Here is who dubs whom, and where everyone is.',
     keptVo: 'Keeping their original voice',
     noRole: 'No role',
+    fxKeepCharacter: (nom: string) => `Keep these settings for ${nom}`,
+    fxKeepCharacterHelp: 'Pitch, reverb and volume: every new take of this character uses them.',
   },
 
   progress: {
@@ -1063,7 +1070,7 @@ export const en = {
       },
       {
         title: 'Twenty idle minutes close it',
-        body: 'A lobby or studio with no activity for twenty minutes closes by itself.',
+        body: 'A lobby or studio with no activity for thirty minutes closes by itself.',
       },
       {
         title: 'Download your video quickly',
@@ -1146,7 +1153,7 @@ export const en = {
         },
         {
           title: 'Open the lobby',
-          body: 'Share the code or the link. Everyone picks a character; the ones nobody takes keep their original voice. The lobby closes by itself after twenty minutes without activity.',
+          body: 'Share the code or the link. Everyone picks a character; the ones nobody takes keep their original voice. The lobby closes by itself after thirty minutes without activity.',
         },
       ],
       checklistTitle: 'A scene ready to play',

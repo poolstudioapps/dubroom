@@ -133,7 +133,7 @@ export const fr = {
       },
       {
         q: 'Et si on fait une pause ?',
-        a: 'Un salon ou un studio resté vingt minutes sans activité se ferme automatiquement, pour ne pas garder de scène oubliée. L’hôte peut rouvrir un salon ; pour un studio, il faut relancer une scène.',
+        a: 'Un salon ou un studio resté trente minutes sans activité se ferme automatiquement, pour ne pas garder de scène oubliée. L’hôte peut rouvrir un salon ; pour un studio, il faut relancer une scène.',
       },
       {
         q: 'Comment les voix sont-elles séparées de la musique ?',
@@ -700,6 +700,11 @@ export const fr = {
     addVoice: 'Ajouter une voix à cette réplique',
     addVoiceHint: 'Pour une réplique dite à plusieurs : chaque personnage la double de son côté, et les voix se superposent au rendu.',
     removeVoice: (nom: string) => `Retirer ${nom} de cette réplique`,
+    cutLine: 'Couper la réplique',
+    cutHelp: 'Clique entre deux mots pour couper. La seconde partie devient une réplique à part : tu peux la donner à un autre personnage.',
+    cutAfter: (mot: string) => `Couper après « ${mot} »`,
+    cutSecondBy: 'Seconde partie dite par',
+    cutConfirm: 'Couper',
   },
 
   lobby: {
@@ -728,8 +733,8 @@ export const fr = {
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Seul l’hôte peut lancer la partie.',
     closedTitle: 'Salon fermé',
-    closedBody: 'Ce salon est resté vingt minutes sans activité : il s’est fermé automatiquement, et plus personne ne peut le rejoindre.',
-    closedHost: 'Tu peux le rouvrir pour vingt nouvelles minutes, ou supprimer la scène depuis « Mes scènes ».',
+    closedBody: 'Ce salon est resté trente minutes sans activité : il s’est fermé automatiquement, et plus personne ne peut le rejoindre.',
+    closedHost: 'Tu peux le rouvrir pour trente nouvelles minutes, ou supprimer la scène depuis « Mes scènes ».',
     closedGuest: 'Seul l’hôte peut le rouvrir.',
     closedBack: 'Retour à mes scènes',
     reopen: 'Rouvrir le salon',
@@ -848,7 +853,7 @@ export const fr = {
     fxKeepHelp: 'Décochée, la réplique suivante repart sans effet.',
     dragHint: 'Glisse ta piste pour la recaler',
     expiredTitle: 'Session expirée',
-    expiredBody: 'Aucune prise n’a été enregistrée pendant vingt minutes : la session s’est fermée automatiquement. Tu peux en relancer une quand tu veux.',
+    expiredBody: 'Aucune prise n’a été enregistrée pendant trente minutes : la session s’est fermée automatiquement. Tu peux en relancer une quand tu veux.',
     expiredOk: 'J’ai compris',
     takeDragHelp: 'Ta prise est posée. Pour la décaler, fais glisser sa piste sur la forme d’onde.',
     allTakesSavedStay: 'Toutes tes prises sont enregistrées. Réécoute-les ou refais-en une si besoin, puis clique sur « J’ai terminé ».',
@@ -856,6 +861,8 @@ export const fr = {
     waitingSubtitle: 'Tes prises sont en sécurité. Voici qui double qui, et où en est chacun.',
     keptVo: 'Gardent leur voix d’origine',
     noRole: 'Aucun rôle',
+    fxKeepCharacter: (nom: string) => `Garder ces réglages pour ${nom}`,
+    fxKeepCharacterHelp: 'Pitch, reverb et volume : chaque nouvelle prise de ce personnage les reprend.',
   },
 
   progress: {
@@ -1068,7 +1075,7 @@ export const fr = {
       },
       {
         title: 'Vingt minutes sans rien, ça ferme',
-        body: 'Un salon ou un studio sans activité pendant vingt minutes se ferme tout seul.',
+        body: 'Un salon ou un studio sans activité pendant trente minutes se ferme tout seul.',
       },
       {
         title: 'Télécharge vite ta vidéo',
@@ -1151,7 +1158,7 @@ export const fr = {
         },
         {
           title: 'Ouvre le lobby',
-          body: 'Partage le code ou le lien. Chacun prend un personnage ; ceux que personne ne prend gardent leur voix d’origine. Le salon se ferme tout seul après vingt minutes sans activité.',
+          body: 'Partage le code ou le lien. Chacun prend un personnage ; ceux que personne ne prend gardent leur voix d’origine. Le salon se ferme tout seul après trente minutes sans activité.',
         },
       ],
       checklistTitle: 'Une scène prête à jouer',

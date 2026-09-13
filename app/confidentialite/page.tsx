@@ -69,7 +69,7 @@ export default function PrivacyPage() {
           enregistrements de voix ne sont conservés.
         </p>
         <p>
-          Un salon ou un studio resté vingt minutes sans activité est fermé
+          Un salon ou un studio resté trente minutes sans activité est fermé
           automatiquement. Supprimer une scène efface le rendu, les prises et tout ce qui
           la concerne, sans retour possible. Un commentaire peut être supprimé à tout
           moment par son auteur.

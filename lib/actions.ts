@@ -176,6 +176,21 @@ export function addLineCharacter(lineId: string, characterId: string) {
   });
 }
 
+/**
+ * Coupe une replique en deux, apres `tokenIndex` mots de son texte.
+ *
+ * La seconde partie devient une replique a part ; `characterId` la donne
+ * a un autre personnage, `null` la laisse au meme.
+ */
+export function cutLine(lineId: string, tokenIndex: number, characterId: string | null) {
+  return rpc<number>('prep_cut_line', {
+    p_line_id: lineId,
+    p_token_index: tokenIndex,
+    p_character_id: characterId,
+    ...segmentation,
+  });
+}
+
 /** Retire une voix d'une replique partagee ; la derniere ne se retire pas. */
 export function removeLineCharacter(lineId: string) {
   return rpc<number>('prep_remove_line_character', { p_line_id: lineId, ...segmentation });

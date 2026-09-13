@@ -133,7 +133,7 @@ export const pt = {
       },
       {
         q: 'E se fizermos uma pausa?',
-        a: 'Um lobby ou estúdio sem atividade por vinte minutos fecha sozinho, para não acumular cenas esquecidas. O anfitrião pode reabrir um lobby; para um estúdio, é preciso começar uma nova cena.',
+        a: 'Um lobby ou estúdio sem atividade por trinta minutos fecha sozinho, para não acumular cenas esquecidas. O anfitrião pode reabrir um lobby; para um estúdio, é preciso começar uma nova cena.',
       },
       {
         q: 'Como as vozes são separadas da música?',
@@ -693,6 +693,11 @@ export const pt = {
     addVoice: 'Adicionar uma voz a esta fala',
     addVoiceHint: 'Para uma fala dita em conjunto: cada personagem a dubla do seu lado, e as vozes se sobrepõem no resultado.',
     removeVoice: (nom: string) => `Remover ${nom} desta fala`,
+    cutLine: 'Dividir a fala',
+    cutHelp: 'Clique entre duas palavras para dividir. A segunda parte vira uma fala separada, que você pode dar a outro personagem.',
+    cutAfter: (mot: string) => `Dividir depois de “${mot}”`,
+    cutSecondBy: 'Segunda parte dita por',
+    cutConfirm: 'Dividir',
   },
 
   lobby: {
@@ -722,8 +727,8 @@ export const pt = {
     clipCount: (n: number) => (n === 1 ? '1 clipe' : `${n} clipes`),
     hostOnly: 'Só o anfitrião pode começar a partida.',
     closedTitle: 'Lobby fechado',
-    closedBody: 'Este lobby ficou vinte minutos sem atividade: fechou automaticamente, e ninguém mais pode entrar.',
-    closedHost: 'Você pode reabri-lo por mais vinte minutos, ou apagar a cena na sua lista de cenas.',
+    closedBody: 'Este lobby ficou trinta minutos sem atividade: fechou automaticamente, e ninguém mais pode entrar.',
+    closedHost: 'Você pode reabri-lo por mais trinta minutos, ou apagar a cena na sua lista de cenas.',
     closedGuest: 'Só o anfitrião pode reabrir.',
     closedBack: 'Voltar para minhas cenas',
     reopen: 'Reabrir o lobby',
@@ -841,7 +846,7 @@ export const pt = {
     fxKeepHelp: 'Desmarcado, a próxima fala começa sem efeitos.',
     dragHint: 'Arraste sua faixa para realinhá-la',
     expiredTitle: 'Sessão expirada',
-    expiredBody: 'Nenhuma tomada foi gravada em vinte minutos: a sessão foi fechada automaticamente. Você pode começar outra quando quiser.',
+    expiredBody: 'Nenhuma tomada foi gravada em trinta minutos: a sessão foi fechada automaticamente. Você pode começar outra quando quiser.',
     expiredOk: 'Entendi',
     takeDragHelp: 'Sua tomada está posicionada. Para deslocá-la, arraste a faixa na forma de onda.',
     allTakesSavedStay: 'Todas as suas tomadas estão salvas. Ouça de novo ou refaça alguma se quiser, e finalize quando estiver pronto.',
@@ -849,6 +854,8 @@ export const pt = {
     waitingSubtitle: 'Suas tomadas estão seguras. Veja quem dubla quem e em que ponto cada um está.',
     keptVo: 'Mantêm a voz original',
     noRole: 'Sem papel',
+    fxKeepCharacter: (nom: string) => `Manter estes ajustes para ${nom}`,
+    fxKeepCharacterHelp: 'Tom, reverb e volume: cada nova tomada deste personagem usa esses ajustes.',
   },
 
   progress: {
@@ -1060,7 +1067,7 @@ export const pt = {
       },
       {
         title: 'Vinte minutos parado, fecha',
-        body: 'Um lobby ou estúdio sem atividade por vinte minutos fecha sozinho.',
+        body: 'Um lobby ou estúdio sem atividade por trinta minutos fecha sozinho.',
       },
       {
         title: 'Baixe o vídeo logo',
@@ -1143,7 +1150,7 @@ export const pt = {
         },
         {
           title: 'Abra o lobby',
-          body: 'Compartilhe o código ou o link. Cada um escolhe um personagem; os que ninguém pega mantêm a voz original. O lobby fecha sozinho após vinte minutos sem atividade.',
+          body: 'Compartilhe o código ou o link. Cada um escolhe um personagem; os que ninguém pega mantêm a voz original. O lobby fecha sozinho após trinta minutos sem atividade.',
         },
       ],
       checklistTitle: 'Uma cena pronta para jogar',

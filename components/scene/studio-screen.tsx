@@ -51,6 +51,14 @@ type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
 /** La case « garder ces effets pour la prise suivante ». */
 const GARDER_EFFETS_KEY = 'dubup.keepFx' as const;
+const REGLAGES_PERSO_KEY = 'dubup.fxPerso' as const;
+
+/** Ce qu'un personnage garde d'une prise a l'autre. */
+interface ReglagesPerso {
+  reverb: number;
+  pitch: number;
+  gainDb: number;
+}
 
 function mediane(valeurs: number[]): number {
   const triees = [...valeurs].sort((a, b) => a - b);
@@ -129,6 +137,13 @@ export function StudioScreen() {
   const recStartedAtMs = useRef<number | null>(null);
   /** Une fin de prise est en cours : un second appel ne doit rien arreter. */
   const finissant = useRef(false);
+  /**
+   * Ou s'arrete l'ecoute de « Ma prise ».
+   *
+   * La fin de la fenetre, sauf si la prise a ete glissee au-dela : on
+   * l'entend alors jusqu'au bout. `null` hors ecoute de la prise.
+   */
+  const finLectureRef = useRef<number | null>(null);
 
   // ── La console de voix ─────────────────────────────────────────────
   // Deux etats : ce que montrent les curseurs, qui suit le doigt, et ce
@@ -150,6 +165,15 @@ export function StudioScreen() {
   const [garderEffets, setGarderEffets] = useState(false);
   const garderEffetsRef = useRef(false);
   garderEffetsRef.current = garderEffets;
+  /**
+   * Les reglages gardes par personnage : pitch, reverb et volume.
+   *
+   * Pour qui double plusieurs personnages : chaque prise neuve d'un
+   * personnage reprend les siens, quelle que soit la replique d'avant.
+   */
+  const [reglagesPerso, setReglagesPerso] = useState<Record<string, ReglagesPerso>>({});
+  const reglagesPersoRef = useRef(reglagesPerso);
+  reglagesPersoRef.current = reglagesPerso;
 
   // ── L'ecoute de la prise, avec ses effets ──────────────────────────
   const audioCtx = useRef<AudioContext | null>(null);
@@ -200,6 +224,12 @@ export function StudioScreen() {
   // Une preference : relue seulement si on a accepte d'en garder.
   useEffect(() => {
     setGarderEffets(recallPreference(GARDER_EFFETS_KEY) === '1');
+    try {
+      const lus = JSON.parse(recallPreference(REGLAGES_PERSO_KEY) ?? '{}') as unknown;
+      if (lus && typeof lus === 'object') setReglagesPerso(lus as Record<string, ReglagesPerso>);
+    } catch {
+      // Preference illisible : on repart sans.
+    }
   }, []);
 
   const poser = useCallback((suivants: TakeSettings) => {
@@ -229,29 +259,46 @@ export function StudioScreen() {
   // Le decalage est propre a chaque prise : une replique neuve part de zero.
   const defautOffset = 0;
 
+  // Les reglages gardes du personnage, pour une replique encore sans prise.
+  // Relus quand ils arrivent de la preference, apres le premier affichage.
+  const memoDuPerso = clip && !currentTake ? reglagesPerso[clip.character_id] : undefined;
+  const cleMemo = memoDuPerso ? `${memoDuPerso.reverb}|${memoDuPerso.pitch}|${memoDuPerso.gainDb}` : '';
+
   useEffect(() => {
     const precedents = reglagesRef.current;
     const garder = garderEffetsRef.current;
+    const memo = clip ? reglagesPersoRef.current[clip.character_id] : undefined;
     poser(
       currentTake
         ? reglagesDe(currentTake)
-        : {
-            reverb: garder ? precedents.reverb : 0,
-            pitch: garder ? precedents.pitch : 0,
-            tune: 0,
-            gainDb: defautGain,
-            micOffsetMs: defautOffset,
-          },
+        : memo
+          ? // Ce que le joueur garde pour ce personnage passe avant tout.
+            {
+              reverb: memo.reverb,
+              pitch: memo.pitch,
+              tune: 0,
+              gainDb: memo.gainDb,
+              micOffsetMs: defautOffset,
+            }
+          : {
+              reverb: garder ? precedents.reverb : 0,
+              pitch: garder ? precedents.pitch : 0,
+              tune: 0,
+              gainDb: defautGain,
+              micOffsetMs: defautOffset,
+            },
     );
     setConsoleErreur(null);
     setGainPartout('idle');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clip?.id, takeId, serveur]);
+  }, [clip?.id, takeId, serveur, cleMemo]);
 
   // Le reglage « partout » a change : une replique sans prise le suit,
   // sans perdre les effets qu'on y a deja poses.
   useEffect(() => {
     if (currentTake) return;
+    // Un personnage qui garde ses reglages garde aussi son volume.
+    if (clip && reglagesPersoRef.current[clip.character_id]) return;
     poser({ ...reglagesRef.current, gainDb: defautGain, micOffsetMs: defautOffset });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defautGain, defautOffset]);
@@ -332,9 +379,15 @@ export function StudioScreen() {
         }
       }
 
-      if (nowMs >= clip.window_end_ms) {
+      // A l'ecoute d'une prise glissee hors des marges, on va jusqu'a sa fin.
+      const finMs =
+        mode === 'recording' ? clip.window_end_ms : (finLectureRef.current ?? clip.window_end_ms);
+      if (nowMs >= finMs) {
         if (mode === 'recording') void finishRecording();
-        else stopAll();
+        else {
+          finLectureRef.current = null;
+          stopAll();
+        }
         return;
       }
 
@@ -455,18 +508,22 @@ export function StudioScreen() {
     };
   }, [currentTake]);
 
-  async function seekToWindow() {
+  async function seekToWindow(depuisMs?: number) {
     if (!clip) return;
     // seekAll attend les metadonnees puis la fin reelle du saut. Sans
     // cela, la lecture demarre a l'ancienne position et la prise est
     // calee a cote — un defaut qui ne se voit qu'au rendu final.
-    await seekAll([videoRef.current, musicRef.current], clip.window_start_ms / 1000);
+    await seekAll(
+      [videoRef.current, musicRef.current],
+      Math.max(0, depuisMs ?? clip.window_start_ms) / 1000,
+    );
   }
 
   /** Mode VO : mix original complet, micro coupe (PRD §11.2). */
   async function playOriginal() {
     if (!clip) return;
     stopAll();
+    finLectureRef.current = null;
     const video = videoRef.current;
     if (!video) return;
     // Pendant le toucher, avant toute attente : voir `unlockMedia`.
@@ -797,9 +854,19 @@ export function StudioScreen() {
     video.muted = true;
 
     const reglagesEcoute = ecoute;
+    // Une prise glissee hors des marges s'ecoute en entier : la lecture
+    // part plus tot, ou s'arrete plus tard, quand il le faut.
+    const prise = brut.current;
+    const debutPriseMs = prise
+      ? clip.window_start_ms + prise.offsetMs + reglagesEcoute.micOffsetMs + MIC_OFFSET_BASELINE_MS
+      : clip.window_start_ms;
+    finLectureRef.current = Math.max(clip.window_end_ms, debutPriseMs + (analysis?.durationMs ?? 0));
     let buffer: AudioBuffer | null = null;
     try {
-      [buffer] = await Promise.all([voixPreparee(reglagesEcoute), seekToWindow()]);
+      [buffer] = await Promise.all([
+        voixPreparee(reglagesEcoute),
+        seekToWindow(Math.min(clip.window_start_ms, debutPriseMs)),
+      ]);
     } catch {
       buffer = null;
     }
@@ -845,6 +912,11 @@ export function StudioScreen() {
     poser(suivants);
     setConsoleErreur(null);
 
+    // Le personnage garde ses reglages : ils suivent ce qu'on vient de regler.
+    if (clip && reglagesPersoRef.current[clip.character_id]) {
+      garderPourPerso(clip.character_id, suivants);
+    }
+
     const effets = 'reverb' in partiel || 'pitch' in partiel;
     const gain = 'gainDb' in partiel;
     const decalage = 'micOffsetMs' in partiel;
@@ -870,6 +942,31 @@ export function StudioScreen() {
   function choisirGarderEffets(next: boolean) {
     setGarderEffets(next);
     rememberPreference(GARDER_EFFETS_KEY, next ? '1' : '0');
+  }
+
+  function enregistrerReglagesPerso(tous: Record<string, ReglagesPerso>) {
+    reglagesPersoRef.current = tous;
+    setReglagesPerso(tous);
+    rememberPreference(REGLAGES_PERSO_KEY, JSON.stringify(tous));
+  }
+
+  function garderPourPerso(characterId: string, s: TakeSettings) {
+    enregistrerReglagesPerso({
+      ...reglagesPersoRef.current,
+      [characterId]: { reverb: s.reverb, pitch: s.pitch, gainDb: s.gainDb },
+    });
+  }
+
+  /** Cocher garde les reglages affiches pour ce personnage ; decocher les oublie. */
+  function choisirGarderPerso(next: boolean) {
+    if (!clip) return;
+    if (next) {
+      garderPourPerso(clip.character_id, reglagesRef.current);
+      return;
+    }
+    const autres = { ...reglagesPersoRef.current };
+    delete autres[clip.character_id];
+    enregistrerReglagesPerso(autres);
   }
 
   async function appliquerGainPartout() {
@@ -1007,6 +1104,9 @@ export function StudioScreen() {
               ? { tone: 'muted', text: t.studio.headphonesRequired }
               : { tone: 'muted', text: t.studio.micWindow };
 
+  // La case par personnage n'a de sens que pour qui en double plusieurs.
+  const mesPersonnages = new Set(myClips.map((c) => c.character_id)).size;
+
   const consoleVoix = (
     <VoiceConsole
       value={reglages}
@@ -1023,6 +1123,9 @@ export function StudioScreen() {
       gainEverywhere={gainPartout}
       keepFx={garderEffets}
       onKeepFx={choisirGarderEffets}
+      characterName={character.name}
+      keepForCharacter={!!reglagesPerso[character.id]}
+      onKeepForCharacter={mesPersonnages > 1 ? choisirGarderPerso : undefined}
       backing={backing}
       onBacking={setBacking}
     />

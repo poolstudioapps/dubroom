@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import {
   Combine,
   Eye,
@@ -28,6 +28,7 @@ import { characterColorVar } from '@/config/constants';
 import { formatDuration, formatTimecode } from '@/config/strings';
 import {
   addLineCharacter,
+  cutLine,
   deleteLines,
   mergeCharacters,
   openLobby,
@@ -76,6 +77,11 @@ function grouperRepliques(lines: LineRow[]): Replique[] {
     .sort((a, b) => a.principale.start_ms - b.principale.start_ms);
 }
 
+/** Les mots d'un texte, decoupes comme la base les decoupe pour couper. */
+function mots(texte: string): string[] {
+  return texte.trim().split(/\s+/).filter(Boolean);
+}
+
 /**
  * L'editeur, juste apres la transcription.
  *
@@ -110,6 +116,10 @@ export function PrepareScreen() {
   const [error, setError] = useState<string | null>(null);
   const [splitOpen, setSplitOpen] = useState(false);
   const [splitName, setSplitName] = useState('');
+  /** La replique qu'on coupe, apres combien de mots, et a qui va la suite. */
+  const [aCouper, setACouper] = useState<LineRow | null>(null);
+  const [coupeApres, setCoupeApres] = useState<number | null>(null);
+  const [suitePour, setSuitePour] = useState<string | null>(null);
   const [confirmLobby, setConfirmLobby] = useState(false);
   const [filtreChar, setFiltreChar] = useState<string | null>(null);
   const [voirSupprimees, setVoirSupprimees] = useState(false);
@@ -618,6 +628,24 @@ export function PrepareScreen() {
                       />
                     </div>
 
+                    {/* Couper une replique que la transcription a collee a une autre. */}
+                    {!line.is_deleted && mots(line.text).length > 1 ? (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-9 w-9 shrink-0 text-text-faint hover:text-text"
+                        aria-label={t.prepare.cutLine}
+                        title={t.prepare.cutLine}
+                        onClick={() => {
+                          setACouper(line);
+                          setCoupeApres(null);
+                          setSuitePour(line.character_id);
+                        }}
+                      >
+                        <Scissors className="h-4 w-4" aria-hidden />
+                      </Button>
+                    ) : null}
+
                     {/* Supprimer et retablir, sur la ligne : un interrupteur. */}
                     <Button
                       size="icon"
@@ -755,6 +783,86 @@ export function PrepareScreen() {
             onChange={(e) => setSplitName(e.target.value)}
           />
         </div>
+      </Dialog>
+
+      {/* Couper : on clique entre deux mots, la suite part en ligne neuve. */}
+      <Dialog
+        open={!!aCouper}
+        onClose={() => setACouper(null)}
+        title={t.prepare.cutLine}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setACouper(null)}>
+              {t.common.cancel}
+            </Button>
+            <Button
+              variant="primary"
+              disabled={coupeApres === null}
+              onClick={() => {
+                const ligne = aCouper;
+                const apres = coupeApres;
+                const pour = suitePour;
+                setACouper(null);
+                if (!ligne || apres === null) return;
+                run(() => cutLine(ligne.id, apres, pour && pour !== ligne.character_id ? pour : null));
+              }}
+            >
+              <Scissors className="h-4 w-4" aria-hidden />
+              {t.prepare.cutConfirm}
+            </Button>
+          </>
+        }
+      >
+        {aCouper ? (
+          <div className="space-y-4">
+            <p className="text-sm leading-relaxed text-text-muted">{t.prepare.cutHelp}</p>
+            <div className="flex flex-wrap items-center gap-y-1.5 rounded-card bg-surface-sunken p-3 text-sm leading-relaxed">
+              {mots(aCouper.text).map((mot, i, tous) => {
+                const coupeIci = coupeApres === i + 1;
+                return (
+                  <Fragment key={i}>
+                    <span
+                      className={cn(
+                        'font-semibold',
+                        coupeApres !== null && i >= coupeApres ? 'text-accent' : 'text-text',
+                      )}
+                    >
+                      {mot}
+                    </span>
+                    {i < tous.length - 1 ? (
+                      <button
+                        type="button"
+                        aria-label={t.prepare.cutAfter(mot)}
+                        aria-pressed={coupeIci}
+                        title={t.prepare.cutAfter(mot)}
+                        onClick={() => setCoupeApres(i + 1)}
+                        className={cn(
+                          'mx-0.5 flex h-7 w-4 items-center justify-center rounded transition-colors',
+                          coupeIci ? 'bg-accent' : 'hover:bg-surface-raised',
+                        )}
+                      >
+                        <span
+                          className={cn('h-4 w-px', coupeIci ? 'bg-accent-ink' : 'bg-border-strong')}
+                          aria-hidden
+                        />
+                      </button>
+                    ) : null}
+                  </Fragment>
+                );
+              })}
+            </div>
+            {coupeApres !== null ? (
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="font-bold">{t.prepare.cutSecondBy}</span>
+                <CharacterPicker
+                  value={charById.get(suitePour ?? aCouper.character_id)}
+                  choices={characters}
+                  onPick={(id) => setSuitePour(id)}
+                />
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </Dialog>
 
       <Dialog

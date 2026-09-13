@@ -46,7 +46,7 @@ const MESSAGES: Record<string, string> = {
   COMMENT_TOO_FAST: 'Doucement : attends quelques secondes avant de republier.',
   COMMENT_NOT_FOUND: 'Ce commentaire a été supprimé.',
   LOBBY_CLOSED:
-    'Ce salon est fermé : il est resté vingt minutes sans activité. L’hôte peut le rouvrir.',
+    'Ce salon est fermé : il est resté trente minutes sans activité. L’hôte peut le rouvrir.',
   SESSION_EXPIRED: t.studio.expiredBody,
   SOURCES_PURGED: t.result.redoUnavailable,
   PACK_HAS_MEDIA: 'Cette scène démarre sans vidéo à fournir.',
