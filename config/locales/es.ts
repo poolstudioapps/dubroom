@@ -444,9 +444,10 @@ export const es = {
   ingest: {
     title: 'Preparando la escena',
     subtitle: 'Estamos cortando la escena. Tarda unos minutos.',
-    queued: 'El procesamiento tarda en arrancar.',
+    queued:
+      'Esperando al worker.',
     queuedHelp:
-      'Suele arrancar solo. Si dura, avisa a quien organiza la escena.',
+      'La escena empieza en cuanto el worker funcione en el PC del anfitrión: ejecuta start.bat.',
     failed: 'La importación ha fallado.',
     retry: 'Reintentar la importación',
     neverStarted:
@@ -531,6 +532,8 @@ export const es = {
   },
 
   studio: {
+    fxNoTake: 'Graba primero esta línea: luego los efectos se aplican a la toma.',
+    playBlocked: 'El navegador bloqueó la reproducción. Vuelve a tocar el botón.',
     reassign: (nom: string) => `Reasignar ${nom}`,
     pickPlayer: 'Elige un jugador…',
     title: 'Estudio',
@@ -575,7 +578,7 @@ export const es = {
     fxPitch: 'Tono',
     fxTune: 'Afinación',
     fxHelp:
-      'Los efectos se aplican en la mezcla, nunca en la grabación: puedes cambiarlos hasta el render, o volver a tu voz limpia.',
+      'Los efectos se aplican a la toma mostrada, y solo a ella. Se añaden en la mezcla, nunca en la grabación: puedes cambiarlos o quitarlos hasta el montaje.',
     fxPresets: {
       dry: 'Voz limpia',
       room: 'Sala pequeña',
@@ -636,14 +639,16 @@ export const es = {
   progress: {
     preparing: 'Preparando la escena',
     rendering: 'Montando el resultado',
-    queued: 'En la cola. Arranca solo en un momento.',
+    queued:
+      'En cola: el worker del anfitrión la toma en cuanto funcione.',
     working: 'Cuenta unos minutos. Puedes dejar la pestaña abierta y volver más tarde.',
     almost: 'Casi está.',
     longer: 'Está tardando más de lo normal, pero sigue en marcha. Déjalo terminar.',
   },
   render: {
     title: 'Montaje en curso',
-    queued: 'Esperando al worker. Lanza el script en tu PC.',
+    queued:
+      'Esperando al worker.',
     frozen: 'La escena está congelada: las tomas ya no se pueden cambiar.',
     failed: 'El montaje ha fallado.',
     retry: 'Reintentar el montaje',

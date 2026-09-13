@@ -10,6 +10,7 @@ import { PlayerProgressList } from '@/components/scene/player-progress';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
+import { VoiceConsole } from '@/components/scene/voice-console';
 import { WaveformView } from '@/components/scene/waveform-view';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
@@ -30,7 +31,7 @@ import {
 
 import { uploadTake } from '@/lib/actions';
 import { MicRecorder } from '@/lib/audio/recorder';
-import { seekAll } from '@/lib/audio/media';
+import { seekAll, unlockMedia } from '@/lib/audio/media';
 import { alignTake, envelopeFromBlob, type Alignment } from '@/lib/audio/align';
 import { decodeEnvelope } from '@/lib/audio/envelope';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
@@ -244,11 +245,18 @@ export function StudioScreen() {
     stopAll();
     const video = videoRef.current;
     if (!video) return;
+    // Pendant le toucher, avant toute attente : voir `unlockMedia`.
+    unlockMedia([video, musicRef.current, takeRef.current]);
     video.muted = false;
     await seekToWindow();
     musicRef.current?.pause();
     setMode('original');
-    await video.play();
+    try {
+      await video.play();
+    } catch {
+      stopAll();
+      setError(t.studio.playBlocked);
+    }
   }
 
   /**
@@ -264,6 +272,10 @@ export function StudioScreen() {
     const video = videoRef.current;
     const music = musicRef.current;
     if (!video) return;
+
+    // Tout de suite, pendant le toucher : l'autorisation du micro et le
+    // calage qui suivent font perdre le geste sur iPhone.
+    unlockMedia([video, music, takeRef.current]);
 
     try {
       await recorderRef.current.prime();
@@ -286,7 +298,18 @@ export function StudioScreen() {
     // (PRD §11.4). La lecture demarre ici ; le micro, lui, ne s'ouvre
     // qu'a l'entree de la zone de parole, ouvert par la boucle de
     // transport. On ne capte donc que ce qu'il y a a doubler.
-    await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
+    try {
+      await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
+    } catch {
+      /*
+       * Une lecture refusee laissait l'ecran en mode enregistrement pour
+       * toujours : la video ne partait pas, le micro attendait une
+       * replique qui n'arrivait jamais, et rien ne le disait.
+       */
+      stopAll();
+      recStartedAtMs.current = null;
+      setError(t.studio.playBlocked);
+    }
   }
 
   const upload = useMutation({
@@ -393,6 +416,7 @@ export function StudioScreen() {
     const take = takeRef.current;
     if (!video || !take) return;
 
+    unlockMedia([video, music, take]);
     video.muted = true;
     await seekToWindow();
     setMode('playback');
@@ -407,14 +431,18 @@ export function StudioScreen() {
      */
     const delayMs = (currentTake?.offset_ms ?? 0) + micOffset + MIC_OFFSET_BASELINE_MS;
     take.currentTime = delayMs < 0 ? -delayMs / 1000 : 0;
-    await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
-
-    if (delayMs > 0) {
-      takeTimer.current = window.setTimeout(() => {
-        void take.play();
-      }, delayMs);
-    } else {
-      await take.play();
+    try {
+      await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
+      if (delayMs > 0) {
+        takeTimer.current = window.setTimeout(() => {
+          take.play().catch(() => setError(t.studio.playBlocked));
+        }, delayMs);
+      } else {
+        await take.play();
+      }
+    } catch {
+      stopAll();
+      setError(t.studio.playBlocked);
     }
   }
 
@@ -510,6 +538,7 @@ export function StudioScreen() {
             onAutoAlign={setAutoAlign}
             done={doneCount}
             total={myClips.length}
+            take={currentTake}
           />
         </div>
       </div>
@@ -602,7 +631,7 @@ export function StudioScreen() {
         </div>
 
         {/* Qui je double et quand j'entre : toujours sous l'image. */}
-        <div className="order-3 shrink-0">
+        <div className="order-4 shrink-0 lg:order-3">
           <SpeakCue
             character={character}
             clip={clip}
@@ -612,22 +641,30 @@ export function StudioScreen() {
         </div>
 
         {/*
-          Les courbes passent SOUS les commandes sur telephone.
-          Elles aident a jouer, elles ne font pas jouer : sur un ecran
-          ou la page defile, ce sont les boutons qui doivent arriver en
-          premier. Sur un ordinateur tout tient d'un bloc et l'ordre de
-          lecture naturel reprend.
+          La bande rythmo colle a l'image, telephone compris.
+          Elle passait sous les commandes sur telephone, pour que le
+          bouton d'enregistrement arrive plus haut : on jouait alors en
+          lisant un texte qui defilait loin sous la video, les yeux faisant
+          l'aller-retour. C'est elle qu'on regarde en doublant ; elle
+          revient donc juste sous l'image, et plus haute pour qu'on la
+          lise sans plisser les yeux.
         */}
-        <div className="order-5 shrink-0 space-y-2 lg:order-4">
+        <div className="order-3 shrink-0 lg:order-4">
           <RythmoBand
             videoRef={videoRef}
             lines={lines}
             characters={characters}
             activeCharacterId={character.id}
             clip={clip}
-            height={narrow ? 84 : compact ? 104 : 132}
+            height={narrow ? 124 : compact ? 104 : 132}
           />
+        </div>
 
+        {/*
+          La courbe de la prise, en dernier sur telephone : elle sert a
+          verifier apres coup, pas a jouer.
+        */}
+        <div className="order-7 shrink-0 space-y-2 lg:order-5">
           <WaveformView
             analysis={analysis}
             clip={clip}
@@ -658,11 +695,11 @@ export function StudioScreen() {
         </div>
 
         {/*
-          Les commandes. Quatrieme sur telephone, donc juste apres
-          l'image et avant les courbes ; dernieres sur ordinateur, ou
-          l'ecran ne defile pas et ou la lecture va du haut vers le bas.
+          Les commandes. Sous la bande et le repere de parole sur
+          telephone ; dernieres sur ordinateur, ou l'ecran ne defile pas
+          et ou la lecture va du haut vers le bas.
         */}
-        <div className="order-4 shrink-0 space-y-2 lg:order-5">
+        <div className="order-5 shrink-0 space-y-2 lg:order-6">
           {/*
             Une seule ligne d'etat, de hauteur fixe, et jamais retiree.
             Les messages etaient six blocs qui apparaissaient et
@@ -782,6 +819,15 @@ export function StudioScreen() {
           </div>
         </div>
 
+        {/*
+          La console de la prise, sur telephone : juste sous les
+          commandes, la ou l'on vient d'ecouter ce qu'on a enregistre.
+          Sur ordinateur elle est dans la colonne de droite.
+        */}
+        <div className="order-6 shrink-0 lg:hidden">
+          <VoiceConsole take={currentTake} />
+        </div>
+
         {/* Stem de fond : la seule sortie audible pendant une prise. */}
         <audio ref={musicRef} src={media.data?.music ?? undefined} preload="auto" />
         <audio ref={takeRef} src={takeUrl ?? undefined} preload="auto" />
@@ -798,6 +844,7 @@ export function StudioScreen() {
           onAutoAlign={setAutoAlign}
           done={doneCount}
           total={myClips.length}
+          take={currentTake}
         />
       </div>
     </div>

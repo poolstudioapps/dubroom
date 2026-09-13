@@ -425,9 +425,10 @@ export const zh = {
   ingest: {
     title: '正在准备片段',
     subtitle: '正在切分片段，要几分钟。',
-    queued: '处理迟迟没有开始。',
+    queued:
+      '正在等待 worker。',
     queuedHelp:
-      '一般会自己跑起来。要是一直这样，告诉开这个片段的人。',
+      '只要主持人的电脑上运行 worker，场景就会开始：请启动 start.bat。',
     failed: '导入失败。',
     retry: '重新导入',
     neverStarted: '导入根本没开始：多半是文件上传失败了。重来一次，或者从新片段开始。',
@@ -505,6 +506,8 @@ export const zh = {
   },
 
   studio: {
+    fxNoTake: '请先录下这句台词，之后才能给这条录音加效果。',
+    playBlocked: '浏览器阻止了播放，请再点一次按钮。',
     reassign: (nom: string) => `重新分配 ${nom}`,
     pickPlayer: '选择一位玩家…',
     title: '录音棚',
@@ -543,7 +546,8 @@ export const zh = {
     fxReverb: '混响',
     fxPitch: '音高',
     fxTune: '音准',
-    fxHelp: '效果是在合成时加上去的，不会写进录音里。合成之前随时能改，也能回到原声。',
+    fxHelp:
+      '效果只作用于当前显示的这条录音。它们在混音时添加，从不写入录音本身：渲染前随时可以更改或移除。',
     fxPresets: {
       dry: '原声',
       room: '小房间',
@@ -600,14 +604,16 @@ export const zh = {
   progress: {
     preparing: '正在准备片段',
     rendering: '正在合成',
-    queued: '排队中，马上会自己开始。',
+    queued:
+      '排队中：主持人的 worker 一运行就会处理。',
     working: '要几分钟。可以让标签页开着，晚点再回来。',
     almost: '快好了。',
     longer: '比平时久一些，但还在跑。让它跑完就行。',
   },
   render: {
     title: '正在出片',
-    queued: '等 worker。在你的电脑上把脚本跑起来。',
+    queued:
+      '正在等待 worker。',
     frozen: '片段已经定下来了：录音不能再改。',
     failed: '出片失败了。',
     retry: '重新出片',

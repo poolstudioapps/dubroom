@@ -1,5 +1,7 @@
 # Faire tourner le worker sur Cloud Run
 
+> **Désactivé le 13 septembre 2026.** La chaîne fonctionnait, sauf son premier maillon : YouTube refuse les adresses de centre de données, vérifié depuis Cloud Run, Cloud Build et à travers dix proxys gratuits. Le job, les images, les secrets et le déclencheur ont été supprimés ; le worker tourne à nouveau sur le PC de l'hôte. Ce guide reste valable si un proxy résidentiel payant est un jour ajouté : le code sait déjà s'en servir.
+
 Écrit pour la personne qui administre Dub'Up, c'est-à-dire toi. Objectif :
 que les scènes se préparent et se rendent même quand ton PC est éteint.
 

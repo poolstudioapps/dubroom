@@ -52,6 +52,9 @@ interface TakeRow {
   participant_id: string;
   audio_path: string;
   offset_ms: number;
+  fx_reverb: number | null;
+  fx_pitch: number | null;
+  fx_tune: number | null;
 }
 
 /**
@@ -85,11 +88,11 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       .eq('session_id', session.id),
     db
       .from('takes')
-      .select('id, clip_id, participant_id, audio_path, offset_ms')
+      .select('id, clip_id, participant_id, audio_path, offset_ms, fx_reverb, fx_pitch, fx_tune')
       .eq('is_selected', true),
     db
       .from('participants')
-      .select('id, mic_offset_ms, is_kicked, fx_reverb, fx_pitch, fx_tune')
+      .select('id, mic_offset_ms, is_kicked')
       .eq('session_id', session.id),
   ]);
 
@@ -112,9 +115,6 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       {
         offset: p.mic_offset_ms as number,
         kicked: p.is_kicked as boolean,
-        reverb: (p.fx_reverb as number | null) ?? 0,
-        pitch: (p.fx_pitch as number | null) ?? 0,
-        tune: (p.fx_tune as number | null) ?? 0,
       },
     ]),
   );
@@ -159,7 +159,9 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
     if (!participant || participant.kicked) continue;
     if (releasedCharacters.has(clip.character_id)) continue;
 
-    const local = path.join(takesDir, `${take.id}.webm`);
+    // L'extension de la prise telle qu'elle a ete envoyee : un iPhone
+    // enregistre en MP4, et l'appeler `.webm` ne faisait que mentir.
+    const local = path.join(takesDir, `${take.id}${path.extname(take.audio_path) || '.webm'}`);
     await storage.download(BUCKET_TAKES, take.audio_path, local);
 
     /*
@@ -191,10 +193,11 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
      * decodee, traitee, et reecrite a cote ; l'originale reste intacte
      * en reserve, ce qui permet de changer le reglage et de relancer.
      */
-    const reglages = micOffsetOf.get(take.participant_id)!;
+    // Le reglage de CETTE prise : les effets ne sont plus ceux du joueur.
+    const justesse = take.fx_tune ?? 0;
     let fichier = local;
 
-    if (reglages.tune > 0) {
+    if (justesse > 0) {
       try {
         const brut = path.join(takesDir, `${take.id}-brut.wav`);
         const corrige = path.join(takesDir, `${take.id}-tune.wav`);
@@ -202,7 +205,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
         const wav = await readWavMono(brut);
         await writeWavMono(corrige, {
           sampleRate: wav.sampleRate,
-          samples: autotune(wav.samples, wav.sampleRate, reglages.tune / 100),
+          samples: autotune(wav.samples, wav.sampleRate, justesse / 100),
         });
         fichier = corrige;
       } catch (error) {
@@ -292,7 +295,7 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
         // l'oreille, et l'autre corrige ce qui reste.
         (reglages?.offset ?? 0) + MIC_OFFSET_BASELINE_MS,
         index,
-        { gainDb, reverb: reglages?.reverb ?? 0, pitch: reglages?.pitch ?? 0 },
+        { gainDb, reverb: take.fx_reverb ?? 0, pitch: take.fx_pitch ?? 0 },
       ),
     );
   }

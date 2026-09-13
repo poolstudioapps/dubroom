@@ -8,6 +8,7 @@ import {
   CLIP_MERGE_GAP_MS,
   characterColorToken,
 } from '@/config/constants';
+import { takeFileFormat } from '@/lib/audio/recorder';
 import { AppError, humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import type {
@@ -169,12 +170,13 @@ export function deleteCharacter(characterId: string) {
 }
 
 /** Regle sa console de voix pour cette scene. */
-export function setVoiceFx(
-  sessionId: string,
+/** Les effets d'une prise, et d'elle seule. */
+export function setTakeFx(
+  takeId: string,
   fx: { reverb: number; pitch: number; tune: number },
 ) {
-  return rpc<ParticipantRow>('set_voice_fx', {
-    p_session_id: sessionId,
+  return rpc<TakeRow>('set_take_fx', {
+    p_take_id: takeId,
     p_reverb: fx.reverb,
     p_pitch: fx.pitch,
     p_tune: fx.tune,
@@ -250,11 +252,13 @@ export async function uploadTake(input: {
   offsetMs?: number;
 }): Promise<TakeRow> {
   const db = supabaseBrowser();
-  const name = `${crypto.randomUUID()}.webm`;
+  // Un iPhone enregistre en MP4 : l'etiquette suit le contenu reel.
+  const { extension, contentType } = takeFileFormat(input.blob);
+  const name = `${crypto.randomUUID()}.${extension}`;
   const path = `${input.sessionId}/${input.participantId}/${name}`;
 
   const { error } = await db.storage.from(BUCKET_TAKES).upload(path, input.blob, {
-    contentType: 'audio/webm',
+    contentType,
     upsert: false,
   });
   if (error) throw new AppError('UPLOAD_FAILED', humanizeError(error));

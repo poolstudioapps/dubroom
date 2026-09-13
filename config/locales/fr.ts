@@ -446,9 +446,10 @@ export const fr = {
   ingest: {
     title: 'Préparation de la scène',
     subtitle: 'On découpe la scène. Ça prend quelques minutes.',
-    queued: 'Le traitement tarde à démarrer.',
+    queued:
+      'En attente du worker.',
     queuedHelp:
-      'Il repart tout seul d’habitude. Si ça dure, préviens l’hôte de la scène.',
+      'La scène démarre dès que le worker tourne sur le PC de l’hôte : lance start.bat.',
     failed: 'L’import a échoué.',
     retry: 'Relancer l’import',
     neverStarted:
@@ -532,6 +533,8 @@ export const fr = {
   },
 
   studio: {
+    fxNoTake: 'Enregistre d’abord cette réplique : les effets s’appliquent ensuite à la prise.',
+    playBlocked: 'Le navigateur a bloqué la lecture. Touche de nouveau le bouton.',
     reassign: (nom: string) => `Réassigner ${nom}`,
     pickPlayer: 'Choisir un joueur…',
     title: 'Studio',
@@ -577,7 +580,7 @@ export const fr = {
     fxPitch: 'Hauteur',
     fxTune: 'Justesse',
     fxHelp:
-      'Les effets sont posés au mixage, jamais sur l’enregistrement : tu peux les changer jusqu’au rendu, ou revenir à ta voix nue.',
+      'Les effets s’appliquent à la prise affichée, et à elle seule. Ils sont posés au mixage, jamais sur l’enregistrement : tu peux les changer ou les retirer jusqu’au rendu.',
     fxPresets: {
       dry: 'Voix nue',
       room: 'Petite salle',
@@ -638,7 +641,8 @@ export const fr = {
   progress: {
     preparing: 'Préparation de la scène',
     rendering: 'Montage en cours',
-    queued: 'En file d’attente. Ça démarre tout seul dans un instant.',
+    queued:
+      'En file d’attente : le worker de l’hôte la prend dès qu’il tourne.',
     working:
       'Compte quelques minutes. Tu peux laisser l’onglet ouvert et revenir plus tard.',
     almost: 'Presque fini.',
@@ -646,7 +650,8 @@ export const fr = {
   },
   render: {
     title: 'Rendu en cours',
-    queued: 'Le traitement tarde à démarrer.',
+    queued:
+      'En attente du worker.',
     frozen: 'La scène est figée : les prises ne sont plus modifiables.',
     failed: 'Le rendu a échoué.',
     retry: 'Relancer le rendu',

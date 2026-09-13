@@ -442,9 +442,10 @@ export const pt = {
   ingest: {
     title: 'Preparando a cena',
     subtitle: 'A cena está sendo cortada. Leva alguns minutos.',
-    queued: 'O processamento está demorando a começar.',
+    queued:
+      'À espera do worker.',
     queuedHelp:
-      'Costuma pegar sozinho. Se demorar, avise quem hospeda a cena.',
+      'A cena começa assim que o worker estiver a correr no PC do anfitrião: abre o start.bat.',
     failed: 'A importação falhou.',
     retry: 'Rodar a importação de novo',
     neverStarted:
@@ -526,6 +527,8 @@ export const pt = {
   },
 
   studio: {
+    fxNoTake: 'Grava primeiro esta fala: depois os efeitos aplicam-se ao take.',
+    playBlocked: 'O navegador bloqueou a reprodução. Toca de novo no botão.',
     reassign: (nom: string) => `Reatribuir ${nom}`,
     pickPlayer: 'Escolhe um jogador…',
     title: 'Estúdio',
@@ -569,7 +572,7 @@ export const pt = {
     fxPitch: 'Altura',
     fxTune: 'Afinação',
     fxHelp:
-      'Os efeitos entram na mixagem, nunca na gravação: dá para mudar até o render, ou voltar à voz crua.',
+      'Os efeitos aplicam-se ao take mostrado, e só a ele. São adicionados na mistura, nunca na gravação: podes alterá-los ou retirá-los até à montagem.',
     fxPresets: {
       dry: 'Voz crua',
       room: 'Sala pequena',
@@ -629,14 +632,16 @@ export const pt = {
   progress: {
     preparing: 'Preparando a cena',
     rendering: 'Montando o resultado',
-    queued: 'Na fila. Começa sozinho daqui a pouco.',
+    queued:
+      'Em fila: o worker do anfitrião trata dela assim que estiver a correr.',
     working: 'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
     almost: 'Quase lá.',
     longer: 'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',
   },
   render: {
     title: 'Renderizando',
-    queued: 'Esperando o worker. Rode o script no seu PC.',
+    queued:
+      'À espera do worker.',
     frozen: 'A cena está congelada: as tomadas não mudam mais.',
     failed: 'A renderização falhou.',
     retry: 'Rodar a renderização de novo',

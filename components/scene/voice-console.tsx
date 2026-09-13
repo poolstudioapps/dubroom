@@ -4,10 +4,11 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 
-import { Button, Card } from '@/components/ui';
-import { useSceneCtx } from '@/components/scene-page';
-import { setVoiceFx } from '@/lib/actions';
+import { Alert, Button, Card } from '@/components/ui';
+import { setTakeFx } from '@/lib/actions';
+import { humanizeError } from '@/lib/errors';
 import { useT } from '@/lib/i18n';
+import type { TakeRow } from '@/lib/supabase/database.types';
 import { cn } from '@/lib/utils';
 
 export interface VoiceFx {
@@ -38,53 +39,50 @@ const PRESETS: {
 ];
 
 /**
- * La console de voix.
+ * La console de voix, pour la prise affichee.
  *
- * Des curseurs verticaux, comme une tranche de table de mixage : on
- * pousse, on entend. Des molettes auraient pris moins de place mais on
- * ne lit pas une molette d'un coup d'oeil, et pendant une seance on
- * regarde l'ecran, pas ses reglages.
+ * Elle reglait autrefois le joueur entier : une reverbe choisie pour une
+ * replique chantee s'etendait a toutes les autres. Elle regle maintenant
+ * une prise, celle du clip en cours, et rien d'autre.
  *
- * Rien n'est applique a l'enregistrement : la prise reste brute en
- * reserve et les effets sont poses au mixage. On peut donc changer
- * d'avis jusqu'au rendu, et revenir a la voix nue sans avoir rien perdu.
+ * Des curseurs verticaux, comme une tranche de table de mixage. Rien
+ * n'est applique a l'enregistrement : la prise reste brute en reserve et
+ * les effets sont poses au mixage. On peut donc les ajouter apres coup,
+ * les changer, ou revenir a la voix nue sans avoir rien perdu.
  */
-export function VoiceConsole() {
+export function VoiceConsole({ take }: { take: TakeRow | null }) {
   const t = useT();
-  const { session, me } = useSceneCtx();
-
-  const [fx, setFx] = useState<VoiceFx>({
-    reverb: me?.fx_reverb ?? 0,
-    pitch: me?.fx_pitch ?? 0,
-    tune: me?.fx_tune ?? 0,
-  });
+  const [fx, setFx] = useState<VoiceFx>(FX_NEUTRE);
+  const [erreur, setErreur] = useState<string | null>(null);
 
   /*
-   * Le profil arrive apres le premier rendu : sans cela les curseurs
-   * restent a zero alors que la base dit autre chose.
+   * Se recaler sur la prise, et seulement quand elle change vraiment.
    *
-   * Les trois valeurs seules dans les dependances, et surtout pas `me` :
-   * cet objet est refait a chaque rafraichissement de la scene — et il y
-   * en a un a chaque prise envoyee par n'importe qui. L'effet repartait
-   * alors en plein geste et ramenait le curseur sous le doigt a sa
-   * valeur d'avant.
+   * Des valeurs primitives dans les dependances, jamais l'objet : la
+   * liste des prises est rechargee a chaque envoi de n'importe quel
+   * joueur, et un objet neuf ramenait le curseur sous le doigt a sa
+   * valeur d'avant en plein geste.
    */
-  const {
-    fx_reverb: reverbServeur,
-    fx_pitch: pitchServeur,
-    fx_tune: tuneServeur,
-  } = me ?? {};
+  const id = take?.id;
+  const reverbServeur = take?.fx_reverb;
+  const pitchServeur = take?.fx_pitch;
+  const tuneServeur = take?.fx_tune;
   useEffect(() => {
-    if (reverbServeur === undefined) return;
     setFx({
       reverb: reverbServeur ?? 0,
       pitch: pitchServeur ?? 0,
       tune: tuneServeur ?? 0,
     });
-  }, [reverbServeur, pitchServeur, tuneServeur]);
+    setErreur(null);
+  }, [id, reverbServeur, pitchServeur, tuneServeur]);
 
   const enregistre = useMutation({
-    mutationFn: (next: VoiceFx) => setVoiceFx(session.id, next),
+    mutationFn: (next: VoiceFx) => {
+      if (!id) throw new Error('Aucune prise');
+      return setTakeFx(id, next);
+    },
+    onMutate: () => setErreur(null),
+    onError: (e) => setErreur(humanizeError(e)),
   });
 
   /** Bouge tout de suite, ecrit quand on lache. */
@@ -94,6 +92,20 @@ export function VoiceConsole() {
   function pose(next: VoiceFx) {
     setFx(next);
     enregistre.mutate(next);
+  }
+
+  // Pas de prise, pas d'effet a regler : on le dit au lieu d'offrir des
+  // curseurs qui n'agiraient sur rien.
+  if (!take) {
+    return (
+      <Card variant="plate" className="space-y-2">
+        <h2 className="flex items-center gap-2 text-sm font-bold">
+          <SlidersHorizontal className="h-4 w-4 text-text-muted" aria-hidden />
+          {t.studio.fxTitle}
+        </h2>
+        <p className="text-xs leading-relaxed text-text-faint">{t.studio.fxNoTake}</p>
+      </Card>
+    );
   }
 
   const actif = fx.reverb > 0 || fx.pitch !== 0 || fx.tune > 0;
@@ -168,6 +180,8 @@ export function VoiceConsole() {
           );
         })}
       </div>
+
+      {erreur ? <Alert tone="danger">{erreur}</Alert> : null}
 
       <p className="text-xs leading-relaxed text-text-faint">{t.studio.fxHelp}</p>
     </Card>

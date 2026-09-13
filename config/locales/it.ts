@@ -443,9 +443,10 @@ export const it = {
   ingest: {
     title: 'Preparazione della scena',
     subtitle: 'Stiamo tagliando la scena. Ci vogliono alcuni minuti.',
-    queued: 'L’elaborazione tarda a partire.',
+    queued:
+      'In attesa del worker.',
     queuedHelp:
-      'Di solito riparte da sola. Se dura, avvisa chi ospita la scena.',
+      'La scena parte appena il worker è attivo sul PC dell’host: avvia start.bat.',
     failed: 'L’importazione è fallita.',
     retry: 'Rilancia l’importazione',
     neverStarted:
@@ -529,6 +530,8 @@ export const it = {
   },
 
   studio: {
+    fxNoTake: 'Registra prima questa battuta: poi gli effetti si applicano alla ripresa.',
+    playBlocked: 'Il browser ha bloccato la riproduzione. Tocca di nuovo il pulsante.',
     reassign: (nom: string) => `Riassegna ${nom}`,
     pickPlayer: 'Scegli un giocatore…',
     title: 'Studio',
@@ -573,7 +576,7 @@ export const it = {
     fxPitch: 'Altezza',
     fxTune: 'Intonazione',
     fxHelp:
-      'Gli effetti si aggiungono al montaggio, mai sulla registrazione: puoi cambiarli fino al rendering, o tornare alla voce nuda.',
+      'Gli effetti si applicano alla ripresa mostrata, e solo a quella. Vengono aggiunti nel mixaggio, mai sulla registrazione: puoi cambiarli o toglierli fino al montaggio.',
     fxPresets: {
       dry: 'Voce nuda',
       room: 'Stanza piccola',
@@ -634,7 +637,8 @@ export const it = {
   progress: {
     preparing: 'Preparazione della scena',
     rendering: 'Montaggio in corso',
-    queued: 'In coda. Parte da solo tra un attimo.',
+    queued:
+      'In coda: il worker dell’host la prende appena è attivo.',
     working:
       'Conta qualche minuto. Puoi lasciare la scheda aperta e tornare più tardi.',
     almost: 'Ci siamo quasi.',
@@ -642,7 +646,8 @@ export const it = {
   },
   render: {
     title: 'Montaggio in corso',
-    queued: 'In attesa del worker. Lancia lo script sul tuo PC.',
+    queued:
+      'In attesa del worker.',
     frozen: 'La scena è congelata: le prese non si possono più cambiare.',
     failed: 'Il montaggio è fallito.',
     retry: 'Rilancia il montaggio',

@@ -26,7 +26,7 @@ import { calibrateMicOffset } from '@/lib/audio/calibration';
 import { setKeepAsPack } from '@/lib/packs';
 import { useSessionProgress } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
-import type { ParticipantRow } from '@/lib/supabase/database.types';
+import type { ParticipantRow, TakeRow } from '@/lib/supabase/database.types';
 
 export function StudioSidebar({
   backing,
@@ -37,6 +37,7 @@ export function StudioSidebar({
   onAutoAlign,
   done,
   total,
+  take,
 }: {
   backing: number;
   onBacking: (value: number) => void;
@@ -46,6 +47,8 @@ export function StudioSidebar({
   onAutoAlign: (value: boolean) => void;
   done: number;
   total: number;
+  /** La prise du clip affiche : c'est elle que la console regle. */
+  take?: TakeRow | null;
 }) {
   const t = useT();
 
@@ -173,11 +176,13 @@ export function StudioSidebar({
       </Card>
 
       {/*
-        La console vient juste apres les reglages techniques et avant
-        l'avancement : on la pousse entre deux prises, pas en debut de
-        seance.
+        La console de la prise, sur ordinateur : juste apres les reglages
+        techniques. Sur telephone elle vit sous les commandes, la ou l'on
+        vient d'ecouter ce qu'on a enregistre, d'ou le `hidden` ici.
       */}
-      <VoiceConsole />
+      <div className="hidden lg:block">
+        <VoiceConsole take={take ?? null} />
+      </div>
 
       <Card variant="plate" className="space-y-2">
         <div className="flex items-center justify-between text-sm">

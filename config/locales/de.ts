@@ -446,9 +446,10 @@ export const de = {
   ingest: {
     title: 'Szene wird vorbereitet',
     subtitle: 'Die Szene wird zerlegt. Das dauert ein paar Minuten.',
-    queued: 'Die Verarbeitung startet nur langsam.',
+    queued:
+      'Warten auf den Worker.',
     queuedHelp:
-      'Normalerweise läuft sie von selbst an. Wenn es dauert, sag der gastgebenden Person Bescheid.',
+      'Die Szene startet, sobald der Worker auf dem PC des Gastgebers läuft: Starte start.bat.',
     failed: 'Der Import ist fehlgeschlagen.',
     retry: 'Import neu starten',
     neverStarted:
@@ -533,6 +534,8 @@ export const de = {
   },
 
   studio: {
+    fxNoTake: 'Nimm diese Zeile zuerst auf: Danach werden die Effekte auf die Aufnahme angewendet.',
+    playBlocked: 'Der Browser hat die Wiedergabe blockiert. Tippe erneut auf die Schaltfläche.',
     reassign: (nom: string) => `${nom} neu zuweisen`,
     pickPlayer: 'Spieler auswählen…',
     title: 'Studio',
@@ -578,7 +581,7 @@ export const de = {
     fxPitch: 'Tonhöhe',
     fxTune: 'Stimmung',
     fxHelp:
-      'Die Effekte kommen beim Mischen dazu, nie auf die Aufnahme: du kannst sie bis zum Rendern ändern oder zur nackten Stimme zurück.',
+      'Die Effekte gelten nur für die angezeigte Aufnahme. Sie werden beim Mischen hinzugefügt, nie in der Aufnahme selbst: Du kannst sie bis zum Rendern ändern oder entfernen.',
     fxPresets: {
       dry: 'Nackte Stimme',
       room: 'Kleiner Raum',
@@ -639,7 +642,8 @@ export const de = {
   progress: {
     preparing: 'Szene wird vorbereitet',
     rendering: 'Wird zusammengesetzt',
-    queued: 'In der Warteschlange. Es startet gleich von selbst.',
+    queued:
+      'In der Warteschlange: Der Worker des Gastgebers übernimmt, sobald er läuft.',
     working:
       'Rechne mit ein paar Minuten. Du kannst den Tab offen lassen und später zurückkommen.',
     almost: 'Fast fertig.',
@@ -647,7 +651,8 @@ export const de = {
   },
   render: {
     title: 'Ausgabe läuft',
-    queued: 'Warte auf den Worker. Starte das Skript auf deinem PC.',
+    queued:
+      'Warten auf den Worker.',
     frozen: 'Die Szene ist eingefroren: Aufnahmen lassen sich nicht mehr ändern.',
     failed: 'Die Ausgabe ist fehlgeschlagen.',
     retry: 'Ausgabe neu starten',

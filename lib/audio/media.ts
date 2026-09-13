@@ -77,3 +77,31 @@ export async function seekAll(
       .map((el) => seekTo(el, seconds)),
   );
 }
+
+/**
+ * Deverrouille la lecture pendant le geste de l'utilisateur.
+ *
+ * Sur iPhone, un media n'a le droit de jouer que si `play()` est appele
+ * pendant le toucher lui-meme. Or le studio attend avant de lancer la
+ * lecture : l'autorisation du micro la premiere fois, puis le calage de
+ * l'image sur la replique. Le temps de ces attentes, le geste est perdu,
+ * `play()` est refuse, la video ne part pas — et le micro, qui ne s'ouvre
+ * qu'en arrivant sur la replique, ne s'ouvre jamais.
+ *
+ * Un `play()` suivi d'un `pause()` immediat, en silence et pendant le
+ * geste, suffit a deverrouiller chaque element pour la suite. C'est aussi
+ * ce qui declenche le chargement que Safari refuse de faire d'avance.
+ * Tout est synchrone : rien ne peut venir interrompre la vraie lecture
+ * lancee ensuite.
+ */
+export function unlockMedia(elements: (HTMLMediaElement | null | undefined)[]): void {
+  for (const element of elements) {
+    if (!element || element.dataset.deverrouille) continue;
+    const muted = element.muted;
+    element.muted = true;
+    element.play()?.catch(() => undefined);
+    element.pause();
+    element.muted = muted;
+    element.dataset.deverrouille = '1';
+  }
+}

@@ -444,9 +444,10 @@ export const en = {
   ingest: {
     title: 'Preparing the scene',
     subtitle: 'The scene is being cut up. It takes a few minutes.',
-    queued: 'Processing is slow to start.',
+    queued:
+      'Waiting for the worker.',
     queuedHelp:
-      'It usually picks itself up. If it lasts, tell whoever hosts the scene.',
+      'The scene starts as soon as the worker is running on the host’s PC: launch start.bat.',
     failed: 'The import failed.',
     retry: 'Restart the import',
     neverStarted:
@@ -530,6 +531,8 @@ export const en = {
   },
 
   studio: {
+    fxNoTake: 'Record this line first: effects are then applied to the take.',
+    playBlocked: 'The browser blocked playback. Tap the button again.',
     reassign: (nom: string) => `Reassign ${nom}`,
     pickPlayer: 'Pick a player…',
     title: 'Studio',
@@ -573,7 +576,7 @@ export const en = {
     fxPitch: 'Pitch',
     fxTune: 'Tuning',
     fxHelp:
-      'Effects are laid on at the mix, never on the recording: you can change them until the render, or go back to your bare voice.',
+      'Effects apply to the take shown here, and only to it. They are added at mixing, never to the recording: you can change or remove them until the render.',
     fxPresets: {
       dry: 'Bare voice',
       room: 'Small room',
@@ -633,14 +636,16 @@ export const en = {
   progress: {
     preparing: 'Preparing the scene',
     rendering: 'Putting it together',
-    queued: 'In the queue. It starts on its own in a moment.',
+    queued:
+      'In the queue: the host’s worker picks it up as soon as it runs.',
     working: 'Count a few minutes. You can leave the tab open and come back later.',
     almost: 'Nearly there.',
     longer: 'This is taking longer than usual, but it is still running. Let it finish.',
   },
   render: {
     title: 'Rendering',
-    queued: 'Waiting for the worker. Start the script on your PC.',
+    queued:
+      'Waiting for the worker.',
     frozen: 'The scene is frozen: takes can no longer be changed.',
     failed: 'The render failed.',
     retry: 'Restart the render',

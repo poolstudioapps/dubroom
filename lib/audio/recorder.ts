@@ -19,9 +19,36 @@ export const MIC_CONSTRAINTS: MediaTrackConstraints = {
   sampleRate: 48_000,
 };
 
+/**
+ * Le format d'enregistrement, par ordre de preference.
+ *
+ * Safari, et donc tout navigateur d'iPhone, ne sait pas produire de WebM :
+ * il n'enregistre qu'en MP4. La liste s'arretait au WebM et a l'Ogg, si
+ * bien que sur iPhone aucun candidat ne correspondait, et que la prise
+ * etait ensuite envoyee etiquetee WebM alors qu'elle n'en etait pas.
+ */
 function pickMimeType(): string | undefined {
-  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+  if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) {
+    return undefined;
+  }
+  const candidates = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/mp4;codecs=mp4a.40.2',
+    'audio/mp4',
+    'audio/ogg;codecs=opus',
+  ];
   return candidates.find((type) => MediaRecorder.isTypeSupported(type));
+}
+
+/** L'extension et le type a declarer pour une prise, d'apres son contenu. */
+export function takeFileFormat(blob: Blob): { extension: string; contentType: string } {
+  const type = blob.type.toLowerCase();
+  if (type.includes('mp4') || type.includes('aac') || type.includes('m4a')) {
+    return { extension: 'm4a', contentType: 'audio/mp4' };
+  }
+  if (type.includes('ogg')) return { extension: 'ogg', contentType: 'audio/ogg' };
+  return { extension: 'webm', contentType: 'audio/webm' };
 }
 
 export class MicRecorder {
@@ -65,8 +92,10 @@ export class MicRecorder {
         return;
       }
       recorder.onstop = () => {
+        // Le type reel du flux, pas celui qu'on esperait : c'est lui qui
+        // decidera de l'extension a l'envoi.
         const blob = new Blob(this.chunks, {
-          type: recorder.mimeType || 'audio/webm',
+          type: recorder.mimeType || this.chunks[0]?.type || 'audio/webm',
         });
         this.chunks = [];
         this.recorder = null;

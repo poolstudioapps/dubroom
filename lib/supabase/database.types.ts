@@ -127,6 +127,9 @@ export interface TakeRow {
   offset_ms: number;
   is_selected: boolean;
   created_at: string;
+  fx_reverb: number;
+  fx_pitch: number;
+  fx_tune: number;
 }
 
 export interface JobRow {
