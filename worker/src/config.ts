@@ -57,6 +57,31 @@ export const config = {
   separationMode: str('SEPARATION_MODE', 'demucs') as 'demucs' | 'elevenlabs',
 
   workerId: str('WORKER_ID', os.hostname()),
+
+  /*
+   * Deux workers se partagent la file, et ne prennent pas la meme chose.
+   *
+   * `cloud` est l'image Cloud Run. YouTube refuse ses adresses : elle ne
+   * prend jamais une tache qui doit telecharger depuis YouTube, et fait
+   * tout le reste — fichiers importes, suite des preparations YouTube une
+   * fois la video en ligne, rendus.
+   *
+   * `local` est le PC de l'hote. Il prend tout de suite ce que lui seul
+   * peut faire : telecharger. Le reste, il le laisse a Google pendant
+   * `cloudGraceSeconds`, puis le prend lui-meme si personne ne l'a fait.
+   * C'est le filet quand Google est eteint ou en panne.
+   */
+  role: (str('WORKER_ROLE', 'local') === 'cloud' ? 'cloud' : 'local') as
+    | 'local'
+    | 'cloud',
+  /**
+   * Delai laisse a Google avant que le PC ne prenne sa place.
+   *
+   * Deux minutes et demie couvrent le demarrage d'un job Cloud Run avec
+   * GPU, image comprise. A zero, le PC fait tout lui-meme et ne passe
+   * jamais le relais — le fonctionnement d'avant.
+   */
+  cloudGraceSeconds: int('CLOUD_GRACE_SECONDS', 150),
   workDir: path.isAbsolute(str('WORK_DIR', './work'))
     ? str('WORK_DIR')
     : path.resolve(WORKER_ROOT, str('WORK_DIR', './work')),

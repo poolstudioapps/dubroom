@@ -145,6 +145,10 @@ export interface JobRow {
   started_at: string | null;
   finished_at: string | null;
   created_at: string;
+  /** Depuis quand la tache attend : le delai laisse a Google part d'ici. */
+  queued_at: string;
+  /** Dernier signe de vie du worker qui la traite. */
+  touched_at: string | null;
 }
 
 export interface WorkerRow {

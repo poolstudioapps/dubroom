@@ -541,7 +541,12 @@ export async function muxVertical(
       '-vf',
       // `min` protege le cas d'une source deja verticale : on ne
       // recadre alors rien, on se contente de la mettre a l'echelle.
-      "crop='min(iw,ih*9/16)':ih:(iw-min(iw,ih*9/16))/2:0," +
+      //
+      // Le decalage se calcule sur `ow`, la largeur deja retenue, et non
+      // en repetant `min(iw,ih*9/16)` : cette virgule-la n'etait pas entre
+      // guillemets, ffmpeg y coupait la chaine de filtres, et aucune
+      // version verticale n'etait jamais produite.
+      "crop='min(iw,ih*9/16)':ih:(iw-ow)/2:0," +
         'scale=1080:1920:flags=lanczos:force_original_aspect_ratio=decrease,' +
         'pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1',
       '-c:v',

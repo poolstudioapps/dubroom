@@ -56,7 +56,6 @@ export const it = {
 
   home: {
     youDub: 'doppi',
-    originalScene: 'la scena originale',
     demoLines: [
       { name: 'Alba', text: 'Sei sicuro che sia la porta giusta?' },
       { name: 'Rem', text: 'Per niente.' },
@@ -640,7 +639,7 @@ export const it = {
     preparing: 'Preparazione della scena',
     rendering: 'Montaggio in corso',
     queued:
-      'In coda: il worker dell’host la prende appena è attivo.',
+      'In coda: l’elaborazione parte tra un attimo.',
     working:
       'Conta qualche minuto. Puoi lasciare la scheda aperta e tornare più tardi.',
     almost: 'Ci siamo quasi.',

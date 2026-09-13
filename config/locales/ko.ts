@@ -53,7 +53,6 @@ export const ko = {
 
   home: {
     youDub: '내 역할',
-    originalScene: '원본 장면',
     demoLines: [
       { name: 'Alba', text: '이 문이 맞는 거 확실해?' },
       { name: 'Rem', text: '전혀.' },
@@ -625,7 +624,7 @@ export const ko = {
     preparing: '장면을 준비하는 중',
     rendering: '결과물을 만드는 중',
     queued:
-      '대기 중: 호스트의 워커가 실행되면 바로 처리됩니다.',
+      '대기 중: 곧 처리가 시작됩니다.',
     working: '몇 분 걸립니다. 탭을 열어 둔 채 나중에 돌아와도 됩니다.',
     almost: '거의 다 됐습니다.',
     longer: '평소보다 오래 걸리고 있지만 계속 돌아가는 중입니다. 그대로 두세요.',

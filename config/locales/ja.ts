@@ -54,7 +54,6 @@ export const ja = {
 
   home: {
     youDub: 'あなたの役',
-    originalScene: '元のシーン',
     demoLines: [
       { name: 'Alba', text: '本当にこの扉で合ってる？' },
       { name: 'Rem', text: 'まったく自信ない。' },
@@ -632,7 +631,7 @@ export const ja = {
     preparing: 'シーンを準備しています',
     rendering: '仕上げています',
     queued:
-      '待機中：ホストのワーカーが動けばすぐに処理されます。',
+      '待機中：まもなく処理が始まります。',
     working: '数分かかります。タブを開いたままにして、あとで戻ってきても大丈夫です。',
     almost: 'もうすぐ終わります。',
     longer:

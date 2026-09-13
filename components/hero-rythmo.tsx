@@ -36,8 +36,34 @@ const PX_PAR_MS = 0.2;
 const AVANT_MS = 4500;
 const APRES_MS = 2500;
 
+/**
+ * La duree des fondus, a l'entree comme a la sortie.
+ *
+ * Le lecteur de YouTube affiche son ecran de fin dans les dernieres
+ * secondes : la scene retourne au noir avant qu'il n'arrive.
+ */
+const FONDU_MS = 2500;
+/**
+ * Le noir tenu avant d'ouvrir.
+ *
+ * A chaque depart — l'arrivee sur la page comme chaque tour de boucle —
+ * YouTube pose ses boutons precedent, pause et suivant au milieu de
+ * l'image, et les retire au bout de quatre secondes environ. Mesure sur
+ * le lecteur nu, image par image. Le fondu ne commence qu'apres.
+ */
+const TENUE_MS = 3800;
+/**
+ * La boucle repart un quart de seconde avant la fin reelle.
+ *
+ * Laisser YouTube boucler lui-meme fait passer par son ecran de fin, meme
+ * bref. On revient au debut nous-memes, dans le noir, juste avant.
+ */
+const MARGE_FIN_MS = 250;
+
 interface LecteurYt {
   getCurrentTime(): number;
+  getDuration(): number;
+  seekTo(secondes: number, chargerAuDela: boolean): void;
   mute(): void;
   playVideo(): void;
   destroy(): void;
@@ -83,6 +109,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
   const t = useT();
   const cibleRef = useRef<HTMLDivElement>(null);
   const pisteRef = useRef<HTMLDivElement>(null);
+  const voileRef = useRef<HTMLDivElement>(null);
   const lecteurRef = useRef<LecteurYt | null>(null);
   /**
    * La derniere heure lue sur le lecteur, et l'instant ou on l'a lue.
@@ -90,11 +117,20 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
    * `getCurrentTime` n'avance que par paliers de quelques centaines de
    * millisecondes : le texte sautait par a-coups. Entre deux paliers, on
    * prolonge donc a partir de l'horloge de l'ecran.
+   *
+   * `demarre` : la video a joue au moins une fois. Avant, le voile reste
+   * noir. `retour` : l'instant du dernier retour au debut, pendant lequel
+   * le lecteur annonce encore l'ancienne heure.
    */
-  const horloge = useRef({ ms: demo.lines[0]?.start ?? 0, a: 0, lecture: false });
+  const horloge = useRef({
+    ms: demo.lines[0]?.start ?? 0,
+    a: 0,
+    lecture: false,
+    demarre: false,
+    retour: -Infinity,
+  });
 
   const [fixe, setFixe] = useState(false);
-  const [enLecture, setEnLecture] = useState(false);
   const [maintenant, setMaintenant] = useState(demo.lines[0]?.start ?? 0);
 
   const personnages = useMemo(
@@ -130,6 +166,8 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
               disablekb: 1,
               fs: 0,
               iv_load_policy: 3,
+              // Filet, si le retour au debut ne se faisait pas : YouTube
+              // bouclerait alors lui-meme.
               loop: 1,
               playlist: demo.videoId,
               modestbranding: 1,
@@ -148,7 +186,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
                 const lecture = e.data === YT.PlayerState.PLAYING;
                 horloge.current.lecture = lecture;
                 horloge.current.a = performance.now();
-                if (lecture) setEnLecture(true);
+                if (lecture) horloge.current.demarre = true;
               },
             },
           });
@@ -183,8 +221,12 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       image = requestAnimationFrame(boucle);
       const lecteur = lecteurRef.current;
       const h = horloge.current;
+      const pret = !!lecteur && typeof lecteur.getCurrentTime === 'function';
+      // Juste apres un retour au debut, le lecteur donne encore l'heure
+      // de la fin : la croire relancerait le retour en boucle.
+      const enRetour = instant - h.retour < 800;
 
-      if (lecteur && typeof lecteur.getCurrentTime === 'function') {
+      if (pret && !enRetour) {
         const lu = lecteur.getCurrentTime() * 1000;
         const prolonge = h.lecture ? h.ms + (instant - h.a) : h.ms;
         // Un nouveau palier, ou un vrai saut — la boucle qui repart a zero.
@@ -194,7 +236,34 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
         }
       }
 
-      const ms = h.lecture ? h.ms + (instant - h.a) : h.ms;
+      let ms = h.lecture ? h.ms + (instant - h.a) : h.ms;
+
+      // ── La fin : retour au debut, dans le noir ───────────────────────
+      const duree = pret && typeof lecteur.getDuration === 'function'
+        ? lecteur.getDuration() * 1000
+        : 0;
+      const fin = (duree > 0 ? duree : demo.durationMs) - MARGE_FIN_MS;
+      const bouclable = fin > TENUE_MS + FONDU_MS * 2;
+      if (pret && h.demarre && !enRetour && bouclable && ms >= fin) {
+        lecteur.seekTo(0, true);
+        h.ms = 0;
+        h.a = instant;
+        h.retour = instant;
+        ms = 0;
+      }
+
+      // ── Le voile ─────────────────────────────────────────────────────
+      // Noir tant que rien n'a joue et pendant que les boutons du lecteur
+      // sont affiches, puis il s'ouvre et se referme sur les dernieres
+      // secondes.
+      let voile = 1;
+      if (h.demarre) {
+        const entree = 1 - (ms - TENUE_MS) / FONDU_MS;
+        const sortie = bouclable ? (ms - (fin - FONDU_MS)) / FONDU_MS : 0;
+        voile = Math.min(1, Math.max(0, entree, sortie));
+      }
+      if (voileRef.current) voileRef.current.style.opacity = voile.toFixed(3);
+
       if (pisteRef.current) {
         pisteRef.current.style.transform = `translate3d(${-ms * PX_PAR_MS}px, 0, 0)`;
       }
@@ -207,7 +276,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
     };
     image = requestAnimationFrame(boucle);
     return () => cancelAnimationFrame(image);
-  }, [fixe]);
+  }, [fixe, demo.durationMs]);
 
   const visibles = demo.lines.filter(
     (l) => l.end >= maintenant - APRES_MS && l.start <= maintenant + AVANT_MS,
@@ -227,18 +296,30 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       {/* La scene. Le cadre est plus large que la video : les bandes noires
           du film tombent hors champ. */}
       <div className="demo-video aspect-[21/9]">
-        {!fixe ? <div ref={cibleRef} /> : null}
-        {/* L'affiche tient la place tant que le film ne joue pas. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`https://i.ytimg.com/vi/${demo.videoId}/hqdefault.jpg`}
-          alt=""
-          referrerPolicy="no-referrer"
-          className={cn('demo-affiche', enLecture && 'opacity-0')}
-        />
-        <span className="absolute inset-x-0 bottom-2 text-center text-[0.65rem] font-bold uppercase tracking-[0.2em] text-stage-faint [text-shadow:0_1px_6px_rgb(0_0_0/0.8)]">
-          {t.home.originalScene}
-        </span>
+        {fixe ? (
+          // Sans lecture — moins d'animation demande, economie de donnees,
+          // ou lecteur injoignable — l'affiche tient la place.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={`https://i.ytimg.com/vi/${demo.videoId}/hqdefault.jpg`}
+            alt=""
+            referrerPolicy="no-referrer"
+            className="demo-affiche"
+          />
+        ) : (
+          <>
+            <div ref={cibleRef} />
+            {/* Le voile : son opacite est reglee a chaque image par
+                l'horloge, jamais par une transition, pour suivre la video
+                exactement. */}
+            <div
+              ref={voileRef}
+              className="pointer-events-none absolute inset-0 bg-black"
+              style={{ opacity: 1 }}
+              aria-hidden
+            />
+          </>
+        )}
       </div>
 
       {/* La bande. La tete de lecture est fixe, c'est le texte qui passe. */}
@@ -384,11 +465,7 @@ function DemoEcrite() {
       role="img"
       aria-label={t.home.rythmoLabel}
     >
-      <div className="flex aspect-[16/7] items-end justify-center bg-gradient-to-b from-stage-raised/70 to-stage px-4 pb-3">
-        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-stage-faint">
-          {t.home.originalScene}
-        </span>
-      </div>
+      <div className="aspect-[16/7] bg-gradient-to-b from-stage-raised/70 to-stage" />
 
       <div className="relative border-t-2 border-bezel-dark bg-stage-raised/40 py-5">
         <div

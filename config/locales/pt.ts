@@ -55,7 +55,6 @@ export const pt = {
 
   home: {
     youDub: 'dobras',
-    originalScene: 'a cena original',
     demoLines: [
       { name: 'Alba', text: 'Tens a certeza de que é a porta certa?' },
       { name: 'Rem', text: 'De todo.' },
@@ -635,7 +634,7 @@ export const pt = {
     preparing: 'Preparando a cena',
     rendering: 'Montando o resultado',
     queued:
-      'Em fila: o worker do anfitrião trata dela assim que estiver a correr.',
+      'Em fila: o processamento começa dentro de momentos.',
     working: 'Conte alguns minutos. Dá para deixar a aba aberta e voltar depois.',
     almost: 'Quase lá.',
     longer: 'Está demorando mais que o normal, mas continua rodando. Deixa terminar.',

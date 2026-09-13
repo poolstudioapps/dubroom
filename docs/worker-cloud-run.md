@@ -1,6 +1,17 @@
 # Faire tourner le worker sur Cloud Run
 
-> **Désactivé le 13 septembre 2026.** La chaîne fonctionnait, sauf son premier maillon : YouTube refuse les adresses de centre de données, vérifié depuis Cloud Run, Cloud Build et à travers dix proxys gratuits. Le job, les images, les secrets et le déclencheur ont été supprimés ; le worker tourne à nouveau sur le PC de l'hôte. Ce guide reste valable si un proxy résidentiel payant est un jour ajouté : le code sait déjà s'en servir.
+> **Remis en service le 13 septembre 2026, en mode partagé.** YouTube refuse les adresses de centre de données : le worker Google ne télécharge donc jamais depuis YouTube. Il fait tout le reste, et le PC de l'hôte reste le filet.
+>
+> | Tâche | Qui la prend |
+> |---|---|
+> | Préparer un fichier importé | Google (le PC après 150 s si Google ne l'a pas prise) |
+> | Télécharger une scène YouTube ou un pack | le PC seul : téléchargement, normalisation, mise en ligne, puis relais |
+> | Suite d'une préparation YouTube (séparation, transcription, découpage) | Google (le PC après 150 s) |
+> | Rendu final | Google (le PC après 150 s) |
+>
+> La règle vit dans la base (`claim_job`, migration `20260923090000_worker_hybride.sql`). Le réveil passe par le déclencheur `jobs_reveillent_le_worker`, qui ne se déclenche que pour une tâche que Google peut prendre ; son adresse et son jeton sont dans Vault (`reveil_worker_url`, `reveil_worker_token`). Supprimer ces deux secrets éteint Google sans rien casser : le PC reprend tout après le délai. `CLOUD_GRACE_SECONDS=0` dans `worker/.env` fait tout faire au PC, sans relais.
+>
+> L'image n'embarque plus yt-dlp. Les étapes ci-dessous restent la bonne marche à suivre pour tout reconstruire.
 
 Écrit pour la personne qui administre Dub'Up, c'est-à-dire toi. Objectif :
 que les scènes se préparent et se rendent même quand ton PC est éteint.

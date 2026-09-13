@@ -47,11 +47,18 @@ export interface Session {
   is_song: boolean;
 }
 
-/** Reclame un job en file. `null` s'il n'y a rien a faire (PRD §7.2). */
+/**
+ * Reclame un job en file. `null` s'il n'y a rien a faire (PRD §7.2).
+ *
+ * Le role decide de ce que la base accepte de rendre : voir `config.role`
+ * et la migration `worker_hybride`.
+ */
 export async function claimJob(): Promise<Job | null> {
   const { data, error } = await db.rpc('claim_job', {
     p_worker_id: config.workerId,
     p_max_attempts: config.maxAttempts,
+    p_role: config.role,
+    p_grace_seconds: config.role === 'local' ? config.cloudGraceSeconds : 0,
   });
   if (error) throw new SystemError(`claim_job a échoué : ${error.message}`);
 
@@ -126,6 +133,30 @@ export async function finishJob(jobId: string): Promise<void> {
     })
     .eq('id', jobId);
   if (error) throw new SystemError(`Clôture de job impossible : ${error.message}`);
+}
+
+/**
+ * Rend un job a la file pour qu'un autre worker le continue.
+ *
+ * L'essai n'est pas compte : passer le relais n'est pas echouer, et trois
+ * relais auraient sinon epuise les tentatives d'une scene qui n'a jamais
+ * rate. Le retour en file reveille Google par le declencheur de la base.
+ */
+export async function handOffJob(job: Job): Promise<void> {
+  const { error } = await db
+    .from('jobs')
+    .update({
+      status: 'queued',
+      claimed_by: null,
+      step: null,
+      progress: 0,
+      error: null,
+      started_at: null,
+      attempts: Math.max(0, job.attempts - 1),
+    })
+    .eq('id', job.id)
+    .eq('status', 'running');
+  if (error) throw new SystemError(`Passage de relais impossible : ${error.message}`);
 }
 
 export async function failJob(jobId: string, message: string): Promise<void> {

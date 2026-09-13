@@ -56,7 +56,6 @@ export const de = {
 
   home: {
     youDub: 'du sprichst',
-    originalScene: 'die Originalszene',
     demoLines: [
       { name: 'Alba', text: 'Bist du sicher, dass das die richtige Tür ist?' },
       { name: 'Rem', text: 'Überhaupt nicht.' },
@@ -645,7 +644,7 @@ export const de = {
     preparing: 'Szene wird vorbereitet',
     rendering: 'Wird zusammengesetzt',
     queued:
-      'In der Warteschlange: Der Worker des Gastgebers übernimmt, sobald er läuft.',
+      'In der Warteschlange: Die Verarbeitung beginnt gleich.',
     working:
       'Rechne mit ein paar Minuten. Du kannst den Tab offen lassen und später zurückkommen.',
     almost: 'Fast fertig.',

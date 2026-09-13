@@ -58,7 +58,6 @@ export const en = {
 
   home: {
     youDub: 'you dub',
-    originalScene: 'the original scene',
     demoLines: [
       { name: 'Alba', text: 'Are you sure this is the right door?' },
       { name: 'Rem', text: 'Absolutely not.' },
@@ -639,7 +638,7 @@ export const en = {
     preparing: 'Preparing the scene',
     rendering: 'Putting it together',
     queued:
-      'In the queue: the host’s worker picks it up as soon as it runs.',
+      'In the queue: processing starts in a moment.',
     working: 'Count a few minutes. You can leave the tab open and come back later.',
     almost: 'Nearly there.',
     longer: 'This is taking longer than usual, but it is still running. Let it finish.',

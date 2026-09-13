@@ -1,8 +1,12 @@
 # Image du worker Dub'Up, pour un job Cloud Run avec GPU.
 #
+# Elle fait tout sauf telecharger depuis YouTube : preparation des
+# fichiers importes, suite des preparations YouTube une fois la video mise
+# en ligne par le PC de l'hote, et rendus.
+#
 # Trois mondes cohabitent ici, et c'est ce qui rend cette image grosse :
-# Node pour le worker, Python et PyTorch pour Demucs, ffmpeg et yt-dlp
-# pour tout ce qui touche aux fichiers. Compter trois a quatre gigas.
+# Node pour le worker, Python et PyTorch pour Demucs, ffmpeg pour tout ce
+# qui touche aux fichiers. Compter trois a quatre gigas.
 #
 # Le pilote de Cloud Run est un 580.x, soit CUDA 13. Les roues PyTorch
 # compilees pour CUDA 12.8 tournent dessus sans rien changer : un pilote
@@ -47,48 +51,13 @@ RUN pip install --no-cache-dir \
 # le GPU tourne a vide et que la facture court.
 RUN python -c "from demucs.pretrained import get_model; get_model('htdemucs')"
 
-# Ces deux-la changent souvent, PyTorch jamais : elles viennent donc
-# apres, pour qu'une mise a jour de yt-dlp ne reconstruise pas quatre
-# gigaoctets de bibliotheques de calcul.
-# ── Deno, moteur JavaScript pour yt-dlp ───────────────────────────────
+# ── Pas de yt-dlp ─────────────────────────────────────────────────────
 #
-# YouTube protege ses flux par un defi a resoudre en JavaScript. Sans
-# moteur pour l'executer, yt-dlp ne peut pas y repondre et YouTube le
-# traite comme un robot : « Sign in to confirm you're not a bot ». C'est
-# exactement l'erreur qu'on a vue, et elle n'avait rien a voir avec
-# l'adresse du serveur — la meme requete passe depuis la meme machine
-# des que le defi est resolu.
-#
-# Deno est le seul moteur que yt-dlp active par defaut.
-# L'archive est decompressee par Python plutot que par `unzip`, absent
-# de cette base. L'ajouter au `apt install` du debut aurait marche aussi,
-# mais aurait invalide toutes les couches suivantes — dont PyTorch, et
-# ses dix minutes de telechargement.
-RUN curl -fsSL -o /tmp/deno.zip \
-      https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip \
- && python -c "import zipfile; zipfile.ZipFile('/tmp/deno.zip').extractall('/usr/local/bin')" \
- && chmod +x /usr/local/bin/deno \
- && rm /tmp/deno.zip \
- && /usr/local/bin/deno --version | head -1
-
-# ── yt-dlp ────────────────────────────────────────────────────────────
-#
-# Par pip avec l'extra `default`, et non le binaire autonome des
-# « releases » GitHub.
-#
-# C'est cet extra qui tire `yt-dlp-ejs`, le jeu de scripts qui resout le
-# defi JavaScript de YouTube. Le binaire autonome ne l'embarque pas :
-# c'est lui qui manquait, bien plus que la fraicheur de la version — pip
-# installe d'ailleurs exactement la meme, 2026.8.19.
-#
-# Ensemble avec Deno installe juste au-dessus, yt-dlp a de quoi repondre
-# au defi au lieu de se faire prendre pour un robot.
-#
-# pip met le script dans /usr/local/bin, la ou YTDLP_PATH le cherche ;
-# aucun lien a creer.
-RUN pip install --no-cache-dir -U "yt-dlp[default]" \
- && test -x /usr/local/bin/yt-dlp \
- && yt-dlp --version
+# Cette image ne telecharge jamais depuis YouTube : YouTube refuse les
+# adresses de centre de donnees, verifie depuis Cloud Run, Cloud Build et
+# a travers dix proxys. Le telechargement est fait par le PC de l'hote,
+# qui met la video en ligne puis passe le relais. yt-dlp et Deno, son
+# moteur JavaScript, n'ont donc plus rien a faire ici.
 
 # ── Le worker ─────────────────────────────────────────────────────────
 WORKDIR /app
@@ -103,15 +72,20 @@ COPY worker/src ./worker/src
 COPY worker/worker.js ./worker/
 
 # ── Reglages propres au conteneur ─────────────────────────────────────
+# WORKER_ROLE=cloud : la base ne confie a cette image aucune tache qui
+# doit telecharger depuis YouTube. WORKER_ID fixe : sans lui, chaque
+# execution se presenterait sous le nom de son conteneur, et la table des
+# workers grossirait d'une ligne par scene.
 ENV FFMPEG_PATH=/usr/bin/ffmpeg \
     FFPROBE_PATH=/usr/bin/ffprobe \
-    YTDLP_PATH=/usr/local/bin/yt-dlp \
     PYTHON_PATH=/usr/local/bin/python \
     WORK_DIR=/tmp/work \
     DEMUCS_DEVICE=cuda \
     SEPARATION_MODE=demucs \
     SKIP_ENV_CHECK=1 \
-    EXIT_WHEN_IDLE=1
+    EXIT_WHEN_IDLE=1 \
+    WORKER_ROLE=cloud \
+    WORKER_ID=cloud-run
 
 WORKDIR /app/worker
 CMD ["node", "worker.js"]

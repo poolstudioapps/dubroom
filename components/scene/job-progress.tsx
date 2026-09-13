@@ -28,9 +28,12 @@ import type { JobState } from '@/lib/data';
 export function JobProgress({
   state,
   kind,
+  needsLocal = false,
 }: {
   state: JobState | undefined;
   kind: 'ingest' | 'render';
+  /** La tache doit telecharger depuis YouTube : seul le PC de l'hote le peut. */
+  needsLocal?: boolean;
 }) {
   const t = useT();
   const job = state?.job ?? null;
@@ -39,19 +42,25 @@ export function JobProgress({
   const queued = job?.status === 'queued';
 
   /*
-   * L'alerte « aucun worker » attend dix secondes, pas plus.
+   * L'alerte « aucun worker » n'attend pas le meme temps pour tout.
    *
-   * Le worker du PC interroge la file toutes les deux secondes : une
-   * tache tout juste creee n'a simplement pas encore ete vue, et le dire
-   * aussitot ferait clignoter l'alerte a chaque import. Au-dela, c'est
-   * que personne n'a lance le script, et il faut le dire vite. Une
-   * minute avait ete accordee du temps ou le worker demarrait dans le
-   * nuage ; ce n'est plus le cas.
+   * Un telechargement YouTube n'a qu'un worker possible, celui du PC, qui
+   * interroge la file toutes les deux secondes : au-dela de dix, c'est que
+   * personne n'a lance le script, et il faut le dire vite.
+   *
+   * Le reste part chez Google, qu'il faut d'abord demarrer — une a deux
+   * minutes, image et GPU compris. Le PC reprend la tache s'il ne s'est
+   * rien passe apres deux minutes et demie. L'alerte ne sonne donc qu'une
+   * fois ces deux chances passees, et son conseil reste le bon : lancer le
+   * worker du PC.
    */
-  const attenteS = job?.created_at
-    ? (Date.now() - new Date(job.created_at).getTime()) / 1000
-    : 0;
-  const waitingForWorker = queued && !state?.workerOnline && attenteS > 10;
+  const attenteS = job?.queued_at
+    ? (Date.now() - new Date(job.queued_at).getTime()) / 1000
+    : job?.created_at
+      ? (Date.now() - new Date(job.created_at).getTime()) / 1000
+      : 0;
+  const seuilS = needsLocal ? 10 : 240;
+  const waitingForWorker = queued && !state?.workerOnline && attenteS > seuilS;
 
   // Le temps ecoule sert a la derniere phrase : au-dela de ce qu'on avait
   // annonce, mieux vaut le reconnaitre que laisser croire a un blocage.

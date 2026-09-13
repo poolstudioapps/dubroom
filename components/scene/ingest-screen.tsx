@@ -46,7 +46,11 @@ export function IngestScreen() {
         <h1 className="titre text-2xl">{session.title ?? t.ingest.title}</h1>
       </header>
 
-      <JobProgress state={jobState.data} kind="ingest" />
+      <JobProgress
+        state={jobState.data}
+        kind="ingest"
+        needsLocal={session.source_type === 'youtube' && !session.video_path}
+      />
 
       {session.status === 'ingest_failed' ? (
         <div className="space-y-2">

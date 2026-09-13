@@ -10,6 +10,7 @@ import {
   db,
   failJob,
   finishJob,
+  handOffJob,
   heartbeat,
   requeueStaleJobs,
   updateSession,
@@ -86,8 +87,20 @@ async function handleJob(job: Job): Promise<void> {
   const startedAt = Date.now();
 
   try {
-    if (job.type === 'ingest') await runIngest(job, workDir, logger);
-    else await runRender(job, workDir, logger);
+    if (job.type === 'ingest') {
+      const issue = await runIngest(job, workDir, logger);
+      if (issue === 'relais') {
+        await handOffJob(job);
+        await fs.rm(workDir, { recursive: true, force: true });
+        logger.info('vidéo en ligne, suite confiée au worker Google', {
+          seconds: Math.round((Date.now() - startedAt) / 1000),
+          repriseIciApres: config.cloudGraceSeconds,
+        });
+        return;
+      }
+    } else {
+      await runRender(job, workDir, logger);
+    }
 
     await finishJob(job.id);
     // Dossier supprime en fin de job REUSSI uniquement.
@@ -147,6 +160,8 @@ async function main(): Promise<void> {
 
   log.info('worker prêt', {
     id: config.workerId,
+    role: config.role,
+    ...(config.role === 'local' ? { relaisGoogleApres: config.cloudGraceSeconds } : {}),
     separation: config.separationMode,
     workDir: config.workDir,
   });

@@ -51,7 +51,6 @@ export const zh = {
 
   home: {
     youDub: '你配音',
-    originalScene: '原始场景',
     demoLines: [
       { name: 'Alba', text: '你确定是这扇门吗？' },
       { name: 'Rem', text: '完全不确定。' },
@@ -607,7 +606,7 @@ export const zh = {
     preparing: '正在准备片段',
     rendering: '正在合成',
     queued:
-      '排队中：主持人的 worker 一运行就会处理。',
+      '排队中：处理即将开始。',
     working: '要几分钟。可以让标签页开着，晚点再回来。',
     almost: '快好了。',
     longer: '比平时久一些，但还在跑。让它跑完就行。',

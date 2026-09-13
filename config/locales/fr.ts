@@ -55,7 +55,6 @@ export const fr = {
 
   home: {
     youDub: 'tu doubles',
-    originalScene: 'la scène d’origine',
     demoLines: [
       { name: 'Alba', text: 'Tu es sûr que c’est la bonne porte ?' },
       { name: 'Rem', text: 'Absolument pas.' },
@@ -644,7 +643,7 @@ export const fr = {
     preparing: 'Préparation de la scène',
     rendering: 'Montage en cours',
     queued:
-      'En file d’attente : le worker de l’hôte la prend dès qu’il tourne.',
+      'En file d’attente : le traitement démarre dans un instant.',
     working:
       'Compte quelques minutes. Tu peux laisser l’onglet ouvert et revenir plus tard.',
     almost: 'Presque fini.',

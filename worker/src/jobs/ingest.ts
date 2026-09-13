@@ -39,54 +39,93 @@ import type { ScopedLog } from '../log.ts';
  * decoupage en etapes n'est pas cosmetique : sans retour visuel detaille,
  * cinq minutes de traitement passent pour un plantage.
  */
-export async function runIngest(job: Job, workDir: string, logger: ScopedLog) {
+export async function runIngest(
+  job: Job,
+  workDir: string,
+  logger: ScopedLog,
+): Promise<'relais' | void> {
   const session = await getSession(job.session_id);
   const progress = (step: string) => (pct: number) =>
     void setJobStep(job.id, step, pct).catch(() => undefined);
-
-  // ── 1. Acquisition ──────────────────────────────────────────────────
-  await setJobStep(job.id, 'download', 0);
-  let sourcePath: string;
-
-  if (session.source_type === 'youtube') {
-    if (!session.source_ref) throw new UserError('Aucun lien YouTube fourni.');
-    await ytdlp.inspect(session.source_ref);
-    sourcePath = await ytdlp.download(
-      session.source_ref,
-      workDir,
-      progress('download'),
-    );
-  } else {
-    if (!session.upload_path) {
-      throw new UserError('Aucun fichier source n’a été reçu.');
-    }
-    sourcePath = path.join(workDir, path.basename(session.upload_path));
-    await storage.download(BUCKET_SOURCES, session.upload_path, sourcePath);
-    progress('download')(100);
-  }
-  logger.info('source acquise', { step: 'download', file: sourcePath });
-
-  // Garde-fous avant tout traitement lourd.
-  const info = await probe(sourcePath);
-  if (info.audioStreamCount > 1) {
-    logger.warn('plusieurs pistes audio : la première sera doublée', {
-      step: 'download',
-      tracks: info.audioStreamCount,
-    });
-  }
-
-  // ── 2. Normalisation ────────────────────────────────────────────────
-  await setJobStep(job.id, 'encode', 0);
   const workMp4 = path.join(workDir, 'work.mp4');
-  await normalize(sourcePath, workMp4, info.durationMs, progress('encode'));
 
-  const videoPath = `${session.id}/work.mp4`;
-  await storage.upload(BUCKET_SOURCES, videoPath, workMp4, 'video/mp4');
-  await updateSession(session.id, {
-    video_path: videoPath,
-    duration_ms: info.durationMs,
-  });
-  logger.info('vidéo normalisée', { step: 'encode', durationMs: info.durationMs });
+  /*
+   * Une preparation YouTube se fait en deux temps, sur deux machines.
+   *
+   * Le PC de l'hote telecharge et normalise, parce que YouTube refuse les
+   * adresses de Google ; puis il met la video en ligne et rend la tache a
+   * la file. Google la reprend ici, video deja normalisee : il n'a plus
+   * qu'a la recuperer dans le stockage.
+   *
+   * Reserve aux liens : un fichier importe peut etre remplace entre deux
+   * essais, et la video d'un essai precedent ne serait plus la sienne.
+   */
+  const reprise =
+    session.source_type === 'youtube' && !!session.video_path && !!session.duration_ms;
+
+  if (reprise) {
+    await setJobStep(job.id, 'download', 0);
+    await storage.download(BUCKET_SOURCES, session.video_path!, workMp4);
+    await setJobStep(job.id, 'encode', 100);
+    logger.info('vidéo reprise du stockage', { step: 'encode' });
+  } else {
+    // ── 1. Acquisition ────────────────────────────────────────────────
+    await setJobStep(job.id, 'download', 0);
+    let sourcePath: string;
+
+    if (session.source_type === 'youtube') {
+      if (!session.source_ref) throw new UserError('Aucun lien YouTube fourni.');
+      if (config.role === 'cloud') {
+        // La base ne devrait jamais le confier ici : c'est un filet.
+        throw new SystemError('Téléchargement YouTube confié au worker Google.');
+      }
+      await ytdlp.inspect(session.source_ref);
+      sourcePath = await ytdlp.download(
+        session.source_ref,
+        workDir,
+        progress('download'),
+      );
+    } else {
+      if (!session.upload_path) {
+        throw new UserError('Aucun fichier source n’a été reçu.');
+      }
+      sourcePath = path.join(workDir, path.basename(session.upload_path));
+      await storage.download(BUCKET_SOURCES, session.upload_path, sourcePath);
+      progress('download')(100);
+    }
+    logger.info('source acquise', { step: 'download', file: sourcePath });
+
+    // Garde-fous avant tout traitement lourd.
+    const info = await probe(sourcePath);
+    if (info.audioStreamCount > 1) {
+      logger.warn('plusieurs pistes audio : la première sera doublée', {
+        step: 'download',
+        tracks: info.audioStreamCount,
+      });
+    }
+
+    // ── 2. Normalisation ──────────────────────────────────────────────
+    await setJobStep(job.id, 'encode', 0);
+    await normalize(sourcePath, workMp4, info.durationMs, progress('encode'));
+
+    const videoPath = `${session.id}/work.mp4`;
+    await storage.upload(BUCKET_SOURCES, videoPath, workMp4, 'video/mp4');
+    await updateSession(session.id, {
+      video_path: videoPath,
+      duration_ms: info.durationMs,
+    });
+    logger.info('vidéo normalisée', { step: 'encode', durationMs: info.durationMs });
+
+    // Le PC a fait ce que lui seul pouvait faire : la suite est pour
+    // Google. S'il ne repond pas, ce PC la reprendra apres le delai.
+    if (
+      session.source_type === 'youtube' &&
+      config.role === 'local' &&
+      config.cloudGraceSeconds > 0
+    ) {
+      return 'relais';
+    }
+  }
 
   // ── 3. Extraction audio ─────────────────────────────────────────────
   await setJobStep(job.id, 'extract', 0);

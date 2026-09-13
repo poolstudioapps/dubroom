@@ -56,7 +56,6 @@ export const es = {
 
   home: {
     youDub: 'doblas a',
-    originalScene: 'la escena original',
     demoLines: [
       { name: 'Alba', text: '¿Seguro que es la puerta correcta?' },
       { name: 'Rem', text: 'En absoluto.' },
@@ -642,7 +641,7 @@ export const es = {
     preparing: 'Preparando la escena',
     rendering: 'Montando el resultado',
     queued:
-      'En cola: el worker del anfitrión la toma en cuanto funcione.',
+      'En cola: el procesamiento empieza en un momento.',
     working: 'Cuenta unos minutos. Puedes dejar la pestaña abierta y volver más tarde.',
     almost: 'Casi está.',
     longer: 'Está tardando más de lo normal, pero sigue en marcha. Déjalo terminar.',
