@@ -203,7 +203,12 @@ export interface Database {
       };
       enqueue_render: { Args: { p_session_id: string }; Returns: JobRow };
       open_lobby: {
-        Args: { p_session_id: string; p_gap_ms: number; p_margin_ms: number };
+        Args: {
+          p_session_id: string;
+          p_gap_ms: number;
+          p_margin_ms: number;
+          p_max_ms?: number;
+        };
         Returns: SessionRow;
       };
       start_recording: { Args: { p_session_id: string }; Returns: SessionRow };
