@@ -203,10 +203,31 @@ export async function normalize(
   );
 }
 
-/** WAV 48 kHz stereo 16 bits, reference pour toute la suite. */
-export async function extractAudio(input: string, output: string): Promise<void> {
+/**
+ * WAV 48 kHz stereo 16 bits, reference pour toute la suite.
+ *
+ * `premierePiste` : la meme piste que `normalize` garde (`0:a:0`). Sans
+ * elle, ffmpeg choisit la piste « la meilleure », qui n'est pas forcement
+ * la premiere sur une source a plusieurs langues.
+ */
+export async function extractAudio(
+  input: string,
+  output: string,
+  premierePiste = false,
+): Promise<void> {
   await ffmpeg(
-    ['-i', input, '-vn', '-acodec', 'pcm_s16le', '-ar', '48000', '-ac', '2'],
+    [
+      '-i',
+      input,
+      ...(premierePiste ? ['-map', '0:a:0'] : []),
+      '-vn',
+      '-acodec',
+      'pcm_s16le',
+      '-ar',
+      '48000',
+      '-ac',
+      '2',
+    ],
     output,
     { timeoutMs: TIMEOUTS.extract },
   );

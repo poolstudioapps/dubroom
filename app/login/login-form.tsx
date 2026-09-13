@@ -12,6 +12,7 @@ import { Alert, Button, Input, Label, Spinner } from '@/components/ui';
 import { EMAIL_CODE_ENABLED } from '@/config/constants';
 
 import { recallPreference, rememberPreference } from '@/lib/consent';
+import { DEFAULT_LANDING } from '@/lib/auth-landing';
 import { humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 
@@ -46,7 +47,7 @@ export function LoginForm() {
   const t = useT();
 
   const params = useSearchParams();
-  const next = params.get('next') ?? '/sessions';
+  const next = params.get('next') ?? DEFAULT_LANDING;
 
   const [mode, setMode] = useState<Mode>('link');
   const [email, setEmail] = useState('');

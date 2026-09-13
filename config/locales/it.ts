@@ -409,6 +409,8 @@ export const it = {
     rendering: 'Montaggio',
     render_failed: 'Montaggio fallito',
     done: 'Completata',
+    lobbyClosed: 'Lobby chiusa',
+    expired: 'Scaduta',
   },
 
   common: {

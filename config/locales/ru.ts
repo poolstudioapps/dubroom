@@ -417,6 +417,8 @@ export const ru = {
     rendering: 'Монтаж',
     render_failed: 'Ошибка монтажа',
     done: 'Готово',
+    lobbyClosed: 'Лобби закрыто',
+    expired: 'Истекла',
   },
 
   common: {

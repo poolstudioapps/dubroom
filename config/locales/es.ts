@@ -409,6 +409,8 @@ export const es = {
     rendering: 'Montando',
     render_failed: 'Error al montar',
     done: 'Terminada',
+    lobbyClosed: 'Sala cerrada',
+    expired: 'Caducada',
   },
 
   common: {

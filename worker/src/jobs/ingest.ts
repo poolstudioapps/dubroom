@@ -60,6 +60,18 @@ export async function runIngest(
   const reprise =
     session.source_type === 'youtube' && !!session.video_path && !!session.duration_ms;
 
+  /*
+   * La video et le son avancent en meme temps.
+   *
+   * La normalisation de l'image (CPU) et la separation des voix (GPU) ne
+   * dependent pas l'une de l'autre : les enchainer faisait attendre la
+   * separation une trentaine de secondes pour rien. Le son est donc tire
+   * directement de la source, sur la meme piste que la video normalisee,
+   * et l'encodage tourne pendant ce temps.
+   */
+  let encodage: Promise<void> = Promise.resolve();
+  let sourceAudio = workMp4;
+
   if (reprise) {
     await setJobStep(job.id, 'download', 0);
     await storage.download(BUCKET_SOURCES, session.video_path!, workMp4);
@@ -101,17 +113,25 @@ export async function runIngest(
       });
     }
 
-    // ── 2. Normalisation ──────────────────────────────────────────────
+    // ── 2. Normalisation, en arriere-plan ─────────────────────────────
+    // Sa progression n'est pas remontee : l'etape affichee est celle de
+    // la separation, qui avance en meme temps.
     await setJobStep(job.id, 'encode', 0);
-    await normalize(sourcePath, workMp4, info.durationMs, progress('encode'));
+    encodage = (async () => {
+      await normalize(sourcePath, workMp4, info.durationMs, () => undefined);
 
-    const videoPath = `${session.id}/work.mp4`;
-    await storage.upload(BUCKET_SOURCES, videoPath, workMp4, 'video/mp4');
-    await updateSession(session.id, {
-      video_path: videoPath,
-      duration_ms: info.durationMs,
-    });
-    logger.info('vidéo normalisée', { step: 'encode', durationMs: info.durationMs });
+      const videoPath = `${session.id}/work.mp4`;
+      await storage.upload(BUCKET_SOURCES, videoPath, workMp4, 'video/mp4');
+      await updateSession(session.id, {
+        video_path: videoPath,
+        duration_ms: info.durationMs,
+      });
+      logger.info('vidéo normalisée', { step: 'encode', durationMs: info.durationMs });
+    })();
+    // Attendue plus bas ; ici on evite seulement qu'un echec precoce soit
+    // signale comme une promesse rejetee sans gestionnaire.
+    encodage.catch(() => undefined);
+    sourceAudio = sourcePath;
     // Plus de relais vers Google apres le telechargement : une scene
     // YouTube reste sur ce PC de bout en bout (migration
     // 20260926090000_youtube_worker_local).
@@ -120,7 +140,7 @@ export async function runIngest(
   // ── 3. Extraction audio ─────────────────────────────────────────────
   await setJobStep(job.id, 'extract', 0);
   const audioWav = path.join(workDir, 'audio.wav');
-  await extractAudio(workMp4, audioWav);
+  await extractAudio(sourceAudio, audioWav, true);
   await setJobStep(job.id, 'extract', 100);
 
   // ── 4. Separation ───────────────────────────────────────────────────
@@ -163,6 +183,9 @@ export async function runIngest(
     voice_peaks_hz: envelope.hz,
   });
   logger.info('stems produits', { step: 'separate' });
+
+  // La video doit etre en ligne avant que la scene n'avance.
+  await encodage;
 
   // ── Scene issue d'une recette ───────────────────────────────────────
   //

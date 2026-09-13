@@ -409,6 +409,8 @@ export const fr = {
     rendering: 'Montage en cours',
     render_failed: 'Montage échoué',
     done: 'Terminée',
+    lobbyClosed: 'Salon fermé',
+    expired: 'Expirée',
   },
 
   common: {

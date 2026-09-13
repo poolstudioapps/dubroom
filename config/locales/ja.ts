@@ -406,6 +406,8 @@ export const ja = {
     rendering: '書き出し中',
     render_failed: '書き出し失敗',
     done: '完了',
+    lobbyClosed: 'ロビー終了',
+    expired: '期限切れ',
   },
 
   common: {

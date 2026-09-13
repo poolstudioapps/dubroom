@@ -409,6 +409,8 @@ export const de = {
     rendering: 'Wird gerendert',
     render_failed: 'Rendern fehlgeschlagen',
     done: 'Fertig',
+    lobbyClosed: 'Lobby geschlossen',
+    expired: 'Abgelaufen',
   },
 
   common: {

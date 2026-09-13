@@ -408,6 +408,8 @@ export const pt = {
     rendering: 'A montar',
     render_failed: 'Falha na montagem',
     done: 'Concluída',
+    lobbyClosed: 'Lobby fechado',
+    expired: 'Expirada',
   },
 
   common: {

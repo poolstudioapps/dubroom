@@ -400,6 +400,8 @@ export const zh = {
     rendering: '渲染中',
     render_failed: '渲染失败',
     done: '已完成',
+    lobbyClosed: '大厅已关闭',
+    expired: '已过期',
   },
 
   common: {

@@ -404,6 +404,8 @@ export const ko = {
     rendering: '렌더링 중',
     render_failed: '렌더링 실패',
     done: '완료',
+    lobbyClosed: '로비 닫힘',
+    expired: '만료됨',
   },
 
   common: {

@@ -7,7 +7,14 @@
  * meme facon, sinon l'un devient une porte derobee sur l'autre.
  */
 
-export const DEFAULT_LANDING = '/sessions';
+/**
+ * L'accueil, par defaut.
+ *
+ * On atterrissait sur « Mes scenes », une liste souvent vide pour qui
+ * arrive : l'accueil dit quoi faire ensuite. Un lien qui porte sa propre
+ * destination — une invitation `/s/CODE`, la communaute — la garde.
+ */
+export const DEFAULT_LANDING = '/';
 
 /**
  * Normalise la destination demandee.

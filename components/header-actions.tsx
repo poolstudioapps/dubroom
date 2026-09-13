@@ -48,7 +48,7 @@ export function HeaderActions({ signedIn }: { signedIn: boolean }) {
         onClick={() =>
           signedIn
             ? setRejoindre(true)
-            : router.push(`/login?next=${encodeURIComponent('/sessions')}`)
+            : router.push('/login')
         }
         className="btn-3d btn-secondary btn-bascule inline-flex h-11 items-center justify-center gap-2 px-3 text-sm font-semibold text-text sm:px-4"
       >

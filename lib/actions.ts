@@ -82,6 +82,12 @@ export async function uploadSourceAndEnqueue(
   const path = `${session.id}/upload.${ext}`;
 
   onProgress?.(0);
+  /*
+   * Le worker en ligne met une minute a demarrer. On le previent des le
+   * debut de l'envoi : quand le fichier arrive, il est deja pret. Un echec
+   * ne coute rien — la mise en file le reveillera de toute facon.
+   */
+  void rpc('prevenir_worker', { p_session_id: session.id }).catch(() => undefined);
   const { error } = await db.storage.from(BUCKET_SOURCES).upload(path, file, {
     upsert: true,
     contentType: file.type || 'video/mp4',

@@ -18,7 +18,7 @@ import { deleteSession, joinSession } from '@/lib/actions';
 import { queryKeys, useMySessions, useStorageUsage } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import type { SessionRow } from '@/lib/supabase/database.types';
-import { normalizeSessionCode } from '@/lib/utils';
+import { cn, normalizeSessionCode } from '@/lib/utils';
 
 /**
  * Mes scenes.
@@ -108,11 +108,19 @@ export function SessionsClient({
         {/* Une liste, pas une pile de cadres : un filet sous chaque
             rangee suffit a les separer. */}
         <div className={sessions.data?.length ? 'panel px-4' : undefined}>
-          {sessions.data?.map((session) => (
+          {sessions.data?.map((session) => {
+            // Fermee pour inactivite : un salon se rouvre, un studio est perdu.
+            const fermee =
+              !!session.closed_at && (session.status === 'lobby' || session.status === 'recording');
+            const perdue = fermee && session.status === 'recording';
+            return (
             // Le titre tient sur une ligne et les actions ne passent jamais
             // dessous : un titre long renvoyait « Ouvrir » a la ligne, et
             // la liste perdait sa colonne de boutons sur telephone.
-            <div key={session.id} className="row flex items-center gap-3 px-1 py-3">
+            <div
+              key={session.id}
+              className={cn('row flex items-center gap-3 px-1 py-3', fermee && 'opacity-60')}
+            >
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/s/${session.code}`}
@@ -122,7 +130,7 @@ export function SessionsClient({
                   {session.title ?? t.common.untitled}
                 </Link>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-text-faint">
-                  <StatusBadge status={session.status} />
+                  <StatusBadge status={session.status} closed={fermee} />
                   <span>
                     <span className="font-mono uppercase">{session.code}</span>
                     {session.duration_ms
@@ -136,7 +144,12 @@ export function SessionsClient({
               </div>
 
               <div className="flex shrink-0 items-center gap-1.5">
-                <Button size="sm" onClick={() => router.push(`/s/${session.code}`)}>
+                {/* Un studio expire n'a plus rien a ouvrir : il renverrait a l'accueil. */}
+                <Button
+                  size="sm"
+                  disabled={perdue}
+                  onClick={() => router.push(`/s/${session.code}`)}
+                >
                   {t.sessions.open}
                 </Button>
                 {/* Sans corbeille, une case vide garde « Ouvrir » aligne
@@ -155,7 +168,8 @@ export function SessionsClient({
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

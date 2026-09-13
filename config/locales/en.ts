@@ -411,6 +411,8 @@ export const en = {
     rendering: 'Rendering',
     render_failed: 'Render failed',
     done: 'Done',
+    lobbyClosed: 'Lobby closed',
+    expired: 'Expired',
   },
 
   common: {

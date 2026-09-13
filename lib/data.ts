@@ -311,9 +311,33 @@ export function useRenderUrl(session: SessionRow | undefined) {
 
 // ── Liste des scenes et espace consomme (PRD §13.3) ───────────────────
 
+/**
+ * Mes scenes, tenues a jour sans recharger.
+ *
+ * La base ferme d'elle-meme un salon ou un studio reste vingt minutes
+ * sans activite : la liste suit par le canal temps reel, et un
+ * rafraichissement chaque minute rattrape un evenement manque.
+ */
 export function useMySessions() {
+  const qc = useQueryClient();
+  const channelName = useChannelName('mes-scenes', 'liste');
+
+  useEffect(() => {
+    const db = supabaseBrowser();
+    const channel = db
+      .channel(channelName)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, () => {
+        void qc.invalidateQueries({ queryKey: keys.sessions });
+      })
+      .subscribe();
+    return () => {
+      void db.removeChannel(channel);
+    };
+  }, [qc, channelName]);
+
   return useQuery({
     queryKey: keys.sessions,
+    refetchInterval: 60_000,
     queryFn: async () => {
       const db = supabaseBrowser();
       const { data, error } = await db

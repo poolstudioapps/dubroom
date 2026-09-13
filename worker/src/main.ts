@@ -188,6 +188,13 @@ async function main(): Promise<void> {
       if (!job) {
         vides += 1;
         if (config.exitWhenIdle && vides >= config.idleExitPolls) {
+          // Reveille des le debut d'un envoi : le fichier arrive, on
+          // patiente plutot que de repartir a froid une minute plus tard.
+          if (await envoiEnCours()) {
+            vides = 0;
+            await sleep(config.pollIntervalMs);
+            continue;
+          }
           log.info('file vide, arrêt du worker', { polls: vides });
           break;
         }
@@ -226,6 +233,21 @@ async function main(): Promise<void> {
   }
 
   log.info('worker arrêté');
+}
+
+/**
+ * Une video est-elle en train d'arriver ?
+ *
+ * La base le sait : l'hote a previenu au debut de l'envoi. Au bout de trois
+ * minutes sans mise en file, la reponse redevient non, et le job s'arrete.
+ */
+async function envoiEnCours(): Promise<boolean> {
+  try {
+    const { data, error } = await db.rpc('envoi_en_cours');
+    return !error && data === true;
+  } catch {
+    return false;
+  }
 }
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
