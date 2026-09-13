@@ -389,23 +389,16 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       });
     }
   }
-  const removedSources = await storage.removeSessionFolder(BUCKET_SOURCES, session.id);
-  const removedTakes = await storage.removeSessionFolder(BUCKET_TAKES, session.id);
-
-  await updateSession(session.id, {
-    video_path: null,
-    stem_voice_path: null,
-    stem_music_path: null,
-    stem_music_preview_path: null,
-    upload_path: null,
-    purged_at: new Date().toISOString(),
-    status: 'done',
-  });
+  /*
+   * Les sources et les prises restent jusqu'a l'echeance du rendu.
+   *
+   * Tant que la video est la, le groupe peut redoubler la scene sans rien
+   * reconstruire, et l'hote peut la publier avec son son. La fonction
+   * `purger-rendus` efface tout ensemble a l'heure dite : rendu, video,
+   * pistes et prises.
+   */
+  await updateSession(session.id, { status: 'done' });
   await setJobStep(job.id, 'purge', 100);
 
-  logger.info('source purgée', {
-    step: 'purge',
-    sources: removedSources,
-    takes: removedTakes,
-  });
+  logger.info('rendu terminé, sources gardées jusqu’à l’échéance', { step: 'purge' });
 }

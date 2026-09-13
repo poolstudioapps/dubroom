@@ -76,6 +76,20 @@ export async function verifyUploaded(
   return size;
 }
 
+/**
+ * Copie un objet a l'interieur d'un bucket, sans le telecharger.
+ *
+ * La destination est retiree d'abord : une reprise apres crash la
+ * retrouve parfois deja la, et le stockage refuse d'ecraser par copie.
+ */
+export async function copy(bucket: string, from: string, to: string): Promise<void> {
+  await db.storage.from(bucket).remove([to]);
+  const { error } = await db.storage.from(bucket).copy(from, to);
+  if (error) {
+    throw new SystemError(`Copie impossible : ${bucket}/${from} → ${to} (${error.message})`);
+  }
+}
+
 /** Supprime recursivement tout ce qu'un bucket contient pour une session. */
 export async function removeSessionFolder(
   bucket: string,

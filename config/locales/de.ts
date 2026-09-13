@@ -108,25 +108,25 @@ export const de = {
     seoTitle: 'Das Filmsynchron-Spiel für Freunde',
     defineTitle: 'Was heißt eine Filmszene synchronisieren?',
     defineBody:
-      'Eine Filmszene zu synchronisieren heißt, die Originalstimmen durch die eigenen zu ersetzen und alles andere zu behalten: Bild, Musik, Geräusche, Rhythmus. Das Ergebnis ist kein Kommentar darüber, es ist die Szene selbst, mit anderen Sprechern. Dub’Up ist eine Synchronsoftware im Browser, ohne Installation.',
+      'Eine Filmszene zu synchronisieren heißt, die Originalstimmen durch die eigenen zu ersetzen und alles andere zu behalten: Bild, Musik, Geräusche, Rhythmus. Das Ergebnis ist kein Kommentar darüber, es ist die Szene selbst, mit anderen Sprechern. Dubblers ist eine Synchronsoftware im Browser, ohne Installation.',
     defineHowTitle: 'Wie man eine Filmszene selbst synchronisiert',
     defineHowBody:
-      'Es braucht drei Dinge, die zu Hause niemand hat: die Stimmen von der Musik trennen, damit nur die Stimmen ersetzt werden, auf die Millisekunde wissen, wer wann spricht, und beim Sprechen synchron bleiben. Dub’Up erledigt die ersten beiden automatisch aus der Szene und löst das dritte mit einem Laufband, dem unter einem Abspielkopf durchlaufenden Text, den Synchronstudios seit achtzig Jahren benutzen.',
+      'Es braucht drei Dinge, die zu Hause niemand hat: die Stimmen von der Musik trennen, damit nur die Stimmen ersetzt werden, auf die Millisekunde wissen, wer wann spricht, und beim Sprechen synchron bleiben. Dubblers erledigt die ersten beiden automatisch aus der Szene und löst das dritte mit einem Laufband, dem unter einem Abspielkopf durchlaufenden Text, den Synchronstudios seit achtzig Jahren benutzen.',
     defineWhoTitle: 'Für wen das ist',
     defineWhoBody:
       'Für Freundesgruppen, die eine berühmte Zeile nachsprechen wollen, für Fandub-Leute, die kein Schnittprogramm suchen, für Sprachlehrer, die eine Klasse einen Ausschnitt synchronisieren lassen, und für alle, die Sprechen lernen und am Laufband üben wollen, ohne ein Studio zu mieten.',
     faqExtra: [
       {
         q: 'Ist das kostenlos?',
-        a: 'Ja. Dub’Up ist ein privates Projekt, ohne Werbung, ohne Abo und ohne Szenenlimit.',
+        a: 'Ja. Dubblers ist ein privates Projekt, ohne Werbung, ohne Abo und ohne Szenenlimit.',
       },
       {
         q: 'Was ist die Community?',
-        a: 'Der Katalog der Szenen, die andere Spieler schon vorbereitet haben: Figuren, Text und Timing sind fertig. Du bringst das Video mit, und die Lobby öffnet sich in wenigen Minuten. Videos und Stimmen werden nie geteilt.',
+        a: 'Der Katalog der Szenen, die andere Spieler schon vorbereitet haben: Figuren, Text, Timing und Ton sind fertig. Du bringst das Video mit, und die Lobby öffnet sich in etwa einer Minute. Videos und eure Stimmen werden nie geteilt.',
       },
       {
         q: 'Was ist anders als bei normalem Videoschnitt?',
-        a: 'Ein Schnittprogramm gibt dir eine leere Zeitleiste. Dub’Up geht von der Szene aus: Es trennt Stimmen und Musik, findet die Sätze, ordnet sie den Figuren zu und legt deine Aufnahmen selbst an.',
+        a: 'Ein Schnittprogramm gibt dir eine leere Zeitleiste. Dubblers geht von der Szene aus: Es trennt Stimmen und Musik, findet die Sätze, ordnet sie den Figuren zu und legt deine Aufnahmen selbst an.',
       },
       {
         q: 'Kann man eine Szene in einer anderen Sprache synchronisieren?',
@@ -160,7 +160,7 @@ export const de = {
       },
       {
         q: 'Was bleibt am Ende?',
-        a: 'Ein Video mit euren Stimmen, das du eine Stunde lang herunterladen und teilen kannst. Danach wird es gelöscht, genau wie eure Aufnahmen und das Originalvideo: Auf unseren Servern bleibt nichts liegen.',
+        a: 'Ein Video mit euren Stimmen, das du eine Stunde lang herunterladen und teilen kannst, und eine Szene, die ihr sofort mit denselben Spielern neu synchronisieren könnt. Danach wird alles gelöscht, eure Aufnahmen und das Originalvideo eingeschlossen: Auf unseren Servern bleibt nichts liegen.',
       },
       {
         q: 'Kann ich einladen, wen ich will?',
@@ -192,7 +192,7 @@ export const de = {
     openSource: 'Quelle öffnen',
     kindRecipe: 'Rezept',
     kindMedia: 'Dateien behalten',
-    recipeHelp: 'Die Videos liegen nicht hier: Gespeichert wird nur die Vorbereitung jeder Szene. Um eine zu synchronisieren, bringst du ihr Video mit, und alles wird in wenigen Minuten online vorbereitet.',
+    recipeHelp: 'Videos werden hier nicht gespeichert: Jede Szene behält ihr Timing und ihren Originalton. Um eine zu synchronisieren, bringst du ihr Video mit, und die Lobby öffnet sich in etwa einer Minute.',
     mediaHelp: 'Szene liegt hier: sie startet sofort.',
     mine: 'Deine',
     voteUp: 'Diese Szene ist gut geschnitten',
@@ -271,7 +271,7 @@ export const de = {
     publish: 'In der Community veröffentlichen',
     published: 'Diese Szene ist in der Community',
     seeInCommunity: 'In der Community ansehen',
-    publishRecipeHelp: 'Geteilt werden nur der Originallink und die Aufteilung. Das Video wird nie hier gespeichert.',
+    publishRecipeHelp: 'Geteilt werden der Originallink, das Timing und der Ton der Szene. Das Video wird nie hier gespeichert, und eure Stimmen werden nie geteilt.',
     publishFromCatalogue:
       'Diese Szene kommt aus dem Katalog, sie steht also schon drin. Ein zweites Mal veröffentlicht gäbe es zwei Fassungen, die niemand auseinanderhält.',
     pickLang: 'Sprache wählen…',
@@ -282,7 +282,7 @@ export const de = {
     tagsHelp: 'Bis zu 10 Tags, getrennt durch Leerzeichen oder Komma. Die Szene findet man, indem man #starwars in die Suche tippt.',
     tagRemove: (tag: string) => `#${tag} entfernen`,
     tagSearch: (tag: string) => `Szenen mit #${tag} ansehen`,
-    publishUploadHelp: 'Geteilt werden nur Figuren, Text und Timing. Dein Video bleibt bei dir: Wer die Szene nachspielt, bringt sein eigenes mit.',
+    publishUploadHelp: 'Geteilt werden Timing, Figuren, Text und der Ton der Szene. Dein Video bleibt bei dir: Wer die Szene nachspielt, bringt sein eigenes mit.',
     publishMissing: 'Gib Titel, Link, Sprache und Genre an, um zu veröffentlichen.',
     searchPlaceholder: 'Titel, Figur, #Tag…',
     searchLabel: 'Szene suchen',
@@ -303,7 +303,7 @@ export const de = {
     detailScript: 'Der Anfang des Textes',
     detailScriptMore: (n: number) => (n === 1 ? '… und ein weiterer Satz, den du beim Spielen entdeckst.' : `… und ${n} weitere Sätze, die du beim Spielen entdeckst.`),
     detailVideoTitle: 'Du brauchst das Video',
-    detailVideoBody: 'Der Katalog speichert nur die Vorbereitung. Hol dir das Video über den Originallink oder woher du willst und importiere es: Die Anleitung zeigt in fünf Minuten, wie.',
+    detailVideoBody: 'Der Katalog behält Timing und Ton, nicht das Video. Hol es dir über den Originallink oder woher du willst und importiere es: Die Anleitung zeigt in fünf Minuten, wie.',
     detailNoSource: 'Diese Szene wurde aus einer Datei vorbereitet: Es gibt keinen Originallink. Such denselben Ausschnitt selbst und importiere ihn: Die Anleitung zeigt, wie.',
     detailVideoAction: 'Import-Anleitung lesen',
     commentsTitle: 'Kommentare',
@@ -339,7 +339,7 @@ export const de = {
       },
       {
         title: 'Importieren und prüfen',
-        body: 'Dub’Up trennt die Stimmen und teilt die Sätze auf. Du korrigierst Figuren und Text.',
+        body: 'Dubblers trennt die Stimmen und teilt die Sätze auf. Du korrigierst Figuren und Text.',
       },
       {
         title: 'Veröffentlichen, dann spielen',
@@ -360,7 +360,7 @@ export const de = {
     linkHelp: 'YouTube oder jede andere Seite: Er dient als Vorschau, und dort holen sich andere das Video, um die Szene nachzuspielen.',
     linkInvalid: 'Dieser Link scheint ungültig zu sein: Er muss mit https:// beginnen.',
     publishAskTitle: 'Dieses Pack mit der Community teilen?',
-    publishAskBody: 'Deine Aufteilung kann anderen Gruppen helfen: Sie spielen die Szene mit ihrem eigenen Video nach. Geteilt werden nur der Link und die Aufteilung, nie eure Stimmen.',
+    publishAskBody: 'Dein Timing kann anderen Gruppen helfen: Sie spielen die Szene mit ihrem eigenen Video nach. Geteilt werden Link, Timing und Originalton, nie eure Stimmen.',
     publishAskYes: 'Ja, veröffentlichen',
     publishAskNo: 'Nein, danke',
     publishLater: 'Diese Szene wird nicht geteilt. Du kannst es dir auf diesem Bildschirm jederzeit anders überlegen.',
@@ -510,7 +510,7 @@ export const de = {
     join: 'Beitreten',
     storageTitle: 'Belegter Speicher',
     storageHelp:
-      'Das Originalvideo und die Aufnahmen werden gelöscht, sobald das fertige Video bereit ist: Nur dieses belegt Platz, und das nur eine Stunde lang.',
+      'Originalvideo, getrennter Ton und Aufnahmen werden eine Stunde nach dem Schnitt gelöscht, zusammen mit dem fertigen Video. Eine Szene zu löschen gibt ihren Platz sofort frei.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Zu diesem Code gibt es keine Szene.',
     joining: 'Szene wird betreten…',
@@ -556,7 +556,7 @@ export const de = {
     uploading: 'Datei wird hochgeladen…',
     subtitle: 'Zwei Wege zum Start: Importiere dein Video für eine ganz neue Szene, oder übernimm eine Szene, die die Gruppe schon vorbereitet hat.',
     introUpload: 'Eine neue Szene, von Grund auf aus deinem Video vorbereitet, egal woher es stammt: ein Film, eine Serie, ein YouTube- oder TikTok-Clip, eine Bildschirmaufnahme…',
-    introPack: 'Figuren und Sätze stehen schon: Du bringst das Video mit, und die Lobby öffnet sich in etwa zwei Minuten.',
+    introPack: 'Figuren, Sätze und Ton sind schon fertig: Du bringst das Video mit, und die Lobby öffnet sich in etwa einer Minute.',
     introYoutube: 'Nur für Administratoren: Das Video lädt der Computer des Gastgebers herunter, der eingeschaltet sein muss.',
     limits: 'Jedes Videoformat · höchstens 50 MB und 10 Minuten',
     uploadStepsTitle: 'So läuft es ab',
@@ -878,10 +878,17 @@ export const de = {
     expiresSoon: 'Dieses Video wird gleich gelöscht. Lade es jetzt herunter, wenn du es behalten willst.',
     expiredTitle: 'Das Video wurde gelöscht',
     expiredBody: 'Fertige Szenen werden eine Stunde nach dem Schnitt gelöscht: Auf unseren Servern bleibt nichts. Wer eine Szene behalten will, lädt sie vorher herunter.',
+    redoTitle: 'Noch eine Runde?',
+    redoBody: 'Gleiche Szene, gleiche Spieler: Alle gehen zurück in die Lobby, jeder kann die Figur wechseln, und es gibt nichts vorzubereiten.',
+    redoAction: 'Szene neu synchronisieren',
+    redoConfirmTitle: 'Neue Runde starten?',
+    redoConfirmBody: 'Alle gehen mit derselben Szene zurück in die Lobby. Die Aufnahmen dieser Runde werden gelöscht, und das aktuelle Video wird entfernt: Lade es vorher herunter, wenn du es behalten willst.',
+    redoGuest: 'Der Gastgeber kann eine neue Runde starten: Ihr geht dann alle mit derselben Szene zurück in die Lobby.',
+    redoUnavailable: 'Die Dateien dieser Szene wurden gelöscht: Um sie erneut zu spielen, starte sie aus der Community oder importiere das Video noch einmal.',
   },
 
   packStart: {
-    intro: 'Der Katalog speichert nur die Vorbereitung dieser Szene: Ihr Video muss mitgebracht werden. Zwei Wege.',
+    intro: 'Der Katalog behält Timing und Ton dieser Szene, nicht ihr Video: Du musst es mitbringen. Dafür gibt es zwei Wege.',
     fileTitle: 'Importieren und synchronisieren',
     fileBody: 'Leg das Video der Szene ab, egal woher und in welchem Format: Der Import startet von selbst, dann öffnet sich die Szene. Text und Figuren des Packs werden unverändert übernommen.',
     openSource: 'Originalvideo ansehen',
@@ -895,7 +902,7 @@ export const de = {
     autoBody: 'Der Computer des Gastgebers lädt das Video von YouTube: Er muss eingeschaltet sein.',
     autoSubmit: 'Download starten',
     mediaBody: 'Diese Szene liegt hier: Sie startet sofort.',
-    introMember: 'Der Katalog speichert nur die Vorbereitung dieser Szene: Bring ihr Video mit, und alles wird online mit Text und Figuren des Packs vorbereitet.',
+    introMember: 'Der Katalog behält Timing und Ton dieser Szene: Bring ihr Video mit, und die Lobby öffnet sich in etwa einer Minute.',
     importAnyway: 'Trotzdem importieren',
     otherFile: 'Andere Datei wählen',
   },
@@ -904,7 +911,7 @@ export const de = {
     metaTitle: 'Das Video einer Szene importieren',
     kicker: 'Anleitung',
     heroTitle: 'Importiere dein Video, egal woher es kommt',
-    heroBody: 'Dub’Up nimmt jede Videodatei an, egal in welchem Format oder aus welcher Quelle: YouTube, TikTok, ein Film auf deiner Festplatte, eine Bildschirmaufnahme. Katalogszenen speichern nur ihre Vorbereitung: Um eine zu synchronisieren, bringst du das Video mit. Vier Schritte, fünf Minuten.',
+    heroBody: 'Dubblers akzeptiert jede Videodatei, egal in welchem Format und aus welcher Quelle: YouTube, TikTok, ein Film auf deiner Festplatte, eine Bildschirmaufnahme. Katalogszenen behalten Timing und Ton, nicht das Bild: Um eine zu synchronisieren, bringst du das Video mit. Vier Schritte, fünf Minuten.',
     ctaPrimary: 'Szene auswählen',
     ctaSecondary: 'Warum dieser Schritt?',
     stepsTitle: 'In vier Schritten',
@@ -919,7 +926,7 @@ export const de = {
       },
       {
         title: 'Prüf die Dauer',
-        body: 'Das Video muss genau das des Packs sein: gleicher Anfang, gleiches Ende. Dub’Up vergleicht die Dauer und warnt dich bei Abweichungen.',
+        body: 'Das Video muss genau das des Packs sein: gleicher Anfang, gleiches Ende. Dubblers vergleicht die Dauer und warnt dich bei Abweichungen.',
       },
       {
         title: 'Importieren und synchronisieren',
@@ -934,7 +941,7 @@ export const de = {
       'Höchstens 10 Minuten',
     ],
     whyTitle: 'Warum dieser Schritt?',
-    whyBody: 'Dub’Up hostet keine Werke: Der Katalog speichert die Vorbereitung, nie das Video. Und die meisten Plattformen lehnen Downloads von Servern ab. Du bringst also die Datei mit, und alles andere passiert online.',
+    whyBody: 'Dubblers speichert keine Videos: Der Katalog behält Timing und Ton, nie das Bild. Und die meisten Plattformen lehnen Downloads von Servern ab. Du bringst also die Datei mit, und alles andere passiert online.',
     wayFileTitle: 'Du importierst die Datei',
     wayFileBody: 'Funktioniert jederzeit, ohne etwas zu installieren. Die Vorbereitung läuft online, in etwa zwei Minuten.',
     faqTitle: 'Häufige Fragen',
@@ -1086,7 +1093,7 @@ export const de = {
     prepare: {
       title: 'Eine Szene vor der Lobby vorbereiten',
       summary: 'Figuren umbenennen, Dubletten zusammenführen, Text korrigieren: eine saubere Szene, bevor du einlädst.',
-      intro: 'Nach dem Import erkennt Dub’Up die Figuren und teilt die Sätze auf. Ein paar Minuten Prüfung, und alle wissen genau, was sie spielen.',
+      intro: 'Nach dem Import erkennt Dubblers die Figuren und teilt die Sätze auf. Ein paar Minuten Prüfung, und alle wissen genau, was sie spielen.',
       readingTime: '3 Min. Lesezeit',
       stepsTitle: 'In vier Schritten',
       steps: [
@@ -1122,7 +1129,7 @@ export const de = {
     publish: {
       title: 'Eine Szene mit der Community teilen',
       summary: 'Titel, Sprache, Genre und Tags: eine Szene veröffentlichen, damit andere Gruppen sie nachspielen.',
-      intro: 'Eine gut vorbereitete Szene kann anderen Gruppen dienen. Veröffentlichen teilt nur die Vorbereitung: Figuren, Text und Timing. Nie das Video, nie eure Stimmen.',
+      intro: 'Eine gut vorbereitete Szene kann anderen Gruppen helfen. Veröffentlichen teilt das Timing (Figuren, Text, Markierungen) und den Ton der Originalszene. Nie das Video, nie eure Stimmen.',
       readingTime: '3 Min. Lesezeit',
       stepsTitle: 'In vier Schritten',
       steps: [
@@ -1195,13 +1202,13 @@ export const de = {
 
   cookies: {
     bannerTitle: 'Ein Wort zu Cookies',
-    bannerBody: 'Dub’Up verwendet nur die Cookies, die für deine Anmeldung nötig sind. Mit deiner Zustimmung merkt es sich auch deine Einstellungen: Sprache, Anmeldeadresse, Studio-Einstellungen. Keine Werbung, kein Tracking.',
+    bannerBody: 'Dubblers verwendet nur die Cookies, die für deine Anmeldung nötig sind. Mit deiner Zustimmung merkt es sich auch deine Einstellungen: Sprache, Anmeldeadresse, Studio-Einstellungen. Keine Werbung, kein Tracking.',
     policyLink: 'Mehr erfahren',
     customize: 'Anpassen',
     refuse: 'Ablehnen',
     accept: 'Alle akzeptieren',
     settingsTitle: 'Cookies verwalten',
-    settingsBody: 'Wähle, was Dub’Up in deinem Browser speichern darf. Du kannst deine Wahl jederzeit unten auf jeder Seite ändern.',
+    settingsBody: 'Wähle, was Dubblers in deinem Browser speichern darf. Du kannst deine Wahl jederzeit unten auf jeder Seite ändern.',
     essentialTitle: 'Notwendig',
     essentialBody: 'Deine Anmeldesitzung und diese Wahl. Unverzichtbar, immer aktiv.',
     preferencesTitle: 'Einstellungen',

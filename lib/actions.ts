@@ -189,6 +189,11 @@ export function setTakeFx(takeId: string, fx: { reverb: number; pitch: number })
   });
 }
 
+/** Une nouvelle manche : retour au lobby, memes joueurs, prises effacees. */
+export function redoublerScene(sessionId: string) {
+  return rpc<SessionRow>('redoubler_scene', { p_session_id: sessionId });
+}
+
 export function openLobby(sessionId: string) {
   return rpc<SessionRow>('open_lobby', { p_session_id: sessionId, ...segmentation });
 }

@@ -42,7 +42,7 @@ export const GUIDE_VIDEO_HREF = '/guide/video-youtube';
  *
  * Pas encore : sans serveur d'envoi a nous (SMTP), Supabase impose son
  * gabarit, qui ne porte que le lien. Des qu'un SMTP est configure et le
- * gabarit Dub'Up applique, passer a `true` fait apparaitre la saisie du
+ * gabarit Dubblers applique, passer a `true` fait apparaitre la saisie du
  * code sur la page de connexion.
  */
 export const EMAIL_CODE_ENABLED = false;

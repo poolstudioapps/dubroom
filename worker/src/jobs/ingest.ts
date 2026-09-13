@@ -17,7 +17,7 @@ import {
 import { config } from '../config.ts';
 import { computeEnvelope } from '../lib/envelope.ts';
 import { SystemError, UserError } from '../errors.ts';
-import { db, getSession, setJobStep, updateSession, type Job } from '../lib/db.ts';
+import { db, getSession, setJobStep, updateSession, type Job, type Session } from '../lib/db.ts';
 import {
   downmixForStt,
   encodeBackingPreview,
@@ -137,6 +137,26 @@ export async function runIngest(
     // 20260926090000_youtube_worker_local).
   }
 
+  // ── Le son d'un pack, deja separe ───────────────────────────────────
+  //
+  // Un pack garde desormais les deux pistes de sa scene d'origine. Les
+  // recopier dans la scene evite toute la separation : il ne reste que
+  // l'image du joueur a normaliser, qui tourne deja en arriere-plan.
+  if (session.from_pack_id) {
+    const sons = await sonsDuPack(session.from_pack_id);
+    if (sons) {
+      await setJobStep(job.id, 'extract', 100);
+      await setJobStep(job.id, 'separate', 0);
+      await reprendreSonsDuPack(sons, session.id, workDir);
+      await setJobStep(job.id, 'separate', 100);
+      logger.info('sons repris du pack', { step: 'separate', packId: session.from_pack_id });
+
+      await encodage;
+      await terminerDepuisPack(job, session, logger);
+      return;
+    }
+  }
+
   // ── 3. Extraction audio ─────────────────────────────────────────────
   await setJobStep(job.id, 'extract', 0);
   const audioWav = path.join(workDir, 'audio.wav');
@@ -194,35 +214,17 @@ export async function runIngest(
   // Scribe : c'est la partie payante, et surtout c'est le texte que
   // l'hote d'origine avait corrige a la main. Le refaire le perdrait.
   if (session.from_pack_id) {
-    await setJobStep(job.id, 'transcribe', 100);
-    await setJobStep(job.id, 'segment', 0);
-
-    const { data: clipCount, error: clipError } = await db.rpc('recompute_clips', {
-      p_session_id: session.id,
-      p_gap_ms: CLIP_MERGE_GAP_MS,
-      p_margin_ms: CLIP_MARGIN_MS,
-      p_max_ms: CLIP_MAX_MS,
-    });
-    if (clipError) {
-      throw new SystemError(`Découpage en clips impossible : ${clipError.message}`);
+    // Le pack n'avait pas encore ses pistes : celles qu'on vient de
+    // separer serviront au prochain groupe. Un echec n'arrete rien.
+    try {
+      await garderSonsDansPack(session.from_pack_id, session.id, envelope);
+    } catch (error) {
+      logger.warn('pistes non gardées dans le pack', {
+        step: 'separate',
+        detail: error instanceof Error ? error.message : String(error),
+      });
     }
-    await setJobStep(job.id, 'segment', 100);
-
-    // Une scene de pack peut arriver par un fichier importe, quand le
-    // joueur a fourni la video lui-meme : ce fichier a fait son office,
-    // comme pour n'importe quel import.
-    if (session.upload_path) {
-      await db.storage.from(BUCKET_SOURCES).remove([session.upload_path]);
-      await updateSession(session.id, { upload_path: null });
-    }
-
-    // La preparation a deja ete faite une fois : on va droit au lobby.
-    await updateSession(session.id, { status: 'lobby' });
-    logger.info('scène reconstituée depuis une recette', {
-      step: 'segment',
-      packId: session.from_pack_id,
-      clips: Number(clipCount ?? 0),
-    });
+    await terminerDepuisPack(job, session, logger);
     return;
   }
 
@@ -404,4 +406,135 @@ export async function runIngest(
 
   await updateSession(session.id, { status: 'prepping' });
   await fs.rm(path.join(workDir, 'voice-raw'), { force: true });
+}
+
+// ── Scenes issues d'un pack ───────────────────────────────────────────
+
+interface SonsDuPack {
+  stem_voice_path: string;
+  stem_music_path: string;
+  stem_music_preview_path: string | null;
+  voice_peaks: string | null;
+  voice_peaks_hz: number | null;
+}
+
+/** Les pistes gardees par un pack, s'il en a. */
+async function sonsDuPack(packId: string): Promise<SonsDuPack | null> {
+  const { data, error } = await db
+    .from('packs')
+    .select('stem_voice_path, stem_music_path, stem_music_preview_path, voice_peaks, voice_peaks_hz')
+    .eq('id', packId)
+    .maybeSingle();
+  if (error || !data?.stem_voice_path || !data?.stem_music_path) return null;
+  return data as SonsDuPack;
+}
+
+/**
+ * Recopie les pistes du pack dans le dossier de la scene.
+ *
+ * Copiees et non pointees : la scene vit et se purge a son rythme, le pack
+ * au sien. L'apercu du fond sonore et l'enveloppe de la voix sont refaits
+ * s'ils manquent au pack.
+ */
+async function reprendreSonsDuPack(sons: SonsDuPack, sessionId: string, workDir: string) {
+  const voix = `${sessionId}/voice.flac`;
+  const musique = `${sessionId}/music.flac`;
+  const apercu = `${sessionId}/music-preview.m4a`;
+
+  await storage.copy(BUCKET_SOURCES, sons.stem_voice_path, voix);
+  await storage.copy(BUCKET_SOURCES, sons.stem_music_path, musique);
+
+  if (sons.stem_music_preview_path) {
+    await storage.copy(BUCKET_SOURCES, sons.stem_music_preview_path, apercu);
+  } else {
+    const musiqueLocale = path.join(workDir, 'music.flac');
+    const apercuLocal = path.join(workDir, 'music-preview.m4a');
+    await storage.download(BUCKET_SOURCES, sons.stem_music_path, musiqueLocale);
+    await encodeBackingPreview(musiqueLocale, apercuLocal);
+    await storage.upload(BUCKET_SOURCES, apercu, apercuLocal, 'audio/mp4');
+  }
+
+  let peaks = sons.voice_peaks;
+  let hz = sons.voice_peaks_hz;
+  if (!peaks) {
+    const voixLocale = path.join(workDir, 'voice.flac');
+    await storage.download(BUCKET_SOURCES, sons.stem_voice_path, voixLocale);
+    const enveloppe = await computeEnvelope(voixLocale, workDir);
+    peaks = enveloppe.peaks;
+    hz = enveloppe.hz;
+  }
+
+  await updateSession(sessionId, {
+    stem_voice_path: voix,
+    stem_music_path: musique,
+    stem_music_preview_path: apercu,
+    voice_peaks: peaks,
+    voice_peaks_hz: hz,
+  });
+}
+
+/**
+ * Garde dans le pack les pistes qu'on vient de separer pour lui.
+ *
+ * Les packs publies avant qu'on garde le son n'en ont pas : le premier
+ * groupe qui en rejoue un paie la separation, les suivants non.
+ */
+async function garderSonsDansPack(
+  packId: string,
+  sessionId: string,
+  envelope: { peaks: string; hz: number },
+) {
+  const { data } = await db
+    .from('packs')
+    .select('stem_music_path, voice_peaks')
+    .eq('id', packId)
+    .maybeSingle();
+  if (!data || data.stem_music_path) return;
+
+  const base = `packs/${packId}`;
+  await storage.copy(BUCKET_SOURCES, `${sessionId}/voice.flac`, `${base}/voice.flac`);
+  await storage.copy(BUCKET_SOURCES, `${sessionId}/music.flac`, `${base}/music.flac`);
+  await storage.copy(BUCKET_SOURCES, `${sessionId}/music-preview.m4a`, `${base}/music-preview.m4a`);
+
+  const { error } = await db
+    .from('packs')
+    .update({
+      stem_voice_path: `${base}/voice.flac`,
+      stem_music_path: `${base}/music.flac`,
+      stem_music_preview_path: `${base}/music-preview.m4a`,
+      ...(data.voice_peaks ? {} : { voice_peaks: envelope.peaks, voice_peaks_hz: envelope.hz }),
+    })
+    .eq('id', packId);
+  if (error) throw new SystemError(`Pistes du pack non enregistrées : ${error.message}`);
+}
+
+/** La preparation d'un pack a deja ete faite : decoupage, puis droit au lobby. */
+async function terminerDepuisPack(job: Job, session: Session, logger: ScopedLog) {
+  await setJobStep(job.id, 'transcribe', 100);
+  await setJobStep(job.id, 'segment', 0);
+
+  const { data: clipCount, error: clipError } = await db.rpc('recompute_clips', {
+    p_session_id: session.id,
+    p_gap_ms: CLIP_MERGE_GAP_MS,
+    p_margin_ms: CLIP_MARGIN_MS,
+    p_max_ms: CLIP_MAX_MS,
+  });
+  if (clipError) {
+    throw new SystemError(`Découpage en clips impossible : ${clipError.message}`);
+  }
+  await setJobStep(job.id, 'segment', 100);
+
+  // Une scene de pack arrive par un fichier importe : ce fichier a fait
+  // son office, comme pour n'importe quel import.
+  if (session.upload_path) {
+    await db.storage.from(BUCKET_SOURCES).remove([session.upload_path]);
+    await updateSession(session.id, { upload_path: null });
+  }
+
+  await updateSession(session.id, { status: 'lobby' });
+  logger.info('scène reconstituée depuis une recette', {
+    step: 'segment',
+    packId: session.from_pack_id,
+    clips: Number(clipCount ?? 0),
+  });
 }

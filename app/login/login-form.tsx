@@ -39,7 +39,7 @@ const LONGUEUR_CODE = 6;
  *   cle gardee par celui de la demande ;
  * - si le lien est ouvert dans ce meme navigateur, cet onglet le voit et
  *   continue tout seul ;
- * - des qu'un serveur d'envoi a nous permet le gabarit Dub'Up, le
+ * - des qu'un serveur d'envoi a nous permet le gabarit Dubblers, le
  *   courriel porte aussi un code a six chiffres, qui se tape ici sans
  *   changer d'onglet (`EMAIL_CODE_ENABLED`).
  */

@@ -4,7 +4,7 @@ import { getDictionary } from '@/lib/i18n-server';
 export const dynamic = 'force-dynamic';
 
 /**
- * Ce qu'un moteur de reponse doit savoir de Dub’Up.
+ * Ce qu'un moteur de reponse doit savoir de Dubblers.
  *
  * `llms.txt` est une convention jeune : un fichier en texte brut, au
  * meme endroit que `robots.txt`, qui dit en clair ce qu'est le produit,
@@ -25,7 +25,7 @@ export async function GET() {
   const t = await getDictionary();
 
   const lignes = [
-    '# Dub’Up',
+    '# Dubblers',
     '',
     `> ${t.home.kicker}. ${t.home.heroBody}`,
     '',
@@ -63,8 +63,8 @@ export async function GET() {
       'Scènes de dix minutes et 50 Mo au maximum, dans n’importe quel format vidéo.',
       'Tout se prépare en ligne, dans le navigateur : rien à installer.',
       'Un salon ou un studio sans activité pendant vingt minutes se ferme tout seul.',
-      'La communauté partage le découpage des scènes (personnages, texte, repères), jamais les vidéos ni les voix.',
-      'Les enregistrements et la vidéo d’origine sont effacés dès que la vidéo finale existe ; celle-ci reste téléchargeable une heure.',
+      'La communauté partage le découpage des scènes (personnages, texte, repères) et leur son d’origine séparé, jamais les vidéos ni les voix des joueurs.',
+      'La vidéo finale reste téléchargeable une heure ; pendant cette heure, le groupe peut redoubler la scène. Ensuite la vidéo finale, la vidéo d’origine et les enregistrements sont effacés.',
     ]
       .map((l) => `- ${l}`)
       .join('\n'),

@@ -48,6 +48,7 @@ const MESSAGES: Record<string, string> = {
   LOBBY_CLOSED:
     'Ce salon est fermé : il est resté vingt minutes sans activité. L’hôte peut le rouvrir.',
   SESSION_EXPIRED: t.studio.expiredBody,
+  SOURCES_PURGED: t.result.redoUnavailable,
   PACK_HAS_MEDIA: 'Cette scène démarre sans vidéo à fournir.',
   ADMIN_ONLY: 'Réservé aux administrateurs.',
   PROFILE_NOT_FOUND: 'Ce profil n’existe pas.',

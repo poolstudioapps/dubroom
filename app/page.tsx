@@ -61,7 +61,7 @@ const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getDictionary();
   return {
-    // `absolute` : le gabarit ajoute « · Dub’Up » a tout titre de page,
+    // `absolute` : le gabarit ajoute « · Dubblers » a tout titre de page,
     // et le nom du produit y figure deja.
     // Le nom d'abord, puis ce que c'est : c'est ce qu'on lit dans l'onglet.
     title: { absolute: `${APP_NAME} · ${t.home.seoTitle}` },

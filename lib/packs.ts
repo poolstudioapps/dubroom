@@ -280,13 +280,11 @@ export async function startFromPackWithFile(
 export async function deletePack(pack: Pack): Promise<void> {
   const db = supabaseBrowser();
 
-  // Une recette n'a rien dans Storage : seule la fiche est a retirer.
-  if (pack.kind === 'media') {
-    const folder = `packs/${pack.id}`;
-    const { data } = await db.storage.from(BUCKET_SOURCES).list(folder, { limit: 100 });
-    const files = (data ?? []).map((file) => `${folder}/${file.name}`);
-    if (files.length > 0) await db.storage.from(BUCKET_SOURCES).remove(files);
-  }
+  // Une recette garde desormais ses pistes audio : on les retire aussi.
+  const folder = `packs/${pack.id}`;
+  const { data } = await db.storage.from(BUCKET_SOURCES).list(folder, { limit: 100 });
+  const files = (data ?? []).map((file) => `${folder}/${file.name}`);
+  if (files.length > 0) await db.storage.from(BUCKET_SOURCES).remove(files);
 
   await rpc('delete_pack', { p_pack_id: pack.id });
 }

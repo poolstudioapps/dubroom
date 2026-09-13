@@ -145,7 +145,7 @@ async function handleJob(job: Job): Promise<void> {
 
 async function main(): Promise<void> {
   console.log('');
-  console.log('Dub’Up worker');
+  console.log('Dubblers worker');
   console.log('');
 
   if (!config.skipEnvCheck) await verifyEnvironment();

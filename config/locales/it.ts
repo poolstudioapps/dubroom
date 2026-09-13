@@ -108,25 +108,25 @@ export const it = {
     seoTitle: 'Il gioco di doppiaggio di film tra amici',
     defineTitle: 'Che cosa vuol dire doppiare una scena di film?',
     defineBody:
-      'Doppiare una scena di film vuol dire sostituire le voci originali con le proprie tenendo tutto il resto: l’immagine, la musica, i rumori, il ritmo. Il risultato non è un commento sopra, è la scena stessa con altri attori. Dub’Up è un software di doppiaggio online che fa questo lavoro nel browser, senza installare niente.',
+      'Doppiare una scena di film vuol dire sostituire le voci originali con le proprie tenendo tutto il resto: l’immagine, la musica, i rumori, il ritmo. Il risultato non è un commento sopra, è la scena stessa con altri attori. Dubblers è un software di doppiaggio online che fa questo lavoro nel browser, senza installare niente.',
     defineHowTitle: 'Come doppiare una scena di film da soli',
     defineHowBody:
-      'Servono tre cose che nessuno ha in casa: separare le voci dalla musica per sostituire solo le voci, sapere chi parla e quando al millesimo, e restare in sincrono mentre si parla. Dub’Up fa le prime due in automatico a partire dalla scena, e risolve la terza con una banda ritmica, il testo che scorre sotto una testina di lettura usata dagli studi di doppiaggio da ottant’anni.',
+      'Servono tre cose che nessuno ha in casa: separare le voci dalla musica per sostituire solo le voci, sapere chi parla e quando al millesimo, e restare in sincrono mentre si parla. Dubblers fa le prime due in automatico a partire dalla scena, e risolve la terza con una banda ritmica, il testo che scorre sotto una testina di lettura usata dagli studi di doppiaggio da ottant’anni.',
     defineWhoTitle: 'A chi serve',
     defineWhoBody:
       'A gruppi di amici che vogliono rifare una battuta celebre, agli appassionati di fandub che cercano uno strumento che non sia un programma di montaggio, ai professori di lingue che fanno doppiare un estratto alla classe, e a chi studia doppiaggio e vuole esercitarsi su banda ritmica senza affittare uno studio.',
     faqExtra: [
       {
         q: 'È gratis?',
-        a: 'Sì. Dub’Up è un progetto personale, senza pubblicità, senza abbonamento e senza limiti di scene.',
+        a: 'Sì. Dubblers è un progetto personale, senza pubblicità, senza abbonamento e senza limiti di scene.',
       },
       {
         q: 'Cos’è la community?',
-        a: 'Il catalogo delle scene già preparate da altri giocatori: personaggi, testo e tagli sono pronti. Tu porti il video e la lobby si apre in pochi minuti. Video e voci non vengono mai condivisi.',
+        a: 'Il catalogo delle scene già preparate da altri giocatori: personaggi, testo, tagli e audio sono pronti. Tu porti il video e la lobby si apre in circa un minuto. I video e le vostre voci non vengono mai condivisi.',
       },
       {
         q: 'Che differenza c’è con un normale montaggio video?',
-        a: 'Un programma di montaggio ti dà una timeline vuota. Dub’Up parte dalla scena: separa le voci dalla musica, trova le battute, le assegna ai personaggi e allinea da solo le tue riprese.',
+        a: 'Un programma di montaggio ti dà una timeline vuota. Dubblers parte dalla scena: separa le voci dalla musica, trova le battute, le assegna ai personaggi e allinea da solo le tue riprese.',
       },
       {
         q: 'Si può doppiare una scena in un’altra lingua?',
@@ -160,7 +160,7 @@ export const it = {
       },
       {
         q: 'Cosa resta alla fine?',
-        a: 'Un video con le vostre voci, che puoi scaricare e condividere per un’ora. Poi viene eliminato, come le registrazioni e il video originale: sui nostri server non resta nulla.',
+        a: 'Un video con le vostre voci, che puoi scaricare e condividere per un’ora, e una scena che potete ridoppiare subito con gli stessi giocatori. Poi tutto viene eliminato, registrazioni e video originale compresi: sui nostri server non resta nulla.',
       },
       {
         q: 'Posso invitare chi voglio?',
@@ -192,7 +192,7 @@ export const it = {
     openSource: 'Apri la fonte',
     kindRecipe: 'Ricetta',
     kindMedia: 'File conservati',
-    recipeHelp: 'I video non sono ospitati qui: di ogni scena si conserva solo la preparazione. Per doppiarne una porti il suo video, e tutto si prepara online in pochi minuti.',
+    recipeHelp: 'I video non sono ospitati qui: ogni scena conserva i suoi tagli e il suo audio originale. Per doppiarne una porti il suo video, e la lobby si apre in circa un minuto.',
     mediaHelp: 'Scena ospitata qui: parte subito.',
     mine: 'Tua',
     voteUp: 'Questa scena è tagliata bene',
@@ -271,7 +271,7 @@ export const it = {
     publish: 'Pubblica nella community',
     published: 'Questa scena è nella community',
     seeInCommunity: 'Vedila nella community',
-    publishRecipeHelp: 'Si condividono solo il link originale e la preparazione. Il video non viene mai ospitato qui.',
+    publishRecipeHelp: 'Vengono condivisi il link originale, i tagli e l’audio della scena. Il video non è mai ospitato qui e le vostre voci non vengono mai condivise.',
     publishFromCatalogue:
       'Questa scena viene dal catalogo: c’è già. Ripubblicarla lascerebbe due copie che nessuno saprebbe distinguere.',
     pickLang: 'Scegli la lingua…',
@@ -282,7 +282,7 @@ export const it = {
     tagsHelp: 'Fino a 10 tag, separati da uno spazio o da una virgola. La scena si ritrova scrivendo #starwars nella ricerca.',
     tagRemove: (tag: string) => `Rimuovi #${tag}`,
     tagSearch: (tag: string) => `Vedi le scene #${tag}`,
-    publishUploadHelp: 'Vengono condivisi solo i personaggi, il testo e i tempi. Il tuo video resta a te: chi rigiocherà la scena porterà il suo.',
+    publishUploadHelp: 'Vengono condivisi tagli, personaggi, testo e audio della scena. Il tuo video resta a te: chi rigiocherà la scena porterà il suo.',
     publishMissing: 'Compila titolo, link, lingua e genere per pubblicare.',
     searchPlaceholder: 'Titolo, personaggio, #tag…',
     searchLabel: 'Cerca una scena',
@@ -303,7 +303,7 @@ export const it = {
     detailScript: 'L’inizio del testo',
     detailScriptMore: (n: number) => (n === 1 ? '… e un’altra battuta da scoprire giocando.' : `… e altre ${n} battute da scoprire giocando.`),
     detailVideoTitle: 'Ti servirà il video',
-    detailVideoBody: 'Il catalogo conserva solo la preparazione. Recupera il video dal link originale, o da dove preferisci, poi importalo: la guida mostra come in cinque minuti.',
+    detailVideoBody: 'Il catalogo conserva i tagli e l’audio, non il video. Recuperalo dal link originale, o da dove vuoi, poi importalo: la guida mostra come in cinque minuti.',
     detailNoSource: 'Questa scena è stata preparata da un file: non ha un link originale. Ritrova lo stesso spezzone per conto tuo, poi importalo: la guida mostra come.',
     detailVideoAction: 'Leggi la guida all’importazione',
     commentsTitle: 'Commenti',
@@ -339,7 +339,7 @@ export const it = {
       },
       {
         title: 'Importa e controlla',
-        body: 'Dub’Up separa le voci e divide le battute. Tu correggi personaggi e testo.',
+        body: 'Dubblers separa le voci e divide le battute. Tu correggi personaggi e testo.',
       },
       {
         title: 'Pubblica, poi gioca',
@@ -360,7 +360,7 @@ export const it = {
     linkHelp: 'YouTube o qualsiasi sito: serve da anteprima, ed è da lì che gli altri recuperano il video per rigiocare la scena.',
     linkInvalid: 'Questo link non sembra valido: deve iniziare con https://',
     publishAskTitle: 'Condividere questo pack con la community?',
-    publishAskBody: 'La tua preparazione può servire ad altri gruppi: rigiocheranno la scena con il loro video. Si condividono solo il link e la preparazione, mai le vostre voci.',
+    publishAskBody: 'I tuoi tagli possono servire ad altri gruppi: rigiocheranno la scena con il loro video. Vengono condivisi il link, i tagli e l’audio originale, mai le vostre voci.',
     publishAskYes: 'Sì, pubblica',
     publishAskNo: 'No, grazie',
     publishLater: 'Questa scena non viene condivisa. Puoi cambiare idea in qualsiasi momento da questa schermata.',
@@ -507,7 +507,7 @@ export const it = {
     join: 'Entra',
     storageTitle: 'Spazio usato',
     storageHelp:
-      'Il video originale e le registrazioni vengono cancellati appena il video finale è pronto: occupa spazio solo quello, e per un’ora soltanto.',
+      'Il video originale, l’audio separato e le riprese vengono cancellati un’ora dopo il montaggio, insieme al video finale. Eliminare una scena libera subito il suo spazio.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Nessuna scena corrisponde a questo codice.',
     joining: 'Ingresso nella scena…',
@@ -553,7 +553,7 @@ export const it = {
     uploading: 'Invio del file…',
     subtitle: 'Due modi per iniziare: importa il tuo video per una scena nuova, o riprendi una scena che il gruppo ha già preparato.',
     introUpload: 'Una scena nuova, preparata da zero dal tuo video, da qualunque fonte arrivi: un film, una serie, una clip di YouTube o TikTok, una registrazione dello schermo…',
-    introPack: 'Personaggi e battute sono già pronti: tu porti il video e la lobby si apre in circa due minuti.',
+    introPack: 'Personaggi, battute e audio sono già pronti: porti il video e la lobby si apre in circa un minuto.',
     introYoutube: 'Solo per gli amministratori: il video viene scaricato dal computer dell’host, che deve essere acceso.',
     limits: 'Qualsiasi formato video · al massimo 50 MB e 10 minuti',
     uploadStepsTitle: 'Come funziona',
@@ -874,10 +874,17 @@ export const it = {
     expiresSoon: 'Questo video sta per essere eliminato. Scaricalo ora se vuoi tenerlo.',
     expiredTitle: 'Il video è stato eliminato',
     expiredBody: 'Le scene finite vengono cancellate un’ora dopo il montaggio: sui nostri server non resta nulla. Per tenere una scena, scaricala prima.',
+    redoTitle: 'Ancora una volta?',
+    redoBody: 'Stessa scena, stessi giocatori: tutti tornano nella lobby, ognuno può cambiare personaggio e non c’è nulla da preparare.',
+    redoAction: 'Doppia di nuovo la scena',
+    redoConfirmTitle: 'Iniziare un nuovo round?',
+    redoConfirmBody: 'Tutti tornano nella lobby con la stessa scena. Le riprese di questo round vengono cancellate e il video attuale sarà eliminato: scaricalo prima se vuoi tenerlo.',
+    redoGuest: 'L’host può iniziare un nuovo round: tornerete tutti nella lobby con la stessa scena.',
+    redoUnavailable: 'I file di questa scena sono stati cancellati: per rigiocarla, avviala dalla community o importa di nuovo il video.',
   },
 
   packStart: {
-    intro: 'Il catalogo conserva solo la preparazione di questa scena: il video va portato. Due modi per farlo.',
+    intro: 'Il catalogo conserva i tagli e l’audio di questa scena, non il video: devi portarlo tu. Ci sono due modi.',
     fileTitle: 'Importa e doppia',
     fileBody: 'Trascina il video della scena, da qualunque fonte e in qualsiasi formato: l’importazione parte da sola, poi si apre la scena. Il testo e i personaggi del pack vengono ripresi così come sono.',
     openSource: 'Vedi il video originale',
@@ -891,7 +898,7 @@ export const it = {
     autoBody: 'Il computer dell’host scarica il video da YouTube: deve essere acceso.',
     autoSubmit: 'Avvia il download',
     mediaBody: 'Questa scena è ospitata qui: parte subito.',
-    introMember: 'Il catalogo conserva solo la preparazione di questa scena: porta il suo video e tutto si prepara online con il testo e i personaggi del pack.',
+    introMember: 'Il catalogo conserva i tagli e l’audio di questa scena: porta il suo video e la lobby si apre in circa un minuto.',
     importAnyway: 'Importa comunque',
     otherFile: 'Scegli un altro file',
   },
@@ -900,7 +907,7 @@ export const it = {
     metaTitle: 'Importare il video di una scena',
     kicker: 'Guida',
     heroTitle: 'Importa il tuo video, da qualunque fonte',
-    heroBody: 'Dub’Up accetta qualsiasi file video, di qualunque formato o provenienza: YouTube, TikTok, un film sul tuo disco, una registrazione dello schermo. Le scene del catalogo conservano solo la preparazione: per doppiarne una, porti il video. Quattro passaggi, cinque minuti.',
+    heroBody: 'Dubblers accetta qualsiasi file video, qualunque sia il formato e la fonte: YouTube, TikTok, un film sul tuo disco, una registrazione dello schermo. Le scene del catalogo conservano tagli e audio, non l’immagine: per doppiarne una porti il video. Quattro passaggi, cinque minuti.',
     ctaPrimary: 'Scegli una scena',
     ctaSecondary: 'Perché questo passaggio?',
     stepsTitle: 'In quattro passaggi',
@@ -915,7 +922,7 @@ export const it = {
       },
       {
         title: 'Controlla la durata',
-        body: 'Il video deve essere esattamente quello del pack: stesso inizio, stessa fine. Dub’Up confronta la durata e ti avvisa se è diversa.',
+        body: 'Il video deve essere esattamente quello del pack: stesso inizio, stessa fine. Dubblers confronta la durata e ti avvisa se è diversa.',
       },
       {
         title: 'Importa e doppia',
@@ -930,7 +937,7 @@ export const it = {
       'Al massimo 10 minuti',
     ],
     whyTitle: 'Perché questo passaggio?',
-    whyBody: 'Dub’Up non ospita nessuna opera: il catalogo conserva la preparazione, mai il video. E la maggior parte delle piattaforme rifiuta i download che arrivano dai server. Porti quindi tu il file, e tutto il resto avviene online.',
+    whyBody: 'Dubblers non ospita video: il catalogo conserva i tagli e l’audio, mai l’immagine. E la maggior parte delle piattaforme rifiuta i download che provengono dai server. Porti quindi tu il file, e tutto il resto avviene online.',
     wayFileTitle: 'Importi tu il file',
     wayFileBody: 'Funziona a qualsiasi ora, senza installare nulla. La preparazione avviene online, in circa due minuti.',
     faqTitle: 'Domande frequenti',
@@ -1082,7 +1089,7 @@ export const it = {
     prepare: {
       title: 'Preparare una scena prima della lobby',
       summary: 'Rinominare i personaggi, unire i doppioni, correggere il testo: la scena in ordine prima di invitare.',
-      intro: 'Dopo l’importazione, Dub’Up rileva i personaggi e divide le battute. Pochi minuti di controllo, e ognuno saprà esattamente cosa recitare.',
+      intro: 'Dopo l’importazione, Dubblers rileva i personaggi e divide le battute. Pochi minuti di controllo, e ognuno saprà esattamente cosa recitare.',
       readingTime: '3 min di lettura',
       stepsTitle: 'In quattro passaggi',
       steps: [
@@ -1118,7 +1125,7 @@ export const it = {
     publish: {
       title: 'Condividere una scena con la community',
       summary: 'Titolo, lingua, genere e tag: pubblicare una scena perché altri gruppi la rigiochino.',
-      intro: 'Una scena ben preparata può servire ad altri gruppi. Pubblicare condivide solo la preparazione: personaggi, testo e tempi. Mai il video, mai le vostre voci.',
+      intro: 'Una scena ben preparata può servire ad altri gruppi. Pubblicare condivide i tagli (personaggi, testo, riferimenti) e l’audio della scena originale. Mai il video, mai le vostre voci.',
       readingTime: '3 min di lettura',
       stepsTitle: 'In quattro passaggi',
       steps: [
@@ -1191,13 +1198,13 @@ export const it = {
 
   cookies: {
     bannerTitle: 'Due parole sui cookie',
-    bannerBody: 'Dub’Up usa solo i cookie necessari a mantenere l’accesso. Con il tuo consenso ricorda anche le tue preferenze: lingua, indirizzo di accesso, impostazioni dello studio. Niente pubblicità, niente tracciamento.',
+    bannerBody: 'Dubblers usa solo i cookie necessari a mantenere l’accesso. Con il tuo consenso ricorda anche le tue preferenze: lingua, indirizzo di accesso, impostazioni dello studio. Niente pubblicità, niente tracciamento.',
     policyLink: 'Scopri di più',
     customize: 'Personalizza',
     refuse: 'Rifiuta',
     accept: 'Accetta tutto',
     settingsTitle: 'Gestisci i cookie',
-    settingsBody: 'Scegli cosa Dub’Up può conservare nel tuo browser. Puoi cambiare idea in qualsiasi momento dal fondo di ogni pagina.',
+    settingsBody: 'Scegli cosa Dubblers può conservare nel tuo browser. Puoi cambiare idea in qualsiasi momento dal fondo di ogni pagina.',
     essentialTitle: 'Essenziali',
     essentialBody: 'La tua sessione di accesso e questa scelta. Indispensabili, sempre attivi.',
     preferencesTitle: 'Preferenze',

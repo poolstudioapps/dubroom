@@ -52,24 +52,27 @@ export default function PrivacyPage() {
 
       <LegalSection title="Combien de temps">
         <p>
-          La vidéo source et les pistes audio séparées sont supprimées automatiquement
-          dès qu’un rendu a été produit et vérifié. Vos enregistrements le sont au même
-          moment.
+          La vidéo source, les pistes audio séparées et vos enregistrements sont supprimés
+          automatiquement une heure après la production du rendu. Pendant cette heure, ils
+          permettent de redoubler la scène avec les mêmes joueurs sans rien reconstruire.
         </p>
         <p>
-          Le rendu final est lui-même supprimé une heure après sa création. L’écran du
-          résultat indique le temps restant : pour garder la scène, il faut la télécharger
-          avant. Aucune copie n’est conservée au-delà.
+          Le rendu final est supprimé au même moment, une heure après sa création. L’écran
+          du résultat indique le temps restant : pour garder la scène, il faut la
+          télécharger avant. Aucune copie n’est conservée au-delà.
         </p>
         <p>
-          Publier une scène dans la communauté n’en garde que le découpage (personnages,
-          texte, repères) et le lien de la vidéo d’origine indiqué par la personne qui
-          publie. Ni la vidéo ni les enregistrements de voix ne sont conservés.
+          Publier une scène dans la communauté en garde le découpage (personnages, texte,
+          repères), le lien de la vidéo d’origine indiqué par la personne qui publie, et
+          les pistes audio séparées de la scène (voix d’origine et fond sonore), pour que
+          d’autres groupes la rejouent sans refaire la séparation. Ni la vidéo ni vos
+          enregistrements de voix ne sont conservés.
         </p>
         <p>
-          Un salon resté ouvert plus d’une heure est fermé automatiquement. Supprimer une
-          scène efface le rendu, les prises et les métadonnées, sans retour possible. Un
-          commentaire peut être supprimé à tout moment par son auteur.
+          Un salon ou un studio resté vingt minutes sans activité est fermé
+          automatiquement. Supprimer une scène efface le rendu, les prises et tout ce qui
+          la concerne, sans retour possible. Un commentaire peut être supprimé à tout
+          moment par son auteur.
         </p>
       </LegalSection>
 

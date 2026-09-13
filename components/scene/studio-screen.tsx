@@ -76,6 +76,8 @@ interface PriseDecodee {
   promesse: Promise<Float32Array>;
   /** Ou la prise tombe dans la fenetre, calage automatique compris. */
   offsetMs: number;
+  /** Le fichier, garde pour en redessiner la forme d'onde au retour. */
+  blob?: Blob;
 }
 
 export function StudioScreen() {
@@ -159,6 +161,14 @@ export function StudioScreen() {
   );
   /** La prise qu'on vient d'enregistrer : inutile de la retelecharger. */
   const priseLocale = useRef<{ takeId: string | null; blob: Blob } | null>(null);
+  /**
+   * Les formes d'onde deja calculees, par prise.
+   *
+   * Changer de clip efface l'analyse affichee ; revenir sur un clip dont la
+   * prise etait deja en memoire ne la recalculait pas, et la piste restait
+   * invisible — impossible alors de la voir, ni de la faire glisser.
+   */
+  const analyses = useRef(new Map<string, TakeAnalysis>());
 
   const myClips = useMemo(
     () => (me ? clipsForParticipant(me.id, characters, clips) : []),
@@ -371,16 +381,39 @@ export function StudioScreen() {
     if (!currentTake) return;
     const cle = currentTake.id;
 
+    /** La forme d'onde : depuis la memoire, sinon recalculee du fichier. */
+    const montrer = (blob?: Blob) => {
+      const connue = analyses.current.get(cle);
+      if (connue) {
+        setAnalysis(connue);
+        return;
+      }
+      if (!blob) return;
+      void analyzeTake(blob)
+        .then((resultat) => {
+          analyses.current.set(cle, resultat);
+          if (!cancelled) setAnalysis(resultat);
+        })
+        .catch(() => undefined);
+    };
+
     if (brut.current?.cle === cle) {
       setHasTakeAudio(true);
       setPlacement(brut.current.offsetMs);
+      montrer(brut.current.blob);
       return;
     }
     const locale = priseLocale.current;
     if (locale && locale.takeId === cle) {
-      brut.current = { cle, promesse: decoderPrise(locale.blob), offsetMs: currentTake.offset_ms };
+      brut.current = {
+        cle,
+        promesse: decoderPrise(locale.blob),
+        offsetMs: currentTake.offset_ms,
+        blob: locale.blob,
+      };
       setHasTakeAudio(true);
       setPlacement(currentTake.offset_ms);
+      montrer(locale.blob);
       return;
     }
 
@@ -395,11 +428,10 @@ export function StudioScreen() {
         if (cancelled) return;
         const promesse = decoderPrise(blob);
         promesse.catch(() => undefined);
-        brut.current = { cle, promesse, offsetMs: currentTake.offset_ms };
+        brut.current = { cle, promesse, offsetMs: currentTake.offset_ms, blob };
         setHasTakeAudio(true);
         setPlacement(currentTake.offset_ms);
-        const result = await analyzeTake(blob);
-        if (!cancelled) setAnalysis(result);
+        montrer(blob);
       } catch {
         // La forme d'onde est un confort : son echec ne doit pas
         // empecher de refaire la prise.
@@ -518,6 +550,8 @@ export function StudioScreen() {
       if (locale?.blob === input.blob) {
         locale.takeId = take.id;
         if (brut.current?.cle === 'locale') brut.current = { ...brut.current, cle: take.id };
+        const analyse = analyses.current.get('locale');
+        if (analyse) analyses.current.set(take.id, analyse);
       }
 
       /*
@@ -623,9 +657,10 @@ export function StudioScreen() {
     if (retard !== null) offsetMs -= Math.round(retard) + MIC_OFFSET_BASELINE_MS;
 
     priseLocale.current = { takeId: null, blob };
+    analyses.current.set('locale', analysed);
     const promesse = decoderPrise(blob);
     promesse.catch(() => undefined);
-    brut.current = { cle: 'locale', promesse, offsetMs };
+    brut.current = { cle: 'locale', promesse, offsetMs, blob };
     setHasTakeAudio(true);
     setPlacement(offsetMs);
 

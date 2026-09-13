@@ -107,25 +107,25 @@ export const fr = {
     seoTitle: 'Le jeu de doublage de films entre amis',
     defineTitle: 'Qu’est-ce que le doublage d’une scène de film ?',
     defineBody:
-      'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. Dub’Up est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
+      'Doubler une scène de film, c’est remplacer les voix d’origine par les siennes en gardant tout le reste : l’image, la musique, les bruitages, le rythme. Le résultat n’est pas un commentaire posé par-dessus, c’est la scène elle-même, avec d’autres comédiens. Dubblers est un logiciel de doublage en ligne qui fait ce travail dans le navigateur, sans rien installer.',
     defineHowTitle: 'Comment doubler une scène de film soi-même',
     defineHowBody:
-      'Il faut trois choses que personne n’a chez soi : séparer les voix de la musique pour ne remplacer que les voix, savoir qui parle et quand à la milliseconde, et se synchroniser en parlant. Dub’Up fait les deux premières automatiquement à partir de la scène, et résout la troisième avec une bande rythmo, le texte défilant sous une tête de lecture qu’utilisent les studios de doublage professionnels depuis quatre-vingts ans.',
+      'Il faut trois choses que personne n’a chez soi : séparer les voix de la musique pour ne remplacer que les voix, savoir qui parle et quand à la milliseconde, et se synchroniser en parlant. Dubblers fait les deux premières automatiquement à partir de la scène, et résout la troisième avec une bande rythmo, le texte défilant sous une tête de lecture qu’utilisent les studios de doublage professionnels depuis quatre-vingts ans.',
     defineWhoTitle: 'À qui ça sert',
     defineWhoBody:
       'Aux groupes d’amis qui veulent refaire une réplique culte, aux amateurs de fandub qui cherchent un outil sans montage, aux professeurs de langue qui font doubler un extrait à leur classe, et à ceux qui apprennent le doublage et veulent s’entraîner sur une bande rythmo sans louer un studio.',
     faqExtra: [
       {
         q: 'Est-ce que c’est gratuit ?',
-        a: 'Oui. Dub’Up est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
+        a: 'Oui. Dubblers est un projet personnel, sans publicité, sans abonnement et sans limite de scènes.',
       },
       {
         q: 'C’est quoi, la communauté ?',
-        a: 'Le catalogue des scènes déjà préparées par d’autres joueurs : personnages, texte et découpage sont prêts. Tu apportes la vidéo, et le lobby s’ouvre en quelques minutes. Les vidéos et les voix ne sont jamais partagées.',
+        a: 'Le catalogue des scènes déjà préparées par d’autres joueurs : personnages, texte, découpage et son sont prêts. Tu apportes la vidéo, et le lobby s’ouvre en une minute environ. Les vidéos et vos voix ne sont jamais partagées.',
       },
       {
         q: 'Quelle différence avec un montage vidéo classique ?',
-        a: 'Un logiciel de montage te laisse une timeline vide. Dub’Up part de la scène : il sépare les voix de la musique, repère les répliques, les attribue aux personnages et cale tes prises tout seul.',
+        a: 'Un logiciel de montage te laisse une timeline vide. Dubblers part de la scène : il sépare les voix de la musique, repère les répliques, les attribue aux personnages et cale tes prises tout seul.',
       },
       {
         q: 'Peut-on doubler une scène en anglais depuis le français ?',
@@ -159,7 +159,7 @@ export const fr = {
       },
       {
         q: 'Qu’est-ce qu’on garde à la fin ?',
-        a: 'Une vidéo avec vos voix, que tu peux télécharger et partager pendant une heure. Ensuite elle est supprimée, comme vos enregistrements et la vidéo d’origine : rien ne traîne sur nos serveurs.',
+        a: 'Une vidéo avec vos voix, que tu peux télécharger et partager pendant une heure, et une scène que vous pouvez redoubler aussitôt avec les mêmes joueurs. Ensuite tout est supprimé, vos enregistrements et la vidéo d’origine compris : rien ne traîne sur nos serveurs.',
       },
       {
         q: 'Je peux inviter qui je veux ?',
@@ -191,7 +191,7 @@ export const fr = {
     openSource: 'Ouvrir la source',
     kindRecipe: 'Recette',
     kindMedia: 'Fichiers gardés',
-    recipeHelp: 'Les vidéos ne sont pas hébergées ici : seul le découpage de chaque scène est conservé. Pour en doubler une, tu apportes sa vidéo, et tout se prépare en ligne en quelques minutes.',
+    recipeHelp: 'Les vidéos ne sont pas hébergées ici : chaque scène garde son découpage et son son d’origine. Pour en doubler une, tu apportes sa vidéo, et le lobby s’ouvre en une minute environ.',
     mediaHelp: 'Scène hébergée ici : elle démarre immédiatement.',
     mine: 'La tienne',
     voteUp: 'Cette scène est bien découpée',
@@ -271,7 +271,7 @@ export const fr = {
     publish: 'Publier dans la communauté',
     published: 'Cette scène est dans la communauté',
     seeInCommunity: 'Voir dans la communauté',
-    publishRecipeHelp: 'Seuls le lien d’origine et le découpage sont partagés. La vidéo n’est jamais hébergée ici.',
+    publishRecipeHelp: 'Le lien d’origine, le découpage et le son de la scène sont partagés. La vidéo n’est jamais hébergée ici, et vos voix ne sont jamais partagées.',
     publishFromCatalogue:
       'Cette scène vient du catalogue : elle y est déjà. La republier en ferait un doublon que personne ne saurait départager.',
     pickLang: 'Choisir la langue…',
@@ -282,7 +282,7 @@ export const fr = {
     tagsHelp: 'Jusqu’à 10 tags, séparés par une espace ou une virgule. On retrouve la scène en tapant #starwars dans la recherche.',
     tagRemove: (tag: string) => `Retirer #${tag}`,
     tagSearch: (tag: string) => `Voir les scènes #${tag}`,
-    publishUploadHelp: 'Seuls le découpage, les personnages et le texte seront partagés. Ta vidéo reste chez toi : ceux qui rejoueront la scène apporteront la leur.',
+    publishUploadHelp: 'Le découpage, les personnages, le texte et le son de la scène sont partagés. Ta vidéo reste chez toi : ceux qui rejoueront la scène apporteront la leur.',
     publishMissing: 'Renseigne le titre, le lien, la langue et le genre pour publier.',
     searchPlaceholder: 'Titre, personnage, #tag…',
     searchLabel: 'Rechercher une scène',
@@ -303,7 +303,7 @@ export const fr = {
     detailScript: 'Le début du texte',
     detailScriptMore: (n: number) => (n === 1 ? '… et une autre réplique, à découvrir en jouant.' : `… et ${n} autres répliques, à découvrir en jouant.`),
     detailVideoTitle: 'Il te faudra la vidéo',
-    detailVideoBody: 'Le catalogue ne garde que le découpage. Récupère la vidéo depuis le lien d’origine, ou d’où tu veux, puis importe-la : le guide montre comment en cinq minutes.',
+    detailVideoBody: 'Le catalogue garde le découpage et le son, pas la vidéo. Récupère-la depuis le lien d’origine, ou d’où tu veux, puis importe-la : le guide montre comment en cinq minutes.',
     detailNoSource: 'Cette scène a été préparée à partir d’un fichier : elle n’a pas de lien d’origine. Retrouve le même extrait de ton côté, puis importe-le : le guide montre comment.',
     detailVideoAction: 'Lire le guide d’import',
     commentsTitle: 'Commentaires',
@@ -339,7 +339,7 @@ export const fr = {
       },
       {
         title: 'Importe et vérifie',
-        body: 'Dub’Up sépare les voix et découpe les répliques. Tu corriges les personnages et le texte.',
+        body: 'Dubblers sépare les voix et découpe les répliques. Tu corriges les personnages et le texte.',
       },
       {
         title: 'Publie, puis joue',
@@ -360,7 +360,7 @@ export const fr = {
     linkHelp: 'YouTube ou n’importe quel site : il sert d’aperçu, et c’est là que les autres récupèrent la vidéo pour rejouer la scène.',
     linkInvalid: 'Ce lien ne semble pas valide : il doit commencer par https://',
     publishAskTitle: 'Partager ce pack avec la communauté ?',
-    publishAskBody: 'Ton découpage peut servir à d’autres groupes : ils rejoueront la scène avec leur propre vidéo. Seuls le lien et le découpage sont partagés, jamais vos voix.',
+    publishAskBody: 'Ton découpage peut servir à d’autres groupes : ils rejoueront la scène avec leur propre vidéo. Le lien, le découpage et le son d’origine sont partagés, jamais vos voix.',
     publishAskYes: 'Oui, publier',
     publishAskNo: 'Non merci',
     publishLater: 'Pas de partage pour cette scène. Tu peux changer d’avis à tout moment depuis cet écran.',
@@ -510,7 +510,7 @@ export const fr = {
     join: 'Rejoindre',
     storageTitle: 'Espace utilisé',
     storageHelp:
-      'La vidéo d’origine et les enregistrements sont effacés dès que la vidéo finale est prête : seule celle-ci occupe de la place, et une heure seulement.',
+      'La vidéo d’origine, le son séparé et les prises sont effacés une heure après le montage, en même temps que la vidéo finale. Supprimer une scène libère sa place tout de suite.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'Aucune scène ne correspond à ce code.',
     joining: 'Entrée dans la scène…',
@@ -556,7 +556,7 @@ export const fr = {
     uploading: 'Envoi du fichier…',
     subtitle: 'Deux façons de commencer : importer ta vidéo pour une scène toute neuve, ou reprendre une scène que le groupe a déjà préparée.',
     introUpload: 'Une scène neuve, préparée de zéro à partir de ta vidéo, d’où qu’elle vienne : un film, une série, un clip YouTube ou TikTok, un enregistrement d’écran…',
-    introPack: 'Personnages et répliques sont déjà prêts : tu apportes la vidéo, et le lobby s’ouvre en deux minutes environ.',
+    introPack: 'Personnages, répliques et son sont déjà prêts : tu apportes la vidéo, et le lobby s’ouvre en une minute environ.',
     introYoutube: 'Réservé aux administrateurs : la vidéo est récupérée par l’ordinateur de l’hôte, qui doit être allumé.',
     limits: 'Tous formats vidéo · 50 Mo et 10 minutes au plus',
     uploadStepsTitle: 'Comment ça se passe',
@@ -877,10 +877,17 @@ export const fr = {
     expiresSoon: 'Cette vidéo va être supprimée d’un instant à l’autre. Télécharge-la maintenant si tu veux la garder.',
     expiredTitle: 'La vidéo a été supprimée',
     expiredBody: 'Les scènes terminées sont effacées une heure après le montage : rien n’est gardé sur nos serveurs. Pour garder une scène, il faut la télécharger avant.',
+    redoTitle: 'On la refait ?',
+    redoBody: 'Même scène, mêmes joueurs : tout le monde repart au lobby, chacun peut changer de personnage, et rien n’est à préparer.',
+    redoAction: 'Redoubler la scène',
+    redoConfirmTitle: 'Lancer une nouvelle manche ?',
+    redoConfirmBody: 'Tout le monde repart au lobby avec la même scène. Les prises de cette manche sont effacées et la vidéo actuelle sera supprimée : télécharge-la avant si tu veux la garder.',
+    redoGuest: 'L’hôte peut relancer une manche : vous repartirez tous au lobby, avec la même scène.',
+    redoUnavailable: 'Les fichiers de cette scène ont été effacés : pour la rejouer, reprends-la depuis la communauté ou importe de nouveau la vidéo.',
   },
 
   packStart: {
-    intro: 'Le catalogue ne garde que le découpage de cette scène : sa vidéo doit être apportée. Deux façons de faire.',
+    intro: 'Le catalogue garde le découpage et le son de cette scène, pas sa vidéo : il faut l’apporter. Deux façons de faire.',
     fileTitle: 'Importer et doubler',
     fileBody: 'Dépose la vidéo de la scène, d’où qu’elle vienne et dans n’importe quel format : l’import démarre tout seul, puis la scène s’ouvre. Le texte et les personnages du pack sont repris tels quels.',
     openSource: 'Voir la vidéo d’origine',
@@ -894,7 +901,7 @@ export const fr = {
     autoBody: 'L’ordinateur de l’hôte récupère la vidéo depuis YouTube : il doit être allumé.',
     autoSubmit: 'Lancer le téléchargement',
     mediaBody: 'Cette scène est hébergée ici : elle démarre tout de suite.',
-    introMember: 'Le catalogue ne garde que le découpage de cette scène : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
+    introMember: 'Le catalogue garde le découpage et le son de cette scène : apporte sa vidéo, et le lobby s’ouvre en une minute environ.',
     importAnyway: 'Importer quand même',
     otherFile: 'Choisir un autre fichier',
   },
@@ -903,7 +910,7 @@ export const fr = {
     metaTitle: 'Importer la vidéo d’une scène',
     kicker: 'Guide',
     heroTitle: 'Importer ta vidéo, d’où qu’elle vienne',
-    heroBody: 'Dub’Up accepte n’importe quel fichier vidéo, quels que soient son format et sa source : YouTube, TikTok, un film sur ton disque, un enregistrement d’écran. Les scènes du catalogue ne gardent que leur découpage : pour en doubler une, tu apportes la vidéo. Quatre étapes, cinq minutes.',
+    heroBody: 'Dubblers accepte n’importe quel fichier vidéo, quels que soient son format et sa source : YouTube, TikTok, un film sur ton disque, un enregistrement d’écran. Les scènes du catalogue gardent leur découpage et leur son, pas l’image : pour en doubler une, tu apportes la vidéo. Quatre étapes, cinq minutes.',
     ctaPrimary: 'Choisir une scène',
     ctaSecondary: 'Pourquoi cette étape ?',
     stepsTitle: 'En quatre étapes',
@@ -918,7 +925,7 @@ export const fr = {
       },
       {
         title: 'Vérifie la durée',
-        body: 'La vidéo doit être exactement celle du pack : même début, même fin. Dub’Up compare la durée et te prévient si elle diffère.',
+        body: 'La vidéo doit être exactement celle du pack : même début, même fin. Dubblers compare la durée et te prévient si elle diffère.',
       },
       {
         title: 'Importe et double',
@@ -933,7 +940,7 @@ export const fr = {
       '10 minutes au plus',
     ],
     whyTitle: 'Pourquoi cette étape ?',
-    whyBody: 'Dub’Up n’héberge aucune œuvre : le catalogue garde le découpage, jamais la vidéo. Et la plupart des plateformes refusent les téléchargements venus de serveurs. Tu apportes donc le fichier, et tout le reste se fait en ligne.',
+    whyBody: 'Dubblers n’héberge pas les vidéos : le catalogue garde le découpage et le son, jamais l’image. Et la plupart des plateformes refusent les téléchargements venus de serveurs. Tu apportes donc le fichier, et tout le reste se fait en ligne.',
     wayFileTitle: 'Tu importes le fichier',
     wayFileBody: 'Marche à toute heure, sans rien installer. La préparation se fait en ligne, en deux minutes environ.',
     faqTitle: 'Questions fréquentes',
@@ -1085,7 +1092,7 @@ export const fr = {
     prepare: {
       title: 'Préparer une scène avant le lobby',
       summary: 'Renommer les personnages, fusionner les doublons, corriger le texte : la scène au propre avant d’inviter.',
-      intro: 'Après l’import, Dub’Up détecte les personnages et découpe les répliques. Quelques minutes de vérification, et chacun saura exactement quoi jouer.',
+      intro: 'Après l’import, Dubblers détecte les personnages et découpe les répliques. Quelques minutes de vérification, et chacun saura exactement quoi jouer.',
       readingTime: '3 min de lecture',
       stepsTitle: 'En quatre étapes',
       steps: [
@@ -1121,7 +1128,7 @@ export const fr = {
     publish: {
       title: 'Partager une scène avec la communauté',
       summary: 'Titre, langue, genre et tags : publier une scène pour que d’autres groupes la rejouent.',
-      intro: 'Une scène bien préparée peut servir à d’autres groupes. Publier ne partage que le découpage : les personnages, le texte et les repères. Jamais la vidéo, jamais vos voix.',
+      intro: 'Une scène bien préparée peut servir à d’autres groupes. Publier partage le découpage (personnages, texte, repères) et le son de la scène d’origine. Jamais la vidéo, jamais vos voix.',
       readingTime: '3 min de lecture',
       stepsTitle: 'En quatre étapes',
       steps: [
@@ -1194,13 +1201,13 @@ export const fr = {
 
   cookies: {
     bannerTitle: 'Un mot sur les cookies',
-    bannerBody: 'Dub’Up n’utilise que les cookies nécessaires à ta connexion. Avec ton accord, il retient aussi tes préférences : ta langue, ton adresse de connexion, tes réglages du studio. Aucune pub, aucun suivi.',
+    bannerBody: 'Dubblers n’utilise que les cookies nécessaires à ta connexion. Avec ton accord, il retient aussi tes préférences : ta langue, ton adresse de connexion, tes réglages du studio. Aucune pub, aucun suivi.',
     policyLink: 'En savoir plus',
     customize: 'Personnaliser',
     refuse: 'Refuser',
     accept: 'Tout accepter',
     settingsTitle: 'Gérer les cookies',
-    settingsBody: 'Choisis ce que Dub’Up peut garder dans ton navigateur. Tu peux changer d’avis à tout moment depuis le bas de chaque page.',
+    settingsBody: 'Choisis ce que Dubblers peut garder dans ton navigateur. Tu peux changer d’avis à tout moment depuis le bas de chaque page.',
     essentialTitle: 'Essentiels',
     essentialBody: 'Ta session de connexion et ce choix. Indispensables, toujours actifs.',
     preferencesTitle: 'Préférences',

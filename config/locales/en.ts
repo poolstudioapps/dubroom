@@ -110,25 +110,25 @@ export const en = {
     seoTitle: 'The movie dubbing game to play with friends',
     defineTitle: 'What is dubbing a film scene?',
     defineBody:
-      'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. Dub’Up is online dubbing software that does this work in the browser, with nothing to install.',
+      'Dubbing a film scene means replacing the original voices with your own while keeping everything else: the picture, the music, the sound effects, the rhythm. The result is not commentary laid over the top, it is the scene itself, with different actors. Dubblers is online dubbing software that does this work in the browser, with nothing to install.',
     defineHowTitle: 'How to dub a film scene yourself',
     defineHowBody:
-      'It takes three things nobody has at home: separating the voices from the music so that only the voices are replaced, knowing who speaks and when to the millisecond, and staying in sync while talking. Dub’Up does the first two automatically from the scene, and solves the third with a rythmo band, the scrolling text under a playhead that professional dubbing studios have used for eighty years.',
+      'It takes three things nobody has at home: separating the voices from the music so that only the voices are replaced, knowing who speaks and when to the millisecond, and staying in sync while talking. Dubblers does the first two automatically from the scene, and solves the third with a rythmo band, the scrolling text under a playhead that professional dubbing studios have used for eighty years.',
     defineWhoTitle: 'Who it is for',
     defineWhoBody:
       'Groups of friends who want to redo a famous line, fandub makers looking for a tool that is not a video editor, language teachers having a class dub an extract, and anyone learning voice acting who wants to practise on a rythmo band without renting a studio.',
     faqExtra: [
       {
         q: 'Is it free?',
-        a: 'Yes. Dub’Up is a personal project, with no ads, no subscription and no limit on scenes.',
+        a: 'Yes. Dubblers is a personal project, with no ads, no subscription and no limit on scenes.',
       },
       {
         q: 'What is the community?',
-        a: 'The catalogue of scenes already prepared by other players: characters, text and timing are ready. You bring the video, and the lobby opens within minutes. Videos and voices are never shared.',
+        a: 'The catalogue of scenes already prepared by other players: characters, text, timing and sound are ready. You bring the video, and the lobby opens in about a minute. Videos and your voices are never shared.',
       },
       {
         q: 'How is it different from regular video editing?',
-        a: 'Editing software gives you an empty timeline. Dub’Up starts from the scene: it separates the voices from the music, finds the lines, assigns them to characters and lines up your takes by itself.',
+        a: 'Editing software gives you an empty timeline. Dubblers starts from the scene: it separates the voices from the music, finds the lines, assigns them to characters and lines up your takes by itself.',
       },
       {
         q: 'Can we dub a scene in another language?',
@@ -162,7 +162,7 @@ export const en = {
       },
       {
         q: 'What do we keep at the end?',
-        a: 'A video with your voices, which you can download and share for one hour. After that it is deleted, like your recordings and the original video: nothing lingers on our servers.',
+        a: 'A video with your voices, which you can download and share for one hour, and a scene you can dub again right away with the same players. After that everything is deleted, your recordings and the original video included: nothing lingers on our servers.',
       },
       {
         q: 'Can I invite anyone I want?',
@@ -194,7 +194,7 @@ export const en = {
     openSource: 'Open the source',
     kindRecipe: 'Recipe',
     kindMedia: 'Files kept',
-    recipeHelp: 'Videos are not hosted here: only each scene’s preparation is kept. To dub one, you bring its video, and everything is prepared online in a few minutes.',
+    recipeHelp: 'Videos are not hosted here: each scene keeps its timing and its original sound. To dub one, you bring its video, and the lobby opens in about a minute.',
     mediaHelp: 'Scene hosted here: it starts straight away.',
     mine: 'Yours',
     voteUp: 'This scene is cut well',
@@ -273,7 +273,7 @@ export const en = {
     publish: 'Publish to the community',
     published: 'This scene is in the community',
     seeInCommunity: 'See it in the community',
-    publishRecipeHelp: 'Only the original link and the breakdown are shared. The video is never hosted here.',
+    publishRecipeHelp: 'The original link, the timing and the scene’s sound are shared. The video is never hosted here, and your voices are never shared.',
     publishFromCatalogue:
       'This scene comes from the catalogue: it is already there. Publishing it again would leave two copies nobody can tell apart.',
     pickLang: 'Choose the language…',
@@ -284,7 +284,7 @@ export const en = {
     tagsHelp: 'Up to 10 tags, separated by a space or a comma. People find the scene by typing #starwars in the search.',
     tagRemove: (tag: string) => `Remove #${tag}`,
     tagSearch: (tag: string) => `See #${tag} scenes`,
-    publishUploadHelp: 'Only the characters, the text and the timing are shared. Your video stays with you: people who replay the scene bring their own.',
+    publishUploadHelp: 'The timing, characters, text and the scene’s sound are shared. Your video stays with you: those who replay the scene will bring their own.',
     publishMissing: 'Fill in the title, link, language and genre to publish.',
     searchPlaceholder: 'Title, character, #tag…',
     searchLabel: 'Search scenes',
@@ -305,7 +305,7 @@ export const en = {
     detailScript: 'How the script starts',
     detailScriptMore: (n: number) => (n === 1 ? '… and one more line to discover as you play.' : `… and ${n} more lines to discover as you play.`),
     detailVideoTitle: 'You will need the video',
-    detailVideoBody: 'The catalogue only keeps the preparation. Get the video from the original link, or from anywhere you like, then import it: the guide shows how in five minutes.',
+    detailVideoBody: 'The catalogue keeps the timing and the sound, not the video. Get it from the original link, or wherever you like, then import it: the guide shows how in five minutes.',
     detailNoSource: 'This scene was prepared from a file: it has no original link. Find the same clip on your side, then import it: the guide shows how.',
     detailVideoAction: 'Read the import guide',
     commentsTitle: 'Comments',
@@ -341,7 +341,7 @@ export const en = {
       },
       {
         title: 'Import and check',
-        body: 'Dub’Up separates the voices and splits the lines. You fix the characters and the text.',
+        body: 'Dubblers separates the voices and splits the lines. You fix the characters and the text.',
       },
       {
         title: 'Publish, then play',
@@ -362,7 +362,7 @@ export const en = {
     linkHelp: 'YouTube or any site: it’s the preview, and it’s where others get the video to replay the scene.',
     linkInvalid: 'This link doesn’t look valid: it must start with https://',
     publishAskTitle: 'Share this pack with the community?',
-    publishAskBody: 'Your breakdown can help other groups: they’ll replay the scene with their own video. Only the link and the breakdown are shared, never your voices.',
+    publishAskBody: 'Your timing can help other groups: they will replay the scene with their own video. The link, the timing and the original sound are shared, never your voices.',
     publishAskYes: 'Yes, publish',
     publishAskNo: 'No thanks',
     publishLater: 'Not sharing this scene. You can change your mind at any time from this screen.',
@@ -508,7 +508,7 @@ export const en = {
     join: 'Join',
     storageTitle: 'Storage used',
     storageHelp:
-      'The original video and the recordings are erased as soon as the final video is ready: only that video takes up space, and for one hour only.',
+      'The original video, the separated sound and the takes are erased one hour after the edit, together with the final video. Deleting a scene frees its space right away.',
     codePlaceholder: 'ABC234',
     codeNotFound: 'No scene matches that code.',
     joining: 'Joining the scene…',
@@ -554,7 +554,7 @@ export const en = {
     uploading: 'Uploading the file…',
     subtitle: 'Two ways to start: import your video for a brand-new scene, or pick up a scene the group has already prepared.',
     introUpload: 'A brand-new scene, prepared from scratch from your video, wherever it comes from: a film, a series, a YouTube or TikTok clip, a screen recording…',
-    introPack: 'Characters and lines are already set: you bring the video, and the lobby opens in about two minutes.',
+    introPack: 'Characters, lines and sound are ready: you bring the video, and the lobby opens in about a minute.',
     introYoutube: 'Administrators only: the video is fetched by the host’s computer, which must be switched on.',
     limits: 'Any video format · 50 MB and 10 minutes at most',
     uploadStepsTitle: 'How it works',
@@ -872,10 +872,17 @@ export const en = {
     expiresSoon: 'This video is about to be deleted. Download it now if you want to keep it.',
     expiredTitle: 'The video has been deleted',
     expiredBody: 'Finished scenes are erased one hour after the edit: nothing is kept on our servers. To keep a scene, download it before then.',
+    redoTitle: 'Go again?',
+    redoBody: 'Same scene, same players: everyone goes back to the lobby, anyone can switch characters, and there is nothing to prepare.',
+    redoAction: 'Dub the scene again',
+    redoConfirmTitle: 'Start a new round?',
+    redoConfirmBody: 'Everyone goes back to the lobby with the same scene. This round’s takes are erased and the current video will be deleted: download it first if you want to keep it.',
+    redoGuest: 'The host can start a new round: you will all go back to the lobby with the same scene.',
+    redoUnavailable: 'This scene’s files have been erased: to play it again, start it from the community or import the video again.',
   },
 
   packStart: {
-    intro: 'The catalogue only keeps this scene’s preparation: its video has to be brought. Two ways to do it.',
+    intro: 'The catalogue keeps this scene’s timing and sound, not its video: you need to bring it. There are two ways.',
     fileTitle: 'Import and dub',
     fileBody: 'Drop the scene’s video, whatever its source or format: the import starts on its own, then the scene opens. The pack’s text and characters are reused as they are.',
     openSource: 'See the original video',
@@ -889,7 +896,7 @@ export const en = {
     autoBody: 'The host’s computer fetches the video from YouTube: it must be switched on.',
     autoSubmit: 'Start the download',
     mediaBody: 'This scene is hosted here: it starts right away.',
-    introMember: 'The catalogue only keeps this scene’s preparation: bring its video, and everything is prepared online with the pack’s text and characters.',
+    introMember: 'The catalogue keeps this scene’s timing and sound: bring its video, and the lobby opens in about a minute.',
     importAnyway: 'Import anyway',
     otherFile: 'Choose another file',
   },
@@ -898,7 +905,7 @@ export const en = {
     metaTitle: 'Import a scene’s video',
     kicker: 'Guide',
     heroTitle: 'Import your video, wherever it comes from',
-    heroBody: 'Dub’Up accepts any video file, whatever its format or source: YouTube, TikTok, a film on your drive, a screen recording. Catalogue scenes only keep their preparation: to dub one, you bring the video. Four steps, five minutes.',
+    heroBody: 'Dubblers accepts any video file, whatever its format and source: YouTube, TikTok, a film on your drive, a screen recording. Catalogue scenes keep their timing and sound, not the picture: to dub one, you bring the video. Four steps, five minutes.',
     ctaPrimary: 'Choose a scene',
     ctaSecondary: 'Why this step?',
     stepsTitle: 'In four steps',
@@ -913,7 +920,7 @@ export const en = {
       },
       {
         title: 'Check the duration',
-        body: 'The video must be exactly the pack’s: same start, same end. Dub’Up compares the duration and warns you if it differs.',
+        body: 'The video must be exactly the pack’s: same start, same end. Dubblers compares the duration and warns you if it differs.',
       },
       {
         title: 'Import and dub',
@@ -928,7 +935,7 @@ export const en = {
       '10 minutes at most',
     ],
     whyTitle: 'Why this step?',
-    whyBody: 'Dub’Up hosts no works: the catalogue keeps the preparation, never the video. And most platforms refuse downloads coming from servers. So you bring the file, and everything else happens online.',
+    whyBody: 'Dubblers does not host videos: the catalogue keeps the timing and the sound, never the picture. And most platforms refuse downloads coming from servers. So you bring the file, and everything else happens online.',
     wayFileTitle: 'You import the file',
     wayFileBody: 'Works at any time, with nothing to install. Preparation runs online, in about two minutes.',
     faqTitle: 'Frequently asked questions',
@@ -1080,7 +1087,7 @@ export const en = {
     prepare: {
       title: 'Prepare a scene before the lobby',
       summary: 'Rename characters, merge duplicates, fix the text: a clean scene before you invite anyone.',
-      intro: 'After the import, Dub’Up detects the characters and splits the lines. A few minutes of checking, and everyone will know exactly what to play.',
+      intro: 'After the import, Dubblers detects the characters and splits the lines. A few minutes of checking, and everyone will know exactly what to play.',
       readingTime: '3 min read',
       stepsTitle: 'In four steps',
       steps: [
@@ -1116,7 +1123,7 @@ export const en = {
     publish: {
       title: 'Share a scene with the community',
       summary: 'Title, language, genre and tags: publish a scene so other groups can replay it.',
-      intro: 'A well-prepared scene can serve other groups. Publishing only shares the preparation: characters, text and timings. Never the video, never your voices.',
+      intro: 'A well-prepared scene can help other groups. Publishing shares the timing (characters, text, cues) and the original scene’s sound. Never the video, never your voices.',
       readingTime: '3 min read',
       stepsTitle: 'In four steps',
       steps: [
@@ -1189,13 +1196,13 @@ export const en = {
 
   cookies: {
     bannerTitle: 'A word about cookies',
-    bannerBody: 'Dub’Up only uses the cookies needed to keep you signed in. With your consent, it also remembers your preferences: your language, your sign-in address, your studio settings. No ads, no tracking.',
+    bannerBody: 'Dubblers only uses the cookies needed to keep you signed in. With your consent, it also remembers your preferences: your language, your sign-in address, your studio settings. No ads, no tracking.',
     policyLink: 'Learn more',
     customize: 'Customize',
     refuse: 'Refuse',
     accept: 'Accept all',
     settingsTitle: 'Manage cookies',
-    settingsBody: 'Choose what Dub’Up may keep in your browser. You can change your mind at any time from the bottom of every page.',
+    settingsBody: 'Choose what Dubblers may keep in your browser. You can change your mind at any time from the bottom of every page.',
     essentialTitle: 'Essential',
     essentialBody: 'Your sign-in session and this choice. Required, always on.',
     preferencesTitle: 'Preferences',

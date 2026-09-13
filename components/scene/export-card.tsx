@@ -5,7 +5,7 @@ import { Download, Loader2, Share2 } from 'lucide-react';
 
 import { Alert, Button, Card } from '@/components/ui';
 import { useSceneCtx } from '@/components/scene-page';
-import { formatBytes } from '@/config/strings';
+import { APP_NAME, formatBytes } from '@/config/strings';
 import { useRenderUrl } from '@/lib/data';
 import { useT } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -32,7 +32,7 @@ export function ExportCard() {
 
   const rendu = useRenderUrl(session);
   const url = rendu.data ?? null;
-  const titre = session.title ?? 'Dub’Up';
+  const titre = session.title ?? APP_NAME;
   const fichier = `${titre}.mp4`;
 
   const [partage, setPartage] = useState<'idle' | 'working' | 'unsupported'>('idle');

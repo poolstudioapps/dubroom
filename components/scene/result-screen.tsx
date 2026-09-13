@@ -6,6 +6,7 @@ import { Clock, Hourglass } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { ExportCard } from '@/components/scene/export-card';
 import { PublishCard } from '@/components/scene/publish-card';
+import { RedoCard } from '@/components/scene/redo-card';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
@@ -96,6 +97,9 @@ export function ResultScreen() {
           <ExportCard />
         </>
       )}
+
+      {/* La suite la plus naturelle, juste sous la scene : la rejouer. */}
+      <RedoCard />
 
       {/* La question du partage vient juste apres la scene, pendant qu'on
           l'a encore sous les yeux : plus bas, elle passait inapercue. */}

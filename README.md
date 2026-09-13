@@ -1,4 +1,4 @@
-# Dub’Up
+# Dubblers
 
 Studio de doublage collaboratif dans le navigateur. Une scène de film, des amis,
 chacun prend un personnage, enregistre ses répliques de son côté, et on découvre
