@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check, Clapperboard, Library, Sparkles } from 'lucide-react';
 
@@ -6,6 +7,7 @@ import { Carousel, type Slide } from '@/components/carousel';
 import { AccountMenu } from '@/components/account-menu';
 import { FaqList } from '@/components/faq-list';
 import { Footer } from '@/components/footer';
+import { HeroBackdrop } from '@/components/hero-backdrop';
 import { HeroRythmo } from '@/components/hero-rythmo';
 import { HomePacksCta } from '@/components/home-packs-cta';
 import { ArtCharacters, ArtImport, ArtRender, ArtRythmo } from '@/components/home-art';
@@ -18,6 +20,17 @@ import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
 import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
+
+/**
+ * Le decalage d'une apparition, lu par la peau cinema.
+ *
+ * Chaque bloc anime porte aussi `suppressHydrationWarning` : le script
+ * d'apparition marque les blocs deja visibles avant que React ne reprenne
+ * la main, et React signalait cet attribut ajoute comme un ecart entre le
+ * serveur et le client. Il est attendu, et il ne concerne que l'element
+ * lui-meme.
+ */
+const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 
 /**
  * Accueil.
@@ -118,29 +131,47 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
+    <div className="relative isolate flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
+      {/* Le film plein cadre de la peau cinema ; rien dans les autres. */}
+      <HeroBackdrop />
       <div className="w-full max-w-[min(84rem,94vw)]">
         <SiteHeader signedIn={!!user} right={user ? <AccountMenu /> : undefined} />
 
         <TvSet>
           <main className="space-y-12 sm:space-y-16">
             {/* ── La promesse, et la preuve, sans faire defiler ─────── */}
-            <section className="grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
+            <section className="hero-accueil grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
               <div className="space-y-5 text-center lg:text-left">
-                <p className="inline-flex items-center gap-2 rounded-full border-2 border-border-strong bg-surface-raised px-3 py-1 text-xs font-bold uppercase tracking-wide text-text-muted">
+                <p
+                  data-reveal suppressHydrationWarning
+                  style={delai(0)}
+                  className="accroche inline-flex items-center gap-2 rounded-full border-2 border-border-strong bg-surface-raised px-3 py-1 text-xs font-bold uppercase tracking-wide text-text-muted"
+                >
                   <Sparkles className="h-3.5 w-3.5" aria-hidden />
                   {t.home.kicker}
                 </p>
 
-                <h1 className="signage text-balance text-4xl leading-[0.95] text-[oklch(0.55_0.17_235)] sm:text-6xl">
+                <h1
+                  data-reveal suppressHydrationWarning
+                  style={delai(90)}
+                  className="signage hero-titre text-balance text-4xl leading-[0.95] text-[oklch(0.55_0.17_235)] sm:text-6xl"
+                >
                   {t.home.heroTitle}
                 </h1>
 
-                <p className="mx-auto max-w-xl text-balance text-base leading-relaxed text-text-muted lg:mx-0">
+                <p
+                  data-reveal suppressHydrationWarning
+                  style={delai(180)}
+                  className="mx-auto max-w-xl text-balance text-base leading-relaxed text-text-muted lg:mx-0"
+                >
                   {t.home.heroBody}
                 </p>
 
-                <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start">
+                <div
+                  data-reveal suppressHydrationWarning
+                  style={delai(270)}
+                  className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start"
+                >
                   <Link
                     href={primaryHref}
                     className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover sm:text-lg"
@@ -171,7 +202,11 @@ export default async function HomePage() {
                 </div>
 
                 {/* Les trois objections qui arrivent avant toute autre. */}
-                <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-1 text-xs font-bold text-text-faint lg:justify-start">
+                <ul
+                  data-reveal suppressHydrationWarning
+                  style={delai(360)}
+                  className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-1 text-xs font-bold text-text-faint lg:justify-start"
+                >
                   {[t.home.reassure1, t.home.reassure2, t.home.reassure3].map(
                     (item) => (
                       <li key={item} className="inline-flex items-center gap-1.5">
@@ -183,12 +218,14 @@ export default async function HomePage() {
                 </ul>
               </div>
 
-              <HeroRythmo />
+              <div data-reveal suppressHydrationWarning style={delai(240)}>
+                <HeroRythmo />
+              </div>
             </section>
 
             {/* ── Ce qu'on y gagne, dit en trois fois ───────────────── */}
             <section className="space-y-4">
-              <h2 className="titre text-xl">
+              <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                 {t.home.valueTitle}
               </h2>
               {/*
@@ -205,10 +242,12 @@ export default async function HomePage() {
                   { nom: 'voix', ...t.home.value1 },
                   { nom: 'secret', ...t.home.value2 },
                   { nom: 'fichier', ...t.home.value3 },
-                ].map(({ nom, title, body }) => (
+                ].map(({ nom, title, body }, rang) => (
                   <Card
                     key={title}
-                    className="flex flex-col items-center gap-3 text-center"
+                    data-reveal suppressHydrationWarning
+                    style={delai(rang * 120)}
+                    className="carte-valeur flex flex-col items-center gap-3 text-center"
                   >
                     <span className={`icone icone-${nom} h-20 w-20`} aria-hidden />
                     <h3 className="text-base font-bold text-balance">{title}</h3>
@@ -220,15 +259,20 @@ export default async function HomePage() {
 
             {/* ── Le deroule ─────────────────────────────────────────── */}
             <section className="space-y-4">
-              <h2 className="titre text-xl">
+              <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                 {t.home.howTitle}
               </h2>
-              <Carousel slides={slides} />
+              <div data-reveal suppressHydrationWarning>
+                <Carousel slides={slides} />
+              </div>
             </section>
 
             {/* Rappel de l'action, a mi-parcours : on decide rarement en
                 haut de page, et personne ne remonte pour chercher. */}
-            <section className="rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-6 text-center">
+            <section
+              data-reveal suppressHydrationWarning
+              className="appel-final rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-6 text-center"
+            >
               <p className="mx-auto max-w-xl text-balance text-lg font-bold">
                 {t.home.midCta}
               </p>
@@ -257,8 +301,8 @@ export default async function HomePage() {
               qu'on sait deja de quoi on parle.
             */}
             <section className="space-y-6">
-              <article className="space-y-2">
-                <h2 className="titre text-xl">
+              <article data-reveal suppressHydrationWarning className="space-y-2">
+                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                   {t.home.defineTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -266,8 +310,8 @@ export default async function HomePage() {
                 </p>
               </article>
 
-              <article className="space-y-2">
-                <h2 className="titre text-xl">
+              <article data-reveal suppressHydrationWarning className="space-y-2">
+                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                   {t.home.defineHowTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -275,8 +319,8 @@ export default async function HomePage() {
                 </p>
               </article>
 
-              <article className="space-y-2">
-                <h2 className="titre text-xl">
+              <article data-reveal suppressHydrationWarning className="space-y-2">
+                <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                   {t.home.defineWhoTitle}
                 </h2>
                 <p className="max-w-prose text-sm leading-relaxed text-text-muted">
@@ -287,13 +331,15 @@ export default async function HomePage() {
 
             {/* ── Les questions qui restent ──────────────────────────── */}
             <section className="space-y-4">
-              <h2 className="titre text-xl">
+              <h2 data-reveal suppressHydrationWarning className="titre titre-section text-xl">
                 {t.home.faqTitle}
               </h2>
-              <FaqList items={[...t.home.faq, ...t.home.faqExtra]} />
+              <div data-reveal suppressHydrationWarning>
+                <FaqList items={[...t.home.faq, ...t.home.faqExtra]} />
+              </div>
             </section>
 
-            <Card className="space-y-2">
+            <Card data-reveal suppressHydrationWarning className="space-y-2">
               <h2 className="text-sm font-bold">{t.home.privateTitle}</h2>
               <p className="text-sm leading-relaxed text-text-muted">
                 {t.home.privateBody}

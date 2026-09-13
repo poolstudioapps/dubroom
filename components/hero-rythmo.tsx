@@ -65,7 +65,7 @@ export function HeroRythmo() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-card border-2 border-bezel-dark bg-stage"
+      className="vitrine-rythmo relative overflow-hidden rounded-card border-2 border-bezel-dark bg-stage"
       role="img"
       aria-label={t.home.rythmoLabel}
     >
@@ -115,7 +115,7 @@ export function HeroRythmo() {
           aria-hidden
         />
         <span className="text-xs font-bold uppercase tracking-wide text-stage-faint">
-          tu doubles
+          {t.home.youDub}
         </span>
         <span className="text-sm font-bold text-stage-text">{line.name}</span>
       </div>

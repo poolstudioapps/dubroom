@@ -57,6 +57,7 @@ export const en = {
   },
 
   home: {
+    youDub: 'you dub',
     originalScene: 'the original scene',
     demoLines: [
       { name: 'Alba', text: 'Are you sure this is the right door?' },
@@ -274,6 +275,7 @@ export const en = {
   },
 
   theme: {
+    cinema: 'Cinema',
     label: 'Look',
     retro: 'Retro',
     modern: 'Modern',

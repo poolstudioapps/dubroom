@@ -52,6 +52,7 @@ export const ko = {
   },
 
   home: {
+    youDub: '내 역할',
     originalScene: '원본 장면',
     demoLines: [
       { name: 'Alba', text: '이 문이 맞는 거 확실해?' },
@@ -267,6 +268,7 @@ export const ko = {
   },
 
   theme: {
+    cinema: '시네마',
     label: '디자인',
     retro: '레트로',
     modern: '모던',

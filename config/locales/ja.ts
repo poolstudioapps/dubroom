@@ -53,6 +53,7 @@ export const ja = {
   },
 
   home: {
+    youDub: 'あなたの役',
     originalScene: '元のシーン',
     demoLines: [
       { name: 'Alba', text: '本当にこの扉で合ってる？' },
@@ -269,6 +270,7 @@ export const ja = {
   },
 
   theme: {
+    cinema: 'シネマ',
     label: '見た目',
     retro: 'レトロ',
     modern: 'モダン',

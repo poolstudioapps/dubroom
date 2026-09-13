@@ -50,6 +50,7 @@ export const zh = {
   },
 
   home: {
+    youDub: '你配音',
     originalScene: '原始场景',
     demoLines: [
       { name: 'Alba', text: '你确定是这扇门吗？' },
@@ -262,6 +263,7 @@ export const zh = {
   },
 
   theme: {
+    cinema: '影院',
     label: '外观',
     retro: '复古',
     modern: '现代',

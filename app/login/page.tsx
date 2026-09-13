@@ -2,16 +2,18 @@ import { Suspense } from 'react';
 import { APP_NAME, APP_TAGLINE } from '@/config/strings';
 import { getDictionary } from '@/lib/i18n-server';
 import { Footer } from '@/components/footer';
+import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LoginForm } from './login-form';
 
 /** Ecran-titre : le poste allume, le logo, et une seule chose a faire. */
 export default async function LoginPage() {
   const t = await getDictionary();
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-8">
+    <div className="relative isolate flex min-h-dvh flex-col items-center justify-center px-4 py-8">
+      <HeroBackdrop />
       <main className="w-full max-w-[min(42rem,94vw)]">
         <div className="tv-frame rounded-[1.75rem] border-[3px] border-bezel-dark bg-bezel p-4 shadow-[0_24px_60px_-16px_rgb(0_0_0/0.7),inset_0_2px_0_0_rgb(255_255_255/0.18)] sm:p-6">
-          <div className="tv-screen relative overflow-hidden rounded-[1.25rem] bg-screen px-6 py-10 shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)] sm:px-10 sm:py-14">
+          <div className="tv-screen ecran-titre relative overflow-hidden rounded-[1.25rem] bg-screen px-6 py-10 shadow-[inset_0_0_0_3px_oklch(0.32_0.12_300),inset_0_0_40px_10px_rgb(0_0_0/0.12)] sm:px-10 sm:py-14">
             <div
               className="tv-gloss pointer-events-none absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent"
               aria-hidden

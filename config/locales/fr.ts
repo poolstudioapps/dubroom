@@ -54,6 +54,7 @@ export const fr = {
   },
 
   home: {
+    youDub: 'tu doubles',
     originalScene: 'la scène d’origine',
     demoLines: [
       { name: 'Alba', text: 'Tu es sûr que c’est la bonne porte ?' },
@@ -272,6 +273,7 @@ export const fr = {
   },
 
   theme: {
+    cinema: 'Cinéma',
     label: 'Apparence',
     retro: 'Rétro',
     modern: 'Moderne',

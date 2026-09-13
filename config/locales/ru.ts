@@ -62,6 +62,7 @@ export const ru = {
   },
 
   home: {
+    youDub: 'ты озвучиваешь',
     originalScene: 'исходная сцена',
     demoLines: [
       { name: 'Alba', text: 'Ты уверен, что это та дверь?' },
@@ -279,6 +280,7 @@ export const ru = {
   },
 
   theme: {
+    cinema: 'Кино',
     label: 'Оформление',
     retro: 'Ретро',
     modern: 'Современное',

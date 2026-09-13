@@ -55,6 +55,7 @@ export const de = {
   },
 
   home: {
+    youDub: 'du sprichst',
     originalScene: 'die Originalszene',
     demoLines: [
       { name: 'Alba', text: 'Bist du sicher, dass das die richtige Tür ist?' },
@@ -272,6 +273,7 @@ export const de = {
   },
 
   theme: {
+    cinema: 'Kino',
     label: 'Aussehen',
     retro: 'Retro',
     modern: 'Modern',

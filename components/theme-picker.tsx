@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Tv } from 'lucide-react';
+import { Film, Sparkles, Tv } from 'lucide-react';
 
 import type { Theme } from '@/config/theme';
 import { useT } from '@/lib/i18n';
@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 /**
  * Le choix de la peau, dans le pied de page.
  *
- * Deux boutons plutot qu'une liste deroulante : il n'y a que deux
- * reponses, et les voir toutes les deux invite a essayer l'autre. Une
+ * Trois boutons plutot qu'une liste deroulante : il n'y a que trois
+ * reponses, et les voir toutes invite a essayer les autres. Une
  * liste fermee sur « Rétro » n'aurait jamais rien annonce.
  *
  * Le changement est instantane et sans rechargement : tout tient dans
@@ -29,6 +29,7 @@ export function ThemePicker() {
   const options: { valeur: Theme; libelle: string; Icone: typeof Tv }[] = [
     { valeur: 'retro', libelle: t.theme.retro, Icone: Tv },
     { valeur: 'modern', libelle: t.theme.modern, Icone: Sparkles },
+    { valeur: 'cinema', libelle: t.theme.cinema, Icone: Film },
   ];
 
   return (

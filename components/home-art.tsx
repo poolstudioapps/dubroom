@@ -26,14 +26,19 @@
 
 'use client';
 
-import { useTheme } from '@/lib/theme';
+import { useLiveTheme } from '@/lib/theme';
 
 function Art({ nom, eager }: { nom: string; eager?: boolean }) {
   // Chaque peau a sa serie : la premiere est violette et matierée, la
   // seconde bleu nuit et plate. Servir l'une dans l'autre jurerait plus
   // que de ne rien mettre.
-  const theme = useTheme();
-  const dossier = theme === 'modern' ? '/illustrations/modern' : '/illustrations';
+  const theme = useLiveTheme();
+  const dossier =
+    theme === 'modern'
+      ? '/illustrations/modern'
+      : theme === 'cinema'
+        ? '/illustrations/cinema'
+        : '/illustrations';
 
   return (
     // eslint-disable-next-line @next/next/no-img-element

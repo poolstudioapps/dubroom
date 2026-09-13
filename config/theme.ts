@@ -1,5 +1,5 @@
 /**
- * Les deux peaux du site.
+ * Les trois peaux du site.
  *
  * `retro` est celle d'origine et reste la peau par defaut : un vieux
  * poste de television, des plaques vissees, des boutons qui s'enfoncent.
@@ -9,7 +9,12 @@
  * ligne d'aujourd'hui : fond profond, grandes cartes claires tres
  * arrondies, boutons pleins et colores, aucune imitation de matiere.
  *
- * Les deux partagent exactement la meme structure : ce sont les memes
+ * `cinema` vise ceux qui abordent le doublage comme un film : une salle
+ * obscure, un seul accent dore, des titres dans un serif fin, du verre
+ * depoli et un mouvement lent partout. Elle emprunte sa grammaire aux
+ * sites de production video.
+ *
+ * Les trois partagent exactement la meme structure : ce sont les memes
  * jetons qui changent de valeur, et les memes classes de composants qui
  * changent de dessin. Aucun ecran n'est double, sinon les deux peaux
  * divergeraient des la premiere retouche.
@@ -17,6 +22,7 @@
 export const THEMES = {
   retro: 'retro',
   modern: 'modern',
+  cinema: 'cinema',
 } as const;
 
 export type Theme = keyof typeof THEMES;
@@ -30,7 +36,7 @@ export const LEGACY_THEME_COOKIE = 'dubroom.theme';
 export const THEME_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function isTheme(value: string | undefined | null): value is Theme {
-  return value === 'retro' || value === 'modern';
+  return value === 'retro' || value === 'modern' || value === 'cinema';
 }
 
 export function resolveTheme(cookieValue: string | undefined): Theme {

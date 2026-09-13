@@ -54,6 +54,7 @@ export const pt = {
   },
 
   home: {
+    youDub: 'dobras',
     originalScene: 'a cena original',
     demoLines: [
       { name: 'Alba', text: 'Tens a certeza de que é a porta certa?' },
@@ -271,6 +272,7 @@ export const pt = {
   },
 
   theme: {
+    cinema: 'Cinema',
     label: 'Visual',
     retro: 'Retrô',
     modern: 'Moderno',

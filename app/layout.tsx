@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, Nunito } from 'next/font/google';
+import { Anton, Instrument_Serif, Inter, Nunito } from 'next/font/google';
 
 import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
 import { APP_NAME } from '@/config/strings';
 import { currentLocale, currentTheme, getDictionary } from '@/lib/i18n-server';
+import { REVEAL_SCRIPT } from '@/lib/reveal-script';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -31,6 +32,33 @@ const body = Nunito({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-body',
   display: 'swap',
+});
+
+/*
+ * Et deux de plus, pour la peau cinema.
+ *
+ * Instrument Serif pour les titres : un serif fin et haut, celui des
+ * affiches et des generiques. Inter pour le texte : neutre, net, fait
+ * pour l'ecran.
+ *
+ * `preload: false` : elles ne servent qu'a une peau sur trois. Les
+ * precharger ferait payer deux polices a chaque visiteur des deux autres
+ * peaux ; elles ne se chargent donc que lorsqu'une regle les demande.
+ */
+const serif = Instrument_Serif({
+  weight: '400',
+  style: ['normal', 'italic'],
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-serif',
+  display: 'swap',
+  preload: false,
+});
+
+const grotesk = Inter({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-grotesk',
+  display: 'swap',
+  preload: false,
 });
 
 /**
@@ -117,8 +145,14 @@ export default async function RootLayout({
       // La peau est posee des le rendu serveur : sans cela, on verrait la
       // peau par defaut le temps que le client se reveille.
       data-theme={theme}
-      className={`${display.variable} ${body.variable}`}
+      className={`${display.variable} ${body.variable} ${serif.variable} ${grotesk.variable}`}
+      // Le script d'apparition ajoute sa classe avant l'hydratation.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Avant la premiere peinture : voir `lib/reveal-script.ts`. */}
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
+      </head>
       <body className="min-h-dvh antialiased">
         <Providers locale={locale} theme={theme}>
           {children}

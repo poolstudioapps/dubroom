@@ -42,7 +42,7 @@ export function SiteHeader({
       */}
       <Link
         href="/"
-        className="signage order-1 rounded-sm text-xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
+        className="signage site-logo order-1 rounded-sm text-xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
       >
         {APP_NAME}
       </Link>
