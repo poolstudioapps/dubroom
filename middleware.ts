@@ -2,6 +2,8 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { INDEXABLE_PATHS } from '@/config/site';
+import { DEFAULT_LANDING } from '@/lib/auth-landing';
+import { nonceAleatoire, politiqueDeContenu } from '@/lib/csp';
 import { AUTH_COOKIE_OPTIONS, withAuthCookieOptions } from '@/lib/supabase/cookies';
 
 // `/guide` : des pages d'aide, sans aucune donnee. Ouvertes pour que le
@@ -75,6 +77,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
+  /*
+   * La politique de securite du contenu, avec un nonce par requete.
+   *
+   * Elle est posee sur la requete autant que sur la reponse : c'est dans
+   * la requete que Next la lit pour marquer ses propres scripts en ligne
+   * du nonce, et le layout y retrouve `x-nonce` pour le seul script que
+   * nous ecrivons nous-memes (voir `lib/reveal-script.ts`).
+   */
+  const nonce = nonceAleatoire();
+  const csp = politiqueDeContenu(nonce, {
+    supabaseUrl,
+    dev: process.env.NODE_ENV !== 'production',
+    preview: process.env.VERCEL_ENV === 'preview',
+    turnstile: !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+  });
+  request.headers.set('x-nonce', nonce);
+  request.headers.set('Content-Security-Policy', csp);
+  const securiser = (reponse: NextResponse) => {
+    reponse.headers.set('Content-Security-Policy', csp);
+    return reponse;
+  };
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -123,17 +147,22 @@ export async function middleware(request: NextRequest) {
     // On garde la destination pour y revenir apres le magic link :
     // c'est ce qui fait marcher un lien de session partage a froid.
     url.searchParams.set('next', pathname + request.nextUrl.search);
-    return NextResponse.redirect(url);
+    return securiser(NextResponse.redirect(url));
   }
 
   if (user && pathname === '/login') {
+    // Deja connecte : la ou la connexion aurait mene, sinon l'accueil.
     const url = request.nextUrl.clone();
-    url.pathname = '/sessions';
+    const demande = request.nextUrl.searchParams.get('next');
+    url.pathname =
+      demande && demande.startsWith('/') && !demande.startsWith('//') && !demande.startsWith('/\\')
+        ? demande.split('?')[0]!
+        : DEFAULT_LANDING;
     url.search = '';
-    return NextResponse.redirect(url);
+    return securiser(NextResponse.redirect(url));
   }
 
-  return response;
+  return securiser(response);
 }
 
 export const config = {

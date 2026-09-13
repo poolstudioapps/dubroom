@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { Suspense } from 'react';
 import { APP_NAME, APP_TAGLINE } from '@/config/strings';
 import { getDictionary } from '@/lib/i18n-server';
@@ -14,6 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Ecran-titre : le film derriere, le nom, et une seule chose a faire. */
 export default async function LoginPage() {
   const t = await getDictionary();
+  // Le nonce de la politique de securite du contenu, pour le script du captcha.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     <div className="relative isolate flex min-h-dvh flex-col items-center justify-center px-4 py-8">
       <HeroBackdrop />
@@ -28,7 +31,7 @@ export default async function LoginPage() {
             <div className="mx-auto max-w-sm space-y-4 text-left">
               <p className="text-center text-sm text-text-muted">{t.auth.subtitle}</p>
               <Suspense>
-                <LoginForm />
+                <LoginForm nonce={nonce} />
               </Suspense>
             </div>
           </div>

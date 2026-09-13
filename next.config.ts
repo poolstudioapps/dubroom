@@ -38,8 +38,33 @@ const nextConfig: NextConfig = {
       { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
     ];
 
+    /*
+     * Les en-tetes de securite, sur tout ce qui sort.
+     *
+     * La politique de contenu (CSP) n'est pas ici : elle porte un nonce
+     * tire a chaque requete, et vit donc dans le middleware. Le reste est
+     * fixe : pas d'affichage dans un cadre tiers (un site qui nous
+     * encadrerait pourrait faire cliquer sur « Lancer le rendu » a
+     * l'insu de la personne), pas de devinette de type de contenu, un
+     * referent reduit vers l'exterieur, et seules les permissions
+     * navigateur dont le studio a besoin — le micro — restent ouvertes,
+     * pour notre origine seulement.
+     */
+    const securite = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'X-Frame-Options', value: 'DENY' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      {
+        key: 'Permissions-Policy',
+        value:
+          'camera=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), microphone=(self)',
+      },
+      { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+    ];
+
     return [
-      { source: '/:path*', headers: ferme },
+      { source: '/:path*', headers: [...securite, ...ferme] },
       { source: '/', headers: ouvert },
       { source: '/mentions-legales', headers: ouvert },
       { source: '/confidentialite', headers: ouvert },

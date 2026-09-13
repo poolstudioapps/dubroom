@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Anton, Instrument_Serif, Inter, Nunito } from 'next/font/google';
+import { headers } from 'next/headers';
 
 import { LOCALES, type Locale } from '@/config/i18n';
 import { SITE_URL } from '@/config/site';
@@ -143,6 +144,9 @@ export default async function RootLayout({
   // tout l'arbre. Le `lang` de la page suit : c'est lui qui fait la
   // cesure et la synthese vocale correctes.
   const locale = await currentLocale();
+  // Le nonce de la politique de securite du contenu, tire par le
+  // middleware : sans lui, le script en ligne ci-dessous serait bloque.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
 
   return (
     <html
@@ -153,7 +157,7 @@ export default async function RootLayout({
     >
       <head>
         {/* Avant la premiere peinture : voir `lib/reveal-script.ts`. */}
-        <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
       </head>
       <body className="min-h-dvh antialiased">
         <Providers locale={locale}>

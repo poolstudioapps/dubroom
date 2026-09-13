@@ -8,6 +8,7 @@ import { MailCheck } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DiscordButton } from '@/components/discord-button';
 import { TermsNotice } from '@/components/terms-consent';
+import { Turnstile } from '@/components/turnstile';
 import { Alert, Button, Input, Label, Spinner } from '@/components/ui';
 import { EMAIL_CODE_ENABLED } from '@/config/constants';
 
@@ -22,6 +23,8 @@ type Mode = 'password' | 'link';
 const MODE_KEY = 'dubup.loginMode' as const;
 const EMAIL_KEY = 'dubup.lastEmail' as const;
 const LONGUEUR_CODE = 6;
+/** Le captcha, present seulement quand sa cle publique est configuree. */
+const CAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
 /**
  * La connexion.
@@ -43,11 +46,25 @@ const LONGUEUR_CODE = 6;
  *   courriel porte aussi un code a six chiffres, qui se tape ici sans
  *   changer d'onglet (`EMAIL_CODE_ENABLED`).
  */
-export function LoginForm() {
+export function LoginForm({ nonce }: { nonce?: string }) {
   const t = useT();
 
   const params = useSearchParams();
   const next = params.get('next') ?? DEFAULT_LANDING;
+
+  // Le jeton du captcha, et le compteur qui remonte le widget apres
+  // chaque tentative : un jeton ne sert qu'une fois.
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaCle, setCaptchaCle] = useState(0);
+  const captchaManque = !!CAPTCHA_SITE_KEY && !captcha;
+  const renouvelerCaptcha = () => {
+    if (!CAPTCHA_SITE_KEY) return;
+    setCaptcha(null);
+    setCaptchaCle((k) => k + 1);
+  };
+  const captchaWidget = CAPTCHA_SITE_KEY ? (
+    <Turnstile key={captchaCle} siteKey={CAPTCHA_SITE_KEY} nonce={nonce} onToken={setCaptcha} />
+  ) : null;
 
   const [mode, setMode] = useState<Mode>('link');
   const [email, setEmail] = useState('');
@@ -135,8 +152,9 @@ export function LoginForm() {
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: address,
-      options: { emailRedirectTo: redirectTo },
+      options: { emailRedirectTo: redirectTo, captchaToken: captcha ?? undefined },
     });
+    renouvelerCaptcha();
     if (authError) {
       setError(
         authError.message.toLowerCase().includes('rate limit')
@@ -161,7 +179,9 @@ export function LoginForm() {
       const { error: authError } = await supabase.auth.signInWithPassword({
         email: address,
         password,
+        options: { captchaToken: captcha ?? undefined },
       });
+      renouvelerCaptcha();
       if (authError) {
         setError(
           authError.message.toLowerCase().includes('invalid')
@@ -261,6 +281,9 @@ export function LoginForm() {
         {error ? <Alert tone="danger">{error}</Alert> : null}
         {renvoye ? <Alert tone="ok">{t.auth.sent}</Alert> : null}
 
+        {/* Renvoyer le lien demande un jeton neuf. */}
+        {captchaWidget}
+
         <p className="flex items-start gap-2 text-xs leading-relaxed text-text-faint">
           <Spinner className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           {EMAIL_CODE_ENABLED ? t.auth.codeHelp : t.auth.linkHelp}
@@ -280,7 +303,8 @@ export function LoginForm() {
           </button>
           <button
             type="button"
-            className="min-h-11 text-xs font-bold text-link underline underline-offset-4"
+            className="min-h-11 text-xs font-bold text-link underline underline-offset-4 disabled:opacity-50"
+            disabled={captchaManque}
             onClick={async () => {
               setError(null);
               setRenvoye(false);
@@ -337,6 +361,8 @@ export function LoginForm() {
 
         <TermsNotice />
 
+        {captchaWidget}
+
         {error ? <Alert tone="danger">{error}</Alert> : null}
 
         <Button
@@ -345,6 +371,7 @@ export function LoginForm() {
           size="lg"
           className="w-full"
           loading={state === 'working'}
+          disabled={captchaManque}
         >
           {mode === 'password' ? t.auth.signIn : t.auth.send}
         </Button>
