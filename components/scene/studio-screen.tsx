@@ -10,7 +10,7 @@ import { PlayerProgressList } from '@/components/scene/player-progress';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
-import { VoiceConsole } from '@/components/scene/voice-console';
+import { VoiceConsole, type TakeSettings } from '@/components/scene/voice-console';
 import { WaveformView } from '@/components/scene/waveform-view';
 import { useSceneCtx } from '@/components/scene-page';
 import { Alert, Badge, Button, Card, Spinner } from '@/components/ui';
@@ -19,9 +19,7 @@ import {
   AUDIO_SYNC_TOLERANCE_MS,
   BUCKET_TAKES,
   DEFAULT_BACKING_VOLUME,
-  LEGACY_MIC_OFFSET_STORAGE_KEY,
   MIC_OFFSET_BASELINE_MS,
-  MIC_OFFSET_STORAGE_KEY,
   REC_LEAD_IN_MS,
   REC_TAIL_MS,
   TAKE_MIN_MS,
@@ -29,20 +27,52 @@ import {
   characterColorVar,
 } from '@/config/constants';
 
-import { uploadTake } from '@/lib/actions';
+import { setTakeFx, setTakeMix, uploadTake } from '@/lib/actions';
 import { MicRecorder } from '@/lib/audio/recorder';
 import { seekAll, unlockMedia } from '@/lib/audio/media';
 import { alignTake, envelopeFromBlob, type Alignment } from '@/lib/audio/align';
 import { decodeEnvelope } from '@/lib/audio/envelope';
+import {
+  ECOUTE_HZ,
+  analyserHauteur,
+  cleReglages,
+  decoderPrise,
+  demandeAnalyse,
+  rendreVoix,
+  type AnalyseHauteur,
+} from '@/lib/audio/voice-fx';
 import { analyzeTake, type TakeAnalysis } from '@/lib/audio/waveform';
 import { useMediaUrls, useTakes } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
+import { useWaitingRoom } from '@/lib/presence';
 import { clipsForParticipant, selectedTakeByClip } from '@/lib/scene-stats';
 import { supabaseBrowser } from '@/lib/supabase/client';
+import type { TakeRow } from '@/lib/supabase/database.types';
 import { cn } from '@/lib/utils';
 import { useNarrowViewport, useShortViewport } from '@/lib/viewport';
 
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
+
+/** La case « partout » du decalage, retenue d'une scene a l'autre. */
+const OFFSET_PARTOUT_KEY = 'dubup.micOffsetEverywhere';
+
+function reglagesDe(take: TakeRow): TakeSettings {
+  return {
+    reverb: take.fx_reverb ?? 0,
+    pitch: take.fx_pitch ?? 0,
+    tune: take.fx_tune ?? 0,
+    gainDb: Number(take.gain_db ?? 0),
+    micOffsetMs: take.mic_offset_ms ?? 0,
+  };
+}
+
+/** Une prise decodee, prete a etre rejouee avec ses effets. */
+interface PriseDecodee {
+  cle: string;
+  promesse: Promise<Float32Array>;
+  /** Ou la prise tombe dans la fenetre, calage automatique compris. */
+  offsetMs: number;
+}
 
 export function StudioScreen() {
   const t = useT();
@@ -60,23 +90,25 @@ export function StudioScreen() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
-  const takeRef = useRef<HTMLAudioElement>(null);
   const recorderRef = useRef<MicRecorder>(new MicRecorder());
-  const takeTimer = useRef<number | null>(null);
 
-  const [mode, setMode] = useState<Mode>('idle');
+  const [mode, setModeState] = useState<Mode>('idle');
+  const modeRef = useRef<Mode>('idle');
+  const setMode = useCallback((next: Mode) => {
+    modeRef.current = next;
+    setModeState(next);
+  }, []);
+
   const [index, setIndex] = useState(0);
   const [backing, setBacking] = useState(DEFAULT_BACKING_VOLUME);
-  const [micOffset, setMicOffset] = useState(me?.mic_offset_ms ?? 0);
   const [analysis, setAnalysis] = useState<TakeAnalysis | null>(null);
-  const [takeUrl, setTakeUrl] = useState<string | null>(null);
-  const localTakeUrl = useRef<string | null>(null);
+  /** La prise du clip affiche est decodable : « Ma prise » peut jouer. */
+  const [hasTakeAudio, setHasTakeAudio] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [micReady, setMicReady] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
   /** Calage de la derniere prise, et memoire des precedentes. */
   const [alignment, setAlignment] = useState<Alignment | null>(null);
-  const [autoAlign, setAutoAlign] = useState(true);
   const lagHistory = useRef<number[]>([]);
   /**
    * Instant de la scene ou le micro s'est reellement ouvert.
@@ -86,6 +118,37 @@ export function StudioScreen() {
    * milliseconde. On releve donc l'heure exacte a l'ouverture.
    */
   const recStartedAtMs = useRef<number | null>(null);
+
+  // ── La console de voix ─────────────────────────────────────────────
+  // Deux etats : ce que montrent les curseurs, qui suit le doigt, et ce
+  // qu'on entend, qui ne change qu'au curseur lache. Recalculer la
+  // hauteur a chaque pixel de glisse figerait l'ecran.
+  const [reglages, setReglages] = useState<TakeSettings>({
+    reverb: 0,
+    pitch: 0,
+    tune: 0,
+    gainDb: 0,
+    micOffsetMs: 0,
+  });
+  const reglagesRef = useRef(reglages);
+  const [ecoute, setEcoute] = useState<TakeSettings>(reglages);
+  const [offsetPartout, setOffsetPartout] = useState(false);
+  const [consoleErreur, setConsoleErreur] = useState<string | null>(null);
+  const [gainPartout, setGainPartout] = useState<'idle' | 'pending' | 'done'>('idle');
+  const [calcul, setCalcul] = useState(false);
+
+  // ── L'ecoute de la prise, avec ses effets ──────────────────────────
+  const audioCtx = useRef<AudioContext | null>(null);
+  const voix = useRef<AudioBufferSourceNode | null>(null);
+  const brut = useRef<PriseDecodee | null>(null);
+  const hauteur = useRef<{ source: Promise<Float32Array>; promesse: Promise<AnalyseHauteur> } | null>(
+    null,
+  );
+  const rendu = useRef<{ source: Promise<Float32Array>; cle: string; buffer: AudioBuffer } | null>(
+    null,
+  );
+  /** La prise qu'on vient d'enregistrer : inutile de la retelecharger. */
+  const priseLocale = useRef<{ takeId: string | null; blob: Blob } | null>(null);
 
   const myClips = useMemo(
     () => (me ? clipsForParticipant(me.id, characters, clips) : []),
@@ -108,26 +171,84 @@ export function StudioScreen() {
   const character = characters.find((c) => c.id === clip?.character_id) ?? null;
   const currentTake = clip ? (selectedTakes.get(clip.id) ?? null) : null;
 
-  // ── Restauration du reglage de latence ─────────────────────────────
+  // Sur l'ecran d'attente, on s'y declare ; ailleurs, on ecoute seulement.
+  const salle = useWaitingRoom(
+    session.id,
+    me?.id ?? null,
+    (acknowledged && allDone) || myClips.length === 0,
+  );
+
   useEffect(() => {
-    const stored =
-      window.localStorage.getItem(MIC_OFFSET_STORAGE_KEY) ??
-      window.localStorage.getItem(LEGACY_MIC_OFFSET_STORAGE_KEY);
-    if (stored && me?.mic_offset_ms === 0) setMicOffset(Number(stored));
-  }, [me?.mic_offset_ms]);
+    try {
+      setOffsetPartout(window.localStorage.getItem(OFFSET_PARTOUT_KEY) === '1');
+    } catch {
+      // Stockage indisponible : la case reste decochee.
+    }
+  }, []);
+
+  const poser = useCallback((suivants: TakeSettings) => {
+    reglagesRef.current = suivants;
+    setReglages(suivants);
+    setEcoute(suivants);
+  }, []);
+
+  /*
+   * La console se recale sur la prise affichee.
+   *
+   * Des valeurs primitives dans les dependances, jamais l'objet : la liste
+   * des prises est rechargee a chaque envoi de n'importe quel joueur, et
+   * un objet neuf ramenait le curseur sous le doigt a sa valeur d'avant.
+   *
+   * Sans prise, les effets repartent de zero : une replique neuve ne
+   * reprend pas la cathedrale de la precedente. Le volume et le decalage
+   * repartent du reglage « partout » du joueur.
+   */
+  const takeId = currentTake?.id ?? null;
+  const serveur = currentTake
+    ? `${cleReglages(reglagesDe(currentTake))}|${currentTake.mic_offset_ms}`
+    : null;
+  const defautGain = Number(me?.gain_db ?? 0);
+  const defautOffset = me?.mic_offset_ms ?? 0;
+
+  useEffect(() => {
+    poser(
+      currentTake
+        ? reglagesDe(currentTake)
+        : { reverb: 0, pitch: 0, tune: 0, gainDb: defautGain, micOffsetMs: defautOffset },
+    );
+    setConsoleErreur(null);
+    setGainPartout('idle');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clip?.id, takeId, serveur]);
+
+  // Le reglage « partout » a change : une replique sans prise le suit,
+  // sans perdre les effets qu'on y a deja poses.
+  useEffect(() => {
+    if (currentTake) return;
+    poser({ ...reglagesRef.current, gainDb: defautGain, micOffsetMs: defautOffset });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defautGain, defautOffset]);
 
   // ── Transport ───────────────────────────────────────────────────────
 
-  const stopAll = useCallback(() => {
-    if (takeTimer.current !== null) {
-      window.clearTimeout(takeTimer.current);
-      takeTimer.current = null;
+  const arreterVoix = useCallback(() => {
+    const source = voix.current;
+    voix.current = null;
+    if (!source) return;
+    try {
+      source.stop();
+    } catch {
+      // Deja arretee : rien a faire.
     }
+    source.disconnect();
+  }, []);
+
+  const stopAll = useCallback(() => {
+    arreterVoix();
     videoRef.current?.pause();
     musicRef.current?.pause();
-    takeRef.current?.pause();
     setMode('idle');
-  }, []);
+  }, [arreterVoix, setMode]);
 
   /**
    * Boucle de transport. Elle tient deux choses :
@@ -200,29 +321,45 @@ export function StudioScreen() {
   useEffect(() => {
     stopAll();
     setAnalysis(null);
-    setTakeUrl(null);
+    setHasTakeAudio(false);
   }, [index, stopAll]);
 
-  // Recharge la prise retenue du clip courant pour l'afficher et la
+  // Charge la prise retenue du clip courant pour l'afficher et la
   // reecouter, y compris apres un retour en arriere.
   useEffect(() => {
     let cancelled = false;
     if (!currentTake) return;
+    const cle = currentTake.id;
+
+    if (brut.current?.cle === cle) {
+      setHasTakeAudio(true);
+      return;
+    }
+    const locale = priseLocale.current;
+    if (locale && locale.takeId === cle) {
+      brut.current = { cle, promesse: decoderPrise(locale.blob), offsetMs: currentTake.offset_ms };
+      setHasTakeAudio(true);
+      return;
+    }
 
     void (async () => {
       const { data } = await supabaseBrowser()
         .storage.from(BUCKET_TAKES)
         .createSignedUrl(currentTake.audio_path, SIGNED_URL_TTL_S);
       if (cancelled || !data?.signedUrl) return;
-      setTakeUrl(data.signedUrl);
 
       try {
         const blob = await (await fetch(data.signedUrl)).blob();
+        if (cancelled) return;
+        const promesse = decoderPrise(blob);
+        promesse.catch(() => undefined);
+        brut.current = { cle, promesse, offsetMs: currentTake.offset_ms };
+        setHasTakeAudio(true);
         const result = await analyzeTake(blob);
         if (!cancelled) setAnalysis(result);
       } catch {
         // La forme d'onde est un confort : son echec ne doit pas
-        // empecher de reecouter ou de refaire la prise.
+        // empecher de refaire la prise.
       }
     })();
 
@@ -246,7 +383,7 @@ export function StudioScreen() {
     const video = videoRef.current;
     if (!video) return;
     // Pendant le toucher, avant toute attente : voir `unlockMedia`.
-    unlockMedia([video, musicRef.current, takeRef.current]);
+    unlockMedia([video, musicRef.current]);
     video.muted = false;
     await seekToWindow();
     musicRef.current?.pause();
@@ -275,7 +412,7 @@ export function StudioScreen() {
 
     // Tout de suite, pendant le toucher : l'autorisation du micro et le
     // calage qui suivent font perdre le geste sur iPhone.
-    unlockMedia([video, music, takeRef.current]);
+    unlockMedia([video, music]);
 
     try {
       await recorderRef.current.prime();
@@ -289,7 +426,7 @@ export function StudioScreen() {
     await seekToWindow();
 
     setAnalysis(null);
-    setTakeUrl(null);
+    setHasTakeAudio(false);
     setAlignment(null);
     recStartedAtMs.current = null;
     setMode('recording');
@@ -313,20 +450,65 @@ export function StudioScreen() {
   }
 
   const upload = useMutation({
-    mutationFn: async (input: { blob: Blob; durationMs: number; offsetMs: number }) => {
-      if (!clip || !me) throw new Error('Clip introuvable');
+    mutationFn: async (input: {
+      blob: Blob;
+      durationMs: number;
+      offsetMs: number;
+      clipId: string;
+      /** Cette prise est la derniere qui manquait. */
+      completes: boolean;
+    }) => {
+      if (!me) throw new Error('Clip introuvable');
       return uploadTake({
         sessionId: session.id,
         participantId: me.id,
-        clipId: clip.id,
+        clipId: input.clipId,
         blob: input.blob,
         durationMs: input.durationMs,
         offsetMs: input.offsetMs,
       });
     },
-    onSuccess: () => {
+    onSuccess: async (take, input) => {
+      const locale = priseLocale.current;
+      if (locale?.blob === input.blob) {
+        locale.takeId = take.id;
+        if (brut.current?.cle === 'locale') brut.current = { ...brut.current, cle: take.id };
+      }
+
+      /*
+       * Les reglages choisis avant d'enregistrer se posent sur la prise.
+       *
+       * Une replique refaite a deja les siens, herites par la base : rien
+       * ne differe alors, et rien n'est envoye.
+       */
+      const voulu = reglagesRef.current;
+      try {
+        if (
+          take.fx_reverb !== voulu.reverb ||
+          take.fx_pitch !== voulu.pitch ||
+          take.fx_tune !== voulu.tune
+        ) {
+          await setTakeFx(take.id, voulu);
+        }
+        if (Number(take.gain_db) !== voulu.gainDb || take.mic_offset_ms !== voulu.micOffsetMs) {
+          await setTakeMix(session.id, take.id, {
+            gainDb: voulu.gainDb,
+            micOffsetMs: voulu.micOffsetMs,
+          });
+        }
+      } catch (e) {
+        setConsoleErreur(humanizeError(e));
+      }
+
       refetch();
       void takesQuery.refetch();
+
+      // La derniere replique qui manquait vient d'arriver : direction
+      // l'ecran d'attente, ou l'on voit ou en sont les autres.
+      if (input.completes) {
+        stopAll();
+        setAcknowledged(true);
+      }
     },
     onError: (e) => setError(humanizeError(e)),
   });
@@ -341,13 +523,8 @@ export function StudioScreen() {
     const openedAtMs = recStartedAtMs.current;
     recStartedAtMs.current = null;
     stopAll();
+    if (!clip) return;
 
-    // Une URL d'objet retient le blob en memoire tant qu'elle n'est pas
-    // revoquee : sur une soiree de doublage, cela fait vite plusieurs
-    // dizaines de prises conservees pour rien.
-    if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
-    localTakeUrl.current = URL.createObjectURL(blob);
-    setTakeUrl(localTakeUrl.current);
     /*
      * Une prise qu'on ne peut pas decoder n'est pas une prise.
      *
@@ -356,7 +533,7 @@ export function StudioScreen() {
      * enregistrement-la. Mieux vaut le dire tout de suite, tant que le
      * casque est encore sur les oreilles.
      */
-    let durationMs = clip ? clip.speech_end_ms - clip.speech_start_ms : 0;
+    let durationMs = clip.speech_end_ms - clip.speech_start_ms;
     let analysed: TakeAnalysis | null = null;
     try {
       analysed = await analyzeTake(blob);
@@ -368,26 +545,35 @@ export function StudioScreen() {
 
     if (!analysed || durationMs < TAKE_MIN_MS) {
       setError(t.studio.emptyTake);
-      setTakeUrl(null);
+      setHasTakeAudio(false);
       return;
     }
 
     // Ou poser la prise : la ou le micro s'est ouvert, et non au debut de
     // la fenetre, puis corrige du retard mesure sur la voix d'origine.
-    const placedAtMs = openedAtMs ?? clip?.window_start_ms ?? 0;
-    let offsetMs = clip ? placedAtMs - clip.window_start_ms : 0;
+    const placedAtMs = openedAtMs ?? clip.window_start_ms;
+    let offsetMs = placedAtMs - clip.window_start_ms;
 
     const measured = await measureLag(blob, placedAtMs);
     setAlignment(measured);
 
-    if (measured?.reliable && autoAlign) {
-      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(
-        -ALIGN_HISTORY,
-      );
+    // Le calage automatique est toujours actif : il traite le retard
+    // mieux qu'aucun reglage manuel, et le decalage de la console
+    // corrige ce qui reste.
+    if (measured?.reliable) {
+      lagHistory.current = [...lagHistory.current, measured.lagMs].slice(-ALIGN_HISTORY);
       offsetMs -= measured.lagMs;
     }
 
-    upload.mutate({ blob, durationMs, offsetMs });
+    priseLocale.current = { takeId: null, blob };
+    const promesse = decoderPrise(blob);
+    promesse.catch(() => undefined);
+    brut.current = { cle: 'locale', promesse, offsetMs };
+    setHasTakeAudio(true);
+
+    const completes =
+      !allDone && myClips.every((c) => c.id === clip.id || selectedTakes.has(c.id));
+    upload.mutate({ blob, durationMs, offsetMs, clipId: clip.id, completes });
   }
 
   /**
@@ -407,42 +593,243 @@ export function StudioScreen() {
     }
   }
 
-  /** Reecoute : fond + la prise, posee comme au mixage. */
+  function contexte(): AudioContext {
+    if (!audioCtx.current) audioCtx.current = new AudioContext();
+    return audioCtx.current;
+  }
+
+  /**
+   * La prise telle que le mixage la posera : effets, volume, reverbe.
+   *
+   * Le resultat est garde pour les memes reglages : relire sa prise dix
+   * fois ne recalcule rien. L'analyse de hauteur, la seule partie lente,
+   * est gardee pour la prise entiere.
+   */
+  async function voixPreparee(s: TakeSettings): Promise<AudioBuffer | null> {
+    const prise = brut.current;
+    if (!prise) return null;
+    const cle = cleReglages(s);
+    if (rendu.current?.source === prise.promesse && rendu.current.cle === cle) {
+      return rendu.current.buffer;
+    }
+
+    const samples = await prise.promesse;
+    let analyse: AnalyseHauteur | null = null;
+    if (demandeAnalyse(s)) {
+      if (hauteur.current?.source !== prise.promesse) {
+        hauteur.current = { source: prise.promesse, promesse: analyserHauteur(samples) };
+      }
+      setCalcul(true);
+      try {
+        analyse = await hauteur.current.promesse;
+      } finally {
+        setCalcul(false);
+      }
+    }
+    // La prise a change pendant le calcul : ce tampon ne sert plus.
+    if (brut.current?.promesse !== prise.promesse) return null;
+
+    const sortie = rendreVoix(samples, analyse, s);
+    const buffer = contexte().createBuffer(1, Math.max(1, sortie.length), ECOUTE_HZ);
+    buffer.getChannelData(0).set(sortie);
+    rendu.current = { source: prise.promesse, cle, buffer };
+    return buffer;
+  }
+
+  /**
+   * Pose la voix sur la lecture en cours, a sa place.
+   *
+   * Appelee au depart, et de nouveau quand un curseur est lache pendant
+   * l'ecoute : la voix repart alors a l'endroit exact ou en est la video,
+   * avec les nouveaux reglages.
+   */
+  function lancerVoix(buffer: AudioBuffer, s: TakeSettings) {
+    const video = videoRef.current;
+    const prise = brut.current;
+    if (!clip || !video || !prise) return;
+    arreterVoix();
+
+    const ctx = contexte();
+    /*
+     * Reproduire exactement ce que fera le mixage : la prise tombe la ou
+     * le micro s'est ouvert, deplacee par le calage automatique, plus le
+     * decalage de la console et le retard de base.
+     */
+    const delayMs = prise.offsetMs + s.micOffsetMs + MIC_OFFSET_BASELINE_MS;
+    const attenteMs = delayMs - (video.currentTime * 1000 - clip.window_start_ms);
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    if (attenteMs >= 0) {
+      source.start(ctx.currentTime + attenteMs / 1000);
+    } else if (-attenteMs / 1000 < buffer.duration) {
+      source.start(0, -attenteMs / 1000);
+    } else {
+      source.disconnect();
+      return;
+    }
+    voix.current = source;
+  }
+
+  /** Reecoute : fond + la prise, posee et traitee comme au mixage. */
   async function playTake() {
-    if (!clip || !takeUrl) return;
+    if (!clip || !hasTakeAudio) return;
     stopAll();
     const video = videoRef.current;
     const music = musicRef.current;
-    const take = takeRef.current;
-    if (!video || !take) return;
+    if (!video) return;
 
-    unlockMedia([video, music, take]);
+    unlockMedia([video, music]);
+    // Pendant le toucher : un contexte audio reveille plus tard reste
+    // muet sur iPhone.
+    void contexte().resume();
     video.muted = true;
-    await seekToWindow();
-    setMode('playback');
 
-    /*
-     * Reproduire exactement ce que fera le mixage.
-     *
-     * Une prise ne commence plus au debut de la fenetre : le micro
-     * s'ouvre a l'entree de la zone de parole, et le calage automatique
-     * la deplace encore. Le retard a simuler est donc celui de la prise,
-     * plus le decalage micro, compte depuis le debut de la fenetre.
-     */
-    const delayMs = (currentTake?.offset_ms ?? 0) + micOffset + MIC_OFFSET_BASELINE_MS;
-    take.currentTime = delayMs < 0 ? -delayMs / 1000 : 0;
+    const reglagesEcoute = ecoute;
+    let buffer: AudioBuffer | null = null;
+    try {
+      [buffer] = await Promise.all([voixPreparee(reglagesEcoute), seekToWindow()]);
+    } catch {
+      buffer = null;
+    }
+    if (!buffer) {
+      setError(t.studio.previewFailed);
+      return;
+    }
+
+    setMode('playback');
     try {
       await Promise.all([video.play(), music ? music.play() : Promise.resolve()]);
-      if (delayMs > 0) {
-        takeTimer.current = window.setTimeout(() => {
-          take.play().catch(() => setError(t.studio.playBlocked));
-        }, delayMs);
-      } else {
-        await take.play();
-      }
+      if (modeRef.current === 'playback') lancerVoix(buffer, reglagesEcoute);
     } catch {
       stopAll();
       setError(t.studio.playBlocked);
+    }
+  }
+
+  /*
+   * Un curseur lache s'entend tout de suite.
+   *
+   * Pendant l'ecoute, la voix repart avec les nouveaux reglages a
+   * l'endroit ou en est la video. A l'arret, on prepare deja le tampon :
+   * appuyer sur « Ma prise » juste apres ne fait rien attendre.
+   */
+  const cleEcoute = `${cleReglages(ecoute)}|${ecoute.micOffsetMs}`;
+  useEffect(() => {
+    if (!hasTakeAudio) return;
+    let annule = false;
+    void (async () => {
+      const buffer = await voixPreparee(ecoute).catch(() => null);
+      if (!annule && buffer && modeRef.current === 'playback') lancerVoix(buffer, ecoute);
+    })();
+    return () => {
+      annule = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cleEcoute, hasTakeAudio]);
+
+  /** Un curseur lache : on enregistre, et l'ecoute suit. */
+  async function appliquer(partiel: Partial<TakeSettings>) {
+    const suivants = { ...reglagesRef.current, ...partiel };
+    poser(suivants);
+    setConsoleErreur(null);
+
+    const effets = 'reverb' in partiel || 'pitch' in partiel || 'tune' in partiel;
+    const gain = 'gainDb' in partiel;
+    const decalage = 'micOffsetMs' in partiel;
+
+    try {
+      if (decalage && offsetPartout) {
+        await setTakeMix(
+          session.id,
+          currentTake?.id ?? null,
+          { micOffsetMs: suivants.micOffsetMs },
+          true,
+        );
+        refetch();
+      }
+      // Sans prise, les reglages attendent l'enregistrement.
+      if (!currentTake) return;
+
+      if (effets) await setTakeFx(currentTake.id, suivants);
+      if (gain || (decalage && !offsetPartout)) {
+        await setTakeMix(session.id, currentTake.id, {
+          gainDb: gain ? suivants.gainDb : undefined,
+          micOffsetMs: decalage && !offsetPartout ? suivants.micOffsetMs : undefined,
+        });
+      }
+      void takesQuery.refetch();
+    } catch (e) {
+      setConsoleErreur(humanizeError(e));
+    }
+  }
+
+  function choisirOffsetPartout(next: boolean) {
+    setOffsetPartout(next);
+    try {
+      window.localStorage.setItem(OFFSET_PARTOUT_KEY, next ? '1' : '0');
+    } catch {
+      // Stockage indisponible : le choix vaut pour cette visite.
+    }
+    if (!next) return;
+    // Cocher la case applique tout de suite la valeur affichee.
+    void (async () => {
+      try {
+        await setTakeMix(
+          session.id,
+          currentTake?.id ?? null,
+          { micOffsetMs: reglagesRef.current.micOffsetMs },
+          true,
+        );
+        refetch();
+        void takesQuery.refetch();
+      } catch (e) {
+        setConsoleErreur(humanizeError(e));
+      }
+    })();
+  }
+
+  async function appliquerGainPartout() {
+    setGainPartout('pending');
+    setConsoleErreur(null);
+    try {
+      await setTakeMix(
+        session.id,
+        currentTake?.id ?? null,
+        { gainDb: reglagesRef.current.gainDb },
+        true,
+      );
+      setGainPartout('done');
+      refetch();
+      void takesQuery.refetch();
+    } catch (e) {
+      setGainPartout('idle');
+      setConsoleErreur(humanizeError(e));
+    }
+  }
+
+  /**
+   * Le bouton de droite, sous les commandes.
+   *
+   * Sur le dernier clip il mene a l'ecran d'attente. S'il reste des
+   * repliques sans prise ailleurs, il y emmene : « J'ai terminé » ne
+   * faisait rien dans ce cas, et on ne savait pas pourquoi.
+   */
+  function suivant() {
+    if (!isLastClip) {
+      setIndex((i) => Math.min(myClips.length - 1, i + 1));
+      return;
+    }
+    if (allDone) {
+      stopAll();
+      setAcknowledged(true);
+      return;
+    }
+    const manque = myClips.findIndex((c) => !selectedTakes.has(c.id));
+    if (manque >= 0) {
+      setIndex(manque);
+      setError(t.studio.missingClips);
     }
   }
 
@@ -450,7 +837,7 @@ export function StudioScreen() {
     const recorder = recorderRef.current;
     return () => {
       recorder.release();
-      if (localTakeUrl.current) URL.revokeObjectURL(localTakeUrl.current);
+      void audioCtx.current?.close().catch(() => undefined);
     };
   }, []);
 
@@ -470,7 +857,11 @@ export function StudioScreen() {
             <h2 className="text-xs font-bold uppercase tracking-widest text-text-faint">
               {t.studio.whereEveryoneIs}
             </h2>
-            <PlayerProgressList sessionId={session.id} myParticipantId={me.id} />
+            <PlayerProgressList
+              sessionId={session.id}
+              myParticipantId={me.id}
+              waiting={salle.waiting}
+            />
           </div>
         </Card>
         {/*
@@ -479,16 +870,7 @@ export function StudioScreen() {
           sous le bord bas et le bouton de rendu devenait inatteignable.
         */}
         <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-          <StudioSidebar
-            backing={backing}
-            onBacking={setBacking}
-            micOffset={micOffset}
-            onMicOffset={setMicOffset}
-            autoAlign={autoAlign}
-            onAutoAlign={setAutoAlign}
-            done={0}
-            total={0}
-          />
+          <StudioSidebar backing={backing} onBacking={setBacking} done={0} total={0} />
         </div>
       </div>
     );
@@ -497,6 +879,28 @@ export function StudioScreen() {
   if (!clip || !character) return <Spinner />;
 
   const recording = mode === 'recording';
+
+  if (acknowledged && allDone) {
+    return (
+      <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
+        <FinishedPanel
+          sessionId={session.id}
+          myParticipantId={me.id}
+          isHost={isHost}
+          waiting={salle.waiting}
+          onBack={() => setAcknowledged(false)}
+        />
+        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+          <StudioSidebar
+            backing={backing}
+            onBacking={setBacking}
+            done={doneCount}
+            total={myClips.length}
+          />
+        </div>
+      </div>
+    );
+  }
 
   /**
    * Ce qu'il y a a dire, et rien de plus.
@@ -519,31 +923,24 @@ export function StudioScreen() {
               ? { tone: 'muted', text: t.studio.headphonesRequired }
               : { tone: 'muted', text: t.studio.micWindow };
 
-  if (acknowledged && allDone) {
-    return (
-      <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
-        <FinishedPanel
-          sessionId={session.id}
-          myParticipantId={me.id}
-          isHost={isHost}
-          onBack={() => setAcknowledged(false)}
-        />
-        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-          <StudioSidebar
-            backing={backing}
-            onBacking={setBacking}
-            micOffset={micOffset}
-            onMicOffset={setMicOffset}
-            autoAlign={autoAlign}
-            onAutoAlign={setAutoAlign}
-            done={doneCount}
-            total={myClips.length}
-            take={currentTake}
-          />
-        </div>
-      </div>
-    );
-  }
+  const consoleVoix = (
+    <VoiceConsole
+      value={reglages}
+      hasTake={!!currentTake}
+      computing={calcul}
+      error={consoleErreur}
+      onInput={(partiel) => {
+        const suivants = { ...reglagesRef.current, ...partiel };
+        reglagesRef.current = suivants;
+        setReglages(suivants);
+      }}
+      onCommit={(partiel) => void appliquer(partiel)}
+      offsetEverywhere={offsetPartout}
+      onOffsetEverywhere={choisirOffsetPartout}
+      onGainEverywhere={() => void appliquerGainPartout()}
+      gainEverywhere={gainPartout}
+    />
+  );
 
   return (
     <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
@@ -591,12 +988,6 @@ export function StudioScreen() {
           </div>
         </header>
 
-        {/*
-          L'image occupe le reste, jamais plus. `min-h-0` est ce qui
-          autorise un enfant de flexbox a retrecir sous sa taille
-          naturelle : sans lui, la video impose sa hauteur et fait
-          deborder toute la colonne.
-        */}
         {/*
           L'image, et les deux facons de la cadrer.
           Sur un ordinateur elle prend la hauteur qui reste et deduit sa
@@ -686,7 +1077,7 @@ export function StudioScreen() {
               <span
                 className={cn('truncate', alignment.reliable && 'font-bold text-ok')}
               >
-                {alignment.reliable && autoAlign
+                {alignment.reliable
                   ? t.studio.alignedBy(alignment.lagMs)
                   : t.studio.alignUnsure}
               </span>
@@ -767,7 +1158,8 @@ export function StudioScreen() {
             <Button
               className="lg:order-3"
               onClick={() => void playTake()}
-              disabled={recording || !takeUrl}
+              disabled={recording || !hasTakeAudio}
+              loading={calcul && mode !== 'playback'}
             >
               <Play className="h-4 w-4" aria-hidden />
               {t.studio.playTake}
@@ -795,12 +1187,11 @@ export function StudioScreen() {
               </Button>
               {isLastClip ? (
                 // Sur le dernier clip, « suivant » n'a nulle part ou aller :
-                // le bouton restait grise et donnait a croire qu'on ne
-                // pouvait pas valider, alors que la prise etait deja envoyee.
+                // le bouton mene a l'ecran d'attente.
                 <Button
                   variant={currentTake ? 'primary' : 'secondary'}
                   disabled={!currentTake || recording}
-                  onClick={() => setAcknowledged(true)}
+                  onClick={suivant}
                 >
                   <Check className="h-4 w-4" aria-hidden />
                   {t.studio.finish}
@@ -809,7 +1200,7 @@ export function StudioScreen() {
                 <Button
                   variant={currentTake ? 'primary' : 'secondary'}
                   disabled={recording}
-                  onClick={() => setIndex((i) => Math.min(myClips.length - 1, i + 1))}
+                  onClick={suivant}
                 >
                   {currentTake ? t.studio.validate : t.studio.next}
                   <ChevronRight className="h-4 w-4" aria-hidden />
@@ -824,13 +1215,10 @@ export function StudioScreen() {
           commandes, la ou l'on vient d'ecouter ce qu'on a enregistre.
           Sur ordinateur elle est dans la colonne de droite.
         */}
-        <div className="order-6 shrink-0 lg:hidden">
-          <VoiceConsole take={currentTake} />
-        </div>
+        <div className="order-6 shrink-0 lg:hidden">{consoleVoix}</div>
 
         {/* Stem de fond : la seule sortie audible pendant une prise. */}
         <audio ref={musicRef} src={media.data?.music ?? undefined} preload="auto" />
-        <audio ref={takeRef} src={takeUrl ?? undefined} preload="auto" />
       </div>
 
       {/* La colonne de reglages defile pour elle seule : la page, non. */}
@@ -838,13 +1226,9 @@ export function StudioScreen() {
         <StudioSidebar
           backing={backing}
           onBacking={setBacking}
-          micOffset={micOffset}
-          onMicOffset={setMicOffset}
-          autoAlign={autoAlign}
-          onAutoAlign={setAutoAlign}
           done={doneCount}
           total={myClips.length}
-          take={currentTake}
+          voiceConsole={consoleVoix}
         />
       </div>
     </div>

@@ -1228,20 +1228,10 @@
       linear-gradient(180deg, var(--color-room) 0%, var(--color-room-deep) 55%);
   }
 
-  /* Deux lueurs qui derivent tres lentement derriere tout. Elles donnent
-     la profondeur d'une salle ou quelque chose est projete, sans jamais
-     attirer le regard. */
-  [data-theme='cinema'] body::before {
-    content: '';
-    position: fixed;
-    inset: -20%;
-    z-index: -2;
-    pointer-events: none;
-    background:
-      radial-gradient(circle at 28% 38%, oklch(0.72 0.12 88 / 0.1), transparent 38%),
-      radial-gradient(circle at 76% 72%, oklch(0.6 0.07 210 / 0.08), transparent 42%);
-    animation: cinema-derive 30s ease-in-out infinite alternate;
-  }
+  /* Il y avait ici deux lueurs fixes qui derivaient derriere la page.
+     Leur bord, net sur le fond sombre, se lisait comme un disque fonce
+     colle a gauche de l'ecran, immobile pendant qu'on faisait defiler.
+     La lueur du haut, dans le fond du `body`, suffit a la profondeur. */
 
   [data-theme='cinema'] h1 {
     font-family: var(--font-serif), 'Noto Serif', Georgia, serif;

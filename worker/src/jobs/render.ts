@@ -55,6 +55,10 @@ interface TakeRow {
   fx_reverb: number | null;
   fx_pitch: number | null;
   fx_tune: number | null;
+  /** Decalage micro de cette prise, regle dans la console de voix. */
+  mic_offset_ms: number | null;
+  /** Gain de cette prise, en dB, ajoute a la correction automatique. */
+  gain_db: number | string | null;
 }
 
 /**
@@ -88,7 +92,9 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       .eq('session_id', session.id),
     db
       .from('takes')
-      .select('id, clip_id, participant_id, audio_path, offset_ms, fx_reverb, fx_pitch, fx_tune')
+      .select(
+        'id, clip_id, participant_id, audio_path, offset_ms, fx_reverb, fx_pitch, fx_tune, mic_offset_ms, gain_db',
+      )
       .eq('is_selected', true),
     db
       .from('participants')
@@ -281,19 +287,23 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
       meanVolumeDb(voiceLocal, clip.speech_start_ms, clip.speech_end_ms),
       meanVolumeDb(local),
     ]);
-    const gainDb =
+    const correction =
       origine !== null && prise !== null
         ? Math.max(-CORRECTION_MAX_DB, Math.min(CORRECTION_MAX_DB, origine - prise))
         : 0;
+    // Le gain choisi dans la console s'ajoute a la correction : il part du
+    // niveau deja aligne, comme a l'ecoute dans le studio.
+    const gainDb = correction + (Number(take.gain_db ?? 0) || 0);
 
     placements.push(
       placeTake(
         clip.window_start_ms,
         take.offset_ms,
-        // Le reglage du joueur s'ajoute au retard de base : celui-ci
+        // Le reglage de la prise s'ajoute au retard de base : celui-ci
         // compense la latence de capture, que personne ne sait juger a
-        // l'oreille, et l'autre corrige ce qui reste.
-        (reglages?.offset ?? 0) + MIC_OFFSET_BASELINE_MS,
+        // l'oreille, et l'autre corrige ce qui reste. Une prise d'avant
+        // les reglages par prise retombe sur celui du joueur.
+        (take.mic_offset_ms ?? reglages?.offset ?? 0) + MIC_OFFSET_BASELINE_MS,
         index,
         { gainDb, reverb: take.fx_reverb ?? 0, pitch: take.fx_pitch ?? 0 },
       ),

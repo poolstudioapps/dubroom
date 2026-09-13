@@ -1,70 +1,71 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Library, Share2 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
+import { PackFacetsFields, facetsComplete } from '@/components/pack-facets-fields';
 import { useSceneCtx } from '@/components/scene-page';
-import { SelectMenu } from '@/components/select-menu';
-import { Alert, Button, Card, Input } from '@/components/ui';
+import { Alert, Button, Card } from '@/components/ui';
 
 import { humanizeError } from '@/lib/errors';
-import {
-  PACK_GENRES,
-  PACK_LANGS,
-  publishRecipePack,
-  type PackGenre,
-} from '@/lib/packs';
+import { packHref, publishRecipePack, type PackFacets } from '@/lib/packs';
 
 /**
  * Publier une scene terminee.
  *
- * Ce qui est possible ici depend de la source, et il vaut mieux le dire
- * que le laisser deviner :
+ * Toute scene preparee se publie, qu'elle vienne d'un lien ou d'un
+ * fichier : ce qui part dans la communaute, c'est le decoupage — les
+ * personnages, le texte, les reperes — jamais la video. Une scene venue
+ * d'un lien garde en plus son lien ; celle d'un fichier demande a ceux
+ * qui la rejouent d'apporter le leur.
  *
- *  - scene venue d'un LIEN : publiable meme maintenant. Une recette ne
- *    contient que le lien et la preparation, et tous deux survivent a la
- *    purge de fin de rendu ;
- *  - scene venue d'un FICHIER : les medias ont ete effaces, il n'y a plus
- *    rien a partager. La decision devait etre prise avant le rendu.
- *
- * La langue et le genre sont demandes ici et pas ailleurs : c'est le
- * seul moment ou la personne qui publie a la scene en tete. Les demander
- * plus tard revient a ne jamais les obtenir, et un catalogue sans
- * criteres ne se trie pas.
+ * Titre, langue et genre sont obligatoires. Ils etaient facultatifs, et
+ * le catalogue se remplissait de scenes « Autre », en langue inconnue,
+ * que plus aucun filtre ne retrouvait. Les etiquettes, elles, restent
+ * libres : c'est ce qu'on tape dans la recherche (#starwars).
  */
 export function PublishCard() {
   const t = useT();
+  const qc = useQueryClient();
   const { session, isHost, refetch } = useSceneCtx();
-  const [title, setTitle] = useState(session.title ?? '');
-  const [sourceLang, setSourceLang] = useState('');
-  const [genre, setGenre] = useState<PackGenre>('autre');
+  const [facets, setFacets] = useState<PackFacets>({
+    title: session.title ?? '',
+    sourceLang: '',
+    genre: '',
+    tags: [],
+  });
   const [error, setError] = useState<string | null>(null);
 
   const publish = useMutation({
     mutationFn: () =>
-      publishRecipePack(session.id, {
-        title,
-        sourceLang: sourceLang || undefined,
-        genre,
-      }),
-    onSuccess: () => refetch(),
+      publishRecipePack(session.id, { ...facets, title: facets.title.trim() }),
+    onSuccess: () => {
+      refetch();
+      void qc.invalidateQueries({ queryKey: ['packs'] });
+    },
     onError: (e) => setError(humanizeError(e)),
   });
 
   if (!isHost) return null;
 
-  if (session.published_pack_id) {
+  // Deja dans la communaute : publiee ici, ou venue du catalogue. Une
+  // seconde publication ferait un doublon que personne ne departagerait.
+  const dejaLa = session.published_pack_id ?? session.from_pack_id;
+  if (dejaLa) {
     return (
       <Card className="flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm font-bold">
-          <Library className="h-4 w-4 text-ok" aria-hidden />
-          {t.community.published}
+          <Library
+            className={session.published_pack_id ? 'h-4 w-4 text-ok' : 'h-4 w-4 text-text-faint'}
+            aria-hidden
+          />
+          {session.published_pack_id ? t.community.published : t.community.publishFromCatalogue}
         </p>
         <Link
-          href="/communaute"
+          href={packHref(dejaLa)}
           className="inline-flex min-h-11 items-center text-sm font-bold text-link underline underline-offset-4"
         >
           {t.community.seeInCommunity}
@@ -73,92 +74,40 @@ export function PublishCard() {
     );
   }
 
-  /*
-   * Scene venue du catalogue : elle y est deja.
-   *
-   * Rien ne l'empechait d'y retourner une seconde fois, avec le meme
-   * lien et le meme decoupage. Au troisieme groupe qui rejoue la scene,
-   * le catalogue en contient quatre exemplaires identiques.
-   */
-  if (session.from_pack_id) {
-    return (
-      <Card className="flex flex-wrap items-center justify-between gap-3">
-        <p className="flex items-center gap-2 text-sm text-text-muted">
-          <Library className="h-4 w-4 shrink-0 text-text-faint" aria-hidden />
-          {t.community.publishFromCatalogue}
-        </p>
-        <Link
-          href="/communaute"
-          className="inline-flex min-h-11 items-center text-sm font-bold text-link underline underline-offset-4"
-        >
-          {t.community.seeInCommunity}
-        </Link>
-      </Card>
-    );
-  }
-
-  // Pas de lien d'origine : les medias sont partis avec la purge.
-  if (!session.source_ref) {
-    return (
-      <Card>
-        <Alert>{t.community.publishTooLate}</Alert>
-      </Card>
-    );
-  }
+  const complet = facetsComplete(facets);
+  const depuisLien = session.source_type === 'youtube' && !!session.source_ref;
 
   return (
-    <Card className="space-y-3">
-      <div className="flex items-center gap-2">
-        <Share2 className="h-4 w-4 text-text-muted" aria-hidden />
-        <h2 className="text-sm font-bold">{t.community.publish}</h2>
-      </div>
-      <p className="text-xs leading-relaxed text-text-faint">
-        {t.community.publishRecipeHelp}
-      </p>
-
-      <Input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder={t.create.titlePlaceholder}
-        aria-label={t.create.titleLabel}
-      />
-
-      <div className="grid gap-2 sm:grid-cols-2">
-        <SelectMenu
-          label={t.community.filterLang}
-          value={sourceLang}
-          onChange={setSourceLang}
-          options={[
-            { value: '', label: t.community.langUnknown },
-            ...PACK_LANGS.map((code) => ({
-              value: code as string,
-              label: t.community.langNames[code] ?? code,
-            })),
-          ]}
-        />
-
-        <SelectMenu
-          label={t.community.filterGenre}
-          value={genre}
-          onChange={(next) => setGenre(next as PackGenre)}
-          options={PACK_GENRES.map((value) => ({
-            value: value as string,
-            label: t.community.genreNames[value] ?? value,
-          }))}
-        />
+    <Card className="space-y-4">
+      <div className="space-y-1">
+        <h2 className="flex items-center gap-2 text-sm font-bold">
+          <Share2 className="h-4 w-4 text-text-muted" aria-hidden />
+          {t.community.publish}
+        </h2>
+        <p className="text-xs leading-relaxed text-text-faint">
+          {depuisLien ? t.community.publishRecipeHelp : t.community.publishUploadHelp}
+        </p>
       </div>
 
-      <Button
-        variant="primary"
-        className="w-full"
-        loading={publish.isPending}
-        onClick={() => {
-          setError(null);
-          publish.mutate();
-        }}
-      >
-        {t.community.publish}
-      </Button>
+      <PackFacetsFields value={facets} onChange={setFacets} idPrefix="publier" />
+
+      <div className="space-y-2">
+        <Button
+          variant="primary"
+          className="w-full"
+          disabled={!complet}
+          loading={publish.isPending}
+          onClick={() => {
+            setError(null);
+            publish.mutate();
+          }}
+        >
+          {t.community.publish}
+        </Button>
+        {complet ? null : (
+          <p className="text-center text-xs text-text-faint">{t.community.publishMissing}</p>
+        )}
+      </div>
 
       {error ? <Alert tone="danger">{error}</Alert> : null}
     </Card>

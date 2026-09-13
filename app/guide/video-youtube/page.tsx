@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BookOpen,
   Check,
-  ChevronDown,
   Clapperboard,
   Download,
   FileVideo,
@@ -15,6 +14,7 @@ import {
 } from 'lucide-react';
 
 import { AccountMenu } from '@/components/account-menu';
+import { FaqList } from '@/components/faq-list';
 import { Footer } from '@/components/footer';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { SiteHeader } from '@/components/site-header';
@@ -62,10 +62,11 @@ export default async function GuideVideoPage() {
   const boutonContour =
     'btn-3d btn-secondary btn-bascule inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-6 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]';
 
-  // Le trajet d'une scene, en trois objets : un lien, un fichier, un lobby.
+  // Le trajet d'une scene, en trois objets : une source, un fichier, un
+  // lobby. La source peut etre n'importe laquelle, le format aussi.
   const trajet = [
-    { Icone: Link2, titre: g.steps[0]?.title ?? '', detail: 'youtube.com/watch?v=…' },
-    { Icone: FileVideo, titre: g.steps[1]?.title ?? '', detail: 'MP4 · 720p · < 50 MB' },
+    { Icone: Link2, titre: g.steps[0]?.title ?? '', detail: 'YouTube · TikTok · …' },
+    { Icone: FileVideo, titre: g.steps[1]?.title ?? '', detail: 'MP4 · MOV · MKV · < 50 MB' },
     { Icone: Clapperboard, titre: g.steps[3]?.title ?? '', detail: t.status.lobby },
   ];
 
@@ -263,25 +264,10 @@ export default async function GuideVideoPage() {
               >
                 {g.faqTitle}
               </h2>
-              <div className="space-y-3">
-                {g.faq.map((item, rang) => (
-                  <details
-                    key={item.q}
-                    data-reveal
-                    suppressHydrationWarning
-                    style={delai(rang * 80)}
-                    className="panel group"
-                  >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-bold text-text [&::-webkit-details-marker]:hidden">
-                      {item.q}
-                      <ChevronDown
-                        className="h-4 w-4 shrink-0 text-text-faint transition-transform duration-300 group-open:rotate-180"
-                        aria-hidden
-                      />
-                    </summary>
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-text-muted">{item.a}</p>
-                  </details>
-                ))}
+              {/* Le meme accordeon que l'accueil et les guides : il s'ouvre
+                  en douceur, la ou `details` sautait d'un coup. */}
+              <div data-reveal suppressHydrationWarning>
+                <FaqList items={g.faq} />
               </div>
             </section>
 

@@ -286,6 +286,38 @@ export default async function HomePage() {
               </div>
             </section>
 
+            {/* Le guide d'import, la ou l'on vient de voir le deroule : la
+                premiere question qui suit est « et ma video, je la trouve
+                ou ? ». N'importe quelle source fait l'affaire. */}
+            <section
+              data-reveal
+              suppressHydrationWarning
+              className="panel carte-valeur grid items-stretch overflow-hidden sm:grid-cols-[minmax(0,18rem)_1fr]"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/illustrations/cinema/art-import.webp"
+                alt=""
+                loading="lazy"
+                className="aspect-video h-full w-full object-cover sm:aspect-auto"
+              />
+              <div className="space-y-2 p-5 sm:p-6">
+                <span className="text-xs font-bold uppercase tracking-widest text-text-faint">
+                  {t.guide.kicker}
+                </span>
+                <h2 className="titre text-xl text-balance">{t.guide.homeBannerTitle}</h2>
+                <div className="text-sm leading-relaxed text-text-muted">
+                  {t.guide.homeBannerBody}
+                </div>
+                <Link
+                  href={GUIDE_VIDEO_HREF}
+                  className="lien-surligne inline-block pt-1 text-sm font-bold text-text"
+                >
+                  {t.guide.homeBannerAction}&nbsp;→
+                </Link>
+              </div>
+            </section>
+
             {/* Rappel de l'action, a mi-parcours : on decide rarement en
                 haut de page, et personne ne remonte pour chercher. */}
             <section
@@ -302,6 +334,13 @@ export default async function HomePage() {
                 {primaryLabel}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
+              {/* Un `div`, pas un `p` : la peau cinema habille les
+                  paragraphes de ce bloc comme son titre. */}
+              <div className="mt-4 text-xs text-text-muted">
+                <Link href={GUIDE_VIDEO_HREF} className="lien-surligne font-bold text-text">
+                  {t.guide.midLink}
+                </Link>
+              </div>
             </section>
 
             {/* Si la personne est connectee et n'a rien publie, c'est ici

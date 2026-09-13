@@ -1,6 +1,7 @@
 'use client';
 
-import { Clapperboard, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { Clapperboard, MessageSquare, Trash2 } from 'lucide-react';
 
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
@@ -8,10 +9,12 @@ import { Button } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
 import { useT } from '@/lib/i18n';
-import type { Pack } from '@/lib/packs';
+import { packHref, type Pack } from '@/lib/packs';
 
 /** Au-dela, les personnages se resument en « +3 ». */
 const PASTILLES_MAX = 4;
+/** Les etiquettes au-dela restent sur la page de la scene. */
+const TAGS_MAX = 3;
 
 /**
  * Combien de colonnes pour ce nombre de scenes.
@@ -102,16 +105,57 @@ export function PackCard({
         </div>
       )}
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
+      {/*
+        Le corps entier mene a la page de la scene : le lien du titre
+        s'etire sur toute la carte sous le texte. Ce qui s'actionne sur
+        place — vote, etiquettes, bouton pour doubler — passe au-dessus.
+      */}
+      <div className="relative flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <h3 className="line-clamp-2 font-bold leading-snug" title={pack.title}>
-              {pack.title}
+              <Link
+                href={packHref(pack.id)}
+                className="after:absolute after:inset-0 after:content-[''] hover:underline hover:underline-offset-4 focus-visible:outline-none focus-visible:after:rounded-b-card focus-visible:after:ring-2 focus-visible:after:ring-select"
+              >
+                {pack.title}
+              </Link>
             </h3>
-            <p className="mt-1 text-xs leading-relaxed text-text-faint">{details}</p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-1 text-xs leading-relaxed text-text-faint">
+              {details}
+              {pack.comment_count > 0 ? (
+                <span className="inline-flex items-center gap-1">
+                  {' · '}
+                  <MessageSquare className="h-3 w-3" aria-hidden />
+                  <span aria-label={t.community.commentsCount(pack.comment_count)}>
+                    {pack.comment_count}
+                  </span>
+                </span>
+              ) : null}
+            </p>
           </div>
-          {showVote ? <PackVote pack={pack} compact /> : null}
+          {showVote ? (
+            <div className="relative z-10">
+              <PackVote pack={pack} compact />
+            </div>
+          ) : null}
         </div>
+
+        {pack.tags.length > 0 ? (
+          <ul className="relative z-10 -mt-1 flex flex-wrap gap-x-2 gap-y-1">
+            {pack.tags.slice(0, TAGS_MAX).map((tag) => (
+              <li key={tag}>
+                <Link
+                  href={`/communaute?q=${encodeURIComponent(`#${tag}`)}`}
+                  className="text-xs font-bold text-link hover:underline"
+                  aria-label={t.community.tagSearch(tag)}
+                >
+                  #{tag}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
         <ul className="flex flex-wrap gap-1.5" aria-label={t.community.characterCount(pack.character_count)}>
           {visibles.map((character) => (
@@ -134,7 +178,7 @@ export function PackCard({
           ) : null}
         </ul>
 
-        <div className="mt-auto flex items-center gap-2 pt-1">
+        <div className="relative z-10 mt-auto flex items-center gap-2 pt-1">
           <Button
             variant="secondary"
             className="btn-bascule flex-1"

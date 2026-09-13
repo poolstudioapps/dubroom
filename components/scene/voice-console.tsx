@@ -1,23 +1,24 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { SlidersHorizontal } from 'lucide-react';
+import { Check, SlidersHorizontal } from 'lucide-react';
 
-import { Alert, Button, Card } from '@/components/ui';
-import { setTakeFx } from '@/lib/actions';
-import { humanizeError } from '@/lib/errors';
+import { Alert, Button, Card, Spinner } from '@/components/ui';
+import {
+  MIC_OFFSET_MAX_MS,
+  MIC_OFFSET_MIN_MS,
+  MIC_OFFSET_STEP_MS,
+} from '@/config/constants';
+import type { VoiceSettings } from '@/lib/audio/voice-fx';
 import { useT } from '@/lib/i18n';
-import type { TakeRow } from '@/lib/supabase/database.types';
 import { cn } from '@/lib/utils';
 
-export interface VoiceFx {
-  reverb: number;
-  pitch: number;
-  tune: number;
+/** Tout ce qui se regle sur une prise. */
+export interface TakeSettings extends VoiceSettings {
+  /** Decalage micro, en ms, ajoute au calage automatique. */
+  micOffsetMs: number;
 }
 
-export const FX_NEUTRE: VoiceFx = { reverb: 0, pitch: 0, tune: 0 };
+export const FX_NEUTRE = { reverb: 0, pitch: 0, tune: 0 } as const;
 
 /**
  * Les reglages tout faits.
@@ -28,7 +29,7 @@ export const FX_NEUTRE: VoiceFx = { reverb: 0, pitch: 0, tune: 0 };
  */
 const PRESETS: {
   cle: keyof ReturnType<typeof useT>['studio']['fxPresets'];
-  fx: VoiceFx;
+  fx: { reverb: number; pitch: number; tune: number };
 }[] = [
   { cle: 'dry', fx: { reverb: 0, pitch: 0, tune: 0 } },
   { cle: 'room', fx: { reverb: 35, pitch: 0, tune: 0 } },
@@ -39,135 +40,147 @@ const PRESETS: {
 ];
 
 /**
- * La console de voix, pour la prise affichee.
+ * La console de voix : tous les reglages de son de la prise affichee.
  *
- * Elle reglait autrefois le joueur entier : une reverbe choisie pour une
- * replique chantee s'etendait a toutes les autres. Elle regle maintenant
- * une prise, celle du clip en cours, et rien d'autre.
+ * Une tranche de table de mixage — volume, reverbe, hauteur, justesse —
+ * puis le calage. Tout s'entend tout de suite dans « Ma prise » : le
+ * studio rejoue la chaine du mixage a chaque curseur lache. Rien n'est
+ * applique a l'enregistrement, qui reste brut : on peut tout changer
+ * jusqu'au rendu.
  *
- * Des curseurs verticaux, comme une tranche de table de mixage. Rien
- * n'est applique a l'enregistrement : la prise reste brute en reserve et
- * les effets sont poses au mixage. On peut donc les ajouter apres coup,
- * les changer, ou revenir a la voix nue sans avoir rien perdu.
+ * Chaque reglage vaut pour une prise. Le volume et le decalage peuvent
+ * s'etendre a toutes ses prises, parce qu'un micro trop bas ou en retard
+ * l'est sur toute la scene ; les effets, eux, se choisissent replique par
+ * replique.
+ *
+ * Sans prise, la console regle la prochaine : les curseurs repartent de
+ * zero a chaque replique, et ce qu'on y pose s'applique des
+ * l'enregistrement.
+ *
+ * Le composant ne garde aucun etat : le studio les tient, parce que c'est
+ * lui qui joue la prise et qui sait quand elle change.
  */
-export function VoiceConsole({ take }: { take: TakeRow | null }) {
+export function VoiceConsole({
+  value,
+  hasTake,
+  computing,
+  error,
+  onInput,
+  onCommit,
+  offsetEverywhere,
+  onOffsetEverywhere,
+  onGainEverywhere,
+  gainEverywhere,
+}: {
+  value: TakeSettings;
+  hasTake: boolean;
+  /** L'ecoute avec effets est en cours de calcul. */
+  computing: boolean;
+  error: string | null;
+  /** Le curseur bouge : affichage seulement. */
+  onInput: (partial: Partial<TakeSettings>) => void;
+  /** Le curseur est lache : on enregistre, et l'ecoute suit. */
+  onCommit: (partial: Partial<TakeSettings>) => void;
+  offsetEverywhere: boolean;
+  onOffsetEverywhere: (next: boolean) => void;
+  onGainEverywhere: () => void;
+  gainEverywhere: 'idle' | 'pending' | 'done';
+}) {
   const t = useT();
-  const [fx, setFx] = useState<VoiceFx>(FX_NEUTRE);
-  const [erreur, setErreur] = useState<string | null>(null);
-
-  /*
-   * Se recaler sur la prise, et seulement quand elle change vraiment.
-   *
-   * Des valeurs primitives dans les dependances, jamais l'objet : la
-   * liste des prises est rechargee a chaque envoi de n'importe quel
-   * joueur, et un objet neuf ramenait le curseur sous le doigt a sa
-   * valeur d'avant en plein geste.
-   */
-  const id = take?.id;
-  const reverbServeur = take?.fx_reverb;
-  const pitchServeur = take?.fx_pitch;
-  const tuneServeur = take?.fx_tune;
-  useEffect(() => {
-    setFx({
-      reverb: reverbServeur ?? 0,
-      pitch: pitchServeur ?? 0,
-      tune: tuneServeur ?? 0,
-    });
-    setErreur(null);
-  }, [id, reverbServeur, pitchServeur, tuneServeur]);
-
-  const enregistre = useMutation({
-    mutationFn: (next: VoiceFx) => {
-      if (!id) throw new Error('Aucune prise');
-      return setTakeFx(id, next);
-    },
-    onMutate: () => setErreur(null),
-    onError: (e) => setErreur(humanizeError(e)),
-  });
-
-  /** Bouge tout de suite, ecrit quand on lache. */
-  function pousse(next: Partial<VoiceFx>) {
-    setFx((courant) => ({ ...courant, ...next }));
-  }
-  function pose(next: VoiceFx) {
-    setFx(next);
-    enregistre.mutate(next);
-  }
-
-  // Pas de prise, pas d'effet a regler : on le dit au lieu d'offrir des
-  // curseurs qui n'agiraient sur rien.
-  if (!take) {
-    return (
-      <Card variant="plate" className="space-y-2">
-        <h2 className="flex items-center gap-2 text-sm font-bold">
-          <SlidersHorizontal className="h-4 w-4 text-text-muted" aria-hidden />
-          {t.studio.fxTitle}
-        </h2>
-        <p className="text-xs leading-relaxed text-text-faint">{t.studio.fxNoTake}</p>
-      </Card>
-    );
-  }
-
-  const actif = fx.reverb > 0 || fx.pitch !== 0 || fx.tune > 0;
+  const actif = value.reverb > 0 || value.pitch !== 0 || value.tune > 0 || value.gainDb !== 0;
 
   return (
-    <Card variant="plate" className="space-y-3">
+    <Card variant="plate" className="space-y-4">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-bold">
           <SlidersHorizontal className="h-4 w-4 text-text-muted" aria-hidden />
           {t.studio.fxTitle}
         </h2>
         {actif ? (
-          <Button size="sm" variant="ghost" onClick={() => pose(FX_NEUTRE)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onCommit({ ...FX_NEUTRE, gainDb: 0 })}
+          >
             {t.studio.fxReset}
           </Button>
         ) : null}
       </div>
 
-      {/* ── Les trois tranches ────────────────────────────────────── */}
-      <div className="flex justify-between gap-2">
+      {/* Une ligne d'etat de hauteur fixe : rien ne saute quand elle change. */}
+      <p className="flex min-h-4 items-center gap-1.5 text-xs text-text-faint" role="status">
+        {computing ? (
+          <>
+            <Spinner className="h-3 w-3" />
+            {t.studio.fxComputing}
+          </>
+        ) : hasTake ? null : (
+          t.studio.fxPending
+        )}
+      </p>
+
+      {/* ── La tranche ─────────────────────────────────────────────── */}
+      <div className="flex justify-between gap-1">
+        <Fader
+          label={t.studio.fxGain}
+          value={value.gainDb}
+          min={-12}
+          max={12}
+          step={0.5}
+          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
+          onInput={(v) => onInput({ gainDb: v })}
+          onCommit={(v) => onCommit({ gainDb: v })}
+        />
         <Fader
           label={t.studio.fxReverb}
-          value={fx.reverb}
+          value={value.reverb}
           min={0}
           max={100}
-          suffix=" %"
-          onInput={(v) => pousse({ reverb: v })}
-          onCommit={(v) => pose({ ...fx, reverb: v })}
+          format={(v) => `${v} %`}
+          onInput={(v) => onInput({ reverb: v })}
+          onCommit={(v) => onCommit({ reverb: v })}
         />
         <Fader
           label={t.studio.fxPitch}
-          value={fx.pitch}
+          value={value.pitch}
           min={-12}
           max={12}
-          suffix=""
           format={(v) => (v > 0 ? `+${v}` : String(v))}
-          onInput={(v) => pousse({ pitch: v })}
-          onCommit={(v) => pose({ ...fx, pitch: v })}
+          onInput={(v) => onInput({ pitch: v })}
+          onCommit={(v) => onCommit({ pitch: v })}
         />
         <Fader
           label={t.studio.fxTune}
-          value={fx.tune}
+          value={value.tune}
           min={0}
           max={100}
-          suffix=" %"
-          onInput={(v) => pousse({ tune: v })}
-          onCommit={(v) => pose({ ...fx, tune: v })}
+          format={(v) => `${v} %`}
+          onInput={(v) => onInput({ tune: v })}
+          onCommit={(v) => onCommit({ tune: v })}
         />
       </div>
 
+      <Button
+        size="sm"
+        variant="ghost"
+        className="w-full"
+        loading={gainEverywhere === 'pending'}
+        onClick={onGainEverywhere}
+      >
+        {gainEverywhere === 'done' ? <Check className="h-3.5 w-3.5 text-ok" aria-hidden /> : null}
+        {gainEverywhere === 'done' ? t.studio.fxGainAppliedAll : t.studio.fxGainApplyAll}
+      </Button>
+
       <div className="flex flex-wrap gap-1.5">
-        {PRESETS.map(({ cle, fx: valeurs }) => {
+        {PRESETS.map(({ cle, fx }) => {
           const choisi =
-            fx.reverb === valeurs.reverb &&
-            fx.pitch === valeurs.pitch &&
-            fx.tune === valeurs.tune;
+            value.reverb === fx.reverb && value.pitch === fx.pitch && value.tune === fx.tune;
           return (
             <button
               key={cle}
               type="button"
               aria-pressed={choisi}
-              onClick={() => pose(valeurs)}
+              onClick={() => onCommit(fx)}
               className={cn(
                 'rounded-full border px-2.5 py-1 text-xs font-bold transition-colors',
                 choisi
@@ -181,7 +194,42 @@ export function VoiceConsole({ take }: { take: TakeRow | null }) {
         })}
       </div>
 
-      {erreur ? <Alert tone="danger">{erreur}</Alert> : null}
+      {/* ── Le calage ──────────────────────────────────────────────── */}
+      <div className="space-y-1.5 border-t border-border pt-3">
+        <div className="flex items-center justify-between text-sm">
+          <label htmlFor="decalage-micro" className="font-bold">
+            {t.studio.micOffset}
+          </label>
+          <span className="tabular-nums text-text-faint">
+            {value.micOffsetMs > 0 ? '+' : ''}
+            {value.micOffsetMs} ms
+          </span>
+        </div>
+        <input
+          id="decalage-micro"
+          type="range"
+          min={MIC_OFFSET_MIN_MS}
+          max={MIC_OFFSET_MAX_MS}
+          step={MIC_OFFSET_STEP_MS}
+          value={value.micOffsetMs}
+          onChange={(e) => onInput({ micOffsetMs: Number(e.target.value) })}
+          onPointerUp={(e) => onCommit({ micOffsetMs: Number(e.currentTarget.value) })}
+          onKeyUp={(e) => onCommit({ micOffsetMs: Number(e.currentTarget.value) })}
+          className="w-full"
+        />
+        <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-text-muted">
+          <input
+            type="checkbox"
+            checked={offsetEverywhere}
+            onChange={(e) => onOffsetEverywhere(e.target.checked)}
+            className="h-4 w-4 accent-[var(--color-select)]"
+          />
+          {t.studio.micOffsetEverywhere}
+        </label>
+        <p className="text-xs leading-relaxed text-text-faint">{t.studio.micOffsetHelp}</p>
+      </div>
+
+      {error ? <Alert tone="danger">{error}</Alert> : null}
 
       <p className="text-xs leading-relaxed text-text-faint">{t.studio.fxHelp}</p>
     </Card>
@@ -200,7 +248,7 @@ function Fader({
   value,
   min,
   max,
-  suffix,
+  step = 1,
   format,
   onInput,
   onCommit,
@@ -209,14 +257,14 @@ function Fader({
   value: number;
   min: number;
   max: number;
-  suffix: string;
-  format?: (v: number) => string;
+  step?: number;
+  format: (v: number) => string;
   onInput: (v: number) => void;
   onCommit: (v: number) => void;
 }) {
   return (
-    <label className="flex flex-1 flex-col items-center gap-1.5">
-      <span className="text-[11px] font-bold uppercase tracking-wide text-text-muted">
+    <label className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
+      <span className="max-w-full truncate text-[11px] font-bold uppercase tracking-wide text-text-muted">
         {label}
       </span>
 
@@ -225,7 +273,7 @@ function Fader({
           type="range"
           min={min}
           max={max}
-          step={1}
+          step={step}
           value={value}
           aria-label={label}
           onChange={(e) => onInput(Number(e.target.value))}
@@ -238,10 +286,7 @@ function Fader({
         />
       </span>
 
-      <span className="tabular-nums text-xs font-bold">
-        {format ? format(value) : value}
-        {suffix}
-      </span>
+      <span className="whitespace-nowrap text-xs font-bold tabular-nums">{format(value)}</span>
     </label>
   );
 }

@@ -23,12 +23,15 @@ export function PlayerProgressList({
   myParticipantId,
   className,
   action,
+  waiting,
 }: {
   sessionId: string;
   myParticipantId: string | null;
   className?: string;
   /** Ce que l'hote peut faire sur la ligne d'un joueur, s'il peut. */
   action?: (row: PlayerRow) => React.ReactNode;
+  /** Qui est sur l'ecran d'attente. Absent : on ne l'affiche pas. */
+  waiting?: Set<string>;
 }) {
   const t = useT();
   const progress = useSessionProgress(sessionId);
@@ -54,6 +57,23 @@ export function PlayerProgressList({
                 {row.is_host ? (
                   <span className="ml-1 text-xs text-text-faint">
                     {t.studio.hostTag}
+                  </span>
+                ) : null}
+                {waiting ? (
+                  <span
+                    className={cn(
+                      'ml-2 inline-flex items-center gap-1 text-xs',
+                      waiting.has(row.participant_id) ? 'font-bold text-ok-ink' : 'text-text-faint',
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'h-1.5 w-1.5 rounded-full',
+                        waiting.has(row.participant_id) ? 'bg-ok' : 'bg-border-strong',
+                      )}
+                      aria-hidden
+                    />
+                    {waiting.has(row.participant_id) ? t.studio.waitPresent : t.studio.waitAway}
                   </span>
                 ) : null}
               </span>

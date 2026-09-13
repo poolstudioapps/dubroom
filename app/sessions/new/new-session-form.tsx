@@ -19,7 +19,7 @@ import { humanizeError } from '@/lib/errors';
 import { PART_ENVOI } from '@/lib/progress';
 import { isAdmin, useMyRole } from '@/lib/roles';
 import { cn } from '@/lib/utils';
-import { checkVideoFile } from '@/lib/video-file';
+import { VIDEO_ACCEPT, checkVideoFile } from '@/lib/video-file';
 
 type Mode = 'upload' | 'pack' | 'youtube';
 
@@ -50,7 +50,6 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
-  const [keepAsPack, setKeepAsPack] = useState(false);
   /**
    * Le raccourci a-t-il ete ecarte ?
    *
@@ -99,7 +98,6 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
         sourceType: mode === 'youtube' ? 'youtube' : 'upload',
         sourceRef: mode === 'youtube' ? youtubeUrl.trim() : undefined,
         displayName,
-        keepAsPack: mode === 'youtube' && keepAsPack,
         isSong,
       });
 
@@ -222,7 +220,7 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
               <input
                 ref={fileInput}
                 type="file"
-                accept="video/*,.mkv"
+                accept={VIDEO_ACCEPT}
                 className="hidden"
                 onChange={(e) => void pickFile(e.target.files?.[0] ?? null)}
               />
@@ -261,6 +259,14 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
               <p className="text-xs leading-relaxed text-text-faint">
                 {t.create.multiTrackWarning}
               </p>
+              <Link
+                href={GUIDE_VIDEO_HREF}
+                target="_blank"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-link hover:underline"
+              >
+                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                {t.guide.createLink}
+              </Link>
             </div>
           ) : (
             <div className="space-y-2">
@@ -315,24 +321,9 @@ export function NewSessionForm({ displayName }: { displayName: string }) {
             </div>
           </div>
 
-          {/* La case de partage ne s'affiche que pour un lien : partager un
-            fichier importe reviendrait a heberger l'oeuvre, ce qu'un pack
-            ne fait jamais. */}
-          {mode === 'youtube' ? (
-            <div className="panel flex items-start gap-3 p-3">
-              <Toggle
-                checked={keepAsPack}
-                onChange={setKeepAsPack}
-                label={t.create.keepLabel}
-              />
-              <div className="space-y-0.5">
-                <p className="text-sm font-bold">{t.create.keepLabel}</p>
-                <p className="text-xs text-text-faint">{t.create.keepHelpUrl}</p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-xs text-text-faint">{t.create.keepHelpUpload}</p>
-          )}
+          {/* Plus de case « garder la scene » ici : elle publiait sans
+            langue ni genre. On publie apres le rendu, criteres compris. */}
+          <p className="text-xs text-text-faint">{t.create.shareLater}</p>
 
           {/* La meme barre que la preparation : l'envoi en occupe le debut,
               et l'ecran suivant reprend la ou celle-ci s'arrete. */}

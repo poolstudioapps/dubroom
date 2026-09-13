@@ -55,6 +55,43 @@ export function sortPacks(packs: Pack[], sort: PackSort): Pack[] {
   });
 }
 
+const sansAccents = (s: string) =>
+  s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+
+/**
+ * La recherche du catalogue.
+ *
+ * Chaque mot doit se retrouver quelque part : titre, personnages, auteur,
+ * genre, langue ou etiquettes. Un mot qui commence par un diese ne
+ * cherche que dans les etiquettes, et par leur debut : « #star » trouve
+ * `starwars`. Sans accents ni majuscules, parce que personne ne tape
+ * « Comédie » dans une barre de recherche.
+ */
+export function matchesSearch(pack: Pack, query: string, libelles: string[] = []): boolean {
+  const mots = sansAccents(query).split(/\s+/).filter(Boolean);
+  if (mots.length === 0) return true;
+
+  const tags = pack.tags.map(sansAccents);
+  const foin = sansAccents(
+    [
+      pack.title,
+      pack.description ?? '',
+      pack.author_name,
+      ...pack.characters.map((c) => c.name),
+      ...pack.tags,
+      ...libelles,
+    ].join(' '),
+  );
+
+  return mots.every((mot) => {
+    if (mot.startsWith('#')) {
+      const debut = mot.replace(/^#+/, '');
+      return debut === '' || tags.some((tag) => tag.startsWith(debut));
+    }
+    return foin.includes(mot);
+  });
+}
+
 /**
  * Garde les scenes qui correspondent.
  *

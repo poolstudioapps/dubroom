@@ -40,6 +40,36 @@ export interface Pack {
   source_lang: string | null;
   genre: PackGenre;
   characters: PackCharacter[];
+  /** Etiquettes normalisees, sans diese : `starwars`, `kaamelott`. */
+  tags: string[];
+  author_name: string;
+  author_avatar: string | null;
+  /** Son auteur, ou un administrateur. */
+  can_edit: boolean;
+  comment_count: number;
+}
+
+/** La page d'une scene du catalogue. */
+export function packHref(packId: string): string {
+  return `/communaute/${packId}`;
+}
+
+export const PACK_TAGS_MAX = 10;
+
+/**
+ * Une etiquette telle que la base la gardera.
+ *
+ * La meme regle qu'en base (`app_normaliser_tags`), appliquee a la
+ * frappe : on voit tout de suite que « #Star Wars » deviendra
+ * « starwars », au lieu de le decouvrir apres publication.
+ */
+export function normaliserTag(brut: string): string | null {
+  const tag = brut
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}_-]+/gu, '')
+    .slice(0, 30);
+  return tag.length >= 2 ? tag : null;
 }
 
 /**
@@ -256,15 +286,22 @@ export async function deletePack(pack: Pack): Promise<void> {
   await rpc('delete_pack', { p_pack_id: pack.id });
 }
 
-/** Renseigner les criteres d'une scene publiee. */
-export function setPackFacets(
-  packId: string,
-  facets: { sourceLang?: string | null; genre?: PackGenre },
-) {
+/** Ce qu'on renseigne en publiant, et qu'on peut retoucher ensuite. */
+export interface PackFacets {
+  title: string;
+  sourceLang: string;
+  genre: PackGenre | '';
+  tags: string[];
+}
+
+/** Retoucher une scene publiee : son auteur, ou un administrateur. */
+export function setPackFacets(packId: string, facets: PackFacets) {
   return rpc('set_pack_facets', {
     p_pack_id: packId,
-    p_source_lang: facets.sourceLang === undefined ? null : (facets.sourceLang ?? ''),
-    p_genre: facets.genre ?? null,
+    p_title: facets.title,
+    p_source_lang: facets.sourceLang,
+    p_genre: facets.genre,
+    p_tags: facets.tags,
   });
 }
 
@@ -273,24 +310,54 @@ export function votePack(packId: string, value: 1 | -1) {
   return rpc<number>('vote_pack', { p_pack_id: packId, p_value: value });
 }
 
-export function setKeepAsPack(sessionId: string, keep: boolean) {
-  return rpc('set_keep_as_pack', { p_session_id: sessionId, p_keep: keep });
-}
-
 /**
- * Publie une scene venue d'un lien, apres coup.
+ * Publie une scene terminee dans la communaute.
  *
- * Possible meme une fois le rendu produit : une recette ne contient que
- * le lien et la preparation, et tous deux survivent a la purge.
+ * Titre, langue et genre sont obligatoires, la base le verifie aussi.
+ * Une scene venue d'un lien garde le lien ; une scene importee par
+ * fichier ne partage que son decoupage.
  */
-export function publishRecipePack(
-  sessionId: string,
-  input: { title?: string; sourceLang?: string; genre?: PackGenre } = {},
-) {
+export function publishRecipePack(sessionId: string, facets: PackFacets) {
   return rpc<string>('publish_recipe_pack', {
     p_session_id: sessionId,
-    p_title: input.title ?? null,
-    p_source_lang: input.sourceLang ?? null,
-    p_genre: input.genre ?? null,
+    p_title: facets.title,
+    p_source_lang: facets.sourceLang,
+    p_genre: facets.genre,
+    p_tags: facets.tags,
   });
+}
+
+// ── Commentaires ─────────────────────────────────────────────────────
+
+export interface PackComment {
+  id: string;
+  body: string;
+  created_at: string;
+  author_name: string;
+  author_avatar: string | null;
+  is_mine: boolean;
+  can_delete: boolean;
+  score: number;
+  up_count: number;
+  down_count: number;
+  my_vote: number;
+}
+
+export const packCommentsKey = (packId: string) => ['pack-comments', packId] as const;
+
+export function listPackComments(packId: string): Promise<PackComment[]> {
+  return rpc<PackComment[]>('list_pack_comments', { p_pack_id: packId });
+}
+
+export function addPackComment(packId: string, body: string) {
+  return rpc<string>('add_pack_comment', { p_pack_id: packId, p_body: body });
+}
+
+export function deletePackComment(commentId: string) {
+  return rpc('delete_pack_comment', { p_comment_id: commentId });
+}
+
+/** Revoter la meme valeur retire le vote, comme pour les scenes. */
+export function votePackComment(commentId: string, value: 1 | -1) {
+  return rpc<number>('vote_pack_comment', { p_comment_id: commentId, p_value: value });
 }

@@ -26,6 +26,11 @@ export default function PrivacyPage() {
           Les fichiers que vous importez, vos enregistrements vocaux, et les métadonnées
           qui en découlent : personnages, répliques, découpage.
         </p>
+        <p>
+          Si vous publiez une scène ou commentez une scène de la communauté : son titre,
+          sa langue, son genre, ses tags, vos commentaires et vos votes, affichés avec
+          votre nom d’affichage aux autres personnes invitées.
+        </p>
       </LegalSection>
 
       <LegalSection title="Ce qui n’est pas fait">
@@ -56,14 +61,14 @@ export default function PrivacyPage() {
           avant. Aucune copie n’est conservée au-delà.
         </p>
         <p>
-          Une exception : si l’hôte choisit de conserver une scène préparée pour la
-          rejouer, sa vidéo, ses pistes séparées et son découpage sont gardés. Les
-          enregistrements de voix, eux, ne le sont jamais.
+          Publier une scène dans la communauté n’en garde que le découpage (personnages,
+          texte, repères) et, si elle venait d’un lien, ce lien. Ni la vidéo ni les
+          enregistrements de voix ne sont conservés.
         </p>
         <p>
-          Le rendu final est conservé jusqu’à suppression manuelle par l’hôte. Supprimer
-          une scène efface le rendu, les prises et les métadonnées, sans retour
-          possible.
+          Un salon resté ouvert plus d’une heure est fermé automatiquement. Supprimer une
+          scène efface le rendu, les prises et les métadonnées, sans retour possible. Un
+          commentaire peut être supprimé à tout moment par son auteur.
         </p>
       </LegalSection>
 

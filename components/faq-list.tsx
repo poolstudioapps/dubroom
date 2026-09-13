@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -22,6 +22,11 @@ import { cn } from '@/lib/utils';
  *    disparaitre — et cette page existe en bonne partie pour ca ;
  *  - une seule ouverte a la fois. Tout ouvrir revient a la grille
  *    d'avant, en plus haut.
+ *
+ * L'ouverture se fait en trois temps qui se chevauchent : la hauteur se
+ * deplie, un filet de couleur descend le long de la question, puis la
+ * reponse glisse en place. Le « + » tourne en « × ». Ceux qui ont demande
+ * moins d'animations au systeme voient la reponse s'ouvrir d'un coup.
  */
 export function FaqList({ items }: { items: readonly { q: string; a: string }[] }) {
   const [ouverte, setOuverte] = useState<string | null>(null);
@@ -31,26 +36,40 @@ export function FaqList({ items }: { items: readonly { q: string; a: string }[] 
       {items.map((item) => {
         const open = ouverte === item.q;
         return (
-          <li key={item.q}>
+          <li
+            key={item.q}
+            className={cn(
+              'relative transition-colors duration-300',
+              // Le filet d'accent, qui descend a l'ouverture.
+              'before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:origin-top before:bg-accent',
+              'before:transition-transform before:duration-500 before:ease-[cubic-bezier(0.22,1,0.36,1)]',
+              'motion-reduce:before:transition-none',
+              open ? 'bg-surface before:scale-y-100' : 'before:scale-y-0',
+            )}
+          >
             <h3>
               <button
                 type="button"
                 aria-expanded={open}
                 onClick={() => setOuverte(open ? null : item.q)}
                 className={cn(
-                  'flex w-full items-center gap-3 px-4 py-3.5 text-left text-sm font-bold',
+                  'group flex w-full items-center gap-3 px-4 py-3.5 text-left text-sm font-bold',
                   'transition-colors hover:bg-surface',
-                  open && 'bg-surface',
                 )}
               >
                 <span className="flex-1">{item.q}</span>
-                <ChevronDown
+                <span
                   className={cn(
-                    'h-4 w-4 shrink-0 text-text-faint transition-transform duration-200',
-                    open && 'rotate-180',
+                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
+                    'ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none',
+                    open
+                      ? 'rotate-45 border-accent bg-accent text-accent-ink'
+                      : 'border-border-strong text-text-faint group-hover:border-accent group-hover:text-text',
                   )}
                   aria-hidden
-                />
+                >
+                  <Plus className="h-4 w-4" />
+                </span>
               </button>
             </h3>
 
@@ -62,12 +81,21 @@ export function FaqList({ items }: { items: readonly { q: string; a: string }[] 
             */}
             <div
               className={cn(
-                'grid transition-[grid-template-rows] duration-200 ease-out',
+                'grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                'motion-reduce:transition-none',
                 open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
               )}
             >
               <div className="overflow-hidden">
-                <p className="px-4 pb-4 text-sm leading-relaxed text-text-muted">
+                <p
+                  className={cn(
+                    'px-4 pb-4 pr-14 text-sm leading-relaxed text-text-muted',
+                    'transition-[opacity,transform,filter] ease-out motion-reduce:transition-none',
+                    open
+                      ? 'translate-y-0 opacity-100 blur-0 delay-100 duration-500'
+                      : '-translate-y-3 opacity-0 blur-[2px] duration-200',
+                  )}
+                >
                   {item.a}
                 </p>
               </div>

@@ -19,6 +19,13 @@
 /** Fondu applique aux bords d'un segment de VO reinjecte, en secondes. */
 const VO_FADE_S = 0.05;
 
+/** Les trois reflexions de la reverberation, a pleine intensite. */
+const REVERB_ECHOS = [
+  { ms: 47, decroissance: 0.5 },
+  { ms: 71, decroissance: 0.32 },
+  { ms: 103, decroissance: 0.2 },
+] as const;
+
 export interface TakePlacement {
   /** Index de l'entree ffmpeg correspondante. */
   inputIndex: number;
@@ -122,11 +129,23 @@ function chaineEffets(take: TakePlacement): string {
      * l'essentiel — la queue et la sensation de volume — pour rien. Le
      * curseur pilote la part de son reflechi, de la voix seche a la
      * grande salle.
+     *
+     * La voix directe passe a plein niveau. `aecho` multiplie TOUT le
+     * signal par son gain de sortie, voix comprise : l'ancien reglage
+     * (0,25 a 0,7) faisait perdre jusqu'a douze decibels a une prise des
+     * qu'on touchait au curseur. Le gain de sortie ne compense plus que
+     * l'energie ajoutee par les echos.
+     *
+     * Le studio rejoue exactement cette chaine a l'ecoute
+     * (`lib/audio/voice-fx.ts`) : garder les deux en accord.
      */
     const part = Math.min(1, take.reverb / 100);
-    const niveau = (0.25 + 0.45 * part).toFixed(2);
-    const decroissance = [0.5, 0.32, 0.2].map((d) => (d * part).toFixed(2)).join('|');
-    etapes.push(`aecho=0.9:${niveau}:47|71|103:${decroissance}`);
+    const echos = REVERB_ECHOS.map((e) => e.decroissance * part);
+    const sortie = 1 / Math.sqrt(1 + echos.reduce((s, d) => s + d * d, 0));
+    etapes.push(
+      `aecho=1:${sortie.toFixed(3)}:${REVERB_ECHOS.map((e) => e.ms).join('|')}:` +
+        echos.map((d) => d.toFixed(3)).join('|'),
+    );
   }
 
   return etapes.length > 0 ? `${etapes.join(',')},` : '';

@@ -1,7 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Search, X } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
@@ -11,12 +12,13 @@ import {
   EMPTY_FILTER,
   PackFilters,
   matchesFilter,
+  matchesSearch,
   sortPacks,
   type PackFilter,
   type PackSort,
 } from '@/components/pack-filters';
 import { PackStartDialog } from '@/components/pack-start-dialog';
-import { Alert, Button, Card, Dialog, Spinner } from '@/components/ui';
+import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
 import { humanizeError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
@@ -40,9 +42,12 @@ import { cn } from '@/lib/utils';
 export function CommunityClient({
   displayName,
   scope = 'all',
+  initialQuery = '',
 }: {
   displayName: string;
   scope?: 'all' | 'mine';
+  /** La recherche portee par l'adresse, `?q=`. */
+  initialQuery?: string;
 }) {
   const t = useT();
 
@@ -54,7 +59,20 @@ export function CommunityClient({
   const [filter, setFilter] = useState<PackFilter>(EMPTY_FILTER);
   const [sort, setSort] = useState<PackSort>(DEFAULT_SORT);
 
+  const [recherche, setRecherche] = useState(initialQuery);
+  // Une etiquette touchee sur une carte ramene ici avec `?q=#tag` : la
+  // page ne se remonte pas, c'est donc a l'etat de suivre l'adresse.
+  useEffect(() => setRecherche(initialQuery), [initialQuery]);
+
   const packs = useQuery(PACKS_QUERY);
+
+  function chercher(texte: string) {
+    setRecherche(texte);
+    // L'adresse suit la recherche : on peut la partager, et le retour
+    // arriere depuis une scene retrouve la meme liste.
+    const url = texte.trim() ? `?q=${encodeURIComponent(texte.trim())}` : window.location.pathname;
+    window.history.replaceState(null, '', url);
+  }
 
   const remove = useMutation({
     mutationFn: (pack: Pack) => deletePack(pack),
@@ -70,7 +88,14 @@ export function CommunityClient({
   // le second s'il faut elargir les criteres. Les deux messages different.
   const mine = (packs.data ?? []).filter((pack) => scope === 'all' || pack.is_mine);
   const visible = sortPacks(
-    mine.filter((pack) => matchesFilter(pack, filter)),
+    mine.filter(
+      (pack) =>
+        matchesFilter(pack, filter) &&
+        matchesSearch(pack, recherche, [
+          t.community.genreNames[pack.genre] ?? '',
+          pack.source_lang ? (t.community.langNames[pack.source_lang] ?? '') : '',
+        ]),
+    ),
     sort,
   );
   const strings = scope === 'mine' ? t.myPacks : t.community;
@@ -98,6 +123,34 @@ export function CommunityClient({
         </div>
       ) : null}
 
+      {mine.length > 0 ? (
+        <div className="relative max-w-xl">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-faint"
+            aria-hidden
+          />
+          <Input
+            type="search"
+            value={recherche}
+            onChange={(e) => chercher(e.target.value)}
+            placeholder={t.community.searchPlaceholder}
+            aria-label={t.community.searchLabel}
+            enterKeyHint="search"
+            className="h-11 pl-9 pr-10"
+          />
+          {recherche ? (
+            <button
+              type="button"
+              onClick={() => chercher('')}
+              aria-label={t.community.searchClear}
+              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-text-faint hover:bg-surface hover:text-text"
+            >
+              <X className="h-4 w-4" aria-hidden />
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
       {mine.length > 1 ? (
         <PackFilters
           packs={mine}
@@ -119,7 +172,9 @@ export function CommunityClient({
 
       {mine.length > 0 && visible.length === 0 ? (
         <Card className="space-y-2 py-8 text-center">
-          <h2 className="text-sm font-bold">{t.community.filterNoMatch}</h2>
+          <h2 className="text-sm font-bold">
+            {recherche.trim() ? t.community.searchNoMatch(recherche.trim()) : t.community.filterNoMatch}
+          </h2>
           <p className="mx-auto max-w-md text-sm leading-relaxed text-text-muted">
             {t.community.filterNoMatchBody}
           </p>

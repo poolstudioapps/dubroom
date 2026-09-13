@@ -225,11 +225,31 @@ export function kickParticipant(participantId: string) {
 
 // ── Studio (PRD §11) ──────────────────────────────────────────────────
 
-export function setMicOffset(sessionId: string, offsetMs: number) {
-  return rpc('set_mic_offset', {
+/**
+ * Le decalage micro et le gain d'une prise.
+ *
+ * Une valeur absente n'est pas touchee. `everywhere` etend ce qui est
+ * fourni a toutes mes prises de la scene, et en fait le reglage de depart
+ * des prises suivantes ; la prise peut alors manquer.
+ */
+export function setTakeMix(
+  sessionId: string,
+  takeId: string | null,
+  mix: { micOffsetMs?: number; gainDb?: number },
+  everywhere = false,
+) {
+  return rpc<number>('set_take_mix', {
     p_session_id: sessionId,
-    p_offset_ms: Math.round(offsetMs),
+    p_take_id: takeId,
+    p_mic_offset_ms: mix.micOffsetMs === undefined ? null : Math.round(mix.micOffsetMs),
+    p_gain_db: mix.gainDb === undefined ? null : Math.round(mix.gainDb * 10) / 10,
+    p_everywhere: everywhere,
   });
+}
+
+/** Rouvre un salon ferme apres une heure. Reserve a l'hote. */
+export function reopenLobby(sessionId: string) {
+  return rpc<SessionRow>('reopen_lobby', { p_session_id: sessionId });
 }
 
 /**

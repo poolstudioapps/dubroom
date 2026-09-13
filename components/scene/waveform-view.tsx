@@ -65,6 +65,18 @@ export function WaveformView({
             WAVEFORM_BUCKETS,
           )
         : null;
+    /*
+     * La voix d'origine, normalisee sur sa propre crete.
+     *
+     * L'enveloppe est celle du stem entier : sur une scene mixee bas, ou
+     * sur une replique chuchotee, elle n'occupait qu'un filet au milieu
+     * de la bande et on ne voyait pas ou tombaient les mots. On l'etire
+     * pour que sa crete touche presque les bords. Une fenetre quasi
+     * silencieuse n'est pas etiree : on grossirait du souffle.
+     */
+    let crete = 0;
+    for (const valeur of original ?? []) crete = Math.max(crete, valeur ?? 0);
+    const echelle = crete > 0.02 ? 0.94 / crete : 1;
 
     const charColor = resolveCharacterColor(characterColor);
     const takeColor = resolveCssColor('var(--color-stage-text)', '#f2f2f5');
@@ -108,11 +120,11 @@ export function WaveformView({
         ctx.moveTo(0, middle);
         for (let i = 0; i < original.length; i += 1) {
           const x = (i / original.length) * width;
-          ctx.lineTo(x, middle - (original[i] ?? 0) * (middle - 3));
+          ctx.lineTo(x, middle - Math.min(1, (original[i] ?? 0) * echelle) * (middle - 3));
         }
         for (let i = original.length - 1; i >= 0; i -= 1) {
           const x = (i / original.length) * width;
-          ctx.lineTo(x, middle + (original[i] ?? 0) * (middle - 3));
+          ctx.lineTo(x, middle + Math.min(1, (original[i] ?? 0) * echelle) * (middle - 3));
         }
         ctx.closePath();
         ctx.fill();

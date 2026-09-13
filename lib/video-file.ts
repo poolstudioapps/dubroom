@@ -8,9 +8,24 @@ import { MAX_SOURCE_FILE_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants
  * l'une acceptant deux gigaoctets que le stockage refusait ensuite.
  */
 
+/**
+ * Les extensions video qu'on reconnait, meme sans type declare.
+ *
+ * Le worker convertit tout ce que ffmpeg sait lire : le format d'origine
+ * n'a pas d'importance. Mais un navigateur ne donne pas de type a un
+ * `.mkv`, un `.mts` ou un `.flv`, et les refuser sur ce seul critere
+ * faisait croire qu'il fallait un MP4.
+ */
+const EXTENSIONS_VIDEO =
+  /\.(mp4|m4v|mkv|mov|webm|avi|wmv|asf|flv|f4v|mpe?g|mpe|m2v|ts|mts|m2ts|3gp|3g2|ogv|vob|mxf|dv|divx|rm|rmvb)$/i;
+
+/** Ce que propose le selecteur de fichiers. */
+export const VIDEO_ACCEPT =
+  'video/*,.mkv,.avi,.wmv,.asf,.flv,.f4v,.mts,.m2ts,.ts,.3gp,.3g2,.ogv,.vob,.mxf,.dv,.divx,.rm,.rmvb';
+
 /** Une video, a son type ou a son extension. */
 export function isVideoFile(file: File): boolean {
-  return file.type.startsWith('video/') || /\.(mp4|mkv|mov|webm|avi)$/i.test(file.name);
+  return file.type.startsWith('video/') || EXTENSIONS_VIDEO.test(file.name);
 }
 
 /**

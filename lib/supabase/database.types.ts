@@ -57,7 +57,10 @@ export interface SessionRow {
   from_pack_id: string | null;
   published_pack_id: string | null;
   purged_at: string | null;
+  /** Salon ferme apres une heure d'ouverture ; l'hote peut le rouvrir. */
   closed_at: string | null;
+  /** Quand le salon a ouvert : c'est de la que court l'heure. */
+  lobby_opened_at: string | null;
   created_at: string;
 }
 
@@ -69,7 +72,10 @@ export interface ParticipantRow {
   is_host: boolean;
   is_ready: boolean;
   is_kicked: boolean;
+  /** Decalage micro « partout » : celui que prend une prise neuve. */
   mic_offset_ms: number;
+  /** Gain « partout », en dB : celui que prend une prise neuve. */
+  gain_db: number;
   /** Reglages de la console de voix, par joueur et par scene. */
   fx_reverb: number;
   fx_pitch: number;
@@ -134,6 +140,10 @@ export interface TakeRow {
   fx_reverb: number;
   fx_pitch: number;
   fx_tune: number;
+  /** Decalage micro de cette prise, en ms. */
+  mic_offset_ms: number;
+  /** Gain de cette prise, en dB, de -12 a +12. */
+  gain_db: number;
 }
 
 export interface JobRow {

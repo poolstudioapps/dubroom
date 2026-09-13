@@ -17,7 +17,7 @@ import { useMyProfile } from '@/lib/profile';
 import { PART_ENVOI } from '@/lib/progress';
 import { isAdmin, useMyRole } from '@/lib/roles';
 import { cn } from '@/lib/utils';
-import { checkVideoFile } from '@/lib/video-file';
+import { VIDEO_ACCEPT, checkVideoFile } from '@/lib/video-file';
 
 /**
  * L'ecart de duree au-dela duquel on previent.
@@ -188,7 +188,7 @@ export function PackStartDialog({
                 <input
                   ref={fileInput}
                   type="file"
-                  accept="video/*,.mkv"
+                  accept={VIDEO_ACCEPT}
                   className="hidden"
                   onChange={(e) => {
                     void choisir(e.target.files?.[0] ?? null);

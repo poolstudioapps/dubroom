@@ -34,7 +34,16 @@ const MESSAGES: Record<string, string> = {
   PACK_NEEDS_URL:
     'Seule une scène créée depuis un lien peut être partagée. Une vidéo importée reste privée à ton groupe.',
   NOTHING_TO_PUBLISH: 'Cette scène n’a aucun personnage à partager.',
-  PACK_FORBIDDEN: 'Seule la personne qui a conservé cette scène peut la retirer.',
+  PACK_FORBIDDEN: 'Seule la personne qui a publié cette scène peut la modifier.',
+  PACK_TITLE_REQUIRED: 'Donne un titre à la scène.',
+  PACK_LANG_REQUIRED: 'Choisis la langue parlée dans la scène.',
+  PACK_GENRE_REQUIRED: 'Choisis le genre de la scène.',
+  COMMENT_EMPTY: 'Le commentaire est vide.',
+  COMMENT_TOO_LONG: 'Le commentaire dépasse 1 000 caractères.',
+  COMMENT_TOO_FAST: 'Doucement : attends quelques secondes avant de republier.',
+  COMMENT_NOT_FOUND: 'Ce commentaire a été supprimé.',
+  LOBBY_CLOSED:
+    'Ce salon est fermé : il est resté ouvert plus d’une heure. L’hôte peut le rouvrir.',
   PACK_HAS_MEDIA: 'Cette scène démarre sans vidéo à fournir.',
   ADMIN_ONLY:
     'Réservé aux administrateurs. Importe plutôt la vidéo : elle sera préparée en ligne.',

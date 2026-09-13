@@ -180,8 +180,7 @@ export const fr = {
     openSource: 'Ouvrir la source',
     kindRecipe: 'Recette',
     kindMedia: 'Fichiers gardés',
-    recipeHelp:
-      'Cette scène n’est pas hébergée ici : seuls le lien et le découpage sont conservés. La vidéo est retéléchargée au lancement, ce qui prend quelques minutes.',
+    recipeHelp: 'Les vidéos ne sont pas hébergées ici : seul le découpage de chaque scène est conservé. Pour en doubler une, tu apportes sa vidéo, et tout se prépare en ligne en quelques minutes.',
     mediaHelp: 'Scène hébergée ici : elle démarre immédiatement.',
     mine: 'La tienne',
     voteUp: 'Cette scène est bien découpée',
@@ -253,8 +252,7 @@ export const fr = {
     characterCount: (n: number) => (n === 1 ? '1 personnage' : `${n} personnages`),
     lineCount: (n: number) => (n === 1 ? '1 réplique' : `${n} répliques`),
     emptyTitle: 'Aucune scène conservée pour l’instant',
-    emptyBody:
-      'Pendant une partie, l’hôte peut cocher « garder cette scène » avant de lancer le rendu. Elle atterrira ici, prête à être rejouée par un autre groupe.',
+    emptyBody: 'Après le rendu, l’hôte peut publier sa scène avec sa langue, son genre et ses tags. Elle atterrira ici, prête à être rejouée par un autre groupe.',
     remove: 'Retirer du catalogue',
     removeTitle: 'Retirer cette scène ?',
     removeBody:
@@ -266,11 +264,60 @@ export const fr = {
       'Seuls le lien et le découpage seront partagés. La vidéo n’est pas hébergée ici.',
     publishFromCatalogue:
       'Cette scène vient du catalogue : elle y est déjà. La republier en ferait un doublon que personne ne saurait départager.',
-    publishTooLate:
-      'Cette scène vient d’un fichier importé, et ses médias ont été purgés après le rendu. Pour la partager, il aurait fallu le décider avant. Une scène importée par lien, elle, reste publiable à tout moment.',
-    keepLabel: 'Garder cette scène pour la rejouer',
-    keepHelp:
-      'Elle rejoindra l’onglet Communauté après le rendu, avec son découpage et ses personnages. Vos enregistrements, eux, ne sont jamais conservés.',
+    pickLang: 'Choisir la langue…',
+    pickGenre: 'Choisir le genre…',
+    required: 'obligatoire',
+    tagsLabel: 'Tags',
+    tagsPlaceholder: 'starwars, kaamelott…',
+    tagsHelp: 'Jusqu’à 10 tags, séparés par une espace ou une virgule. On retrouve la scène en tapant #starwars dans la recherche.',
+    tagRemove: (tag: string) => `Retirer #${tag}`,
+    tagSearch: (tag: string) => `Voir les scènes #${tag}`,
+    publishUploadHelp: 'Seuls le découpage, les personnages et le texte seront partagés. Ta vidéo reste chez toi : ceux qui rejoueront la scène apporteront la leur.',
+    publishMissing: 'Renseigne le titre, la langue et le genre pour publier.',
+    searchPlaceholder: 'Titre, personnage, #tag…',
+    searchLabel: 'Rechercher une scène',
+    searchClear: 'Effacer la recherche',
+    searchNoMatch: (q: string) => `Aucune scène pour « ${q} »`,
+    commentsCount: (n: number) => (n === 1 ? '1 commentaire' : `${n} commentaires`),
+    detailBack: 'Retour à la communauté',
+    detailNotFound: 'Cette scène n’existe plus',
+    detailNotFoundBody: 'Elle a peut-être été retirée du catalogue par la personne qui l’a publiée.',
+    detailDuration: 'Durée',
+    detailLines: 'Répliques',
+    detailCharacters: 'Personnages',
+    detailPublishedBy: (name: string, date: string) => `Publiée par ${name} le ${date}`,
+    detailEdit: 'Modifier',
+    detailEditTitle: 'Modifier la scène',
+    detailSave: 'Enregistrer',
+    detailCast: 'La distribution',
+    detailScript: 'Le début du texte',
+    detailScriptMore: (n: number) => (n === 1 ? '… et une autre réplique, à découvrir en jouant.' : `… et ${n} autres répliques, à découvrir en jouant.`),
+    detailVideoTitle: 'Il te faudra la vidéo',
+    detailVideoBody: 'Le catalogue ne garde que le découpage. Récupère la vidéo depuis le lien d’origine, ou d’où tu veux, puis importe-la : le guide montre comment en cinq minutes.',
+    detailNoSource: 'Cette scène a été préparée à partir d’un fichier : elle n’a pas de lien d’origine. Retrouve le même extrait de ton côté, puis importe-le : le guide montre comment.',
+    detailVideoAction: 'Lire le guide d’import',
+    commentsTitle: 'Commentaires',
+    commentsPlaceholder: 'Un conseil sur le découpage, une réplique culte, un retour sur la scène…',
+    commentsSubmit: 'Publier',
+    commentsEmpty: 'Aucun commentaire pour l’instant. Lance la discussion !',
+    commentsNoMatch: 'Aucun commentaire ne correspond à ce filtre.',
+    commentsSort: {
+      label: 'Trier',
+      top: 'Les mieux notés',
+      recent: 'Les plus récents',
+      oldest: 'Les plus anciens',
+    },
+    commentsFilter: {
+      label: 'Afficher',
+      all: 'Tous',
+      positive: 'Bien notés',
+      mine: 'Les miens',
+    },
+    commentUp: 'Commentaire utile',
+    commentDown: 'Commentaire pas utile',
+    commentDelete: 'Supprimer',
+    commentDeleteConfirm: 'Supprimer ce commentaire ?',
+    commentCharsLeft: (n: number) => (n === 1 ? '1 caractère restant' : `${n} caractères restants`),
   },
 
   theme: {
@@ -426,9 +473,9 @@ export const fr = {
       'Rien à préparer : la scène est déjà découpée, vous choisissez les rôles et vous enregistrez. Le catalogue complet est dans l’onglet Communauté.',
     titleLabel: 'Titre de la scène',
     titlePlaceholder: 'Le duel du pont',
-    dropzone: 'Dépose ton MP4 ici, ou clique pour le choisir',
+    dropzone: 'Dépose ta vidéo ici, ou clique pour la choisir',
     fileTooLarge: 'Fichier trop lourd : 50 Mo maximum.',
-    wrongType: 'Il faut un fichier vidéo (MP4 de préférence).',
+    wrongType: 'Ce fichier n’est pas une vidéo. Tous les formats vidéo sont acceptés : MP4, MOV, MKV, AVI, WebM…',
     youtubeLabel: 'Lien de la vidéo',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
     youtubeWarning:
@@ -436,19 +483,14 @@ export const fr = {
     multiTrackWarning:
       'Si ta source contient plusieurs pistes audio (VF, VO, commentaires), c’est la première qui sera doublée.',
     durationWarning: 'La scène doit faire moins de 10 minutes.',
-    keepLabel: 'En faire une scène partagée',
-    keepHelpUrl:
-      'Elle rejoindra l’onglet Communauté. Comme elle vient d’un lien, seuls le lien et le découpage seront conservés : rien n’est hébergé ici.',
-    keepHelpUpload:
-      'Seule une scène venue d’un lien peut rejoindre la communauté. Un fichier importé reste privé à ton groupe : on ne réhéberge jamais l’œuvre elle-même.',
     submitUpload: 'Importer et préparer',
     submitYoutube: 'Télécharger et préparer',
     uploading: 'Envoi du fichier…',
     subtitle: 'Deux façons de commencer : importer ta vidéo pour une scène toute neuve, ou reprendre une scène que le groupe a déjà préparée.',
-    introUpload: 'Une scène neuve, préparée de zéro à partir de ta vidéo.',
+    introUpload: 'Une scène neuve, préparée de zéro à partir de ta vidéo, d’où qu’elle vienne : un film, une série, un clip YouTube ou TikTok, un enregistrement d’écran…',
     introPack: 'Personnages et répliques sont déjà prêts : tu apportes la vidéo, et le lobby s’ouvre en deux minutes environ.',
     introYoutube: 'Réservé aux administrateurs : la vidéo est téléchargée par le worker du PC de l’hôte, qui doit être lancé.',
-    limits: 'MP4 · 50 Mo et 10 minutes au plus',
+    limits: 'Tous formats vidéo · 50 Mo et 10 minutes au plus',
     uploadStepsTitle: 'Comment ça se passe',
     uploadSteps: [
       'Tu choisis ta vidéo et tu lui donnes un titre.',
@@ -456,6 +498,7 @@ export const fr = {
       'Tu vérifies les personnages, puis tu invites tes amis dans le lobby.',
     ],
     adminBadge: 'Admin',
+    shareLater: 'Après le rendu, tu pourras publier la scène dans la communauté, avec sa langue, son genre et ses tags.',
   },
 
   ingest: {
@@ -545,10 +588,16 @@ export const fr = {
     startBlockedReady: 'joueurs qui ne se sont pas déclarés prêts :',
     clipCount: (n: number) => (n === 1 ? '1 clip' : `${n} clips`),
     hostOnly: 'Seul l’hôte peut lancer la partie.',
+    closedTitle: 'Salon fermé',
+    closedBody: 'Ce salon est resté ouvert plus d’une heure : il a été fermé automatiquement, et plus personne ne peut le rejoindre.',
+    closedHost: 'Tu peux le rouvrir pour une nouvelle heure, ou supprimer la scène depuis « Mes scènes ».',
+    closedGuest: 'Seul l’hôte peut le rouvrir.',
+    closedBack: 'Retour à mes scènes',
+    reopen: 'Rouvrir le salon',
+    closesIn: (m: number) => (m <= 0 ? 'Fermeture imminente' : `Fermeture automatique dans ${m} min`),
   },
 
   studio: {
-    fxNoTake: 'Enregistre d’abord cette réplique : les effets s’appliquent ensuite à la prise.',
     playBlocked: 'Le navigateur a bloqué la lecture. Touche de nouveau le bouton.',
     reassign: (nom: string) => `Réassigner ${nom}`,
     pickPlayer: 'Choisir un joueur…',
@@ -570,13 +619,7 @@ export const fr = {
     next: 'Suivant',
     backingVolume: 'Fond sonore',
     micOffset: 'Décalage micro',
-    micOffsetHelp:
-      'Si tes prises tombent systématiquement trop tard, descends cette valeur. Elle est appliquée au mixage.',
-    calibrate: 'Calibrer automatiquement',
-    calibrating: 'Calibrage… reste silencieux.',
-    calibrationDone: (ms: number) => `Décalage mesuré : ${ms} ms.`,
-    calibrationFailed:
-      'Impossible de mesurer le décalage. Règle-le à la main si besoin.',
+    micOffsetHelp: 'Le calage automatique place déjà ta prise. Si elle tombe encore trop tard, descends la valeur ; trop tôt, monte-la.',
     micDenied:
       'Le micro est refusé par le navigateur. Autorise-le puis recharge la page.',
     headphonesRequired:
@@ -594,8 +637,7 @@ export const fr = {
     fxReverb: 'Réverbe',
     fxPitch: 'Hauteur',
     fxTune: 'Justesse',
-    fxHelp:
-      'Les effets s’appliquent à la prise affichée, et à elle seule. Ils sont posés au mixage, jamais sur l’enregistrement : tu peux les changer ou les retirer jusqu’au rendu.',
+    fxHelp: 'Tout s’entend tout de suite dans « Ma prise », et ne touche que la prise affichée. Les effets sont posés au mixage, jamais sur l’enregistrement : tu peux les changer jusqu’au rendu.',
     fxPresets: {
       dry: 'Voix nue',
       room: 'Petite salle',
@@ -613,7 +655,7 @@ export const fr = {
     stateDone: 'Fini',
     stateRecording: 'En cours',
     waitingHost: 'On attend que l’hôte lance le rendu.',
-    hostCanRender: 'Tout le monde a fini : tu peux lancer le rendu.',
+    hostCanRender: 'Tout le monde a fini et attend ici : tu peux lancer le rendu.',
     stillMissing: 'Il reste des répliques à enregistrer.',
     finishedTitle: 'Tu as fini !',
     finishedBody:
@@ -640,9 +682,6 @@ export const fr = {
     cueIdle: 'Prêt',
     originalTrace: 'Le tracé coloré montre quand la voix d’origine parle.',
     micWindow: 'Le micro ne s’ouvre que sur ta réplique.',
-    autoAlign: 'Calage automatique',
-    autoAlignHelp:
-      'Ta prise est comparée à la voix d’origine et repositionnée au bon endroit. Décoche si tu préfères garder ton timing exact.',
     alignedBy: (ms: number) =>
       ms === 0
         ? 'Ta prise tombait déjà juste.'
@@ -651,6 +690,18 @@ export const fr = {
           : `Tu avais ${-ms} ms d’avance, c’est rattrapé.`,
     alignUnsure:
       'Le calage n’a rien trouvé de net sur cette prise. Elle est posée telle quelle.',
+    fxGain: 'Volume',
+    fxGainApplyAll: 'Appliquer ce volume à toutes mes prises',
+    fxGainAppliedAll: 'Volume appliqué à toutes tes prises',
+    fxPending: 'Pas encore de prise : ces réglages s’appliqueront à la prochaine.',
+    fxComputing: 'Préparation de l’écoute…',
+    micOffsetEverywhere: 'Appliquer à toutes mes prises',
+    previewFailed: 'Impossible de relire cette prise. Refais-la si le problème persiste.',
+    missingClips: 'Il te reste des répliques sans prise : on t’y emmène.',
+    waitPresent: 'en attente',
+    waitAway: 'pas encore là',
+    waitSomeAway: (names: string) => `Tout le monde a fini. Pas encore sur cet écran : ${names}. Tu peux attendre, ou lancer sans attendre.`,
+    launchAnyway: 'Lancer sans attendre',
   },
 
   progress: {
@@ -714,41 +765,41 @@ export const fr = {
   },
 
   packStart: {
-    intro: 'Cette scène est gardée sous forme de lien : sa vidéo doit être récupérée à nouveau. Deux façons de faire.',
+    intro: 'Le catalogue ne garde que le découpage de cette scène : sa vidéo doit être apportée. Deux façons de faire.',
     recommended: 'Recommandé',
     fileTitle: 'Importer la vidéo toi-même',
-    fileBody: 'Récupère la vidéo YouTube de la scène, puis dépose le fichier ici. Tout se prépare en ligne, en deux minutes environ, sans le PC de l’hôte. Le texte et les personnages du pack sont repris tels quels.',
-    openSource: 'Voir la vidéo sur YouTube',
+    fileBody: 'Retrouve la vidéo de la scène, d’où qu’elle vienne, puis dépose le fichier ici, dans n’importe quel format. Tout se prépare en ligne, en deux minutes environ. Le texte et les personnages du pack sont repris tels quels.',
+    openSource: 'Voir la vidéo d’origine',
     howTo: 'Comment récupérer le fichier ?',
     drop: 'Dépose la vidéo ici, ou clique pour la choisir',
-    expected: (d: string) => `Durée attendue : ${d} · MP4, 50 Mo maximum`,
+    expected: (d: string) => `Durée attendue : ${d} · tous formats vidéo, 50 Mo maximum`,
     mismatch: (attendue: string, recue: string) => `Ce fichier dure ${recue}, la scène du pack ${attendue}. Si ce n’est pas exactement la même vidéo, les répliques tomberont à côté.`,
-    tooLarge: 'Fichier trop lourd : 50 Mo maximum. Récupère la vidéo en 720p ou en 480p.',
+    tooLarge: 'Fichier trop lourd : 50 Mo maximum. Réexporte la vidéo en 720p ou en 480p.',
     fileSubmit: 'Importer et doubler',
     or: 'ou',
     autoTitle: 'Téléchargement automatique',
     autoBody: 'Le PC de l’hôte récupère la vidéo depuis YouTube. Il faut que start.bat y tourne.',
     autoSubmit: 'Lancer le téléchargement',
     mediaBody: 'Cette scène est hébergée ici : elle démarre tout de suite.',
-    introMember: 'Cette scène est gardée sous forme de lien : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
+    introMember: 'Le catalogue ne garde que le découpage de cette scène : apporte sa vidéo, et tout se prépare en ligne avec le texte et les personnages du pack.',
   },
 
   guide: {
-    metaTitle: 'Doubler une scène avec ta propre vidéo',
+    metaTitle: 'Importer la vidéo d’une scène',
     kicker: 'Guide',
-    heroTitle: 'Doubler une scène du catalogue avec ta propre vidéo',
-    heroBody: 'Les scènes du catalogue ne gardent que le lien YouTube et le travail de préparation. Pour en doubler une, il faut retrouver la vidéo. Le plus simple : la récupérer toi-même, puis l’importer. Quatre étapes, cinq minutes.',
+    heroTitle: 'Importer ta vidéo, d’où qu’elle vienne',
+    heroBody: 'Dub’Up accepte n’importe quel fichier vidéo, quels que soient son format et sa source : YouTube, TikTok, un film sur ton disque, un enregistrement d’écran. Les scènes du catalogue ne gardent que leur découpage : pour en doubler une, tu apportes la vidéo. Quatre étapes, cinq minutes.',
     ctaPrimary: 'Choisir une scène',
     ctaSecondary: 'Pourquoi cette étape ?',
     stepsTitle: 'En quatre étapes',
     steps: [
       {
-        title: 'Ouvre la scène sur YouTube',
-        body: 'Dans Communauté, clique sur « Doubler cette scène », puis sur « Voir la vidéo sur YouTube ». Copie l’adresse de la page.',
+        title: 'Trouve la scène',
+        body: 'Dans Communauté, ouvre la scène : son lien d’origine est indiqué quand il existe. Sinon, cherche le même extrait là où tu regardes d’habitude.',
       },
       {
         title: 'Récupère le fichier',
-        body: 'Colle l’adresse dans l’outil de téléchargement de ton choix et enregistre la vidéo en MP4. Choisis 720p, ou 480p si le fichier dépasse 50 Mo.',
+        body: 'Enregistre la vidéo avec l’outil de ton choix, ou reprends un fichier que tu as déjà. Tous les formats conviennent. Vise 720p, ou 480p si le fichier dépasse 50 Mo.',
       },
       {
         title: 'Vérifie la durée',
@@ -762,38 +813,46 @@ export const fr = {
     checklistTitle: 'Avant d’importer',
     checklist: [
       'Le même extrait que la scène du pack, sans coupe',
-      'Au format MP4',
+      'N’importe quel format vidéo : MP4, MOV, MKV, WebM…',
       '50 Mo au plus : 720p ou 480p suffisent',
       '10 minutes au plus',
     ],
     whyTitle: 'Pourquoi cette étape ?',
-    whyBody: 'YouTube refuse les téléchargements qui viennent de serveurs. Dub’Up ne peut donc pas récupérer la vidéo à ta place : tu l’apportes, et tout le reste se fait en ligne.',
+    whyBody: 'Dub’Up n’héberge aucune œuvre : le catalogue garde le découpage, jamais la vidéo. Et la plupart des plateformes refusent les téléchargements venus de serveurs. Tu apportes donc le fichier, et tout le reste se fait en ligne.',
     wayFileTitle: 'Tu importes le fichier',
     wayFileBody: 'Marche à toute heure, même si personne n’a lancé start.bat. La préparation se fait en ligne, en deux minutes environ.',
     faqTitle: 'Questions fréquentes',
     faq: [
       {
-        q: 'Quel outil utiliser pour télécharger ?',
-        a: 'N’importe quel outil qui enregistre une vidéo YouTube en MP4. Évite ceux qui demandent d’installer une extension ou un logiciel inconnu, et ne télécharge que des vidéos que tu as le droit d’utiliser pour un usage privé.',
+        q: 'Quels formats sont acceptés ?',
+        a: 'Tous les formats vidéo courants : MP4, MOV, MKV, AVI, WebM et bien d’autres. La vidéo est convertie automatiquement à l’import, tu n’as rien à faire.',
+      },
+      {
+        q: 'Quel outil utiliser pour récupérer une vidéo ?',
+        a: 'N’importe quel outil qui enregistre la vidéo dans un fichier, quel que soit le site. Évite ceux qui demandent d’installer une extension ou un logiciel inconnu, et ne récupère que des vidéos que tu as le droit d’utiliser pour un usage privé.',
       },
       {
         q: 'Mon fichier dépasse 50 Mo',
-        a: 'Télécharge-le dans une qualité plus basse : 720p, ou 480p pour une scène longue. L’image reste nette dans le studio, et le son n’en souffre pas.',
+        a: 'Réexporte-le dans une qualité plus basse : 720p, ou 480p pour une scène longue. L’image reste nette dans le studio, et le son n’en souffre pas.',
       },
       {
         q: 'Les répliques tombent à côté',
-        a: 'La vidéo n’est pas exactement celle du pack : une introduction en plus, une fin coupée, ou une autre mise en ligne. Reprends le lien du pack et récupère celle-là.',
+        a: 'La vidéo n’est pas exactement celle du pack : une introduction en plus, une fin coupée, ou une autre version. Reprends le lien du pack, ou recoupe ta vidéo pour qu’elle commence et finisse au même endroit.',
       },
       {
-        q: 'La vidéo n’est plus sur YouTube',
-        a: 'Sans la vidéo d’origine, la scène ne peut pas être doublée. Importe une autre version depuis « Nouvelle scène » : elle sera préparée à neuf.',
+        q: 'La vidéo n’est plus en ligne',
+        a: 'Sans la même vidéo, la scène ne peut pas être doublée telle quelle. Importe une autre version depuis « Nouvelle scène » : elle sera préparée à neuf.',
       },
     ],
     finalTitle: 'Prêt à doubler ?',
     finalBody: 'Choisis une scène dans le catalogue, récupère sa vidéo, et le lobby s’ouvre en quelques minutes.',
-    homeLead: 'Une scène du catalogue ne se télécharge pas ?',
-    homeAction: 'Importe ta propre vidéo',
-    createLink: 'Comment récupérer le fichier d’une vidéo YouTube ?',
+    homeLead: 'Ta vidéo vient de YouTube, de TikTok ou de ton disque ?',
+    homeAction: 'Voir comment l’importer',
+    createLink: 'Comment récupérer le fichier d’une vidéo ?',
+    homeBannerTitle: 'N’importe quelle vidéo, n’importe quelle source',
+    homeBannerBody: 'YouTube, TikTok, un film sur ton disque, un enregistrement d’écran : tout fichier vidéo s’importe, quel que soit son format. Le guide montre comment le récupérer et le préparer en cinq minutes.',
+    homeBannerAction: 'Lire le guide d’import',
+    midLink: 'Pas encore de vidéo sous la main ? Le guide explique comment en récupérer une.',
   },
 
   guideHub: {
@@ -801,7 +860,7 @@ export const fr = {
     body: 'Tout ce qu’il faut pour préparer une scène, la doubler entre amis et récupérer le résultat.',
     guidesTitle: 'Les guides',
     readGuide: 'Lire le guide',
-    videoGuideSummary: 'Récupérer la vidéo d’une scène du catalogue, vérifier qu’elle colle au texte, et l’importer.',
+    videoGuideSummary: 'Récupérer une vidéo de n’importe quelle source, vérifier qu’elle colle au texte, et l’importer.',
     readingTime: '5 min de lecture',
   },
 

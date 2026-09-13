@@ -1,8 +1,9 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import { Check, Copy, Play } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { Check, Copy, DoorClosed, DoorOpen, Play, Timer } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { Avatar } from '@/components/avatar';
@@ -12,6 +13,7 @@ import { characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
 import {
   assignCharacter,
+  reopenLobby,
   setCharacterReleased,
   setReady,
   startRecording,
@@ -21,6 +23,22 @@ import { useMediaUrls } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import { useProfilesOf } from '@/lib/profile';
 import { statsByCharacter } from '@/lib/scene-stats';
+import { cn } from '@/lib/utils';
+
+/** Un salon se ferme une heure apres son ouverture. */
+const SALON_DUREE_MS = 60 * 60 * 1000;
+
+/** Les minutes avant fermeture, rafraichies toutes les trente secondes. */
+function useMinutesRestantes(ouvertLe: string | null): number | null {
+  const [maintenant, setMaintenant] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setMaintenant(Date.now()), 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+  if (!ouvertLe) return null;
+  const reste = new Date(ouvertLe).getTime() + SALON_DUREE_MS - maintenant;
+  return Math.max(0, Math.ceil(reste / 60_000));
+}
 
 export function LobbyScreen() {
   const t = useT();
@@ -60,6 +78,46 @@ export function LobbyScreen() {
   const unassigned = characters.filter((c) => !c.assigned_to && !c.is_released);
   const notReady = activePlayers.filter((p) => !p.is_ready);
   const canStart = unassigned.length === 0 && notReady.length === 0;
+  const minutesRestantes = useMinutesRestantes(session.lobby_opened_at);
+
+  /*
+   * Un salon oublie se ferme apres une heure (voir `app_fermer_salons`).
+   * On ne montre plus alors ni personnages ni bouton de lancement, qui
+   * echoueraient tous : on dit ce qui s'est passe, et l'hote peut rouvrir.
+   */
+  if (session.closed_at) {
+    return (
+      <Card className="mx-auto max-w-lg space-y-4 py-8 text-center">
+        <DoorClosed className="mx-auto h-10 w-10 text-text-faint" aria-hidden />
+        <div className="space-y-2">
+          <h1 className="titre text-2xl">{t.lobby.closedTitle}</h1>
+          <p className="text-sm leading-relaxed text-text-muted">{t.lobby.closedBody}</p>
+          <p className="text-sm leading-relaxed text-text-muted">
+            {isHost ? t.lobby.closedHost : t.lobby.closedGuest}
+          </p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          {isHost ? (
+            <Button
+              variant="primary"
+              loading={act.isPending}
+              onClick={() => run(() => reopenLobby(session.id))}
+            >
+              <DoorOpen className="h-4 w-4" aria-hidden />
+              {t.lobby.reopen}
+            </Button>
+          ) : null}
+          <Link
+            href="/sessions"
+            className="inline-flex min-h-10 items-center px-3 text-sm font-bold text-link underline underline-offset-4"
+          >
+            {t.lobby.closedBack}
+          </Link>
+        </div>
+        {error ? <Alert tone="danger">{error}</Alert> : null}
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -70,7 +128,20 @@ export function LobbyScreen() {
       */}
       <header className="space-y-1">
         <h1 className="titre text-2xl">{session.title ?? t.lobby.title}</h1>
-        <p className="text-sm text-text-faint">{t.lobby.watchOriginal}</p>
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-faint">
+          <span>{t.lobby.watchOriginal}</span>
+          {minutesRestantes !== null ? (
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 text-xs font-bold',
+                minutesRestantes <= 10 && 'text-[oklch(0.55_0.14_65)]',
+              )}
+            >
+              <Timer className="h-3.5 w-3.5" aria-hidden />
+              {t.lobby.closesIn(minutesRestantes)}
+            </span>
+          ) : null}
+        </p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
