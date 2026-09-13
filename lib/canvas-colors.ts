@@ -49,7 +49,7 @@ export function resolveCharacterColor(token: string): string {
   return resolveCssColor(`var(--color-${token})`, fallback);
 }
 
-/** Vide le cache si le theme change en cours de session. */
+/** Vide le cache si les couleurs changent en cours de session. */
 export function clearColorCache(): void {
   cache.clear();
 }

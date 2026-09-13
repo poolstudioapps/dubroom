@@ -44,7 +44,7 @@ export function SiteNav(_props: { signedIn?: boolean }) {
   };
 
   return (
-    <nav className="flex flex-wrap gap-1" aria-label="Navigation principale">
+    <nav className="flex flex-wrap gap-1" aria-label={t.nav.mainLabel}>
       {TABS.map((tab) => {
         const active = tab.exact
           ? pathname === tab.href
@@ -57,11 +57,9 @@ export function SiteNav(_props: { signedIn?: boolean }) {
             href={tab.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'tab inline-flex items-center gap-1.5 rounded-t-lg border-2 border-b-0 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-colors',
+              'tab inline-flex min-h-9 items-center gap-1.5 px-2.5 py-1.5 text-xs',
               'sm:gap-2 sm:px-3 sm:py-2 sm:text-sm',
-              active
-                ? 'tab-on border-bezel-dark bg-screen text-text'
-                : 'tab-off border-transparent bg-bezel-dark/50 text-[oklch(0.85_0.05_260)] hover:bg-bezel-dark',
+              active ? 'tab-on' : 'tab-off',
             )}
           >
             <Icon className="h-4 w-4" aria-hidden />

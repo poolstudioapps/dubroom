@@ -44,8 +44,8 @@ const body = Nunito({
  *
  * Instrument Serif pour les titres : un serif fin et haut, celui des
  * affiches et des generiques. Inter pour le texte : neutre, net, fait
- * pour l'ecran. La peau cinema etant desormais la seule, elles sont
- * prechargees : ce sont elles que chaque page affiche en premier.
+ * pour l'ecran. Elles sont prechargees : ce sont elles que chaque page
+ * affiche en premier.
  */
 const serif = Instrument_Serif({
   weight: '400',
@@ -147,9 +147,6 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      // Une seule peau, le cinema. L'attribut reste : toute la feuille de
-      // styles s'y accroche.
-      data-theme="cinema"
       className={`${display.variable} ${body.variable} ${serif.variable} ${grotesk.variable}`}
       // Le script d'apparition ajoute sa classe avant l'hydratation.
       suppressHydrationWarning

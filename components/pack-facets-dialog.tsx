@@ -12,6 +12,7 @@ import { setPackFacets, type Pack, type PackFacets } from '@/lib/packs';
 function facetsDe(pack: Pack): PackFacets {
   return {
     title: pack.title,
+    sourceUrl: pack.source_url ?? '',
     sourceLang: pack.source_lang ?? '',
     genre: pack.genre,
     tags: pack.tags,
@@ -21,9 +22,11 @@ function facetsDe(pack: Pack): PackFacets {
 /**
  * Retoucher une scene publiee.
  *
- * Les scenes publiees avant que la langue et le genre deviennent
- * obligatoires n'en ont souvent pas : leur auteur, ou un administrateur,
- * les complete ici, etiquettes comprises.
+ * Titre, lien, langue, genre, tags : tout ce qui se renseigne a la
+ * publication se corrige ici, par l'auteur ou un administrateur. Les
+ * packs publies avant que le lien devienne obligatoire en demandent un
+ * au premier enregistrement. Une retouche de l'auteur est signalee sur
+ * la fiche.
  */
 export function PackFacetsDialog({
   pack,

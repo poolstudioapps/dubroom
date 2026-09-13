@@ -22,6 +22,8 @@ export const de = {
     create: 'Erstellen',
     join: 'Beitreten',
     joinHelp: 'Gib den sechsstelligen Code ein, den dir der Gastgeber gegeben hat.',
+    mainLabel: 'Hauptnavigation',
+    language: 'Sprache',
   },
 
   account: {
@@ -261,8 +263,7 @@ export const de = {
     publish: 'In der Community veröffentlichen',
     published: 'Diese Szene ist in der Community',
     seeInCommunity: 'In der Community ansehen',
-    publishRecipeHelp:
-      'Geteilt werden nur Link und Schnitt. Das Video liegt nicht hier.',
+    publishRecipeHelp: 'Geteilt werden nur der Originallink und die Aufteilung. Das Video wird nie hier gespeichert.',
     publishFromCatalogue:
       'Diese Szene kommt aus dem Katalog, sie steht also schon drin. Ein zweites Mal veröffentlicht gäbe es zwei Fassungen, die niemand auseinanderhält.',
     pickLang: 'Sprache wählen…',
@@ -274,7 +275,7 @@ export const de = {
     tagRemove: (tag: string) => `#${tag} entfernen`,
     tagSearch: (tag: string) => `Szenen mit #${tag} ansehen`,
     publishUploadHelp: 'Geteilt werden nur Figuren, Text und Timing. Dein Video bleibt bei dir: Wer die Szene nachspielt, bringt sein eigenes mit.',
-    publishMissing: 'Gib Titel, Sprache und Genre an, um zu veröffentlichen.',
+    publishMissing: 'Gib Titel, Link, Sprache und Genre an, um zu veröffentlichen.',
     searchPlaceholder: 'Titel, Figur, #Tag…',
     searchLabel: 'Szene suchen',
     searchClear: 'Suche löschen',
@@ -325,16 +326,16 @@ export const de = {
     howTitle: 'Eine Szene zum Katalog hinzufügen',
     howSteps: [
       {
-        title: 'Importiere dein Video',
-        body: 'Eine neue Szene aus beliebiger Quelle. Dub’Up trennt die Stimmen und teilt die Sätze auf.',
+        title: 'Füll die Karte aus',
+        body: 'Titel, Link zum Originalvideo, Sprache, Genre und Tags: das, was die Community sieht.',
       },
       {
-        title: 'Synchronisiert sie gemeinsam',
-        body: 'Prüf die Figuren, lade deine Gruppe ein, nehmt auf und startet das Rendern.',
+        title: 'Importieren und prüfen',
+        body: 'Dub’Up trennt die Stimmen und teilt die Sätze auf. Du korrigierst Figuren und Text.',
       },
       {
-        title: 'Veröffentliche das Pack',
-        body: 'Über den Ergebnisbildschirm: Titel, Sprache, Genre und Tags. Die Vorbereitung kommt in die Community, nie das Video.',
+        title: 'Veröffentlichen, dann spielen',
+        body: 'Das Pack kommt in die Community. Danach kannst du es mit deiner Gruppe synchronisieren.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -347,6 +348,16 @@ export const de = {
     commentReportBody: 'Meldungen sind anonym. Nach der fünften wird der Kommentar entfernt und sein Autor verwarnt; nach drei Verwarnungen wird sein Zugang gesperrt.',
     commentReportedThanks: 'Danke, der Kommentar ist gemeldet.',
     commentRemovedAfterReports: 'Danke. Von mehreren Mitgliedern gemeldet, wurde dieser Kommentar entfernt.',
+    linkLabel: 'Link zum Originalvideo',
+    linkHelp: 'YouTube oder jede andere Seite: Er dient als Vorschau, und dort holen sich andere das Video, um die Szene nachzuspielen.',
+    linkInvalid: 'Dieser Link scheint ungültig zu sein: Er muss mit https:// beginnen.',
+    publishAskTitle: 'Dieses Pack mit der Community teilen?',
+    publishAskBody: 'Deine Aufteilung kann anderen Gruppen helfen: Sie spielen die Szene mit ihrem eigenen Video nach. Geteilt werden nur der Link und die Aufteilung, nie eure Stimmen.',
+    publishAskYes: 'Ja, veröffentlichen',
+    publishAskNo: 'Nein, danke',
+    publishLater: 'Diese Szene wird nicht geteilt. Du kannst es dir auf diesem Bildschirm jederzeit anders überlegen.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `Vom Ersteller geändert am ${date}`,
   },
 
   terms: {
@@ -544,9 +555,14 @@ export const de = {
     adminBadge: 'Admin',
     shareLater: 'Nach dem Rendern kannst du die Szene mit Sprache, Genre und Tags in der Community veröffentlichen.',
     communityTitle: 'Ein Pack für die Community erstellen',
-    communityBody: 'Importiere dein Video und bereite die Szene wie gewohnt vor. Ist das Rendern fertig, veröffentlichst du sie mit einem Klick.',
+    communityBody: 'Zuerst die Karte und das Video, dann die Prüfung der Aufteilung. Sobald das Pack veröffentlicht ist, kannst du es mit deiner Gruppe spielen.',
     langLabel: 'Im Video gesprochene Sprache',
     langHelp: 'Sie steuert die Transkription und dient später als Filter, wenn die Szene in der Community veröffentlicht wird.',
+    packFicheTitle: 'Die Karte des Packs',
+    packVideoTitle: 'Das aufzuteilende Video',
+    packSubmit: 'Importieren und Pack vorbereiten',
+    packYoutubeNeeded: 'Für einen Import von YouTube muss der Link auf der Karte ein YouTube-Video sein.',
+    packNeedsVideo: 'Füge das Video der Szene hinzu, um fortzufahren.',
   },
 
   ingest: {
@@ -628,6 +644,14 @@ export const de = {
     undo: 'Rückgängig',
     splitBody: (n: number) => (n === 1 ? `1 Satz wird zu einer neuen Figur verschoben.` : `${n} Sätze werden zu einer neuen Figur verschoben.`),
     defaultCharacterName: (n: number) => `Figur ${n}`,
+    packPublish: 'Pack veröffentlichen',
+    packPublishBody: 'Prüfe die Karte ein letztes Mal: Das sieht die Community. Die Aufteilung wird so veröffentlicht, wie sie auf dem Bildschirm steht.',
+    packPublishedTitle: 'Dein Pack ist veröffentlicht',
+    packPublishedBody: 'Es ist in der Community: Andere Gruppen können es entdecken, kommentieren und mit ihrem Video nachspielen. Jetzt bist du dran.',
+    packPlay: 'Dieses Pack jetzt spielen',
+    packPlayHint: 'Die Lobby öffnet sich mit dieser Szene: Teile den Code mit deiner Gruppe.',
+    packSeeFiche: 'Karte des Packs ansehen',
+    packAnother: 'Ein weiteres Pack erstellen',
   },
 
   lobby: {
@@ -771,6 +795,17 @@ export const de = {
     waitSomeAway: (names: string) => `Alle sind fertig. Noch nicht auf diesem Bildschirm: ${names}. Du kannst warten oder ohne Warten starten.`,
     launchAnyway: 'Ohne Warten starten',
     clipsNav: 'Zu einem Clip springen',
+    devicesTitle: 'Mikrofon und Kopfhörer',
+    devicesLocked: 'Erlaube das Mikrofon, um zwischen deinen Geräten zu wählen: Vorher zeigt der Browser ihre Namen nicht an.',
+    devicesAllow: 'Mikrofon erlauben',
+    deviceMic: 'Mikrofon',
+    deviceOutput: 'Ausgabe (Kopfhörer)',
+    deviceDefault: 'Systemstandard',
+    deviceOutputUnsupported: 'Dein Browser gibt den Ton über die Systemausgabe aus: Wähle die Kopfhörer in den Einstellungen deines Geräts.',
+    devicesHelp: 'Die Wahl gilt für alle Aufnahmen und bleibt für das nächste Mal gespeichert.',
+    devicesDuringTake: 'Die Geräte lassen sich zwischen zwei Aufnahmen wechseln.',
+    deviceMicN: (n: number) => `Mikrofon ${n}`,
+    deviceOutputN: (n: number) => `Ausgabe ${n}`,
   },
 
   progress: {
@@ -1086,11 +1121,11 @@ export const de = {
       steps: [
         {
           title: 'Schließ die Szene ab',
-          body: 'Veröffentlicht wird über den Ergebnisbildschirm, sobald das Rendern fertig ist. Der Gastgeber veröffentlicht.',
+          body: 'Veröffentlicht wird über den Ergebnisbildschirm nach dem Rendern oder direkt aus der Vorbereitung, wenn du in der Community mit „Pack erstellen“ begonnen hast. Der Gastgeber veröffentlicht.',
         },
         {
           title: 'Füll die Karte aus',
-          body: 'Titel, gesprochene Sprache und Genre sind Pflicht: Sie sind die Filter des Katalogs. Füge Tags wie #starwars hinzu, damit man sie in der Suche findet.',
+          body: 'Titel, Link zum Originalvideo, Sprache und Genre sind Pflicht: Der Link dient als Vorschau und lässt andere das Video finden. Füge Tags wie #starwars hinzu, damit man sie in der Suche findet.',
         },
         {
           title: 'Finde sie in der Community',
@@ -1218,5 +1253,8 @@ export const de = {
     tooLong: 'Szene zu lang: höchstens 10 Minuten.',
     youtubeFailed:
       'Der YouTube-Download ist fehlgeschlagen. Importiere die Videodatei stattdessen direkt.',
+    pageNotFoundTitle: 'Diese Seite existiert nicht',
+    pageNotFoundBody: 'Der Link ist vielleicht unvollständig, oder die Seite wurde verschoben. Von der Startseite aus findest du deinen Weg.',
+    backHome: 'Zur Startseite',
   },
 } satisfies Dictionary;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import {
   Combine,
@@ -10,13 +10,18 @@ import {
   RotateCcw,
   Scissors,
   Search,
+  Share2,
   Trash2,
   Users,
   X,
 } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
+import { PackFacetsFields, facetsComplete } from '@/components/pack-facets-fields';
+import { PackPublishedPanel } from '@/components/scene/pack-published-panel';
+import { facetsDeLaScene } from '@/components/scene/publish-card';
 import { useSceneCtx } from '@/components/scene-page';
+import { publishRecipePack, type PackFacets } from '@/lib/packs';
 import { CharacterPicker } from '@/components/scene/character-picker';
 import { Alert, Badge, Button, Dialog, Input, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
@@ -77,6 +82,22 @@ export function PrepareScreen() {
   const [recherche, setRecherche] = useState('');
   /** Ce qui vient d'etre supprime, pour pouvoir l'annuler aussitot. */
   const [dernierRetrait, setDernierRetrait] = useState<string[] | null>(null);
+
+  // ── Un pack cree depuis la communaute ──────────────────────────────
+  const qc = useQueryClient();
+  const packMode = !!session.pack_draft;
+  const [publierOuvert, setPublierOuvert] = useState(false);
+  const [publierErreur, setPublierErreur] = useState<string | null>(null);
+  const [fiche, setFiche] = useState<PackFacets>(() => facetsDeLaScene(session));
+  const publier = useMutation({
+    mutationFn: () => publishRecipePack(session.id, { ...fiche, title: fiche.title.trim() }),
+    onSuccess: () => {
+      setPublierOuvert(false);
+      void qc.invalidateQueries({ queryKey: ['packs'] });
+      refetch();
+    },
+    onError: (e) => setPublierErreur(humanizeError(e)),
+  });
 
   const stats = useMemo(
     () => statsByCharacter(characters, lines, clips),
@@ -145,6 +166,8 @@ export function PrepareScreen() {
   const toutCoche = lignesVisibles.length > 0 && selectedLines.size === lignesVisibles.length;
   const nomFiltre = filtreChar ? (charById.get(filtreChar)?.name ?? '') : '';
 
+  if (packMode && session.published_pack_id) return <PackPublishedPanel />;
+
   return (
     <div className="space-y-5 pb-24">
       <header className="flex flex-wrap items-end justify-between gap-3">
@@ -152,14 +175,30 @@ export function PrepareScreen() {
           <h1 className="titre text-3xl">{t.prepare.title}</h1>
           <p className="max-w-2xl text-sm text-text-faint">{t.prepare.subtitle}</p>
         </div>
-        <Button
-          variant="primary"
-          onClick={() => setConfirmLobby(true)}
-          disabled={characters.length === 0}
-        >
-          <Users className="h-4 w-4" aria-hidden />
-          {t.prepare.openLobby}
-        </Button>
+        {/* Un pack pour la communaute se publie d'abord ; on ne propose
+            de le jouer qu'une fois publie. */}
+        {packMode ? (
+          <Button
+            variant="primary"
+            onClick={() => {
+              setPublierErreur(null);
+              setPublierOuvert(true);
+            }}
+            disabled={characters.length === 0}
+          >
+            <Share2 className="h-4 w-4" aria-hidden />
+            {t.prepare.packPublish}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() => setConfirmLobby(true)}
+            disabled={characters.length === 0}
+          >
+            <Users className="h-4 w-4" aria-hidden />
+            {t.prepare.openLobby}
+          </Button>
+        )}
       </header>
 
       {/* Ce qu'on fait ici, en trois gestes. */}
@@ -639,6 +678,43 @@ export function PrepareScreen() {
         }
       >
         {t.prepare.openLobbyConfirm}
+      </Dialog>
+
+      {/* La fiche, reprise de la creation et modifiable jusqu'au dernier
+          moment : ce qui part dans la communaute est ce qu'on voit ici. */}
+      <Dialog
+        open={publierOuvert}
+        onClose={() => (publier.isPending ? undefined : setPublierOuvert(false))}
+        title={t.prepare.packPublish}
+        footer={
+          <>
+            <Button
+              variant="ghost"
+              disabled={publier.isPending}
+              onClick={() => setPublierOuvert(false)}
+            >
+              {t.common.cancel}
+            </Button>
+            <Button
+              variant="primary"
+              disabled={!facetsComplete(fiche)}
+              loading={publier.isPending}
+              onClick={() => {
+                setPublierErreur(null);
+                publier.mutate();
+              }}
+            >
+              <Share2 className="h-4 w-4" aria-hidden />
+              {t.prepare.packPublish}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p className="leading-relaxed">{t.prepare.packPublishBody}</p>
+          <PackFacetsFields value={fiche} onChange={setFiche} idPrefix="publier-pack" />
+          {publierErreur ? <Alert tone="danger">{publierErreur}</Alert> : null}
+        </div>
       </Dialog>
     </div>
   );

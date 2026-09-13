@@ -22,6 +22,8 @@ export const es = {
     create: 'Crear',
     join: 'Unirse',
     joinHelp: 'Introduce el código de seis caracteres que te dio el anfitrión.',
+    mainLabel: 'Navegación principal',
+    language: 'Idioma',
   },
 
   account: {
@@ -261,8 +263,7 @@ export const es = {
     publish: 'Publicar en la comunidad',
     published: 'Esta escena está en la comunidad',
     seeInCommunity: 'Verla en la comunidad',
-    publishRecipeHelp:
-      'Solo se comparten el enlace y el corte. El vídeo no se aloja aquí.',
+    publishRecipeHelp: 'Solo se comparten el enlace original y el desglose. El vídeo nunca se aloja aquí.',
     publishFromCatalogue:
       'Esta escena viene del catálogo: ya está ahí. Volver a publicarla dejaría dos copias que nadie sabría distinguir.',
     pickLang: 'Elegir el idioma…',
@@ -274,7 +275,7 @@ export const es = {
     tagRemove: (tag: string) => `Quitar #${tag}`,
     tagSearch: (tag: string) => `Ver escenas #${tag}`,
     publishUploadHelp: 'Solo se comparten los personajes, el texto y los tiempos. Tu vídeo se queda contigo: quienes vuelvan a jugar la escena traerán el suyo.',
-    publishMissing: 'Indica el título, el idioma y el género para publicar.',
+    publishMissing: 'Rellena el título, el enlace, el idioma y el género para publicar.',
     searchPlaceholder: 'Título, personaje, #etiqueta…',
     searchLabel: 'Buscar una escena',
     searchClear: 'Borrar la búsqueda',
@@ -325,16 +326,16 @@ export const es = {
     howTitle: 'Añadir una escena al catálogo',
     howSteps: [
       {
-        title: 'Importa tu vídeo',
-        body: 'Una escena nueva, de cualquier origen. Dub’Up separa las voces y divide las frases.',
+        title: 'Rellena la ficha',
+        body: 'Título, enlace del vídeo original, idioma, género y etiquetas: lo que verá la comunidad.',
       },
       {
-        title: 'Doblad entre amigos',
-        body: 'Revisa los personajes, invita a tu grupo, grabad y lanzad el render.',
+        title: 'Importa y revisa',
+        body: 'Dub’Up separa las voces y divide las frases. Tú corriges los personajes y el texto.',
       },
       {
-        title: 'Publica el pack',
-        body: 'Desde la pantalla del resultado: título, idioma, género y etiquetas. La preparación se une a la comunidad, nunca el vídeo.',
+        title: 'Publica y juega',
+        body: 'El pack se une a la comunidad. Después puedes doblarlo con tu grupo.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -347,6 +348,16 @@ export const es = {
     commentReportBody: 'La denuncia es anónima. A la quinta, el comentario se retira y su autor recibe un aviso; al tercer aviso, su acceso se suspende.',
     commentReportedThanks: 'Gracias, queda denunciado.',
     commentRemovedAfterReports: 'Gracias. Denunciado por varios miembros, este comentario se ha retirado.',
+    linkLabel: 'Enlace del vídeo original',
+    linkHelp: 'YouTube o cualquier sitio: sirve de vista previa y es donde los demás consiguen el vídeo para volver a jugar la escena.',
+    linkInvalid: 'Este enlace no parece válido: debe empezar por https://',
+    publishAskTitle: '¿Compartir este pack con la comunidad?',
+    publishAskBody: 'Tu desglose puede servir a otros grupos: volverán a jugar la escena con su propio vídeo. Solo se comparten el enlace y el desglose, nunca vuestras voces.',
+    publishAskYes: 'Sí, publicar',
+    publishAskNo: 'No, gracias',
+    publishLater: 'Esta escena no se comparte. Puedes cambiar de opinión cuando quieras desde esta pantalla.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `Modificado por el creador el ${date}`,
   },
 
   terms: {
@@ -542,9 +553,14 @@ export const es = {
     adminBadge: 'Admin',
     shareLater: 'Tras el render, podrás publicar la escena en la comunidad, con su idioma, su género y sus etiquetas.',
     communityTitle: 'Crear un pack para la comunidad',
-    communityBody: 'Importa tu vídeo y prepara la escena como siempre. Cuando el render esté hecho, la publicarás en un clic.',
+    communityBody: 'Primero la ficha y el vídeo, después la revisión del desglose. Una vez publicado el pack, podrás jugarlo con tu grupo.',
     langLabel: 'Idioma hablado en el vídeo',
     langHelp: 'Ajusta la transcripción y luego sirve de filtro cuando la escena se publica en la comunidad.',
+    packFicheTitle: 'La ficha del pack',
+    packVideoTitle: 'El vídeo que se va a dividir',
+    packSubmit: 'Importar y preparar el pack',
+    packYoutubeNeeded: 'Para importar desde YouTube, el enlace de la ficha debe ser un vídeo de YouTube.',
+    packNeedsVideo: 'Añade el vídeo de la escena para continuar.',
   },
 
   ingest: {
@@ -626,6 +642,14 @@ export const es = {
     undo: 'Deshacer',
     splitBody: (n: number) => (n === 1 ? `1 frase pasará a un personaje nuevo.` : `${n} frases pasarán a un personaje nuevo.`),
     defaultCharacterName: (n: number) => `Personaje ${n}`,
+    packPublish: 'Publicar el pack',
+    packPublishBody: 'Revisa la ficha una última vez: es lo que verá la comunidad. El desglose se publica tal como está en pantalla.',
+    packPublishedTitle: 'Tu pack está publicado',
+    packPublishedBody: 'Ya está en la comunidad: otros grupos pueden descubrirlo, comentarlo y volver a jugarlo con su vídeo. Ahora te toca disfrutarlo.',
+    packPlay: 'Jugar este pack ahora',
+    packPlayHint: 'El lobby se abre con esta escena: comparte el código con tu grupo.',
+    packSeeFiche: 'Ver la ficha del pack',
+    packAnother: 'Crear otro pack',
   },
 
   lobby: {
@@ -768,6 +792,17 @@ export const es = {
     waitSomeAway: (names: string) => `Todos han terminado. Aún no están en esta pantalla: ${names}. Puedes esperar o lanzar sin esperar.`,
     launchAnyway: 'Lanzar sin esperar',
     clipsNav: 'Ir a un clip',
+    devicesTitle: 'Micrófono y auriculares',
+    devicesLocked: 'Permite el micrófono para elegir entre tus dispositivos: el navegador no muestra sus nombres antes.',
+    devicesAllow: 'Permitir el micrófono',
+    deviceMic: 'Micrófono',
+    deviceOutput: 'Salida (auriculares)',
+    deviceDefault: 'Predeterminado del sistema',
+    deviceOutputUnsupported: 'Tu navegador envía el sonido a la salida del sistema: elige los auriculares en los ajustes de tu dispositivo.',
+    devicesHelp: 'La elección vale para todas las tomas y se recuerda para la próxima vez.',
+    devicesDuringTake: 'Los dispositivos se cambian entre dos tomas.',
+    deviceMicN: (n: number) => `Micrófono ${n}`,
+    deviceOutputN: (n: number) => `Salida ${n}`,
   },
 
   progress: {
@@ -1082,11 +1117,11 @@ export const es = {
       steps: [
         {
           title: 'Termina la escena',
-          body: 'Se publica desde la pantalla del resultado, cuando el render está hecho. Publica el anfitrión.',
+          body: 'Publica desde la pantalla del resultado tras el render, o directamente desde la preparación si empezaste con «Crear un pack» en la comunidad. Publica el anfitrión.',
         },
         {
           title: 'Rellena la ficha',
-          body: 'Título, idioma hablado y género son obligatorios: son los filtros del catálogo. Añade etiquetas como #starwars para que la encuentren en la búsqueda.',
+          body: 'Título, enlace del vídeo original, idioma y género son obligatorios: el enlace sirve de vista previa y permite a los demás conseguir el vídeo. Añade etiquetas como #starwars para que la encuentren en la búsqueda.',
         },
         {
           title: 'Encuéntrala en la comunidad',
@@ -1214,5 +1249,8 @@ export const es = {
     tooLong: 'Escena demasiado larga: 10 minutos como máximo.',
     youtubeFailed:
       'La descarga de YouTube ha fallado. Importa el archivo de vídeo directamente.',
+    pageNotFoundTitle: 'Esta página no existe',
+    pageNotFoundBody: 'Puede que el enlace esté incompleto o que la página se haya movido. Vuelve a empezar desde el inicio.',
+    backHome: 'Volver al inicio',
   },
 } satisfies Dictionary;

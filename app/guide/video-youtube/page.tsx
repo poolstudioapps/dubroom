@@ -22,7 +22,7 @@ import { TvSet } from '@/components/tv-set';
 import { getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 
-/** Le decalage d'une apparition, lu par la peau cinema. */
+/** Le decalage d'une apparition, lu par la feuille de style. */
 const delai = (ms: number) => ({ '--delai': `${ms}ms` }) as CSSProperties;
 
 const ICONES_ETAPES = [Link2, Download, Timer, Upload] as const;
@@ -58,9 +58,9 @@ export default async function GuideVideoPage() {
   const g = t.guide;
 
   const boutonPlein =
-    'btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover';
+    'btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold text-accent-ink';
   const boutonContour =
-    'btn-3d btn-secondary btn-bascule inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-6 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]';
+    'btn-3d btn-secondary btn-bascule inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap px-6 text-sm font-semibold text-text';
 
   // Le trajet d'une scene, en trois objets : une source, un fichier, un
   // lobby. La source peut etre n'importe laquelle, le format aussi.
@@ -95,7 +95,7 @@ export default async function GuideVideoPage() {
                   data-reveal
                   suppressHydrationWarning
                   style={delai(90)}
-                  className="signage hero-titre text-balance text-4xl leading-[0.95] text-[oklch(0.55_0.17_235)] sm:text-6xl"
+                  className="signage hero-titre text-balance text-4xl leading-[0.95] sm:text-6xl"
                 >
                   {g.heroTitle}
                 </h1>
@@ -244,7 +244,7 @@ export default async function GuideVideoPage() {
                     >
                       {/* La couleur d'action, et non le vert : son encre
                           sombre, faite pour les fonds clairs, disparaissait
-                          sur le charbon de la peau cinema. */}
+                          sur le charbon de la salle. */}
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink">
                         <Check className="h-3.5 w-3.5" aria-hidden />
                       </span>
@@ -275,10 +275,10 @@ export default async function GuideVideoPage() {
             <section
               data-reveal
               suppressHydrationWarning
-              className="appel-final rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-10 text-center"
+              className="appel-final rounded-card px-5 py-10 text-center"
             >
-              {/* La meme construction que le rappel de l'accueil : la peau
-                  cinema met en grand le paragraphe de ce bloc. C'est donc la
+              {/* La meme construction que le rappel de l'accueil : la feuille
+                  de style met en grand le paragraphe de ce bloc. C'est donc la
                   question qui est un paragraphe, et l'explication qui n'en
                   est pas un. */}
               <p className="mx-auto max-w-xl text-balance text-lg font-bold">{g.finalTitle}</p>

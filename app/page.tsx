@@ -24,7 +24,7 @@ import { APP_NAME } from '@/config/strings';
 import { currentUser } from '@/lib/supabase/server';
 
 /**
- * Le decalage d'une apparition, lu par la peau cinema.
+ * Le decalage d'une apparition, lu par la feuille de style.
  *
  * Chaque bloc anime porte aussi `suppressHydrationWarning` : le script
  * d'apparition marque les blocs deja visibles avant que React ne reprenne
@@ -137,7 +137,7 @@ export default async function HomePage() {
 
   return (
     <div className="relative isolate flex min-h-dvh flex-col items-center px-3 py-4 sm:px-6 sm:py-6">
-      {/* Le film plein cadre de la peau cinema ; rien dans les autres. */}
+      {/* Le film plein cadre, derriere l'accroche. */}
       <HeroBackdrop />
       <div className="w-full max-w-[min(84rem,94vw)]">
         <SiteHeader signedIn={!!user} right={user ? <AccountMenu /> : undefined} />
@@ -159,7 +159,7 @@ export default async function HomePage() {
                 <h1
                   data-reveal suppressHydrationWarning
                   style={delai(90)}
-                  className="signage hero-titre text-balance text-4xl leading-[0.95] text-[oklch(0.55_0.17_235)] sm:text-6xl"
+                  className="signage hero-titre text-balance text-4xl leading-[0.95] sm:text-6xl"
                 >
                   {t.home.heroTitle}
                 </h1>
@@ -179,7 +179,7 @@ export default async function HomePage() {
                 >
                   <Link
                     href={primaryHref}
-                    className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover sm:text-lg"
+                    className="btn-3d btn-primary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-accent px-7 text-base font-semibold text-accent-ink sm:text-lg"
                   >
                     {primaryLabel}
                     <ArrowRight className="h-5 w-5" aria-hidden />
@@ -190,7 +190,7 @@ export default async function HomePage() {
                   {user ? (
                     <Link
                       href="/sessions"
-                      className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-5 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]"
+                      className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap px-5 text-sm font-semibold text-text"
                     >
                       <Clapperboard className="h-5 w-5" aria-hidden />
                       {t.home.ctaSessions}
@@ -199,7 +199,7 @@ export default async function HomePage() {
 
                   <Link
                     href="/communaute"
-                    className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap bg-surface-raised px-5 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]"
+                    className="btn-3d btn-secondary inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap px-5 text-sm font-semibold text-text"
                   >
                     <Library className="h-5 w-5" aria-hidden />
                     {t.home.ctaCommunity}
@@ -322,19 +322,19 @@ export default async function HomePage() {
                 haut de page, et personne ne remonte pour chercher. */}
             <section
               data-reveal suppressHydrationWarning
-              className="appel-final rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-6 text-center"
+              className="appel-final rounded-card px-5 py-6 text-center"
             >
               <p className="mx-auto max-w-xl text-balance text-lg font-bold">
                 {t.home.midCta}
               </p>
               <Link
                 href={primaryHref}
-                className="btn-3d btn-primary mt-4 inline-flex h-12 items-center justify-center gap-2 bg-accent px-7 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
+                className="btn-3d btn-primary mt-4 inline-flex h-12 items-center justify-center gap-2 bg-accent px-7 text-sm font-semibold text-accent-ink"
               >
                 {primaryLabel}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
-              {/* Un `div`, pas un `p` : la peau cinema habille les
+              {/* Un `div`, pas un `p` : la feuille de style habille les
                   paragraphes de ce bloc comme son titre. */}
               <div className="mt-4 text-xs text-text-muted">
                 <Link href={GUIDE_VIDEO_HREF} className="lien-surligne font-bold text-text">
@@ -365,7 +365,7 @@ export default async function HomePage() {
                 { titre: t.home.defineWhoTitle, texte: t.home.defineWhoBody },
               ].map(({ titre, texte }, rang) => (
                 <article key={titre} className="definition space-y-2">
-                  {/* Le numero n'existe que dans la peau cinema : decor pur. */}
+                  {/* Le grand numero cerne d'or : decor pur. */}
                   <span
                     data-reveal
                     suppressHydrationWarning

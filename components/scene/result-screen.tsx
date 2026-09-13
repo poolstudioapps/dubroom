@@ -97,6 +97,10 @@ export function ResultScreen() {
         </>
       )}
 
+      {/* La question du partage vient juste apres la scene, pendant qu'on
+          l'a encore sous les yeux : plus bas, elle passait inapercue. */}
+      <PublishCard ask />
+
       <Card className="space-y-3">
         <h2 className="text-sm font-bold">{t.result.cast}</h2>
         <ul className="space-y-1.5">
@@ -117,8 +121,6 @@ export function ResultScreen() {
           ))}
         </ul>
       </Card>
-
-      <PublishCard />
 
       {session.purged_at && !supprime ? (
         <p className="text-xs leading-relaxed text-text-faint">

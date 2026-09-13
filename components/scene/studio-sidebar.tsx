@@ -30,6 +30,7 @@ export function StudioSidebar({
   done,
   total,
   voiceConsole,
+  devices,
 }: {
   backing: number;
   onBacking: (value: number) => void;
@@ -37,6 +38,8 @@ export function StudioSidebar({
   total: number;
   /** La console de la prise affichee, sur ordinateur. */
   voiceConsole?: React.ReactNode;
+  /** Le choix du micro et de la sortie, en tete : il se fait avant la prise. */
+  devices?: React.ReactNode;
 }) {
   const t = useT();
 
@@ -67,7 +70,9 @@ export function StudioSidebar({
 
   return (
     <aside className="space-y-4">
-      <Card variant="plate" className="space-y-1.5">
+      {devices}
+
+      <Card className="space-y-1.5">
         <div className="flex items-center justify-between text-sm">
           <span>{t.studio.backingVolume}</span>
           <span className="text-text-faint">{Math.round(backing * 100)} %</span>
@@ -91,7 +96,7 @@ export function StudioSidebar({
       */}
       {voiceConsole ? <div className="hidden lg:block">{voiceConsole}</div> : null}
 
-      <Card variant="plate" className="space-y-2">
+      <Card className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span>{t.studio.myClips}</span>
           <span className="text-text-faint">
@@ -113,7 +118,7 @@ export function StudioSidebar({
         que les autres : on ne savait donc pas si on etait soi-meme celui
         qu'on attend.
       */}
-      <Card variant="plate" className="space-y-2">
+      <Card className="space-y-2">
         <h2 className="text-sm font-bold">
           {others.length === 0
             ? t.studio.soloScene
@@ -153,7 +158,7 @@ export function StudioSidebar({
       </Card>
 
       {isHost ? (
-        <Card variant="plate" className="space-y-3">
+        <Card className="space-y-3">
           <Button
             variant="primary"
             className="w-full"

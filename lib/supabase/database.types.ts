@@ -63,6 +63,8 @@ export interface SessionRow {
   lobby_opened_at: string | null;
   /** Langue parlee, choisie a la creation (ISO 639-1). */
   source_lang: string | null;
+  /** La fiche d'un pack cree depuis la communaute, jusqu'a sa publication. */
+  pack_draft: { source_url: string; genre: string | null; tags: string[] } | null;
   created_at: string;
 }
 

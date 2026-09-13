@@ -134,7 +134,7 @@ export function LobbyScreen() {
             <span
               className={cn(
                 'inline-flex items-center gap-1 text-xs font-bold',
-                minutesRestantes <= 10 && 'text-[oklch(0.55_0.14_65)]',
+                minutesRestantes <= 10 && 'text-warn-ink',
               )}
             >
               <Timer className="h-3.5 w-3.5" aria-hidden />
@@ -247,7 +247,7 @@ export function LobbyScreen() {
             <div className="space-y-1">
               <p className="text-xs text-text-faint">{t.lobby.shareCode}</p>
               <div className="flex items-center gap-2">
-                <code className="taped relative flex-1 rounded-sm border-2 border-border-strong bg-screen py-3 text-center font-display text-3xl tracking-[0.2em] shadow-[inset_0_2px_4px_rgb(0_0_0/0.15)]">
+                <code className="flex-1 rounded-2xl border border-border bg-surface-sunken py-3 text-center font-mono text-3xl font-bold tracking-[0.2em] text-accent">
                   {session.code}
                 </code>
                 <Button

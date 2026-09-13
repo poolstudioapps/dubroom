@@ -7,10 +7,9 @@ import { LocalePicker } from '@/components/locale-picker';
 import { APP_NAME } from '@/config/strings';
 import { useT } from '@/lib/i18n';
 
-// L'or du site, comme tous les liens : le bleu d'origine venait de la
-// peau retro et detonnait sur la salle sombre.
+// L'or du site, comme tous les liens.
 const LIEN =
-  'rounded-sm py-1 text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-[oklch(0.93_0.13_95)] hover:decoration-current';
+  'rounded-sm py-1 text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent-hover hover:decoration-current';
 
 /**
  * Pied de page.
@@ -29,7 +28,7 @@ export function Footer() {
 
   return (
     <footer className="w-full pb-8 pt-6 text-center">
-      <div className="space-y-3 rounded-card border border-bezel-dark/60 bg-bezel/25 px-4 py-4">
+      <div className="space-y-3 rounded-card border border-border/60 bg-surface/30 px-4 py-4 backdrop-blur-sm">
         <p className="mx-auto max-w-2xl text-xs leading-relaxed text-text-muted">
           {t.legal.usageNotice}
         </p>

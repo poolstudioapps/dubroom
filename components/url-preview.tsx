@@ -38,7 +38,7 @@ export function UrlPreview({
 
   const frame = flush
     ? 'border-b border-border'
-    : 'rounded-md border-2 border-bezel-dark';
+    : 'rounded-2xl border border-border';
 
   const [open, setOpen] = useState(false);
   const [vignetteKo, setVignetteKo] = useState(false);

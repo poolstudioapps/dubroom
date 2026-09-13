@@ -22,6 +22,8 @@ export const ko = {
     create: '만들기',
     join: '참여',
     joinHelp: '호스트에게 받은 6자리 코드를 입력하세요.',
+    mainLabel: '주요 탐색',
+    language: '언어',
   },
 
   account: {
@@ -256,8 +258,7 @@ export const ko = {
     publish: '커뮤니티에 공개',
     published: '이 장면은 커뮤니티에 있습니다',
     seeInCommunity: '커뮤니티에서 보기',
-    publishRecipeHelp:
-      '공유되는 것은 링크와 구간뿐입니다. 영상은 여기 보관되지 않습니다.',
+    publishRecipeHelp: '원본 링크와 준비 데이터만 공유됩니다. 영상은 여기에 저장되지 않습니다.',
     publishFromCatalogue:
       '이 장면은 목록에서 가져온 것이라 이미 등록돼 있습니다. 다시 올리면 구분할 수 없는 중복이 생깁니다.',
     pickLang: '언어 선택…',
@@ -269,7 +270,7 @@ export const ko = {
     tagRemove: (tag: string) => `#${tag} 삭제`,
     tagSearch: (tag: string) => `#${tag} 장면 보기`,
     publishUploadHelp: '캐릭터, 대사, 타이밍만 공유됩니다. 영상은 내게 남고, 장면을 다시 플레이하는 사람은 각자 영상을 준비합니다.',
-    publishMissing: '공개하려면 제목, 언어, 장르를 입력하세요.',
+    publishMissing: '제목, 링크, 언어, 장르를 입력하면 공개할 수 있습니다.',
     searchPlaceholder: '제목, 캐릭터, #태그…',
     searchLabel: '장면 검색',
     searchClear: '검색 지우기',
@@ -320,16 +321,16 @@ export const ko = {
     howTitle: '카탈로그에 장면 추가하기',
     howSteps: [
       {
-        title: '영상 불러오기',
-        body: '어떤 출처든 새 장면을 만들 수 있어요. Dub’Up이 목소리를 분리하고 대사를 나눕니다.',
+        title: '정보 입력하기',
+        body: '제목, 원본 영상 링크, 언어, 장르, 태그: 커뮤니티에 보일 내용입니다.',
       },
       {
-        title: '친구들과 더빙하기',
-        body: '캐릭터를 확인하고 그룹을 초대해 녹음한 뒤 렌더링을 시작하세요.',
+        title: '불러오고 확인하기',
+        body: 'Dub’Up이 목소리를 분리하고 대사를 나눕니다. 캐릭터와 대사를 바로잡으세요.',
       },
       {
-        title: '팩 공개하기',
-        body: '결과 화면에서 제목, 언어, 장르, 태그를 입력하세요. 커뮤니티에는 준비 데이터만 올라가고 영상은 올라가지 않습니다.',
+        title: '공개하고 플레이하기',
+        body: '팩이 커뮤니티에 올라갑니다. 그다음 그룹과 함께 더빙할 수 있어요.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -342,6 +343,16 @@ export const ko = {
     commentReportBody: '신고는 익명입니다. 신고가 5건 쌓이면 댓글이 삭제되고 작성자에게 경고가 갑니다. 경고가 3회가 되면 접근이 정지됩니다.',
     commentReportedThanks: '감사합니다. 신고했습니다.',
     commentRemovedAfterReports: '감사합니다. 여러 멤버에게 신고되어 이 댓글은 삭제되었습니다.',
+    linkLabel: '원본 영상 링크',
+    linkHelp: 'YouTube든 다른 사이트든 괜찮아요. 미리보기로 쓰이고, 다른 사람들이 장면을 다시 플레이하려고 영상을 받는 곳입니다.',
+    linkInvalid: '올바른 링크가 아닌 것 같아요. https:// 로 시작해야 합니다.',
+    publishAskTitle: '이 팩을 커뮤니티에 공유할까요?',
+    publishAskBody: '내 준비 데이터가 다른 그룹에게 도움이 될 수 있어요. 각 그룹이 자기 영상으로 장면을 다시 플레이합니다. 링크와 준비 데이터만 공유되며, 목소리는 절대 공유되지 않습니다.',
+    publishAskYes: '네, 공개할게요',
+    publishAskNo: '괜찮아요',
+    publishLater: '이 장면은 공유하지 않습니다. 이 화면에서 언제든 마음을 바꿀 수 있어요.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `${date}에 제작자가 수정함`,
   },
 
   terms: {
@@ -535,9 +546,14 @@ export const ko = {
     adminBadge: '관리자',
     shareLater: '렌더링 후 언어, 장르, 태그와 함께 장면을 커뮤니티에 공개할 수 있습니다.',
     communityTitle: '커뮤니티용 팩 만들기',
-    communityBody: '평소처럼 영상을 불러와 장면을 준비하세요. 렌더링이 끝나면 클릭 한 번으로 공개할 수 있습니다.',
+    communityBody: '먼저 정보와 영상, 다음으로 준비 데이터 확인. 팩을 공개하면 그룹과 함께 플레이할 수 있어요.',
     langLabel: '영상에서 사용하는 언어',
     langHelp: '대본 인식을 맞추고, 장면을 커뮤니티에 공개하면 필터로도 쓰입니다.',
+    packFicheTitle: '팩 정보',
+    packVideoTitle: '나눌 영상',
+    packSubmit: '불러와서 팩 준비하기',
+    packYoutubeNeeded: 'YouTube에서 불러오려면 정보의 링크가 YouTube 영상이어야 합니다.',
+    packNeedsVideo: '계속하려면 장면 영상을 추가하세요.',
   },
 
   ingest: {
@@ -615,6 +631,14 @@ export const ko = {
     undo: '실행 취소',
     splitBody: (n: number) => `대사 ${n}개가 새 캐릭터로 이동합니다.`,
     defaultCharacterName: (n: number) => `캐릭터 ${n}`,
+    packPublish: '팩 공개하기',
+    packPublishBody: '마지막으로 정보를 확인하세요. 커뮤니티에 보일 내용입니다. 준비 데이터는 화면에 보이는 그대로 공개됩니다.',
+    packPublishedTitle: '팩이 공개되었습니다',
+    packPublishedBody: '커뮤니티에 올라갔어요. 다른 그룹이 찾아보고, 댓글을 달고, 자기 영상으로 다시 플레이할 수 있습니다. 이제 직접 즐겨 보세요.',
+    packPlay: '지금 이 팩 플레이하기',
+    packPlayHint: '이 장면으로 로비가 열립니다. 그룹에 코드를 공유하세요.',
+    packSeeFiche: '팩 정보 보기',
+    packAnother: '다른 팩 만들기',
   },
 
   lobby: {
@@ -753,6 +777,17 @@ export const ko = {
     waitSomeAway: (names: string) => `모두 녹음을 마쳤습니다. 아직 이 화면에 없는 사람: ${names}. 기다리거나 바로 시작할 수 있습니다.`,
     launchAnyway: '기다리지 않고 시작',
     clipsNav: '클립으로 이동',
+    devicesTitle: '마이크와 헤드폰',
+    devicesLocked: '마이크를 허용하면 기기를 고를 수 있어요. 그전에는 브라우저가 기기 이름을 보여 주지 않습니다.',
+    devicesAllow: '마이크 허용',
+    deviceMic: '마이크',
+    deviceOutput: '출력(헤드폰)',
+    deviceDefault: '시스템 기본값',
+    deviceOutputUnsupported: '이 브라우저는 시스템 출력으로 소리를 보냅니다. 기기 설정에서 헤드폰을 선택하세요.',
+    devicesHelp: '모든 테이크에 적용되며 다음에도 기억됩니다.',
+    devicesDuringTake: '기기는 테이크 사이에 바꿀 수 있습니다.',
+    deviceMicN: (n: number) => `마이크 ${n}`,
+    deviceOutputN: (n: number) => `출력 ${n}`,
   },
 
   progress: {
@@ -1067,11 +1102,11 @@ export const ko = {
       steps: [
         {
           title: '장면 완성하기',
-          body: '공개는 렌더링이 끝난 뒤 결과 화면에서 합니다. 공개는 호스트가 합니다.',
+          body: '렌더링이 끝난 뒤 결과 화면에서, 또는 커뮤니티의 ‘팩 만들기’로 시작했다면 준비 화면에서 바로 공개합니다. 공개는 호스트가 합니다.',
         },
         {
           title: '정보 입력하기',
-          body: '제목, 사용 언어, 장르는 필수이며 카탈로그 필터로 쓰입니다. #starwars 같은 태그를 달면 검색에서 찾을 수 있어요.',
+          body: '제목, 원본 영상 링크, 언어, 장르는 필수입니다. 링크는 미리보기로 쓰이고 다른 사람이 영상을 받을 수 있게 해 줍니다. #starwars 같은 태그를 달면 검색에서 찾을 수 있어요.',
         },
         {
           title: '커뮤니티에서 확인하기',
@@ -1198,5 +1233,8 @@ export const ko = {
     noVideoTrack: '이 파일에는 영상이 없습니다.',
     tooLong: '장면이 너무 깁니다. 최대 10분입니다.',
     youtubeFailed: 'YouTube에서 받아오지 못했습니다. 영상 파일을 직접 가져오세요.',
+    pageNotFoundTitle: '존재하지 않는 페이지입니다',
+    pageNotFoundBody: '링크가 불완전하거나 페이지가 옮겨졌을 수 있어요. 홈에서 다시 찾아보세요.',
+    backHome: '홈으로 돌아가기',
   },
 } satisfies Dictionary;

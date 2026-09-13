@@ -22,6 +22,8 @@ export const zh = {
     create: '创建',
     join: '加入',
     joinHelp: '输入主持人给你的六位代码。',
+    mainLabel: '主导航',
+    language: '语言',
   },
 
   account: {
@@ -253,7 +255,7 @@ export const zh = {
     publish: '发布到社区',
     published: '这个片段已经在社区里',
     seeInCommunity: '去社区看看',
-    publishRecipeHelp: '分享出去的只有链接和切分。视频不存在这里。',
+    publishRecipeHelp: '只分享原链接和准备数据。视频从不存放在这里。',
     publishFromCatalogue:
       '这个片段本来就是从目录里拿的，已经在那儿了。再发一次只会多出一份分不清的副本。',
     pickLang: '选择语言…',
@@ -265,7 +267,7 @@ export const zh = {
     tagRemove: (tag: string) => `移除 #${tag}`,
     tagSearch: (tag: string) => `查看 #${tag} 场景`,
     publishUploadHelp: '只会分享角色、台词和时间点。你的视频留在你手里：重玩这个场景的人会自己准备视频。',
-    publishMissing: '请填写标题、语言和类型后再发布。',
+    publishMissing: '填写标题、链接、语言和类型后即可发布。',
     searchPlaceholder: '标题、角色、#标签…',
     searchLabel: '搜索场景',
     searchClear: '清除搜索',
@@ -316,16 +318,16 @@ export const zh = {
     howTitle: '把场景加入目录',
     howSteps: [
       {
-        title: '导入你的视频',
-        body: '任意来源都能创建新场景。Dub’Up 会分离人声并切分台词。',
+        title: '填写信息',
+        body: '标题、原视频链接、语言、类型和标签：社区会看到这些内容。',
       },
       {
-        title: '和朋友一起配音',
-        body: '检查角色，邀请小组，录音，然后开始渲染。',
+        title: '导入并检查',
+        body: 'Dub’Up 会分离人声并切分台词。你来修正角色和台词。',
       },
       {
-        title: '发布素材包',
-        body: '在结果页面填写标题、语言、类型和标签。加入社区的只有准备数据，从不包括视频。',
+        title: '发布，然后开玩',
+        body: '素材包加入社区。之后你可以和小组一起配音。',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -338,6 +340,16 @@ export const zh = {
     commentReportBody: '举报是匿名的。累计五次举报后，评论会被删除，作者会收到警告；累计三次警告后，其账号将被停用。',
     commentReportedThanks: '谢谢，已举报。',
     commentRemovedAfterReports: '谢谢。这条评论被多位成员举报，已被删除。',
+    linkLabel: '原视频链接',
+    linkHelp: 'YouTube 或任何网站均可：它用作预览，其他人也从这里获取视频来重玩这个场景。',
+    linkInvalid: '这个链接似乎无效：必须以 https:// 开头。',
+    publishAskTitle: '把这个素材包分享到社区？',
+    publishAskBody: '你的准备数据可以帮到其他小组：他们会用自己的视频重玩这个场景。只分享链接和准备数据，从不分享你们的声音。',
+    publishAskYes: '好，发布',
+    publishAskNo: '不用了',
+    publishLater: '这个场景不分享。你可以随时在此页面改变主意。',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `创作者于 ${date} 修改`,
   },
 
   terms: {
@@ -525,9 +537,14 @@ export const zh = {
     adminBadge: '管理员',
     shareLater: '渲染完成后，你可以带上语言、类型和标签把场景发布到社区。',
     communityTitle: '为社区创建素材包',
-    communityBody: '像平常一样导入视频并准备场景。渲染完成后，一键即可发布。',
+    communityBody: '先填写信息并上传视频，再检查准备数据。素材包发布后，就可以和小组一起玩。',
     langLabel: '视频中所说的语言',
     langHelp: '它用于调整转写，并在场景发布到社区后作为筛选条件。',
+    packFicheTitle: '素材包信息',
+    packVideoTitle: '要切分的视频',
+    packSubmit: '导入并准备素材包',
+    packYoutubeNeeded: '从 YouTube 导入时，信息中的链接必须是 YouTube 视频。',
+    packNeedsVideo: '添加场景视频后才能继续。',
   },
 
   ingest: {
@@ -603,6 +620,14 @@ export const zh = {
     undo: '撤销',
     splitBody: (n: number) => `${n} 句台词将移到一个新角色。`,
     defaultCharacterName: (n: number) => `角色 ${n}`,
+    packPublish: '发布素材包',
+    packPublishBody: '最后再检查一遍信息：社区会看到这些内容。准备数据会按屏幕上的样子发布。',
+    packPublishedTitle: '素材包已发布',
+    packPublishedBody: '它已经在社区中：其他小组可以发现它、评论它，并用自己的视频重玩。现在轮到你了。',
+    packPlay: '现在就玩这个素材包',
+    packPlayHint: '将用这个场景开放房间：把代码分享给你的小组。',
+    packSeeFiche: '查看素材包信息',
+    packAnother: '再创建一个素材包',
   },
 
   lobby: {
@@ -738,6 +763,17 @@ export const zh = {
     waitSomeAway: (names: string) => `大家都录完了。还不在这个界面的人：${names}。你可以等一等，或者直接开始。`,
     launchAnyway: '不等了，直接开始',
     clipsNav: '跳转到片段',
+    devicesTitle: '麦克风和耳机',
+    devicesLocked: '允许使用麦克风后才能选择设备：在此之前，浏览器不会显示设备名称。',
+    devicesAllow: '允许使用麦克风',
+    deviceMic: '麦克风',
+    deviceOutput: '输出（耳机）',
+    deviceDefault: '系统默认',
+    deviceOutputUnsupported: '你的浏览器会把声音发送到系统输出：请在设备设置中选择耳机。',
+    devicesHelp: '该选择适用于所有录音，并会在下次记住。',
+    devicesDuringTake: '可以在两次录音之间更换设备。',
+    deviceMicN: (n: number) => `麦克风 ${n}`,
+    deviceOutputN: (n: number) => `输出 ${n}`,
   },
 
   progress: {
@@ -1050,11 +1086,11 @@ export const zh = {
       steps: [
         {
           title: '完成场景',
-          body: '渲染完成后，在结果页面发布。由主持人发布。',
+          body: '渲染完成后在结果页面发布；如果你是从社区的“创建素材包”开始的，也可以在准备阶段直接发布。由主持人发布。',
         },
         {
           title: '填写信息',
-          body: '标题、所说语言和类型为必填项，它们是目录的筛选条件。添加 #starwars 之类的标签，方便别人搜索到。',
+          body: '标题、原视频链接、语言和类型为必填项：链接用作预览，也方便别人获取视频。添加 #starwars 之类的标签，方便别人搜索到。',
         },
         {
           title: '在社区中找到它',
@@ -1181,5 +1217,8 @@ export const zh = {
     noVideoTrack: '这个文件没有视频。',
     tooLong: '片段太长了：最多 10 分钟。',
     youtubeFailed: '从 YouTube 下载失败了。直接导入视频文件吧。',
+    pageNotFoundTitle: '页面不存在',
+    pageNotFoundBody: '链接可能不完整，或页面已移动。请从首页重新开始。',
+    backHome: '返回首页',
   },
 } satisfies Dictionary;

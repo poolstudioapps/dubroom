@@ -1,7 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
 import { getDictionary } from '@/lib/i18n-server';
 
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return { title: t.auth.errorTitle, robots: { index: false, follow: false } };
+}
 
 export default async function AuthErrorPage({
   searchParams,
@@ -33,14 +38,12 @@ export default async function AuthErrorPage({
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4">
-      <main className="plate rounded-card space-y-4 p-6">
-        <h1 className="titre text-2xl">
-          {t.auth.errorTitle}
-        </h1>
-        <p className="text-sm text-text-muted">{message}</p>
+      <main className="panel space-y-4 p-6">
+        <h1 className="titre text-3xl">{t.auth.errorTitle}</h1>
+        <p className="text-sm leading-relaxed text-text-muted">{message}</p>
         <Link
           href="/login"
-          className="inline-flex min-h-11 items-center text-sm font-bold text-[oklch(0.45_0.17_255)] underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-sm font-bold text-accent underline decoration-accent/40 underline-offset-4 hover:text-accent-hover"
         >
           {t.auth.backToSignIn}
         </Link>

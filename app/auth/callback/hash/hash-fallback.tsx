@@ -74,7 +74,7 @@ export function HashSessionFallback({ landing }: { landing: string }) {
 
   return (
     <main className="flex min-h-dvh items-center justify-center px-4">
-      <div className="plate rounded-card flex items-center gap-3 px-6 py-4">
+      <div className="panel flex items-center gap-3 px-6 py-4">
         <Spinner />
         <span className="text-sm text-text-muted">{t.common.loading}</span>
       </div>

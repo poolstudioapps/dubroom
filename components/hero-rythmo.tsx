@@ -141,7 +141,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
 
   return (
     <div
-      className="vitrine-rythmo relative overflow-hidden rounded-card border-2 border-bezel-dark bg-stage"
+      className="vitrine-rythmo relative overflow-hidden rounded-card bg-stage"
       role="img"
       aria-label={t.home.rythmoLabel}
     >
@@ -183,7 +183,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       </div>
 
       {/* La bande. La tete de lecture est fixe, c'est le texte qui passe. */}
-      <div className="relative h-16 overflow-hidden border-t-2 border-bezel-dark bg-stage-raised/40 sm:h-20">
+      <div className="relative h-16 overflow-hidden border-t border-border bg-stage-raised/40 sm:h-20">
         <div className="absolute inset-y-0 left-1/2">
           <div ref={pisteRef} className="relative h-full" style={{ willChange: 'transform' }}>
             {visibles.map((ligne) => (
@@ -208,7 +208,7 @@ function DemoScene({ demo }: { demo: HomeDemo }) {
       </div>
 
       {/* Qui parle, en clair : c'est la question qu'on se pose en doublant. */}
-      <div className="flex items-center gap-2 border-t-2 border-bezel-dark px-4 py-2.5">
+      <div className="flex items-center gap-2 border-t border-border px-4 py-2.5">
         <span
           className="h-3 w-3 shrink-0 rounded-full"
           style={{
@@ -289,8 +289,9 @@ const VOIX = ['character-1', 'character-4', 'character-2'] as const;
 const STEP_MS = 3200;
 
 /**
- * Dessinee en CSS, sans video ni image : rien a charger, et elle suit le
- * theme. Elle s'arrete si la personne a demande moins d'animation.
+ * Dessinee en CSS, sans video ni image : rien a charger, et elle suit les
+ * couleurs du site. Elle s'arrete si la personne a demande moins
+ * d'animation.
  */
 function DemoEcrite() {
   const t = useT();
@@ -321,13 +322,13 @@ function DemoEcrite() {
 
   return (
     <div
-      className="vitrine-rythmo relative overflow-hidden rounded-card border-2 border-bezel-dark bg-stage"
+      className="vitrine-rythmo relative overflow-hidden rounded-card bg-stage"
       role="img"
       aria-label={t.home.rythmoLabel}
     >
       <div className="aspect-[16/7] bg-gradient-to-b from-stage-raised/70 to-stage" />
 
-      <div className="relative border-t-2 border-bezel-dark bg-stage-raised/40 py-5">
+      <div className="relative border-t border-border bg-stage-raised/40 py-5">
         <div
           key={index}
           className={still ? '' : 'animate-rythmo-slide'}
@@ -351,7 +352,7 @@ function DemoEcrite() {
         />
       </div>
 
-      <div className="flex items-center gap-2 border-t-2 border-bezel-dark px-4 py-2.5">
+      <div className="flex items-center gap-2 border-t border-border px-4 py-2.5">
         <span
           className="h-3 w-3 shrink-0 rounded-full"
           style={{ backgroundColor: color }}

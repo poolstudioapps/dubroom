@@ -22,6 +22,8 @@ export const pt = {
     create: 'Criar',
     join: 'Entrar',
     joinHelp: 'Digite o código de seis caracteres que o anfitrião te passou.',
+    mainLabel: 'Navegação principal',
+    language: 'Idioma',
   },
 
   account: {
@@ -260,8 +262,7 @@ export const pt = {
     publish: 'Publicar na comunidade',
     published: 'Esta cena está na comunidade',
     seeInCommunity: 'Ver na comunidade',
-    publishRecipeHelp:
-      'Só o link e o corte serão compartilhados. O vídeo não fica hospedado aqui.',
+    publishRecipeHelp: 'Só o link original e a preparação são compartilhados. O vídeo nunca fica hospedado aqui.',
     publishFromCatalogue:
       'Esta cena veio do catálogo: já está lá. Publicar de novo deixaria duas cópias que ninguém sabe diferenciar.',
     pickLang: 'Escolher o idioma…',
@@ -273,7 +274,7 @@ export const pt = {
     tagRemove: (tag: string) => `Remover #${tag}`,
     tagSearch: (tag: string) => `Ver cenas #${tag}`,
     publishUploadHelp: 'Só os personagens, o texto e os tempos são compartilhados. Seu vídeo fica com você: quem jogar a cena de novo traz o seu.',
-    publishMissing: 'Preencha o título, o idioma e o gênero para publicar.',
+    publishMissing: 'Preencha título, link, idioma e gênero para publicar.',
     searchPlaceholder: 'Título, personagem, #tag…',
     searchLabel: 'Buscar uma cena',
     searchClear: 'Limpar a busca',
@@ -324,16 +325,16 @@ export const pt = {
     howTitle: 'Adicionar uma cena ao catálogo',
     howSteps: [
       {
-        title: 'Importe seu vídeo',
-        body: 'Uma cena nova, de qualquer origem. O Dub’Up separa as vozes e divide as falas.',
+        title: 'Preencha a ficha',
+        body: 'Título, link do vídeo original, idioma, gênero e tags: o que a comunidade vai ver.',
       },
       {
-        title: 'Dublem entre amigos',
-        body: 'Confira os personagens, convide seu grupo, gravem e iniciem a renderização.',
+        title: 'Importe e confira',
+        body: 'O Dub’Up separa as vozes e divide as falas. Você corrige os personagens e o texto.',
       },
       {
-        title: 'Publique o pack',
-        body: 'Na tela do resultado: título, idioma, gênero e tags. A preparação vai para a comunidade, nunca o vídeo.',
+        title: 'Publique e jogue',
+        body: 'O pack entra na comunidade. Depois você pode dublá-lo com seu grupo.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -346,6 +347,16 @@ export const pt = {
     commentReportBody: 'A denúncia é anônima. Na quinta, o comentário é retirado e o autor recebe um aviso; no terceiro aviso, o acesso dele é suspenso.',
     commentReportedThanks: 'Obrigado, denúncia enviada.',
     commentRemovedAfterReports: 'Obrigado. Denunciado por vários membros, este comentário foi retirado.',
+    linkLabel: 'Link do vídeo original',
+    linkHelp: 'YouTube ou qualquer site: serve de prévia, e é ali que os outros pegam o vídeo para jogar a cena de novo.',
+    linkInvalid: 'Este link não parece válido: ele precisa começar com https://',
+    publishAskTitle: 'Compartilhar este pack com a comunidade?',
+    publishAskBody: 'Sua preparação pode servir para outros grupos: eles vão jogar a cena de novo com o próprio vídeo. Só o link e a preparação são compartilhados, nunca as vozes de vocês.',
+    publishAskYes: 'Sim, publicar',
+    publishAskNo: 'Não, obrigado',
+    publishLater: 'Esta cena não será compartilhada. Você pode mudar de ideia a qualquer momento nesta tela.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `Editado pelo criador em ${date}`,
   },
 
   terms: {
@@ -540,9 +551,14 @@ export const pt = {
     adminBadge: 'Admin',
     shareLater: 'Depois da renderização, você poderá publicar a cena na comunidade, com idioma, gênero e tags.',
     communityTitle: 'Criar um pack para a comunidade',
-    communityBody: 'Importe seu vídeo e prepare a cena como sempre. Com a renderização pronta, você publica com um clique.',
+    communityBody: 'Primeiro a ficha e o vídeo, depois a conferência da preparação. Com o pack publicado, você pode jogá-lo com seu grupo.',
     langLabel: 'Idioma falado no vídeo',
     langHelp: 'Ele ajusta a transcrição e depois serve de filtro quando a cena é publicada na comunidade.',
+    packFicheTitle: 'A ficha do pack',
+    packVideoTitle: 'O vídeo a dividir',
+    packSubmit: 'Importar e preparar o pack',
+    packYoutubeNeeded: 'Para importar do YouTube, o link da ficha precisa ser um vídeo do YouTube.',
+    packNeedsVideo: 'Adicione o vídeo da cena para continuar.',
   },
 
   ingest: {
@@ -621,6 +637,14 @@ export const pt = {
     undo: 'Desfazer',
     splitBody: (n: number) => (n === 1 ? `1 fala vai para um novo personagem.` : `${n} falas vão para um novo personagem.`),
     defaultCharacterName: (n: number) => `Personagem ${n}`,
+    packPublish: 'Publicar o pack',
+    packPublishBody: 'Confira a ficha uma última vez: é o que a comunidade vai ver. A preparação é publicada exatamente como está na tela.',
+    packPublishedTitle: 'Seu pack foi publicado',
+    packPublishedBody: 'Ele está na comunidade: outros grupos podem descobrir, comentar e jogá-lo de novo com o próprio vídeo. Agora é a sua vez.',
+    packPlay: 'Jogar este pack agora',
+    packPlayHint: 'O lobby abre com esta cena: compartilhe o código com seu grupo.',
+    packSeeFiche: 'Ver a ficha do pack',
+    packAnother: 'Criar outro pack',
   },
 
   lobby: {
@@ -762,6 +786,17 @@ export const pt = {
     waitSomeAway: (names: string) => `Todos terminaram. Ainda não estão nesta tela: ${names}. Você pode esperar ou iniciar sem esperar.`,
     launchAnyway: 'Iniciar sem esperar',
     clipsNav: 'Ir para um clipe',
+    devicesTitle: 'Microfone e fone',
+    devicesLocked: 'Permita o microfone para escolher entre seus aparelhos: antes disso, o navegador não mostra os nomes.',
+    devicesAllow: 'Permitir o microfone',
+    deviceMic: 'Microfone',
+    deviceOutput: 'Saída (fone)',
+    deviceDefault: 'Padrão do sistema',
+    deviceOutputUnsupported: 'Seu navegador envia o som para a saída do sistema: escolha o fone nas configurações do aparelho.',
+    devicesHelp: 'A escolha vale para todas as gravações e fica guardada para a próxima vez.',
+    devicesDuringTake: 'Os aparelhos podem ser trocados entre uma gravação e outra.',
+    deviceMicN: (n: number) => `Microfone ${n}`,
+    deviceOutputN: (n: number) => `Saída ${n}`,
   },
 
   progress: {
@@ -1076,11 +1111,11 @@ export const pt = {
       steps: [
         {
           title: 'Termine a cena',
-          body: 'A publicação é feita na tela do resultado, com a renderização pronta. Quem publica é o anfitrião.',
+          body: 'Publique pela tela do resultado depois da renderização, ou direto da preparação se você começou com “Criar um pack” na comunidade. Quem publica é o anfitrião.',
         },
         {
           title: 'Preencha a ficha',
-          body: 'Título, idioma falado e gênero são obrigatórios: são os filtros do catálogo. Adicione tags como #starwars para que a encontrem na busca.',
+          body: 'Título, link do vídeo original, idioma e gênero são obrigatórios: o link serve de prévia e permite que os outros peguem o vídeo. Adicione tags como #starwars para que a encontrem na busca.',
         },
         {
           title: 'Encontre-a na comunidade',
@@ -1207,5 +1242,8 @@ export const pt = {
     noVideoTrack: 'Este arquivo não tem vídeo.',
     tooLong: 'Cena longa demais: no máximo 10 minutos.',
     youtubeFailed: 'O download do YouTube falhou. Importe o arquivo de vídeo direto.',
+    pageNotFoundTitle: 'Esta página não existe',
+    pageNotFoundBody: 'O link pode estar incompleto, ou a página mudou de lugar. Recomece pelo início.',
+    backHome: 'Voltar ao início',
   },
 } satisfies Dictionary;

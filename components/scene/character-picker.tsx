@@ -99,7 +99,7 @@ export function CharacterPicker({
       {open ? (
         <ul
           role="listbox"
-          className="absolute left-0 z-30 mt-1 max-h-64 w-48 overflow-y-auto rounded-card border-2 border-bezel-dark bg-surface-raised py-1 shadow-[0_16px_32px_-8px_rgb(0_0_0/0.6)]"
+          className="absolute left-0 z-30 mt-1 max-h-64 w-48 overflow-y-auto rounded-2xl border border-border bg-surface-raised py-1 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.8)]"
         >
           {choices.map((choice) => (
             <li key={choice.id}>

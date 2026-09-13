@@ -5,7 +5,7 @@ import { LegalShell, LegalSection } from '@/components/legal-shell';
 
 export const metadata = {
   robots: { index: true, follow: true },
-  title: `Mentions légales · ${APP_NAME}`,
+  title: 'Mentions légales',
 };
 
 export default function MentionsPage() {

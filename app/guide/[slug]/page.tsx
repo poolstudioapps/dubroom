@@ -207,7 +207,7 @@ export default async function GuideArticlePage({
             <section
               data-reveal
               suppressHydrationWarning
-              className="appel-final rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-10 text-center"
+              className="appel-final rounded-card px-5 py-10 text-center"
             >
               <p className="mx-auto max-w-xl text-balance text-2xl font-bold">{g.ctaTitle}</p>
               <div className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-text-muted">{g.ctaBody}</div>

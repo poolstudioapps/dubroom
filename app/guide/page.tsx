@@ -245,10 +245,10 @@ export default async function GuidesPage() {
             <section
               data-reveal
               suppressHydrationWarning
-              className="appel-final rounded-card border-2 border-bezel-dark bg-surface-sunken px-5 py-10 text-center"
+              className="appel-final rounded-card px-5 py-10 text-center"
             >
-              {/* Le titre est un `p`, le texte un `div` : la peau cinema
-                  habille les paragraphes de ce bloc comme son titre. */}
+              {/* Le titre est un `p`, le texte un `div` : la feuille de
+                  style habille les paragraphes de ce bloc comme son titre. */}
               <p className="mx-auto max-w-xl text-balance text-2xl font-bold">{h.finalTitle}</p>
               <div className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-text-muted">
                 {h.finalBody}

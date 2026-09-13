@@ -36,7 +36,7 @@ export function HeaderActions({ signedIn }: { signedIn: boolean }) {
       <Link
         href={creer}
         aria-label={t.nav.create}
-        className="btn-3d btn-primary inline-flex h-11 items-center justify-center gap-2 bg-accent px-3 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover sm:px-4"
+        className="btn-3d btn-primary inline-flex h-11 items-center justify-center gap-2 bg-accent px-3 text-sm font-semibold text-accent-ink sm:px-4"
       >
         <Plus className="h-4 w-4" aria-hidden />
         <span className="hidden sm:inline">{t.nav.create}</span>
@@ -50,7 +50,7 @@ export function HeaderActions({ signedIn }: { signedIn: boolean }) {
             ? setRejoindre(true)
             : router.push(`/login?next=${encodeURIComponent('/sessions')}`)
         }
-        className="btn-3d btn-secondary btn-bascule inline-flex h-11 items-center justify-center gap-2 bg-surface-raised px-3 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)] sm:px-4"
+        className="btn-3d btn-secondary btn-bascule inline-flex h-11 items-center justify-center gap-2 px-3 text-sm font-semibold text-text sm:px-4"
       >
         <LogIn className="h-4 w-4" aria-hidden />
         <span className="hidden sm:inline">{t.nav.join}</span>

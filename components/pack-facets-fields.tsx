@@ -2,46 +2,93 @@
 
 import { SelectMenu } from '@/components/select-menu';
 import { TagInput } from '@/components/tag-input';
+import { UrlPreview, videoId } from '@/components/url-preview';
 import { Input, Label } from '@/components/ui';
 import { useT } from '@/lib/i18n';
-import { PACK_GENRES, PACK_LANGS, type PackFacets, type PackGenre } from '@/lib/packs';
+import {
+  PACK_GENRES,
+  PACK_LANGS,
+  lienValide,
+  type PackFacets,
+  type PackGenre,
+} from '@/lib/packs';
 
-/** Les trois criteres sans lesquels on ne publie pas. */
+/** Les criteres sans lesquels on ne publie pas. */
 export function facetsComplete(f: PackFacets): boolean {
-  return !!f.title.trim() && !!f.sourceLang && !!f.genre;
+  return !!f.title.trim() && lienValide(f.sourceUrl) && !!f.sourceLang && !!f.genre;
 }
 
 /**
  * Ce qu'on renseigne sur une scene de la communaute.
  *
- * Le meme formulaire a la publication et a la retouche : deux copies
- * auraient fini par ne pas demander la meme chose.
+ * Le meme formulaire a la creation d'un pack, a la publication et a la
+ * retouche : trois copies auraient fini par ne pas demander la meme
+ * chose.
+ *
+ * Le lien d'origine est obligatoire. C'est l'apercu de la fiche, et c'est
+ * par la que ceux qui rejouent la scene recuperent la video : sans lui,
+ * un pack se lit mais ne se joue pas.
  */
 export function PackFacetsFields({
   value,
   onChange,
   idPrefix,
+  hideTitle = false,
 }: {
   value: PackFacets;
   onChange: (next: PackFacets) => void;
   idPrefix: string;
+  /** Le titre est deja demande ailleurs sur l'ecran. */
+  hideTitle?: boolean;
 }) {
   const t = useT();
   const maj = (partiel: Partial<PackFacets>) => onChange({ ...value, ...partiel });
 
+  const lien = value.sourceUrl.trim();
+  const lienKo = lien.length > 0 && !lienValide(lien);
+  const apercu = !lienKo && lien && videoId(lien);
+
   return (
     <div className="space-y-4">
+      {hideTitle ? null : (
+        <div className="space-y-1.5">
+          <Label htmlFor={`${idPrefix}-titre`}>
+            {t.create.titleLabel} <Requis />
+          </Label>
+          <Input
+            id={`${idPrefix}-titre`}
+            value={value.title}
+            maxLength={120}
+            onChange={(e) => maj({ title: e.target.value })}
+            placeholder={t.create.titlePlaceholder}
+          />
+        </div>
+      )}
+
       <div className="space-y-1.5">
-        <Label htmlFor={`${idPrefix}-titre`}>
-          {t.create.titleLabel} <Requis />
+        <Label htmlFor={`${idPrefix}-lien`}>
+          {t.community.linkLabel} <Requis />
         </Label>
         <Input
-          id={`${idPrefix}-titre`}
-          value={value.title}
-          maxLength={120}
-          onChange={(e) => maj({ title: e.target.value })}
-          placeholder={t.create.titlePlaceholder}
+          id={`${idPrefix}-lien`}
+          type="url"
+          inputMode="url"
+          value={value.sourceUrl}
+          maxLength={500}
+          aria-invalid={lienKo || undefined}
+          aria-describedby={`${idPrefix}-lien-aide`}
+          onChange={(e) => maj({ sourceUrl: e.target.value })}
+          placeholder={t.community.linkPlaceholder}
         />
+        <p id={`${idPrefix}-lien-aide`} className={lienKo ? 'text-xs text-danger-ink' : 'text-xs leading-relaxed text-text-faint'}>
+          {lienKo ? t.community.linkInvalid : t.community.linkHelp}
+        </p>
+        {/* La vignette confirme qu'on a colle le bon extrait. */}
+        {apercu ? (
+          <div className="w-44 max-w-full">
+            <UrlPreview url={lien} title={value.title || lien} />
+          </div>
+        ) : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -88,7 +135,7 @@ export function PackFacetsFields({
 }
 
 /** L'asterisque des champs obligatoires, lue « obligatoire » a voix haute. */
-function Requis() {
+export function Requis() {
   const t = useT();
   return (
     <span className="text-danger" title={t.community.required}>

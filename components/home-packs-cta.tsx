@@ -39,7 +39,7 @@ export function HomePacksCta() {
 
       <Link
         href="/sessions/new"
-        className="btn-3d btn-secondary inline-flex h-11 shrink-0 items-center justify-center gap-2 bg-surface-raised px-5 text-sm font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]"
+        className="btn-3d btn-secondary inline-flex h-11 shrink-0 items-center justify-center gap-2 px-5 text-sm font-semibold text-text"
       >
         {t.home.packsCtaAction}
         <ArrowRight className="h-4 w-4" aria-hidden />

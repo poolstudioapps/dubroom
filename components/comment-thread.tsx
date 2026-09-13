@@ -510,8 +510,8 @@ function ChampTexte({
       }}
       placeholder={placeholder}
       className={cn(
-        'ui-input block w-full resize-y rounded-sm border-2 border-border-strong bg-screen px-3 py-2 text-sm leading-relaxed text-text',
-        'shadow-[inset_0_2px_4px_0_rgb(0_0_0/0.18)] placeholder:italic placeholder:text-text-faint focus:border-bezel focus:outline-none',
+        'ui-input block w-full resize-y px-3 py-2 text-sm leading-relaxed text-text',
+        'placeholder:text-text-faint focus:outline-none',
       )}
     />
   );

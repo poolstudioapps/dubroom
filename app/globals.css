@@ -1,18 +1,15 @@
 @import 'tailwindcss';
 
 /*
- * Dub’Up — jetons de theme.
+ * Dub’Up — la salle.
  *
- * L'univers est celui d'un jeu de soiree : un vieux poste de television
- * dans un salon, des plaques de metal vissees, des boutons qu'on a envie
- * d'enfoncer. Les noms de jetons n'ont pas change depuis la premiere
- * version : chaque composant suit la nouvelle peau sans etre retouche.
+ * Une salle obscure : du charbon, un seul accent dore pour tout ce qui
+ * agit, des titres dans un serif fin, du verre depoli pour les cartes, et
+ * du mouvement — lent, pour accompagner plutot qu'amuser.
  *
- * Deux mondes coexistent, et c'est voulu :
- *  - l'ECRAN et ses PLAQUES sont clairs, le texte y est sombre ;
- *  - la SCENE (video, bande rythmo, forme d'onde) reste noire, parce
- *    qu'on y regarde un film et qu'on y lit du texte en mouvement.
- * D'ou le jeu de jetons `stage-*`, qui ne suit pas l'inversion.
+ * La scene (video, bande rythmo, forme d'onde) garde ses jetons `stage-*`,
+ * plus noirs que les cartes : on y regarde un film et on y lit du texte
+ * en mouvement.
  */
 
 /*
@@ -24,74 +21,59 @@
  * retombait sur la couleur heritee : sombre sur fond sombre.
  */
 @theme static {
-  /* ── Le salon et le poste ─────────────────────────────────────────── */
-  --color-room: oklch(0.26 0.09 305);
-  --color-room-deep: oklch(0.19 0.07 305);
-  --color-bezel: oklch(0.42 0.14 300);
-  --color-bezel-dark: oklch(0.32 0.12 300);
-  --color-console: oklch(0.62 0.09 200);
-  --color-console-dark: oklch(0.48 0.08 200);
+  /* ── La salle ─────────────────────────────────────────────────────── */
+  --color-room: oklch(0.2 0.003 85);
+  --color-room-deep: oklch(0.14 0.002 85);
+  /* Les fonds et filets discrets poses sur la salle. */
+  --color-bezel: oklch(0.2 0.004 85);
+  --color-bezel-dark: oklch(1 0 0 / 0.12);
 
-  /* ── Plaques et ecran (clair) ─────────────────────────────────────── */
-  --color-ink: oklch(0.26 0.09 305);
-  --color-screen: oklch(0.97 0.005 90);
-  --color-surface: oklch(0.9 0.004 90);
-  --color-surface-raised: oklch(0.95 0.004 90);
-  --color-surface-sunken: oklch(0.84 0.005 90);
-  --color-border: oklch(0.74 0.008 90);
-  --color-border-strong: oklch(0.58 0.01 90);
+  /* ── Le plateau et les cartes ─────────────────────────────────────── */
+  --color-screen: oklch(0.17 0.003 85);
+  --color-surface: oklch(0.22 0.004 85);
+  --color-surface-raised: oklch(0.26 0.005 85);
+  --color-surface-sunken: oklch(0.15 0.003 85);
+  --color-border: oklch(0.32 0.006 85);
+  --color-border-strong: oklch(0.45 0.01 85);
 
-  --color-text: oklch(0.22 0.01 300);
-  --color-text-muted: oklch(0.42 0.012 300);
-  /* 0.55 donnait 4.49 sur l'ecran clair et 3.6 sur les plaques : sous la
-     barre des 4.5 dans les deux cas, donc illisible au soleil et refuse
-     par les outils. 0.47 passe a 5.9 et 4.8, en restant nettement plus
-     clair que `text-muted`. */
-  --color-text-faint: oklch(0.47 0.012 300);
+  /* Blanc casse sur charbon. `faint` depasse 6 de contraste sur le
+     plateau : le texte discret reste lisible, meme au-dessus du film. */
+  --color-text: oklch(0.97 0.004 85);
+  --color-text-muted: oklch(0.82 0.008 85);
+  --color-text-faint: oklch(0.7 0.01 85);
 
-  /* ── La scene : toujours sombre ───────────────────────────────────── */
-  --color-stage: oklch(0.16 0.02 300);
-  --color-stage-raised: oklch(0.24 0.025 300);
-  --color-stage-text: oklch(0.97 0.004 300);
-  --color-stage-faint: oklch(0.66 0.015 300);
+  /* ── La scene ─────────────────────────────────────────────────────── */
+  --color-stage: oklch(0.11 0.002 85);
+  --color-stage-raised: oklch(0.2 0.004 85);
+  --color-stage-text: oklch(0.97 0.004 85);
+  --color-stage-faint: oklch(0.68 0.01 85);
 
-  /* ── Accents ──────────────────────────────────────────────────────── */
-  --color-accent: oklch(0.78 0.2 143);
-  --color-accent-hover: oklch(0.72 0.2 143);
-  --color-accent-ink: oklch(0.22 0.06 143);
-  /* L'encre d'une pastille d'accent n'est pas celle d'un bouton
-     d'accent. Sur un bouton, le fond est l'accent plein et l'encre
-     tranche dessus ; sur une pastille, le fond est l'accent tres dilue,
-     donc presque blanc, et il faut au contraire une encre sombre. Le
-     meme jeton pour les deux rendait la pastille illisible des que
-     l'encre du bouton passait au blanc. */
-  --color-badge-accent-ink: oklch(0.28 0.08 143);
+  /* ── L'or ─────────────────────────────────────────────────────────────
+     Le seul accent. Tout ce qui agit est dore, rien d'autre ne l'est :
+     l'oeil trouve le bouton sans chercher. L'encre des boutons est
+     presque noire, a plus de douze de contraste. */
+  --color-accent: oklch(0.86 0.16 94);
+  --color-accent-hover: oklch(0.91 0.14 96);
+  --color-accent-ink: oklch(0.17 0.02 85);
+  --color-badge-accent-ink: oklch(0.95 0.08 95);
+  --color-link: oklch(0.9 0.1 92);
+  --color-select: oklch(0.86 0.16 94);
 
-  /* Meme histoire pour le vert et le rouge : ils sont faits pour des
-     aplats, et poses en texte sur une carte claire ils tombent a trois
-     de contraste. Ces deux-la sont les memes teintes, assombries de
-     quoi passer la barre. */
-  --color-ok-ink: oklch(0.4 0.13 150);
-  --color-danger-ink: oklch(0.42 0.18 25);
-
-  /* Le vert accent est fait pour des aplats de boutons. Le texte et les
-     selections ont besoin d un ton qui tienne sur metal clair. */
-  --color-link: oklch(0.48 0.17 255);
-  --color-select: oklch(0.5 0.15 300);
-
+  /* ── Les etats ────────────────────────────────────────────────────────
+     L'aplat, et son encre pour du texte pose sur le charbon : plus
+     claire, sans quoi un vert ou un rouge sombres tombent sous la barre
+     de lisibilite. */
+  --color-ok: oklch(0.74 0.15 150);
+  --color-ok-ink: oklch(0.85 0.12 150);
+  --color-warn: oklch(0.76 0.15 60);
+  --color-warn-ink: oklch(0.87 0.11 70);
+  --color-danger: oklch(0.65 0.21 25);
+  --color-danger-ink: oklch(0.8 0.12 25);
   --color-record: oklch(0.58 0.23 25);
-  --color-ok: oklch(0.62 0.17 150);
-  --color-warn: oklch(0.72 0.16 75);
-  --color-danger: oklch(0.55 0.22 25);
-  --color-led: oklch(0.6 0.24 27);
 
   /* ── Personnages ──────────────────────────────────────────────────── */
-  /* Vives, et calibrees pour la SCENE NOIRE : c'est la que le texte
-     defile et qu'il faut le reconnaitre d'un coup d'oeil. Sur les
-     plaques claires, ces memes couleurs ne servent qu'a des pastilles et
-     des filets ; la ou elles portent du texte, on les assombrit sur
-     place avec un color-mix plutot que d'entretenir deux palettes qui
-     finiraient par diverger. */
+  /* Vives, et calibrees pour la scene noire : c'est la que le texte
+     defile et qu'il faut le reconnaitre d'un coup d'oeil. */
   --color-character-1: #4da3ff;
   --color-character-2: #3ddc84;
   --color-character-3: #ffd23f;
@@ -105,7 +87,7 @@
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, monospace;
 
-  --radius-card: 0.5rem;
+  --radius-card: 1.25rem;
 
   /* Un fondu court, jamais un glissement : le contenu qui arrive doit
      etre lisible tout de suite, pas attendu. */
@@ -135,35 +117,85 @@
   }
 }
 
+/* L'angle de la lumiere qui tourne autour de l'appel final. Il doit etre
+   declare pour s'animer : une variable ordinaire saute d'une valeur a
+   l'autre au lieu de tourner. */
+@property --angle-lueur {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes brillance {
+  0%,
+  25% {
+    background-position: 160% 0;
+  }
+  70%,
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes tour-lueur {
+  to {
+    --angle-lueur: 360deg;
+  }
+}
+
+@keyframes flotte {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes zoom-lent {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
 @layer base {
-  html {
-    color-scheme: light;
+  :root {
+    color-scheme: dark;
+    scrollbar-color: oklch(0.38 0.005 85) transparent;
+
+    /* La courbe de tous les mouvements : elle demarre franchement et se
+       pose en douceur. Une seule, pour que tout bouge de la meme main. */
+    --courbe: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   body {
-    /* Le salon : un degrade sourd, une lueur derriere le poste, et un
-       grain leger pour que l'aplat ne fasse pas surface numerique. */
     background-color: var(--color-room-deep);
     background-image:
-      radial-gradient(
-        ellipse 80% 60% at 50% 0%,
-        color-mix(in oklch, var(--color-bezel) 45%, transparent),
-        transparent 70%
-      ),
-      linear-gradient(180deg, var(--color-room), var(--color-room-deep));
+      radial-gradient(ellipse 60% 40% at 50% -10%, oklch(0.62 0.1 88 / 0.16), transparent 70%),
+      linear-gradient(180deg, var(--color-room) 0%, var(--color-room-deep) 55%);
     background-attachment: fixed;
     color: var(--color-text);
-    font-family: var(--font-sans);
+    font-family: var(--font-grotesk), var(--font-body), ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background-color: color-mix(in oklch, var(--color-accent) 45%, transparent);
+    background-color: oklch(0.86 0.16 94 / 0.35);
+    color: oklch(1 0 0);
   }
 
   :focus-visible {
     outline: 3px solid var(--color-accent);
     outline-offset: 2px;
+  }
+
+  select option {
+    background-color: oklch(0.2 0.003 85);
+    color: oklch(0.97 0.004 85);
   }
 
   /* Les curseurs du studio faisaient seize pixels de haut : on les rate
@@ -182,14 +214,13 @@
   input[type='range']::-webkit-slider-runnable-track {
     height: 0.5rem;
     border-radius: 9999px;
-    background: var(--color-surface-sunken);
-    box-shadow: inset 0 1px 2px 0 oklch(0 0 0 / 0.25);
+    background: oklch(1 0 0 / 0.14);
   }
 
   input[type='range']::-moz-range-track {
     height: 0.5rem;
     border-radius: 9999px;
-    background: var(--color-surface-sunken);
+    background: oklch(1 0 0 / 0.14);
   }
 
   input[type='range']::-webkit-slider-thumb {
@@ -198,118 +229,35 @@
     height: 1.25rem;
     width: 1.25rem;
     margin-top: -0.375rem;
+    border: 0;
     border-radius: 9999px;
-    border: 2px solid var(--color-border-strong);
-    background: var(--color-surface-raised);
-    box-shadow: 0 2px 0 0 var(--color-border-strong);
+    background: var(--color-accent);
+    box-shadow: 0 0 12px oklch(0.86 0.16 94 / 0.6);
   }
 
   input[type='range']::-moz-range-thumb {
     height: 1.25rem;
     width: 1.25rem;
+    border: 0;
     border-radius: 9999px;
-    border: 2px solid var(--color-border-strong);
-    background: var(--color-surface-raised);
+    background: var(--color-accent);
   }
 
-  /* Filet de securite global : quelqu'un qui a demande moins d'animation
-     ne doit pas dependre du fait que chaque composant y ait pense. Le
-     defilement instantane evite aussi le mal des transports. */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  /* Seul le titre de page est une enseigne. Les titres de carte font
-     quatorze pixels : la condensee y devenait illisible, et jurait avec
-     les entetes de tiroirs restes en police de texte. Ce qui doit crier
-     porte `.signage` explicitement. */
+  /* Les titres de page, dans le serif fin de la salle. Ce qui doit se
+     lire comme une enseigne porte `.signage` explicitement. */
   h1 {
-    font-family: var(--font-display);
-    letter-spacing: 0.01em;
+    font-family: var(--font-serif), 'Noto Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
-  /* ── Bouton physique ──────────────────────────────────────────────
-     Une plaque coloree posee sur une levre plus sombre. Elle s'enfonce
-     au clic : c'est ce deplacement qui fait le bouton, pas l'ombre. */
+  /* Le bouton : sa forme et son relief sont plus bas, dans la couche des
+     utilitaires ; la position reste ici pour qu'un `absolute` pose sur un
+     bouton l'emporte. */
   .btn-3d {
     position: relative;
-    border-radius: 0.5rem;
-    box-shadow:
-      0 4px 0 0 var(--btn-lip, oklch(0.4 0.02 300)),
-      0 5px 6px -1px rgb(0 0 0 / 0.35);
-    transform: translateY(0);
-    transition:
-      transform 80ms ease-out,
-      box-shadow 80ms ease-out,
-      background-color 120ms ease-out;
-  }
-
-  .btn-3d:active:not(:disabled) {
-    transform: translateY(4px);
-    box-shadow:
-      0 0 0 0 var(--btn-lip, oklch(0.4 0.02 300)),
-      0 1px 2px 0 rgb(0 0 0 / 0.3);
-  }
-
-  .btn-3d:disabled {
-    box-shadow: 0 3px 0 0 oklch(0.62 0.01 300);
-  }
-
-  /* ── Plaque vissee ────────────────────────────────────────────────
-     Le fond metal des panneaux, avec quatre vis aux angles dessinees en
-     degrades radiaux : pas d'image, donc rien a charger. */
-  .plate {
-    background-color: var(--color-surface);
-    background-image:
-      radial-gradient(
-        circle 3px at 10px 10px,
-        oklch(0.62 0.01 90) 38%,
-        transparent 42%
-      ),
-      radial-gradient(
-        circle 3px at calc(100% - 10px) 10px,
-        oklch(0.62 0.01 90) 38%,
-        transparent 42%
-      ),
-      radial-gradient(
-        circle 3px at 10px calc(100% - 10px),
-        oklch(0.62 0.01 90) 38%,
-        transparent 42%
-      ),
-      radial-gradient(
-        circle 3px at calc(100% - 10px) calc(100% - 10px),
-        oklch(0.62 0.01 90) 38%,
-        transparent 42%
-      );
-    border: 1px solid var(--color-border-strong);
-    box-shadow:
-      inset 0 1px 0 0 oklch(1 0 0 / 0.55),
-      inset 0 -2px 4px 0 oklch(0 0 0 / 0.08);
-  }
-
-  /* ── Panneau ──────────────────────────────────────────────────────
-     La surface ordinaire : un fond a peine detache, un filet fin, rien
-     d'autre.
-
-     La plaque vissee reste, mais elle ne convenait qu'aux panneaux de
-     commande. Empilee — une plaque dans une plaque dans l'ecran du
-     poste — elle donnait quatre encadrements pour une seule information,
-     et ses quatre vis sur une liste de dix elements font quarante points
-     gris qui ne disent rien. Ici, c'est l'espace qui separe, pas le
-     trait. */
-  .panel {
-    background-color: color-mix(in oklch, var(--color-surface) 55%, transparent);
-    border: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
-    border-radius: 0.875rem;
   }
 
   /* Une rangee de liste : le filet est sous elle, pas autour. */
@@ -327,8 +275,8 @@
   }
 
   /* ── Pastille de filtre ───────────────────────────────────────────
-     Un libelle discret, la valeur en gras, un chevron. Le `select` est
-     pose par-dessus, invisible, et c'est lui qui recoit le doigt. */
+     Un libelle discret, la valeur en gras, un chevron. Le verre qui
+     l'habille est plus bas. */
   .filtre {
     position: relative;
     display: inline-flex;
@@ -337,20 +285,10 @@
     height: 2.5rem;
     max-width: 100%;
     padding-inline: 0.875rem 0.75rem;
-    border: 2px solid var(--color-border-strong);
-    border-radius: 0.5rem;
-    background-color: var(--color-surface-raised);
     color: var(--color-text);
     font-size: 0.875rem;
     white-space: nowrap;
     cursor: pointer;
-    transition:
-      border-color 160ms ease-out,
-      background-color 160ms ease-out;
-  }
-
-  .filtre:hover {
-    border-color: var(--color-select);
   }
 
   .filtre:has(select:focus-visible) {
@@ -383,13 +321,8 @@
     appearance: none;
   }
 
-  .filtre-actif {
-    border-color: var(--color-select);
-    background-color: color-mix(in oklch, var(--color-select) 14%, var(--color-surface-raised));
-  }
-
   /* ── Selecteur segmente ───────────────────────────────────────────
-     Trois cases egales dans un bandeau. Sur telephone l'icone passe
+     Des cases egales dans un bandeau. Sur telephone l'icone passe
      au-dessus du mot, qui dispose alors de toute la largeur de sa
      case au lieu d'etre coupe. */
   .source-onglets {
@@ -407,19 +340,10 @@
     gap: 0.375rem;
     min-height: 3.75rem;
     padding: 0.5rem 0.375rem;
-    border-radius: 0.625rem;
     color: var(--color-text-muted);
-    font-size: 0.75rem;
-    font-weight: 700;
     line-height: 1.15;
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
     text-wrap: balance;
-    transition:
-      background-color 180ms ease-out,
-      color 180ms ease-out,
-      box-shadow 180ms ease-out;
   }
 
   @media (min-width: 40rem) {
@@ -427,13 +351,11 @@
       flex-direction: row;
       gap: 0.5rem;
       min-height: 3rem;
-      font-size: 0.8125rem;
     }
   }
 
   .source-onglet:hover {
     color: var(--color-text);
-    background-color: color-mix(in oklch, var(--color-surface-raised) 80%, transparent);
   }
 
   .source-onglet:focus-visible {
@@ -441,113 +363,11 @@
     outline-offset: 2px;
   }
 
-  .source-onglet[aria-pressed='true'] {
-    background-color: var(--color-accent);
-    color: var(--color-accent-ink);
-    box-shadow: 0 3px 0 0 var(--color-accent-ink);
-  }
-
-  /* ── Diode ────────────────────────────────────────────────────────
-     Le petit temoin rouge a gauche de chaque libelle du menu. */
-  .led {
-    display: inline-block;
-    height: 0.75rem;
-    width: 0.75rem;
-    border-radius: 9999px;
-    background: radial-gradient(
-      circle at 35% 30%,
-      oklch(0.85 0.12 27),
-      var(--color-led) 60%,
-      oklch(0.35 0.15 27)
-    );
-    box-shadow:
-      inset 0 0 2px 0 oklch(0 0 0 / 0.5),
-      0 0 6px 0 color-mix(in oklch, var(--color-led) 60%, transparent);
-  }
-
-  .led-on {
-    --color-led: oklch(0.75 0.2 143);
-  }
-
-  /* ── Ruban adhesif ───────────────────────────────────────────────
-     Les coins scotches des champs de saisie de la reference. */
-  .taped::before,
-  .taped::after {
-    content: '';
-    position: absolute;
-    top: -6px;
-    height: 14px;
-    width: 34px;
-    background-color: oklch(0.93 0.09 95 / 0.75);
-    box-shadow: 0 1px 2px oklch(0 0 0 / 0.2);
-  }
-
-  .taped::before {
-    left: -10px;
-    transform: rotate(-8deg);
-  }
-
-  .taped::after {
-    right: -10px;
-    transform: rotate(7deg);
-  }
-
-  /* ── Titre d'ecran ────────────────────────────────────────────────
-     La police d'enseigne, sans son ombre.
-
-     L'ombre de `.signage` est faite pour les grands titres de marque —
-     l'enseigne du site, le titre d'accueil, les vignettes du carrousel.
-     Partout ailleurs elle ecrase des titres de dix-huit pixels, et le
-     code le savait deja : dix-neuf endroits posaient `.signage` puis
-     annulaient l'ombre par un style en ligne, dont deux qui l'avaient
-     oublie et detonnaient. Autant nommer l'intention. */
-  .titre {
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-  }
-
-  /* ── Texte d'enseigne ─────────────────────────────────────────────
-     L'ombre portee dure, decalee, des logos de jeux televises. */
-  .signage {
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    text-shadow:
-      2px 2px 0 var(--color-bezel-dark),
-      4px 4px 0 oklch(0 0 0 / 0.25);
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Grille du haut-parleur, en degrade repete. */
-  .grille {
-    background-image: repeating-linear-gradient(
-      135deg,
-      oklch(0 0 0 / 0.22) 0 2px,
-      transparent 2px 6px
-    );
-  }
-}
-
-@layer components {
   /*
-   * Les icones dessinees, une par peau.
+   * Les icones dessinees.
    *
-   * Deux jeux cohabitent : un imprime, use, pour le meuble de
-   * television, et un aplat vif pour la table de jeu. Repeindre un seul
-   * dessin n'aurait pas suffi — les deux peaux n'ont ni la meme palette
-   * ni le meme age, et une icone rose fluo posee sur le meuble jurerait
-   * autant que le vert d'avant sur la table.
-   *
-   * Le fond plutot que deux balises `img` dont on cacherait une : le
-   * navigateur ne telecharge que l'image de la regle qui s'applique.
-   * Deux images auraient ete chargees pour n'en montrer qu'une, sur la
-   * page ou l'on arrive.
+   * Le fond plutot qu'une balise `img` : l'image reste decorative, et le
+   * composant n'a pas a connaitre son chemin.
    */
   .icone {
     display: block;
@@ -565,170 +385,15 @@
   .icone-fichier {
     background-image: url('/icones/cinema-fichier.png');
   }
-
 }
 
-/* ══════════════════════════════════════════════════════════════════════
-   PEAU CINEMA
-
-   La troisieme peau, pour qui aborde le doublage comme un film plutot
-   que comme un jeu. Elle emprunte aux sites de production video leur
-   grammaire : une salle obscure, un seul accent dore pour tout ce qui
-   agit, des titres dans un serif fin, du verre depoli, et du mouvement
-   partout — mais un mouvement lent, qui accompagne au lieu d'amuser.
-
-   Comme les deux autres, elle ne double aucun ecran. Les memes jetons
-   changent de valeur, les memes accroches de classe changent de dessin,
-   et quelques accroches nouvelles (`hero-titre`, `carte-valeur`,
-   `appel-final`…) ne servent qu'a elle : ignorees ailleurs, elles ne
-   coutent rien aux autres peaux.
-
-   Contrairement a la peau moderne, rien ne s'inverse ici : le plateau
-   est sombre et les cartes aussi. Le verre suffit a les detacher, et
-   c'est ce qui rend la peau plus simple a tenir que les deux autres.
-   ══════════════════════════════════════════════════════════════════════ */
-
-/* L'angle de la lumiere qui tourne autour de l'appel final. Il doit etre
-   declare pour s'animer : une variable ordinaire saute d'une valeur a
-   l'autre au lieu de tourner. */
-@property --cinema-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes cinema-derive {
-  from {
-    transform: translate3d(-3%, -2%, 0) scale(1);
-  }
-  to {
-    transform: translate3d(3%, 2%, 0) scale(1.08);
-  }
-}
-
-@keyframes cinema-brillance {
-  0%,
-  25% {
-    background-position: 160% 0;
-  }
-  70%,
-  100% {
-    background-position: -60% 0;
-  }
-}
-
-@keyframes cinema-tour {
-  to {
-    --cinema-angle: 360deg;
-  }
-}
-
-@keyframes cinema-flotte {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
-}
-
-@keyframes cinema-zoom {
-  from {
-    transform: scale(1.02);
-  }
-  to {
-    transform: scale(1.12);
-  }
-}
-
-[data-theme='cinema'] {
-  color-scheme: dark;
-  scrollbar-color: oklch(0.38 0.005 85) transparent;
-
-  /* La courbe de tous les mouvements : elle demarre franchement et se
-     pose en douceur. Une seule, pour que tout bouge de la meme main. */
-  --cinema-courbe: cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* ── La salle ────────────────────────────────────────────────────── */
-  --color-room: oklch(0.2 0.003 85);
-  --color-room-deep: oklch(0.14 0.002 85);
-  --color-bezel: oklch(0.2 0.004 85);
-  --color-bezel-dark: oklch(1 0 0 / 0.12);
-  --color-console: oklch(0.26 0.005 85);
-  --color-console-dark: oklch(0.34 0.006 85);
-
-  /* ── Le plateau et les cartes ────────────────────────────────────── */
-  --color-screen: oklch(0.17 0.003 85);
-  --color-surface: oklch(0.22 0.004 85);
-  --color-surface-raised: oklch(0.26 0.005 85);
-  --color-surface-sunken: oklch(0.15 0.003 85);
-  --color-border: oklch(0.32 0.006 85);
-  --color-border-strong: oklch(0.45 0.01 85);
-
-  /* Blanc casse sur charbon. `faint` depasse 6 de contraste sur le
-     plateau : le texte discret reste lisible, meme au-dessus du film. */
-  --color-text: oklch(0.97 0.004 85);
-  --color-text-muted: oklch(0.82 0.008 85);
-  --color-text-faint: oklch(0.7 0.01 85);
-
-  /* ── L'or ────────────────────────────────────────────────────────────
-     Le seul accent. Tout ce qui agit est dore, rien d'autre ne l'est :
-     l'oeil trouve le bouton sans chercher. L'encre des boutons est
-     presque noire, a plus de douze de contraste. */
-  --color-accent: oklch(0.86 0.16 94);
-  --color-accent-hover: oklch(0.91 0.14 96);
-  --color-accent-ink: oklch(0.17 0.02 85);
-  --color-link: oklch(0.9 0.1 92);
-  --color-select: oklch(0.86 0.16 94);
-  --color-badge-accent-ink: oklch(0.95 0.08 95);
-
-  --color-ok: oklch(0.74 0.15 150);
-  --color-warn: oklch(0.76 0.15 60);
-  --color-danger: oklch(0.65 0.21 25);
-  --color-led: oklch(0.86 0.16 94);
-
-  --radius-card: 1.25rem;
-}
-
-@layer base {
-  [data-theme='cinema'] body {
-    font-family: var(--font-grotesk), var(--font-body), ui-sans-serif, system-ui, sans-serif;
-    background-color: var(--color-room-deep);
-    background-image:
-      radial-gradient(ellipse 60% 40% at 50% -10%, oklch(0.62 0.1 88 / 0.16), transparent 70%),
-      linear-gradient(180deg, var(--color-room) 0%, var(--color-room-deep) 55%);
-  }
-
-  /* Il y avait ici deux lueurs fixes qui derivaient derriere la page.
-     Leur bord, net sur le fond sombre, se lisait comme un disque fonce
-     colle a gauche de l'ecran, immobile pendant qu'on faisait defiler.
-     La lueur du haut, dans le fond du `body`, suffit a la profondeur. */
-
-  [data-theme='cinema'] h1 {
-    font-family: var(--font-serif), 'Noto Serif', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-
-  [data-theme='cinema'] ::selection {
-    background-color: oklch(0.86 0.16 94 / 0.35);
-    color: oklch(1 0 0);
-  }
-
-  [data-theme='cinema'] select option {
-    background-color: oklch(0.2 0.003 85);
-    color: oklch(0.97 0.004 85);
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
 @layer components {
-  /* Le fond video n'existe que dans cette peau ; ailleurs le composant
-     ne rend rien, et cette regle n'est qu'un filet. */
-  .hero-fond {
-    display: none;
-  }
-
   /* ── La scene de la vitrine ──────────────────────────────────────────
      La video, servie par le site, est deja recadree en 21/9 : le cadre
      la contient simplement, sur fond noir pendant qu'elle charge. */
@@ -737,18 +402,13 @@
     overflow: hidden;
     background-color: #000;
   }
-
-  /* Le grand numero des definitions : propre a la peau cinema. */
-  .definition-numero {
-    display: none;
-  }
 }
 
 @layer utilities {
   /* ── Le bouton ───────────────────────────────────────────────────────
      Une pilule, sans levre. Elle se souleve au survol et se tasse au
      clic, au lieu de s'enfoncer. */
-  [data-theme='cinema'] .btn-3d {
+  :root .btn-3d {
     border-radius: 9999px;
     overflow: hidden;
     isolation: isolate;
@@ -756,29 +416,29 @@
     letter-spacing: 0;
     box-shadow: none;
     transition:
-      transform 220ms var(--cinema-courbe),
-      box-shadow 320ms var(--cinema-courbe),
-      filter 220ms var(--cinema-courbe),
-      background-color 220ms var(--cinema-courbe);
+      transform 220ms var(--courbe),
+      box-shadow 320ms var(--courbe),
+      filter 220ms var(--courbe),
+      background-color 220ms var(--courbe);
   }
 
-  [data-theme='cinema'] .btn-3d:hover:not(:disabled) {
+  :root .btn-3d:hover:not(:disabled) {
     transform: translateY(-1px);
   }
 
-  [data-theme='cinema'] .btn-3d:active:not(:disabled) {
+  :root .btn-3d:active:not(:disabled) {
     transform: scale(0.97);
     box-shadow: none;
   }
 
-  [data-theme='cinema'] .btn-3d:disabled {
+  :root .btn-3d:disabled {
     box-shadow: none;
   }
 
   /* L'or, en degrade vertical : un reflet clair en haut, une ombre chaude
      en bas, et une lueur sous le bouton. C'est ce relief qui le fait
      lire comme un objet et pas comme un aplat jaune. */
-  [data-theme='cinema'] .btn-primary {
+  :root .btn-primary {
     background-image: linear-gradient(
       180deg,
       oklch(0.94 0.13 98) 0%,
@@ -792,7 +452,7 @@
       0 10px 30px -12px oklch(0.8 0.16 90 / 0.5);
   }
 
-  [data-theme='cinema'] .btn-primary:hover:not(:disabled) {
+  :root .btn-primary:hover:not(:disabled) {
     filter: brightness(1.05);
     box-shadow:
       inset 0 1px 0 oklch(1 0 0 / 0.6),
@@ -801,7 +461,7 @@
   }
 
   /* Le reflet qui traverse le bouton au survol. */
-  [data-theme='cinema'] .btn-primary::after {
+  :root .btn-primary::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -809,16 +469,16 @@
     pointer-events: none;
     background: linear-gradient(110deg, transparent 35%, oklch(1 0 0 / 0.42) 50%, transparent 65%);
     transform: translateX(-120%);
-    transition: transform 850ms var(--cinema-courbe);
+    transition: transform 850ms var(--courbe);
   }
 
-  [data-theme='cinema'] .btn-primary:hover::after {
+  :root .btn-primary:hover::after {
     transform: translateX(120%);
   }
 
   /* Le bouton secondaire : du noir, cerne d'un filet dore qui s'estompe
      au milieu. Present sans concurrencer l'or plein. */
-  [data-theme='cinema'] .btn-secondary {
+  :root .btn-secondary {
     background:
       linear-gradient(oklch(0.15 0.003 85 / 0.9), oklch(0.15 0.003 85 / 0.9)) padding-box,
       linear-gradient(
@@ -833,7 +493,7 @@
     box-shadow: 0 10px 26px -14px oklch(0 0 0 / 0.9);
   }
 
-  [data-theme='cinema'] .btn-secondary:hover:not(:disabled) {
+  :root .btn-secondary:hover:not(:disabled) {
     filter: brightness(1.18);
   }
 
@@ -842,28 +502,27 @@
      ressort. Celui-ci garde la forme du bouton secondaire, et ne prend
      la couleur d'action que sur celui qu'on vise.
 
-     Les trois peaux sont reunies ici, dans la meme couche : une regle
-     `!important` d'une couche anterieure l'emporterait sur celle-ci,
-     quel que soit l'ordre du fichier. */
+     Toutes ses regles vivent dans la meme couche : une regle
+     `!important` d'une couche anterieure l'emporterait, quel que soit
+     l'ordre du fichier. */
   .btn-bascule:hover:not(:disabled),
   .btn-bascule:focus-visible {
     background-color: var(--color-accent) !important;
     color: var(--color-accent-ink) !important;
-    --btn-lip: var(--color-accent-ink);
   }
 
   /* L'or ne se fond pas en changeant de fond : un degrade ne s'anime
      pas. Il est donc pose sous le texte, invisible, et c'est son opacite
      qui passe de zero a un. */
-  [data-theme='cinema'] .btn-bascule {
+  :root .btn-bascule {
     isolation: isolate;
     transition:
-      color 280ms var(--cinema-courbe),
-      box-shadow 280ms var(--cinema-courbe),
+      color 280ms var(--courbe),
+      box-shadow 280ms var(--courbe),
       transform 80ms ease-out;
   }
 
-  [data-theme='cinema'] .btn-bascule::before {
+  :root .btn-bascule::before {
     content: '';
     position: absolute;
     inset: -1.5px;
@@ -879,18 +538,18 @@
       inset 0 1px 0 oklch(1 0 0 / 0.55),
       inset 0 -1px 0 oklch(0.5 0.1 70 / 0.5);
     opacity: 0;
-    transition: opacity 280ms var(--cinema-courbe);
+    transition: opacity 280ms var(--courbe);
   }
 
-  [data-theme='cinema'] .btn-bascule:hover:not(:disabled),
-  [data-theme='cinema'] .btn-bascule:focus-visible {
+  :root .btn-bascule:hover:not(:disabled),
+  :root .btn-bascule:focus-visible {
     color: oklch(0.17 0.02 85) !important;
     filter: none;
     box-shadow: 0 14px 36px -12px oklch(0.8 0.16 90 / 0.55);
   }
 
-  [data-theme='cinema'] .btn-bascule:hover:not(:disabled)::before,
-  [data-theme='cinema'] .btn-bascule:focus-visible::before {
+  :root .btn-bascule:hover:not(:disabled)::before,
+  :root .btn-bascule:focus-visible::before {
     opacity: 1;
   }
 
@@ -919,7 +578,7 @@
      La liste d'un `select` natif se dessine avec les couleurs du systeme :
      fond gris, surlignage bleu, quel que soit le theme. Celle-ci est a
      nous, posee dans le corps du document pour echapper aux conteneurs
-     qui defilent, et habillee comme les panneaux de chaque peau. */
+     qui defilent, et habillee comme les panneaux du site. */
   .menu-choix {
     position: fixed;
     /* Le navigateur centre un `popover` par defaut : la place est donnee
@@ -984,7 +643,7 @@
     }
   }
 
-  [data-theme='cinema'] .menu-choix {
+  :root .menu-choix {
     border: 1px solid oklch(1 0 0 / 0.1);
     border-radius: 1rem;
     background-color: oklch(0.14 0.004 85 / 0.92);
@@ -996,16 +655,16 @@
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
   }
 
-  [data-theme='cinema'] .menu-choix-option {
+  :root .menu-choix-option {
     border-radius: 0.625rem;
     font-weight: 500;
   }
 
-  [data-theme='cinema'] .menu-choix-option[data-actif='true'] {
+  :root .menu-choix-option[data-actif='true'] {
     background-color: oklch(1 0 0 / 0.07);
   }
 
-  [data-theme='cinema'] .menu-choix-option[aria-selected='true'] {
+  :root .menu-choix-option[aria-selected='true'] {
     color: oklch(0.88 0.16 95);
   }
 
@@ -1014,32 +673,31 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  [data-theme='cinema'] .btn-brand.btn-secondary,
-  [data-theme='cinema'] .btn-brand.btn-secondary:hover:not(:disabled) {
+  :root .btn-brand.btn-secondary,
+  :root .btn-brand.btn-secondary:hover:not(:disabled) {
     background: #5865f2 !important;
     border-color: transparent !important;
     color: oklch(1 0 0) !important;
   }
 
-  [data-theme='cinema'] .btn-ghost {
+  :root .btn-ghost {
     color: var(--color-text-muted) !important;
   }
 
-  [data-theme='cinema'] .btn-ghost:hover:not(:disabled) {
+  :root .btn-ghost:hover:not(:disabled) {
     background-color: oklch(1 0 0 / 0.08) !important;
     color: var(--color-text) !important;
   }
 
-  [data-theme='cinema'] .btn-danger,
-  [data-theme='cinema'] .btn-record {
+  :root .btn-danger,
+  :root .btn-record {
     box-shadow: 0 10px 30px -12px color-mix(in oklch, var(--color-danger) 70%, transparent);
   }
 
   /* ── La carte ────────────────────────────────────────────────────────
      Du verre fume : a peine plus clair que la salle, flou sur ce qui
      passe derriere, un filet de lumiere en haut. */
-  [data-theme='cinema'] .plate,
-  [data-theme='cinema'] .panel {
+  :root .panel {
     background-color: oklch(0.2 0.004 85 / 0.55);
     background-image: linear-gradient(180deg, oklch(1 0 0 / 0.045), oklch(1 0 0 / 0) 42%);
     border: 1px solid oklch(1 0 0 / 0.08);
@@ -1054,10 +712,7 @@
   /* Un verre dans un verre ne refait ni le flou ni l'ombre : il serait
      pose sur une surface deja floutee, et le calcul se paierait deux
      fois pour rien. */
-  [data-theme='cinema'] .panel .panel,
-  [data-theme='cinema'] .panel .plate,
-  [data-theme='cinema'] .plate .panel,
-  [data-theme='cinema'] .plate .plate {
+  :root .panel .panel {
     background-color: oklch(1 0 0 / 0.035);
     background-image: none;
     border: 1px solid oklch(1 0 0 / 0.07);
@@ -1068,14 +723,14 @@
 
   /* Les cartes d'une liste se soulevent au survol : c'est le signe
      qu'on peut les ouvrir. */
-  [data-theme='cinema'] li.panel {
+  :root li.panel {
     transition:
-      transform 450ms var(--cinema-courbe),
-      border-color 450ms var(--cinema-courbe),
-      box-shadow 450ms var(--cinema-courbe);
+      transform 450ms var(--courbe),
+      border-color 450ms var(--courbe),
+      box-shadow 450ms var(--courbe);
   }
 
-  [data-theme='cinema'] li.panel:hover {
+  :root li.panel:hover {
     transform: translateY(-4px);
     border-color: oklch(0.86 0.14 92 / 0.3);
     box-shadow:
@@ -1085,24 +740,23 @@
   }
 
   /* ── Les titres ──────────────────────────────────────────────────────
-     Un serif fin, en casse normale. Les capitales grasses des deux
-     autres peaux crient ; celui-ci se contente d'etre elegant. */
-  [data-theme='cinema'] .signage,
-  [data-theme='cinema'] .titre {
+     Un serif fin, en casse normale, qui se contente d'etre elegant. */
+  :root .signage,
+  :root .titre {
     font-family: var(--font-serif), 'Noto Serif', Georgia, serif;
     font-weight: 400;
     text-transform: none;
     letter-spacing: -0.02em;
   }
 
-  [data-theme='cinema'] .signage {
+  :root .signage {
     color: var(--color-text);
     text-shadow: 0 0 42px oklch(1 0 0 / 0.18);
   }
 
   /* L'enseigne du site, en or, dans la sans-serif grasse : le nom se lit
      comme une marque, pas comme un titre de chapitre. */
-  [data-theme='cinema'] .site-logo {
+  :root .site-logo {
     font-family: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -1110,33 +764,9 @@
     text-shadow: none;
   }
 
-  /* ── Le plateau ──────────────────────────────────────────────────────
-     Plus de meuble : le poste disparait, et le contenu se pose
-     directement dans la salle. */
-  [data-theme='cinema'] .tv-frame {
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    border-radius: 0;
-  }
-
-  [data-theme='cinema'] .tv-screen {
-    background: transparent !important;
-    box-shadow: none !important;
-    border-radius: 0;
-    padding-inline: 0 !important;
-  }
-
-  [data-theme='cinema'] .tv-gloss,
-  [data-theme='cinema'] .tv-speaker,
-  [data-theme='cinema'] .tv-console {
-    display: none !important;
-  }
-
   /* L'ecran-titre de la connexion reste un panneau, mais de verre, pose
      sur le film. */
-  [data-theme='cinema'] .ecran-titre {
+  :root .ecran-titre {
     background: oklch(0.12 0.003 85 / 0.55) !important;
     border: 1px solid oklch(1 0 0 / 0.1);
     border-radius: 1.75rem;
@@ -1149,7 +779,7 @@
   /* ── Les onglets ─────────────────────────────────────────────────────
      Des mots, pas des pastilles. L'actif s'eclaire, les autres restent
      en retrait jusqu'au survol. */
-  [data-theme='cinema'] .tab {
+  :root .tab {
     border: 0 !important;
     border-radius: 9999px;
     background: transparent !important;
@@ -1157,132 +787,129 @@
     letter-spacing: 0;
     font-weight: 500;
     transition:
-      color 220ms var(--cinema-courbe),
-      background-color 220ms var(--cinema-courbe);
+      color 220ms var(--courbe),
+      background-color 220ms var(--courbe);
   }
 
-  [data-theme='cinema'] .tab-on {
+  :root .tab-on {
     color: var(--color-text) !important;
     background: oklch(1 0 0 / 0.08) !important;
   }
 
-  [data-theme='cinema'] .tab-off {
+  :root .tab-off {
     color: var(--color-text-faint) !important;
   }
 
-  [data-theme='cinema'] .tab-off:hover {
+  :root .tab-off:hover {
     color: var(--color-text) !important;
   }
 
   /* ── Le champ de saisie ──────────────────────────────────────────── */
-  [data-theme='cinema'] .ui-input,
-  [data-theme='cinema'] .ui-select {
+  :root .ui-input,
+  :root .ui-select {
     border-radius: 0.875rem;
     border: 1px solid oklch(1 0 0 / 0.12) !important;
     background-color: oklch(0.12 0.003 85 / 0.7) !important;
     color: var(--color-text) !important;
     box-shadow: none !important;
     transition:
-      border-color 220ms var(--cinema-courbe),
-      box-shadow 220ms var(--cinema-courbe);
+      border-color 220ms var(--courbe),
+      box-shadow 220ms var(--courbe);
   }
 
-  [data-theme='cinema'] .ui-input::placeholder {
+  :root .ui-input::placeholder {
     color: var(--color-text-faint);
     font-style: normal;
   }
 
-  [data-theme='cinema'] .ui-input:focus,
-  [data-theme='cinema'] .ui-select:focus {
+  :root .ui-input:focus,
+  :root .ui-select:focus {
     border-color: oklch(0.86 0.16 94 / 0.6) !important;
     box-shadow: 0 0 0 4px oklch(0.86 0.16 94 / 0.12) !important;
     outline: none;
   }
 
   /* ── La pastille et le bandeau ───────────────────────────────────────
-     Leur encre etait calculee pour un fond clair. Sur charbon, le fond
-     teinte de chaque ton suffit a dire de quoi il s'agit, et le texte
-     repasse au blanc pour rester lisible. */
-  [data-theme='cinema'] .ui-badge {
+     Le fond teinte dit de quoi il s'agit ; l'encre claire du meme ton
+     reste lisible sur le charbon. */
+  :root .ui-badge {
     border-width: 1px;
-    color: var(--color-text) !important;
     text-transform: none;
     letter-spacing: 0;
     font-weight: 600;
   }
 
   /* ── Les filtres : des pastilles de verre ────────────────────────── */
-  [data-theme='cinema'] .filtre {
+  :root .filtre {
     border: 1px solid oklch(1 0 0 / 0.12);
     border-radius: 9999px;
     background-color: oklch(0.12 0.003 85 / 0.6);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition:
-      border-color 220ms var(--cinema-courbe),
-      background-color 220ms var(--cinema-courbe);
+      border-color 220ms var(--courbe),
+      background-color 220ms var(--courbe);
   }
 
-  [data-theme='cinema'] .filtre:hover {
+  :root .filtre:hover {
     border-color: oklch(1 0 0 / 0.28);
   }
 
-  [data-theme='cinema'] .filtre-actif {
+  :root .filtre-actif {
     border-color: oklch(0.86 0.16 94 / 0.55);
     background-color: oklch(0.86 0.16 94 / 0.1);
   }
 
-  [data-theme='cinema'] .filtre-actif .filtre-valeur {
+  :root .filtre-actif .filtre-valeur {
     color: oklch(0.88 0.16 95);
   }
 
   /* ── Le selecteur de source : l'actif est un lingot d'or ─────────── */
-  [data-theme='cinema'] .source-onglets {
+  :root .source-onglets {
     border-radius: 1.25rem;
   }
 
-  [data-theme='cinema'] .source-onglet {
+  :root .source-onglet {
     border-radius: 0.875rem;
     text-transform: none;
     letter-spacing: 0;
     font-size: 0.8125rem;
     font-weight: 600;
     transition:
-      background-color 320ms var(--cinema-courbe),
-      color 320ms var(--cinema-courbe),
-      box-shadow 320ms var(--cinema-courbe);
+      background-color 320ms var(--courbe),
+      color 320ms var(--courbe),
+      box-shadow 320ms var(--courbe);
   }
 
   @media (min-width: 40rem) {
-    [data-theme='cinema'] .source-onglets,
-    [data-theme='cinema'] .source-onglet {
+    :root .source-onglets,
+    :root .source-onglet {
       border-radius: 9999px;
     }
 
-    [data-theme='cinema'] .source-onglet {
+    :root .source-onglet {
       font-size: 0.875rem;
     }
   }
 
-  [data-theme='cinema'] .source-onglet:hover {
+  :root .source-onglet:hover {
     background-color: oklch(1 0 0 / 0.06);
   }
 
-  [data-theme='cinema'] .source-onglet[aria-pressed='true'] {
+  :root .source-onglet[aria-pressed='true'] {
     background: linear-gradient(180deg, oklch(0.9 0.16 95), oklch(0.8 0.16 85));
     color: oklch(0.2 0.02 85);
     box-shadow: 0 12px 30px -14px oklch(0.86 0.16 94 / 0.6);
   }
 
-  [data-theme='cinema'] .ui-alert {
+  :root .ui-alert {
     border-style: solid;
     border-width: 1px;
     border-radius: 0.875rem;
-    color: var(--color-text) !important;
   }
 
   /* ── La jauge : un fil d'or qui rayonne ──────────────────────────── */
-  [data-theme='cinema'] .ui-progress {
+  :root .ui-progress {
     height: 0.5rem;
     border-radius: 9999px;
     border-width: 0;
@@ -1290,28 +917,28 @@
     box-shadow: none !important;
   }
 
-  [data-theme='cinema'] .ui-progress > * {
+  :root .ui-progress > * {
     border-radius: 9999px;
     background-image: linear-gradient(90deg, oklch(0.74 0.16 80), oklch(0.94 0.13 98)) !important;
     box-shadow: 0 0 16px oklch(0.86 0.16 94 / 0.55);
   }
 
   /* ── L'interrupteur ──────────────────────────────────────────────── */
-  [data-theme='cinema'] .ui-toggle {
+  :root .ui-toggle {
     border-radius: 9999px;
     border-width: 0;
     box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.12) !important;
   }
 
-  [data-theme='cinema'] .ui-toggle-knob {
+  :root .ui-toggle-knob {
     border-radius: 9999px;
     border-width: 0;
     background-color: oklch(0.97 0.004 85);
-    transition: left 280ms var(--cinema-courbe);
+    transition: left 280ms var(--courbe);
   }
 
   /* ── La boite de dialogue ────────────────────────────────────────── */
-  [data-theme='cinema'] .ui-dialog {
+  :root .ui-dialog {
     border: 1px solid oklch(1 0 0 / 0.1) !important;
     background-color: oklch(0.17 0.004 85 / 0.92) !important;
     border-radius: 1.5rem;
@@ -1321,71 +948,19 @@
     -webkit-backdrop-filter: blur(20px);
   }
 
-  [data-theme='cinema'] .ui-dialog::backdrop {
+  :root .ui-dialog::backdrop {
     background: oklch(0 0 0 / 0.7);
     backdrop-filter: blur(6px);
   }
 
-  [data-theme='cinema'] .ui-menu-label {
-    border-width: 0;
-    background-color: transparent !important;
-    box-shadow: none !important;
-    padding-left: 0;
-  }
-
-  [data-theme='cinema'] .led {
-    background: var(--color-led);
-    box-shadow: 0 0 10px color-mix(in oklch, var(--color-led) 60%, transparent);
-  }
-
-  [data-theme='cinema'] .taped::before,
-  [data-theme='cinema'] .taped::after {
-    display: none;
-  }
-
-  [data-theme='cinema'] .grille {
-    background-image: none;
-  }
-
-  [data-theme='cinema'] input[type='range']::-webkit-slider-runnable-track {
-    background: oklch(1 0 0 / 0.14);
-    box-shadow: none;
-  }
-
-  [data-theme='cinema'] input[type='range']::-webkit-slider-thumb {
-    border: 0;
-    background: var(--color-accent);
-    box-shadow: 0 0 12px oklch(0.86 0.16 94 / 0.6);
-  }
-
-  [data-theme='cinema'] input[type='range']::-moz-range-track {
-    background: oklch(1 0 0 / 0.14);
-  }
-
-  [data-theme='cinema'] input[type='range']::-moz-range-thumb {
-    border: 0;
-    background: var(--color-accent);
-  }
-
-  /* ── Les icones de cette peau ────────────────────────────────────── */
-  [data-theme='cinema'] .icone-voix {
-    background-image: url('/icones/cinema-voix.png');
-  }
-  [data-theme='cinema'] .icone-secret {
-    background-image: url('/icones/cinema-secret.png');
-  }
-  [data-theme='cinema'] .icone-fichier {
-    background-image: url('/icones/cinema-fichier.png');
-  }
-
   /* ════════════════════════════════════════════════════════════════════
-     Les pieces propres a l'accueil de cette peau.
+     Les pieces de l'accueil.
      ════════════════════════════════════════════════════════════════════ */
 
   /* Le film derriere l'accroche : plein cadre, tres lentement pousse en
      avant, et fondu dans la salle par le bas pour que la page ne semble
      jamais posee sur une image. */
-  [data-theme='cinema'] .hero-fond {
+  :root .hero-fond {
     display: block;
     position: absolute;
     inset: 0 0 auto 0;
@@ -1401,16 +976,16 @@
     mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
   }
 
-  [data-theme='cinema'] .hero-fond video,
-  [data-theme='cinema'] .hero-fond img {
+  :root .hero-fond video,
+  :root .hero-fond img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    animation: cinema-zoom 32s var(--cinema-courbe) infinite alternate;
+    animation: zoom-lent 32s var(--courbe) infinite alternate;
   }
 
-  [data-theme='cinema'] .hero-fond::after {
+  :root .hero-fond::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -1425,14 +1000,14 @@
       radial-gradient(ellipse at center, transparent 35%, oklch(0 0 0 / 0.55) 100%);
   }
 
-  [data-theme='cinema'] .hero-accueil {
+  :root .hero-accueil {
     min-height: min(82svh, 52rem);
     padding-block: clamp(2rem, 6vh, 5rem);
   }
 
   /* Le titre d'accueil : grand, et traverse de temps en temps par un
      reflet dore, comme une enseigne de salle qui s'allume. */
-  [data-theme='cinema'] .hero-titre {
+  :root .hero-titre {
     font-size: clamp(2.75rem, 6.4vw, 5.6rem);
     line-height: 0.98;
     background-image: linear-gradient(
@@ -1446,10 +1021,10 @@
     background-clip: text;
     color: transparent !important;
     text-shadow: none;
-    animation: cinema-brillance 8s var(--cinema-courbe) infinite;
+    animation: brillance 8s var(--courbe) infinite;
   }
 
-  [data-theme='cinema'] .accroche {
+  :root .accroche {
     border: 1px solid oklch(1 0 0 / 0.14) !important;
     background: oklch(0.1 0 0 / 0.4) !important;
     color: var(--color-text-muted) !important;
@@ -1459,13 +1034,13 @@
     -webkit-backdrop-filter: blur(10px);
   }
 
-  [data-theme='cinema'] .titre-section {
+  :root .titre-section {
     font-size: clamp(1.9rem, 3.4vw, 3rem);
     line-height: 1.04;
   }
 
   /* La bande rythmo de demonstration, en verre sur le film. */
-  [data-theme='cinema'] .vitrine-rythmo {
+  :root .vitrine-rythmo {
     border: 1px solid oklch(1 0 0 / 0.12) !important;
     background: oklch(0.08 0 0 / 0.5) !important;
     border-radius: 1.5rem;
@@ -1479,13 +1054,13 @@
   /* Le haut de la vitrine figure l'image du film. Rendu transparent, il
      devient une fenetre : on y voit le vrai film, floute par le verre,
      au lieu d'un rectangle noir qui ne montrait rien. */
-  [data-theme='cinema'] .vitrine-rythmo > :first-child {
+  :root .vitrine-rythmo > :first-child {
     background: transparent !important;
   }
 
   /* Les trois cartes de valeur : elles se soulevent au survol, et leur
      objet flotte doucement, chacun a son rythme. */
-  [data-theme='cinema'] .carte-valeur:hover {
+  :root .carte-valeur:hover {
     transform: translateY(-6px);
     border-color: oklch(0.86 0.14 92 / 0.35);
     box-shadow:
@@ -1494,22 +1069,22 @@
       0 0 54px -22px oklch(0.86 0.14 92 / 0.38);
   }
 
-  [data-theme='cinema'] .carte-valeur .icone {
-    animation: cinema-flotte 6s ease-in-out infinite;
+  :root .carte-valeur .icone {
+    animation: flotte 6s ease-in-out infinite;
     filter: drop-shadow(0 18px 22px oklch(0 0 0 / 0.65));
   }
 
-  [data-theme='cinema'] .carte-valeur:nth-child(2) .icone {
+  :root .carte-valeur:nth-child(2) .icone {
     animation-delay: -2s;
   }
 
-  [data-theme='cinema'] .carte-valeur:nth-child(3) .icone {
+  :root .carte-valeur:nth-child(3) .icone {
     animation-delay: -4s;
   }
 
   /* Le carrousel rayonne, et l'image affichee avance tres lentement vers
      le spectateur pendant qu'on la regarde. */
-  [data-theme='cinema'] .carrousel-scene {
+  :root .carrousel-scene {
     border: 1px solid oklch(1 0 0 / 0.1) !important;
     border-radius: 1.5rem;
     box-shadow:
@@ -1517,17 +1092,17 @@
       0 40px 80px -40px oklch(0 0 0 / 0.95);
   }
 
-  [data-theme='cinema'] .carrousel-scene img {
-    transition: transform 7s var(--cinema-courbe);
+  :root .carrousel-scene img {
+    transition: transform 7s var(--courbe);
   }
 
-  [data-theme='cinema'] .carrousel-scene [aria-hidden='false'] img {
+  :root .carrousel-scene [aria-hidden='false'] img {
     transform: scale(1.07);
   }
 
   /* L'appel final : une grande scene sombre, eclairee d'en haut, dont le
      contour est parcouru par une lumiere qui tourne. */
-  [data-theme='cinema'] .appel-final {
+  :root .appel-final {
     position: relative;
     isolation: isolate;
     border: 0 !important;
@@ -1538,7 +1113,7 @@
       oklch(0.15 0.004 85 / 0.7) !important;
   }
 
-  [data-theme='cinema'] .appel-final::before {
+  :root .appel-final::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -1546,7 +1121,7 @@
     border-radius: inherit;
     padding: 1px;
     background: conic-gradient(
-      from var(--cinema-angle),
+      from var(--angle-lueur),
       oklch(1 0 0 / 0.06) 0deg,
       oklch(1 0 0 / 0.06) 250deg,
       oklch(0.92 0.15 95 / 0.95) 320deg,
@@ -1557,10 +1132,10 @@
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: cinema-tour 7s linear infinite;
+    animation: tour-lueur 7s linear infinite;
   }
 
-  [data-theme='cinema'] .appel-final p {
+  :root .appel-final p {
     font-family: var(--font-serif), 'Noto Serif', Georgia, serif;
     font-size: clamp(1.6rem, 3vw, 2.5rem);
     font-weight: 400;
@@ -1572,25 +1147,25 @@
      Un grand numero cerne d'or dans la marge, un titre qui glisse depuis
      la gauche, un filet dore qui se trace dessous, puis le texte. Chaque
      question arrive comme un chapitre de generique. */
-  [data-theme='cinema'] .definition {
+  :root .definition {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.25rem;
   }
 
-  [data-theme='cinema'] .definition > * {
+  :root .definition > * {
     margin-top: 0 !important;
   }
 
   @media (min-width: 640px) {
-    [data-theme='cinema'] .definition {
+    :root .definition {
       grid-template-columns: 6.5rem 1fr;
       gap: 2.5rem;
       align-items: start;
     }
   }
 
-  [data-theme='cinema'] .definition-numero {
+  :root .definition-numero {
     display: block;
     font-size: clamp(2.75rem, 5.5vw, 4.5rem);
     line-height: 0.9;
@@ -1598,12 +1173,12 @@
     -webkit-text-stroke: 1px oklch(0.86 0.14 92 / 0.6);
   }
 
-  [data-theme='cinema'] .definition .titre-section {
+  :root .definition .titre-section {
     position: relative;
     padding-bottom: 0.85rem;
   }
 
-  [data-theme='cinema'] .definition .titre-section::after {
+  :root .definition .titre-section::after {
     content: '';
     position: absolute;
     left: 0;
@@ -1616,12 +1191,12 @@
 
   /* Le filet ne se trace que si le script d'apparition tourne : sans lui,
      il est simplement la. */
-  html.reveal-pret[data-theme='cinema'] .definition .titre-section::after {
+  :root.reveal-pret .definition .titre-section::after {
     transform: scaleX(0);
-    transition: transform 1200ms var(--cinema-courbe) 520ms;
+    transition: transform 1200ms var(--courbe) 520ms;
   }
 
-  html.reveal-pret[data-theme='cinema'] .definition .titre-section[data-revealed]::after {
+  :root.reveal-pret .definition .titre-section[data-revealed]::after {
     transform: scaleX(1);
   }
 
@@ -1631,24 +1206,24 @@
      lui a donne. `translate` et non `transform` : la propriete separee
      se compose avec le soulevement au survol au lieu de l'ecraser, sans
      quoi une carte revelee ne pouvait plus se soulever. */
-  html.reveal-pret[data-theme='cinema'] [data-reveal] {
+  :root.reveal-pret [data-reveal] {
     opacity: 0;
     translate: 0 28px;
     transition:
-      opacity 950ms var(--cinema-courbe),
-      translate 950ms var(--cinema-courbe),
-      transform 450ms var(--cinema-courbe),
-      border-color 450ms var(--cinema-courbe),
-      box-shadow 450ms var(--cinema-courbe);
+      opacity 950ms var(--courbe),
+      translate 950ms var(--courbe),
+      transform 450ms var(--courbe),
+      border-color 450ms var(--courbe),
+      box-shadow 450ms var(--courbe);
     transition-delay: var(--delai, 0ms), var(--delai, 0ms), 0ms, 0ms, 0ms;
   }
 
   /* Variante : arriver par la gauche plutot que par le bas. */
-  html.reveal-pret[data-theme='cinema'] [data-reveal='gauche'] {
+  :root.reveal-pret [data-reveal='gauche'] {
     translate: -36px 0;
   }
 
-  html.reveal-pret[data-theme='cinema'] [data-reveal][data-revealed] {
+  :root.reveal-pret [data-reveal][data-revealed] {
     opacity: 1;
     translate: none;
   }
@@ -1658,15 +1233,16 @@
    avance, pas de lueur qui derive, pas de reflet, et le contenu present
    d'emblee. */
 @media (prefers-reduced-motion: reduce) {
-  [data-theme='cinema'] *,
-  [data-theme='cinema'] *::before,
-  [data-theme='cinema'] *::after {
+  :root *,
+  :root *::before,
+  :root *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  html.reveal-pret[data-theme='cinema'] [data-reveal] {
+  :root.reveal-pret [data-reveal] {
     opacity: 1 !important;
     translate: none !important;
   }

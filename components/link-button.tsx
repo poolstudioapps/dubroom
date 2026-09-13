@@ -10,10 +10,8 @@ import { cn } from '@/lib/utils';
  * hauteur et d'une marge a l'autre.
  */
 const STYLES = {
-  primary:
-    'btn-3d btn-primary bg-accent text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover',
-  secondary:
-    'btn-3d btn-secondary btn-bascule bg-surface-raised text-text [--btn-lip:var(--color-border-strong)]',
+  primary: 'btn-3d btn-primary bg-accent text-accent-ink',
+  secondary: 'btn-3d btn-secondary btn-bascule text-text',
 } as const;
 
 const TAILLES = {
@@ -38,7 +36,7 @@ export function LinkButton({
     <Link
       href={href}
       className={cn(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold uppercase tracking-wide',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold',
         STYLES[variant],
         TAILLES[size],
         className,

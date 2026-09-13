@@ -50,6 +50,8 @@ export interface Pack {
   author_id: string;
   /** L'auteur est un createur certifie. */
   author_certified: boolean;
+  /** Derniere retouche de la fiche par son createur, ou `null`. */
+  edited_at: string | null;
 }
 
 /** La page d'une scene du catalogue. */
@@ -292,9 +294,21 @@ export async function deletePack(pack: Pack): Promise<void> {
 /** Ce qu'on renseigne en publiant, et qu'on peut retoucher ensuite. */
 export interface PackFacets {
   title: string;
+  /**
+   * Le lien d'ou vient l'extrait : YouTube ou n'importe quel site.
+   * Obligatoire : c'est l'apercu de la fiche, et c'est la que les autres
+   * recuperent la video pour rejouer la scene.
+   */
+  sourceUrl: string;
   sourceLang: string;
   genre: PackGenre | '';
   tags: string[];
+}
+
+/** La meme regle qu'en base (`app_lien_valide`). */
+export function lienValide(url: string): boolean {
+  const lien = url.trim();
+  return lien.length <= 500 && /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(lien);
 }
 
 /** Retoucher une scene publiee : son auteur, ou un administrateur. */
@@ -304,6 +318,23 @@ export function setPackFacets(packId: string, facets: PackFacets) {
     p_title: facets.title,
     p_source_lang: facets.sourceLang,
     p_genre: facets.genre,
+    p_tags: facets.tags,
+    p_source_url: facets.sourceUrl.trim(),
+  });
+}
+
+/** La fiche d'un pack en cours de creation, gardee sur sa scene. */
+export interface PackDraft {
+  source_url: string;
+  genre: PackGenre | null;
+  tags: string[];
+}
+
+export function setPackDraft(sessionId: string, facets: PackFacets) {
+  return rpc('set_pack_draft', {
+    p_session_id: sessionId,
+    p_source_url: facets.sourceUrl.trim(),
+    p_genre: facets.genre || null,
     p_tags: facets.tags,
   });
 }
@@ -316,9 +347,8 @@ export function votePack(packId: string, value: 1 | -1) {
 /**
  * Publie une scene terminee dans la communaute.
  *
- * Titre, langue et genre sont obligatoires, la base le verifie aussi.
- * Une scene venue d'un lien garde le lien ; une scene importee par
- * fichier ne partage que son decoupage.
+ * Titre, lien, langue et genre sont obligatoires, la base le verifie
+ * aussi. Seuls le lien et le decoupage partent : jamais la video.
  */
 export function publishRecipePack(sessionId: string, facets: PackFacets) {
   return rpc<string>('publish_recipe_pack', {
@@ -327,6 +357,7 @@ export function publishRecipePack(sessionId: string, facets: PackFacets) {
     p_source_lang: facets.sourceLang,
     p_genre: facets.genre,
     p_tags: facets.tags,
+    p_source_url: facets.sourceUrl.trim(),
   });
 }
 

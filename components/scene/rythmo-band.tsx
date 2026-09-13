@@ -45,7 +45,7 @@ export function RythmoBand({
       characters.map((c) => [c.id, resolveCharacterColor(c.color)]),
     );
     const guideColor = resolveCssColor('var(--color-stage-faint)', '#8a8a99');
-    const playheadColor = resolveCssColor('var(--color-accent)', '#ff8159');
+    const playheadColor = resolveCssColor('var(--color-accent)', '#e9c46a');
 
     const visible = lines.filter((line) => !line.is_deleted);
     let frame = 0;
@@ -202,7 +202,7 @@ export function RythmoBand({
       <canvas
         ref={canvasRef}
         style={{ height }}
-        className="block w-full min-w-0 max-w-full rounded-md border-2 border-bezel-dark bg-stage"
+        className="block w-full min-w-0 max-w-full rounded-xl border border-border bg-stage"
         aria-hidden
       />
     </div>

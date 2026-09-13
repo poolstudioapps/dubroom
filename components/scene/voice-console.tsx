@@ -92,7 +92,7 @@ export function VoiceConsole({
   const decalage = useValidation((v: number) => onCommit({ micOffsetMs: v }));
 
   return (
-    <Card variant="plate" className="space-y-4">
+    <Card className="space-y-4">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-bold">
           <SlidersHorizontal className="h-4 w-4 text-text-muted" aria-hidden />

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Elle montre le geste avant qu'on ait lu une ligne : quelqu'un qui
  * double, casque sur les oreilles. C'est ce que font les sites de
- * production video dont la peau s'inspire, et c'est ce qui se comprend
+ * production video dont la salle s'inspire, et c'est ce qui se comprend
  * le plus vite.
  *
  * Trois cas ou elle cede la place a une image fixe : le mouvement reduit

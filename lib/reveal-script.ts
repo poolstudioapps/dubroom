@@ -8,9 +8,8 @@
  * clignotement au lieu d'une entree.
  *
  * Il ne cache rien lui-meme. Il marque les elements `data-reveal` quand
- * ils entrent a l'ecran, et c'est la feuille de style de la peau cinema
- * qui decide de les animer. Les deux autres peaux ignorent ces attributs,
- * et le contenu y reste visible d'emblee.
+ * ils entrent a l'ecran, et c'est la feuille de style qui decide de les
+ * animer.
  *
  * Deux filets de securite : sans `IntersectionObserver`, ou si quoi que
  * ce soit leve une erreur, tout est revele et la classe retiree. Une

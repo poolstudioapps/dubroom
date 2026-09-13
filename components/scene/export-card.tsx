@@ -153,7 +153,7 @@ function Format({
             aria-disabled={!url}
             className={cn(
               'btn-3d btn-secondary inline-flex h-10 flex-1 items-center justify-center gap-2 bg-surface-raised px-3',
-              'text-xs font-semibold uppercase tracking-wide text-text [--btn-lip:var(--color-border-strong)]',
+              'text-xs font-semibold text-text',
               !url && 'pointer-events-none opacity-40',
             )}
           >

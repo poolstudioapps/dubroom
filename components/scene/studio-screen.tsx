@@ -9,6 +9,7 @@ import { FinishedPanel } from '@/components/scene/finished-panel';
 import { PlayerProgressList } from '@/components/scene/player-progress';
 import { RythmoBand } from '@/components/scene/rythmo-band';
 import { SpeakCue } from '@/components/scene/speak-cue';
+import { AudioDevicesCard } from '@/components/scene/audio-devices-card';
 import { StudioSidebar } from '@/components/scene/studio-sidebar';
 import { VoiceConsole, type TakeSettings } from '@/components/scene/voice-console';
 import { WaveformView } from '@/components/scene/waveform-view';
@@ -28,6 +29,7 @@ import {
 } from '@/config/constants';
 
 import { setTakeFx, setTakeMix, uploadTake } from '@/lib/actions';
+import { applyOutputDevice, useAudioDevices } from '@/lib/audio/devices';
 import { MicRecorder } from '@/lib/audio/recorder';
 import { seekAll, unlockMedia } from '@/lib/audio/media';
 import { alignTake, envelopeFromBlob, type Alignment } from '@/lib/audio/align';
@@ -92,6 +94,10 @@ export function StudioScreen() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const musicRef = useRef<HTMLAudioElement>(null);
   const recorderRef = useRef<MicRecorder>(new MicRecorder());
+  // Le micro et la sortie du casque choisis pour ce studio.
+  const devices = useAudioDevices();
+  const sortieRef = useRef('');
+  sortieRef.current = devices.outputId;
 
   const [mode, setModeState] = useState<Mode>('idle');
   const modeRef = useRef<Mode>('idle');
@@ -314,6 +320,27 @@ export function StudioScreen() {
     if (music) music.volume = backing;
   }, [backing]);
 
+  // La sortie choisie : l'image, le fond sonore et l'ecoute de la prise.
+  // Reappliquee quand les medias changent ou que la video est remontee.
+  useEffect(() => {
+    void applyOutputDevice(
+      devices.outputId,
+      [videoRef.current, musicRef.current],
+      audioCtx.current,
+    );
+  }, [devices.outputId, media.data?.music, media.data?.video, index, acknowledged]);
+
+  // Un autre micro : l'ancien est referme, la prochaine prise ouvre le
+  // nouveau. Jamais pendant une prise, le menu est d'ailleurs verrouille.
+  const micPrecedent = useRef(devices.micId);
+  useEffect(() => {
+    if (micPrecedent.current === devices.micId) return;
+    micPrecedent.current = devices.micId;
+    if (recorderRef.current.recording) return;
+    recorderRef.current.release();
+    setMicReady(false);
+  }, [devices.micId]);
+
   // Changer de clip coupe tout : on ne laisse jamais un transport
   // continuer sur un clip qu'on ne regarde plus.
   useEffect(() => {
@@ -413,8 +440,10 @@ export function StudioScreen() {
     unlockMedia([video, music]);
 
     try {
-      await recorderRef.current.prime();
+      await recorderRef.current.prime(devices.micId);
       setMicReady(true);
+      // Le micro autorise, les appareils ont enfin un nom a afficher.
+      void devices.refresh();
     } catch {
       setError(t.studio.micDenied);
       return;
@@ -592,7 +621,11 @@ export function StudioScreen() {
   }
 
   function contexte(): AudioContext {
-    if (!audioCtx.current) audioCtx.current = new AudioContext();
+    if (!audioCtx.current) {
+      audioCtx.current = new AudioContext();
+      // L'ecoute de la prise sort la ou sort le reste : dans le casque choisi.
+      void applyOutputDevice(sortieRef.current, [], audioCtx.current);
+    }
     return audioCtx.current;
   }
 
@@ -842,7 +875,7 @@ export function StudioScreen() {
   if (myClips.length === 0) {
     return (
       <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
-        <Card variant="plate" className="space-y-3 self-start">
+        <Card className="space-y-3 self-start">
           <h1 className="text-lg font-semibold">{t.studio.title}</h1>
           <p className="text-sm text-text-muted">{t.studio.noCharacter}</p>
 
@@ -864,7 +897,13 @@ export function StudioScreen() {
           sous le bord bas et le bouton de rendu devenait inatteignable.
         */}
         <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-          <StudioSidebar backing={backing} onBacking={setBacking} done={0} total={0} />
+          <StudioSidebar
+            backing={backing}
+            onBacking={setBacking}
+            done={0}
+            total={0}
+            devices={<AudioDevicesCard devices={devices} recording={false} />}
+          />
         </div>
       </div>
     );
@@ -890,6 +929,7 @@ export function StudioScreen() {
             onBacking={setBacking}
             done={doneCount}
             total={myClips.length}
+            devices={<AudioDevicesCard devices={devices} recording={false} />}
           />
         </div>
       </div>
@@ -1020,7 +1060,7 @@ export function StudioScreen() {
               playsInline
               preload="auto"
               className={cn(
-                'rounded-card border-2 border-bezel-dark bg-black object-contain',
+                'rounded-card border border-border bg-black object-contain',
                 'h-full w-full',
                 'lg:max-h-full lg:w-auto lg:max-w-full',
               )}
@@ -1116,9 +1156,9 @@ export function StudioScreen() {
               // fixes, c'est ce qui empeche la page de sauter quand le
               // message change.
               'flex h-11 items-center gap-2 rounded-card px-3 text-xs font-bold lg:h-9',
-              statut.tone === 'danger' && 'bg-danger/15 text-[oklch(0.42_0.18_25)]',
-              statut.tone === 'warn' && 'bg-warn/20 text-[oklch(0.42_0.12_75)]',
-              statut.tone === 'ok' && 'bg-ok/15 text-[oklch(0.4_0.13_150)]',
+              statut.tone === 'danger' && 'bg-danger/15 text-danger-ink',
+              statut.tone === 'warn' && 'bg-warn/15 text-warn-ink',
+              statut.tone === 'ok' && 'bg-ok/15 text-ok-ink',
               statut.tone === 'muted' && 'text-text-faint',
             )}
           >
@@ -1238,6 +1278,7 @@ export function StudioScreen() {
           done={doneCount}
           total={myClips.length}
           voiceConsole={consoleVoix}
+          devices={<AudioDevicesCard devices={devices} recording={recording} />}
         />
       </div>
     </div>

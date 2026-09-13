@@ -38,6 +38,9 @@ const MESSAGES: Record<string, string> = {
   PACK_TITLE_REQUIRED: 'Donne un titre à la scène.',
   PACK_LANG_REQUIRED: 'Choisis la langue parlée dans la scène.',
   PACK_GENRE_REQUIRED: 'Choisis le genre de la scène.',
+  PACK_URL_REQUIRED:
+    'Indique le lien d’où vient la vidéo (YouTube ou autre) : il sert d’aperçu et permet aux autres de la récupérer.',
+  ALREADY_IN_CATALOGUE: 'Cette scène vient déjà du catalogue.',
   COMMENT_EMPTY: 'Le commentaire est vide.',
   COMMENT_TOO_LONG: 'Le commentaire dépasse 1 000 caractères.',
   COMMENT_TOO_FAST: 'Doucement : attends quelques secondes avant de republier.',

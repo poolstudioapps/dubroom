@@ -3,7 +3,15 @@
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Clapperboard, FileVideo, Pencil } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clapperboard,
+  ExternalLink,
+  FileVideo,
+  Pencil,
+  PencilLine,
+} from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
@@ -139,7 +147,7 @@ export function PackDetailClient({
             {pack.kind === 'url' && pack.source_url ? (
               <UrlPreview url={pack.source_url} title={pack.title} />
             ) : (
-              <div className="flex aspect-video items-center justify-center rounded-card border-2 border-bezel-dark bg-stage text-stage-faint">
+              <div className="flex aspect-video items-center justify-center rounded-card border border-border bg-stage text-stage-faint">
                 <Clapperboard className="h-10 w-10" aria-hidden />
               </div>
             )}
@@ -161,16 +169,35 @@ export function PackDetailClient({
 
             {/* Le createur mene a son profil : ses autres scenes, ses votes,
                 et un endroit pour lui ecrire. */}
-            <Link
-              href={profileHref(pack.author_id)}
-              className="group inline-flex flex-wrap items-center gap-2 text-sm text-text-muted hover:text-text"
-            >
-              <Avatar name={pack.author_name} path={pack.author_avatar} size="sm" />
-              <span className="group-hover:underline group-hover:underline-offset-4">
-                {t.community.detailPublishedBy(pack.author_name, date)}
-              </span>
-              {pack.author_certified ? <CertifiedBadge withLabel /> : null}
-            </Link>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <Link
+                href={profileHref(pack.author_id)}
+                className="group inline-flex flex-wrap items-center gap-2 text-sm text-text-muted hover:text-text"
+              >
+                <Avatar name={pack.author_name} path={pack.author_avatar} size="sm" />
+                <span className="group-hover:underline group-hover:underline-offset-4">
+                  {t.community.detailPublishedBy(pack.author_name, date)}
+                </span>
+                {pack.author_certified ? <CertifiedBadge withLabel /> : null}
+              </Link>
+              {/* La fiche a bouge depuis sa publication : son createur l'a
+                  retouchee. On le dit, date comprise. */}
+              {pack.edited_at ? (
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full border border-accent/35 bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-text"
+                  title={new Date(pack.edited_at).toLocaleString(locale)}
+                >
+                  <PencilLine className="h-3 w-3 text-accent" aria-hidden />
+                  {t.community.editedByCreator(
+                    new Date(pack.edited_at).toLocaleDateString(locale, {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    }),
+                  )}
+                </span>
+              ) : null}
+            </div>
 
             {pack.tags.length > 0 ? (
               <ul className="flex flex-wrap gap-2" aria-label={t.community.tagsLabel}>
@@ -225,6 +252,17 @@ export function PackDetailClient({
             <p className="text-xs leading-relaxed text-text-muted">
               {pack.source_url ? t.community.detailVideoBody : t.community.detailNoSource}
             </p>
+            {pack.source_url ? (
+              <a
+                href={pack.source_url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface-sunken px-3 text-sm font-bold text-text transition-colors hover:border-accent/50"
+              >
+                <ExternalLink className="h-4 w-4 shrink-0 text-accent" aria-hidden />
+                <span className="min-w-0 truncate">{t.community.openSource}</span>
+              </a>
+            ) : null}
             <Link
               href={GUIDE_VIDEO_HREF}
               className="lien-surligne inline-flex items-center gap-1 pt-1 text-sm font-bold text-text"

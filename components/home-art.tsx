@@ -1,11 +1,8 @@
 /*
  * Illustrations de l'accueil.
  *
- * Elles etaient dessinees en SVG a la main : rien a charger, et elles
- * suivaient le theme. C'etait la bonne decision tant qu'il n'y avait
- * rien d'autre, mais quatre schemas au trait ne font pas une page qu'on
- * a envie de lire. Ce sont maintenant de vraies illustrations, generees
- * dans la palette du site.
+ * Quatre schemas au trait ne font pas une page qu'on a envie de lire :
+ * ce sont de vraies illustrations, generees dans la palette de la salle.
  *
  * Trois precautions qui expliquent leur forme :
  *
@@ -18,7 +15,7 @@
  *    d'un titre et d'un paragraphe qui disent exactement la meme chose.
  *    La decrire une seconde fois ferait repeter la page a voix haute.
  *
- * Poids : environ 90 ko en WebP par serie, et il y en a une par peau.
+ * Poids : environ 90 ko en WebP pour la serie.
  * L'optimiseur d'images de Next est coupe dans ce projet, d'ou la balise
  * `img` nue et les dimensions ecrites en clair, qui evitent le saut de
  * mise en page.

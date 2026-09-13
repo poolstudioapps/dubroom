@@ -60,7 +60,7 @@ export function DiscordButton({
       type="button"
       variant="secondary"
       size="lg"
-      className="btn-brand w-full bg-[#5865F2] text-white hover:brightness-110 [--btn-lip:#3b45c4]"
+      className="btn-brand w-full bg-[#5865F2] text-white hover:brightness-110"
       loading={working}
       onClick={() => void signIn()}
     >

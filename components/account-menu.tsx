@@ -63,7 +63,7 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-label={t.account.menuLabel}
         onClick={() => setOpen((value) => !value)}
-        className="btn-3d btn-secondary flex h-11 items-center gap-2 bg-surface-raised pl-1.5 pr-3 [--btn-lip:var(--color-border-strong)]"
+        className="btn-3d btn-secondary flex h-11 items-center gap-2 pl-1.5 pr-3"
       >
         <Avatar name={name} path={profile.data?.avatar_path} size="sm" />
         <span className="hidden max-w-32 truncate text-sm font-bold sm:inline">
@@ -74,7 +74,7 @@ export function AccountMenu() {
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-card border-2 border-bezel-dark bg-surface-raised shadow-[0_16px_32px_-8px_rgb(0_0_0/0.6)]"
+          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-[0_24px_48px_-16px_rgb(0_0_0/0.8)]"
         >
           <div className="border-b-2 border-border px-3 py-2">
             <p className="truncate text-sm font-bold">{name}</p>

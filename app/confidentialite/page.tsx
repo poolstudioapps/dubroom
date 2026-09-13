@@ -1,11 +1,10 @@
 import Link from 'next/link';
 
 import { LegalShell, LegalSection } from '@/components/legal-shell';
-import { APP_NAME } from '@/config/strings';
 
 export const metadata = {
   robots: { index: true, follow: true },
-  title: `Confidentialité · ${APP_NAME}`,
+  title: 'Confidentialité',
 };
 
 export default function PrivacyPage() {
@@ -64,8 +63,8 @@ export default function PrivacyPage() {
         </p>
         <p>
           Publier une scène dans la communauté n’en garde que le découpage (personnages,
-          texte, repères) et, si elle venait d’un lien, ce lien. Ni la vidéo ni les
-          enregistrements de voix ne sont conservés.
+          texte, repères) et le lien de la vidéo d’origine indiqué par la personne qui
+          publie. Ni la vidéo ni les enregistrements de voix ne sont conservés.
         </p>
         <p>
           Un salon resté ouvert plus d’une heure est fermé automatiquement. Supprimer une

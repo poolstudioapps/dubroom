@@ -24,6 +24,8 @@ export const en = {
     create: 'Create',
     join: 'Join',
     joinHelp: 'Enter the six-character code the host gave you.',
+    mainLabel: 'Main navigation',
+    language: 'Language',
   },
 
   account: {
@@ -263,8 +265,7 @@ export const en = {
     publish: 'Publish to the community',
     published: 'This scene is in the community',
     seeInCommunity: 'See it in the community',
-    publishRecipeHelp:
-      'Only the link and the cut will be shared. The video is not hosted here.',
+    publishRecipeHelp: 'Only the original link and the breakdown are shared. The video is never hosted here.',
     publishFromCatalogue:
       'This scene comes from the catalogue: it is already there. Publishing it again would leave two copies nobody can tell apart.',
     pickLang: 'Choose the language…',
@@ -276,7 +277,7 @@ export const en = {
     tagRemove: (tag: string) => `Remove #${tag}`,
     tagSearch: (tag: string) => `See #${tag} scenes`,
     publishUploadHelp: 'Only the characters, the text and the timing are shared. Your video stays with you: people who replay the scene bring their own.',
-    publishMissing: 'Fill in the title, language and genre to publish.',
+    publishMissing: 'Fill in the title, link, language and genre to publish.',
     searchPlaceholder: 'Title, character, #tag…',
     searchLabel: 'Search scenes',
     searchClear: 'Clear search',
@@ -327,16 +328,16 @@ export const en = {
     howTitle: 'Add a scene to the catalogue',
     howSteps: [
       {
-        title: 'Import your video',
-        body: 'A brand-new scene, from any source. Dub’Up separates the voices and splits the lines.',
+        title: 'Fill in the card',
+        body: 'Title, original video link, language, genre and tags: what the community will see.',
       },
       {
-        title: 'Dub it with friends',
-        body: 'Check the characters, invite your group, record, start the render.',
+        title: 'Import and check',
+        body: 'Dub’Up separates the voices and splits the lines. You fix the characters and the text.',
       },
       {
-        title: 'Publish the pack',
-        body: 'From the result screen: title, language, genre and tags. The preparation joins the community, never the video.',
+        title: 'Publish, then play',
+        body: 'The pack joins the community. You can then dub it with your group.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -349,6 +350,16 @@ export const en = {
     commentReportBody: 'Reports are anonymous. After five, the comment is removed and its author gets a warning; after three warnings, their access is suspended.',
     commentReportedThanks: 'Thanks, it’s been reported.',
     commentRemovedAfterReports: 'Thanks. Reported by several members, this comment has been removed.',
+    linkLabel: 'Original video link',
+    linkHelp: 'YouTube or any site: it’s the preview, and it’s where others get the video to replay the scene.',
+    linkInvalid: 'This link doesn’t look valid: it must start with https://',
+    publishAskTitle: 'Share this pack with the community?',
+    publishAskBody: 'Your breakdown can help other groups: they’ll replay the scene with their own video. Only the link and the breakdown are shared, never your voices.',
+    publishAskYes: 'Yes, publish',
+    publishAskNo: 'No thanks',
+    publishLater: 'Not sharing this scene. You can change your mind at any time from this screen.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `Edited by the creator on ${date}`,
   },
 
   terms: {
@@ -542,9 +553,14 @@ export const en = {
     adminBadge: 'Admin',
     shareLater: 'After the render, you can publish the scene to the community, with its language, genre and tags.',
     communityTitle: 'Create a pack for the community',
-    communityBody: 'Import your video and prepare the scene as usual. Once the render is done, you publish it in one click.',
+    communityBody: 'First the card and the video, then checking the breakdown. Once the pack is published, you can play it with your group.',
     langLabel: 'Language spoken in the video',
     langHelp: 'It tunes the transcription, then works as a filter once the scene is published to the community.',
+    packFicheTitle: 'The pack card',
+    packVideoTitle: 'The video to split',
+    packSubmit: 'Import and prepare the pack',
+    packYoutubeNeeded: 'To import from YouTube, the card’s link must be a YouTube video.',
+    packNeedsVideo: 'Add the scene’s video to continue.',
   },
 
   ingest: {
@@ -625,6 +641,14 @@ export const en = {
     undo: 'Undo',
     splitBody: (n: number) => (n === 1 ? `1 line will move to a new character.` : `${n} lines will move to a new character.`),
     defaultCharacterName: (n: number) => `Character ${n}`,
+    packPublish: 'Publish the pack',
+    packPublishBody: 'Check the card one last time: it’s what the community will see. The breakdown goes out exactly as shown on screen.',
+    packPublishedTitle: 'Your pack is published',
+    packPublishedBody: 'It’s in the community: other groups can discover it, comment on it and replay it with their video. Your turn to enjoy it.',
+    packPlay: 'Play this pack now',
+    packPlayHint: 'The lobby opens with this scene: share the code with your group.',
+    packSeeFiche: 'See the pack card',
+    packAnother: 'Create another pack',
   },
 
   lobby: {
@@ -766,6 +790,17 @@ export const en = {
     waitSomeAway: (names: string) => `Everyone has finished. Not on this screen yet: ${names}. You can wait, or start without waiting.`,
     launchAnyway: 'Start without waiting',
     clipsNav: 'Go to a clip',
+    devicesTitle: 'Mic and headphones',
+    devicesLocked: 'Allow the microphone to choose between your devices: the browser won’t show their names before that.',
+    devicesAllow: 'Allow the microphone',
+    deviceMic: 'Microphone',
+    deviceOutput: 'Output (headphones)',
+    deviceDefault: 'System default',
+    deviceOutputUnsupported: 'Your browser sends sound to the system output: pick your headphones in your device settings.',
+    devicesHelp: 'The choice applies to every take and is remembered for next time.',
+    devicesDuringTake: 'Devices can be changed between takes.',
+    deviceMicN: (n: number) => `Microphone ${n}`,
+    deviceOutputN: (n: number) => `Output ${n}`,
   },
 
   progress: {
@@ -1080,11 +1115,11 @@ export const en = {
       steps: [
         {
           title: 'Finish the scene',
-          body: 'You publish from the result screen, once the render is done. The host publishes.',
+          body: 'Publish from the result screen after the render, or straight from preparation if you started with “Create a pack” in the community. The host publishes.',
         },
         {
           title: 'Fill in the card',
-          body: 'Title, spoken language and genre are required: they are the catalogue filters. Add tags such as #starwars so people find it in the search.',
+          body: 'Title, original video link, language and genre are required: the link is the preview and lets others get the video. Add tags like #starwars so people find it in search.',
         },
         {
           title: 'Find it in the community',
@@ -1212,5 +1247,8 @@ export const en = {
     tooLong: 'Scene too long: 10 minutes maximum.',
     youtubeFailed:
       'The YouTube download failed. Import the video file directly instead.',
+    pageNotFoundTitle: 'This page doesn’t exist',
+    pageNotFoundBody: 'The link may be incomplete, or the page has moved. Find your way from the home page.',
+    backHome: 'Back to home',
   },
 } satisfies Dictionary;

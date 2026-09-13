@@ -1,8 +1,15 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
+import { getDictionary } from '@/lib/i18n-server';
 import { currentUser } from '@/lib/supabase/server';
 import { displayNameFromEmail } from '@/lib/utils';
 import { CommunityClient } from './community-client';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return { title: t.nav.community };
+}
 
 export default async function CommunityPage({
   searchParams,

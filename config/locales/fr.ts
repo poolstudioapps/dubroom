@@ -22,6 +22,8 @@ export const fr = {
     create: 'Créer',
     join: 'Rejoindre',
     joinHelp: 'Entre le code à six caractères que l’hôte t’a donné.',
+    mainLabel: 'Navigation principale',
+    language: 'Langue',
   },
 
   account: {
@@ -261,8 +263,7 @@ export const fr = {
     publish: 'Publier dans la communauté',
     published: 'Cette scène est dans la communauté',
     seeInCommunity: 'Voir dans la communauté',
-    publishRecipeHelp:
-      'Seuls le lien et le découpage seront partagés. La vidéo n’est pas hébergée ici.',
+    publishRecipeHelp: 'Seuls le lien d’origine et le découpage sont partagés. La vidéo n’est jamais hébergée ici.',
     publishFromCatalogue:
       'Cette scène vient du catalogue : elle y est déjà. La republier en ferait un doublon que personne ne saurait départager.',
     pickLang: 'Choisir la langue…',
@@ -274,7 +275,7 @@ export const fr = {
     tagRemove: (tag: string) => `Retirer #${tag}`,
     tagSearch: (tag: string) => `Voir les scènes #${tag}`,
     publishUploadHelp: 'Seuls le découpage, les personnages et le texte seront partagés. Ta vidéo reste chez toi : ceux qui rejoueront la scène apporteront la leur.',
-    publishMissing: 'Renseigne le titre, la langue et le genre pour publier.',
+    publishMissing: 'Renseigne le titre, le lien, la langue et le genre pour publier.',
     searchPlaceholder: 'Titre, personnage, #tag…',
     searchLabel: 'Rechercher une scène',
     searchClear: 'Effacer la recherche',
@@ -325,16 +326,16 @@ export const fr = {
     howTitle: 'Ajouter une scène au catalogue',
     howSteps: [
       {
-        title: 'Importe ta vidéo',
-        body: 'Une scène neuve, depuis n’importe quelle source. Dub’Up sépare les voix et découpe les répliques.',
+        title: 'Remplis la fiche',
+        body: 'Titre, lien de la vidéo d’origine, langue, genre et tags : ce que la communauté verra.',
       },
       {
-        title: 'Doublez-la entre amis',
-        body: 'Vérifie les personnages, invite ton groupe, enregistrez, lancez le rendu.',
+        title: 'Importe et vérifie',
+        body: 'Dub’Up sépare les voix et découpe les répliques. Tu corriges les personnages et le texte.',
       },
       {
-        title: 'Publie le pack',
-        body: 'Depuis l’écran du résultat : titre, langue, genre et tags. Le découpage rejoint la communauté, jamais la vidéo.',
+        title: 'Publie, puis joue',
+        body: 'Le pack rejoint la communauté. Tu peux ensuite le doubler avec ton groupe.',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -347,6 +348,16 @@ export const fr = {
     commentReportBody: 'Le signalement est anonyme. Au cinquième, le commentaire est retiré et son auteur reçoit un avertissement ; au troisième avertissement, son accès est suspendu.',
     commentReportedThanks: 'Merci, c’est signalé.',
     commentRemovedAfterReports: 'Merci. Signalé par plusieurs membres, ce commentaire a été retiré.',
+    linkLabel: 'Lien de la vidéo d’origine',
+    linkHelp: 'YouTube ou n’importe quel site : il sert d’aperçu, et c’est là que les autres récupèrent la vidéo pour rejouer la scène.',
+    linkInvalid: 'Ce lien ne semble pas valide : il doit commencer par https://',
+    publishAskTitle: 'Partager ce pack avec la communauté ?',
+    publishAskBody: 'Ton découpage peut servir à d’autres groupes : ils rejoueront la scène avec leur propre vidéo. Seuls le lien et le découpage sont partagés, jamais vos voix.',
+    publishAskYes: 'Oui, publier',
+    publishAskNo: 'Non merci',
+    publishLater: 'Pas de partage pour cette scène. Tu peux changer d’avis à tout moment depuis cet écran.',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `Modifié par le créateur le ${date}`,
   },
 
   terms: {
@@ -544,9 +555,14 @@ export const fr = {
     adminBadge: 'Admin',
     shareLater: 'Après le rendu, tu pourras publier la scène dans la communauté, avec sa langue, son genre et ses tags.',
     communityTitle: 'Créer un pack pour la communauté',
-    communityBody: 'Importe ta vidéo et prépare la scène comme d’habitude. Une fois le rendu fait, tu la publieras en un clic.',
+    communityBody: 'D’abord la fiche et la vidéo, puis la vérification du découpage. Une fois le pack publié, tu pourras le jouer avec ton groupe.',
     langLabel: 'Langue parlée dans la vidéo',
     langHelp: 'Elle règle la transcription, puis sert de filtre quand la scène est publiée dans la communauté.',
+    packFicheTitle: 'La fiche du pack',
+    packVideoTitle: 'La vidéo à découper',
+    packSubmit: 'Importer et préparer le pack',
+    packYoutubeNeeded: 'Pour un import depuis YouTube, le lien de la fiche doit être une vidéo YouTube.',
+    packNeedsVideo: 'Ajoute la vidéo de la scène pour continuer.',
   },
 
   ingest: {
@@ -628,6 +644,14 @@ export const fr = {
     undo: 'Annuler',
     splitBody: (n: number) => (n === 1 ? `1 réplique sera déplacée vers un nouveau personnage.` : `${n} répliques seront déplacées vers un nouveau personnage.`),
     defaultCharacterName: (n: number) => `Personnage ${n}`,
+    packPublish: 'Publier le pack',
+    packPublishBody: 'Vérifie la fiche une dernière fois : c’est ce que la communauté verra. Le découpage part tel qu’il est à l’écran.',
+    packPublishedTitle: 'Ton pack est publié',
+    packPublishedBody: 'Il est dans la communauté : les autres groupes peuvent le découvrir, le commenter et le rejouer avec leur vidéo. À ton tour d’en profiter.',
+    packPlay: 'Jouer ce pack maintenant',
+    packPlayHint: 'Le lobby s’ouvre avec cette scène : partage le code à ton groupe.',
+    packSeeFiche: 'Voir la fiche du pack',
+    packAnother: 'Créer un autre pack',
   },
 
   lobby: {
@@ -770,6 +794,17 @@ export const fr = {
     waitSomeAway: (names: string) => `Tout le monde a fini. Pas encore sur cet écran : ${names}. Tu peux attendre, ou lancer sans attendre.`,
     launchAnyway: 'Lancer sans attendre',
     clipsNav: 'Aller à un clip',
+    devicesTitle: 'Micro et casque',
+    devicesLocked: 'Autorise le micro pour choisir parmi tes appareils : le navigateur n’en donne pas le nom avant.',
+    devicesAllow: 'Autoriser le micro',
+    deviceMic: 'Micro',
+    deviceOutput: 'Sortie (casque)',
+    deviceDefault: 'Par défaut (système)',
+    deviceOutputUnsupported: 'Ton navigateur envoie le son vers la sortie du système : choisis le casque dans les réglages de ton appareil.',
+    devicesHelp: 'Le choix vaut pour toutes les prises et reste retenu pour la prochaine fois.',
+    devicesDuringTake: 'Les appareils se changent entre deux prises.',
+    deviceMicN: (n: number) => `Micro ${n}`,
+    deviceOutputN: (n: number) => `Sortie ${n}`,
   },
 
   progress: {
@@ -1085,11 +1120,11 @@ export const fr = {
       steps: [
         {
           title: 'Termine la scène',
-          body: 'On publie depuis l’écran du résultat, une fois le rendu produit. C’est l’hôte qui publie.',
+          body: 'Publie depuis l’écran du résultat, après le rendu, ou dès la préparation si tu as lancé « Créer un pack » depuis la communauté. C’est l’hôte qui publie.',
         },
         {
           title: 'Renseigne la fiche',
-          body: 'Titre, langue parlée et genre sont obligatoires : ce sont les filtres du catalogue. Ajoute des tags comme #starwars pour qu’on la retrouve dans la recherche.',
+          body: 'Titre, lien de la vidéo d’origine, langue et genre sont obligatoires : le lien sert d’aperçu et permet aux autres de récupérer la vidéo. Ajoute des tags comme #starwars pour qu’on la retrouve dans la recherche.',
         },
         {
           title: 'Retrouve-la dans la communauté',
@@ -1217,5 +1252,8 @@ export const fr = {
     tooLong: 'Scène trop longue : 10 minutes maximum.',
     youtubeFailed:
       'Le téléchargement YouTube a échoué. Importe plutôt le fichier vidéo directement.',
+    pageNotFoundTitle: 'Cette page n’existe pas',
+    pageNotFoundBody: 'Le lien est peut-être incomplet, ou la page a été déplacée. Retrouve ton chemin depuis l’accueil.',
+    backHome: 'Revenir à l’accueil',
   },
 } as const;

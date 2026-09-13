@@ -55,14 +55,34 @@ export class MicRecorder {
   private stream: MediaStream | null = null;
   private recorder: MediaRecorder | null = null;
   private chunks: Blob[] = [];
+  /** L'entree ouverte : `''` pour celle du systeme. */
+  private deviceId = '';
 
-  /** Ouvre le micro une seule fois pour toute la session de studio. */
-  async prime(): Promise<void> {
-    if (this.stream) return;
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: MIC_CONSTRAINTS,
-      video: false,
-    });
+  /**
+   * Ouvre le micro, une seule fois tant qu'on garde la meme entree.
+   *
+   * Changer d'entree referme l'ancienne. Une entree retenue mais
+   * debranchee depuis ne bloque pas le studio : on retombe sur celle du
+   * systeme plutot que de refuser d'enregistrer.
+   */
+  async prime(deviceId = ''): Promise<void> {
+    if (this.stream && this.deviceId === deviceId) return;
+    if (this.stream) this.release();
+
+    const ouvrir = (id: string) =>
+      navigator.mediaDevices.getUserMedia({
+        audio: id ? { ...MIC_CONSTRAINTS, deviceId: { exact: id } } : MIC_CONSTRAINTS,
+        video: false,
+      });
+
+    try {
+      this.stream = await ouvrir(deviceId);
+      this.deviceId = deviceId;
+    } catch (error) {
+      if (!deviceId || (error as DOMException)?.name === 'NotAllowedError') throw error;
+      this.stream = await ouvrir('');
+      this.deviceId = '';
+    }
   }
 
   get ready(): boolean {

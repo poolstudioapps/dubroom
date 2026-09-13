@@ -22,6 +22,8 @@ export const ja = {
     create: '作成',
     join: '参加',
     joinHelp: 'ホストから受け取った6文字のコードを入力してください。',
+    mainLabel: 'メインナビゲーション',
+    language: '言語',
   },
 
   account: {
@@ -258,8 +260,7 @@ export const ja = {
     publish: 'コミュニティに公開',
     published: 'このシーンはコミュニティにあります',
     seeInCommunity: 'コミュニティで見る',
-    publishRecipeHelp:
-      '共有されるのはリンクと区切りだけです。動画はここには置かれません。',
+    publishRecipeHelp: '共有されるのは元のリンクと準備データだけです。動画がここに保存されることはありません。',
     publishFromCatalogue:
       'このシーンはカタログから来たもので、すでに登録されています。もう一度出すと見分けのつかない重複ができてしまいます。',
     pickLang: '言語を選択…',
@@ -271,7 +272,7 @@ export const ja = {
     tagRemove: (tag: string) => `#${tag} を削除`,
     tagSearch: (tag: string) => `#${tag} のシーンを見る`,
     publishUploadHelp: '共有されるのはキャラクター、テキスト、タイミングだけです。動画はあなたの手元に残り、シーンを遊ぶ人はそれぞれ自分の動画を用意します。',
-    publishMissing: '公開するにはタイトル、言語、ジャンルを入力してください。',
+    publishMissing: 'タイトル、リンク、言語、ジャンルを入力すると公開できます。',
     searchPlaceholder: 'タイトル、キャラクター、#タグ…',
     searchLabel: 'シーンを検索',
     searchClear: '検索をクリア',
@@ -322,16 +323,16 @@ export const ja = {
     howTitle: 'カタログにシーンを追加する',
     howSteps: [
       {
-        title: '動画を読み込む',
-        body: 'どこの動画からでも新しいシーンを作れます。Dub’Up が声を分離し、セリフを分割します。',
+        title: '情報を入力する',
+        body: 'タイトル、元動画のリンク、言語、ジャンル、タグ。コミュニティに表示される内容です。',
       },
       {
-        title: 'みんなで吹き替える',
-        body: 'キャラクターを確認し、グループを招待して録音し、レンダリングを開始します。',
+        title: '読み込んで確認する',
+        body: 'Dub’Up が声を分離し、セリフを分割します。キャラクターとテキストを修正しましょう。',
       },
       {
-        title: 'パックを公開する',
-        body: '結果画面からタイトル・言語・ジャンル・タグを入力。コミュニティに加わるのは準備データだけで、動画は含まれません。',
+        title: '公開して遊ぶ',
+        body: 'パックがコミュニティに加わります。そのあとグループで吹き替えられます。',
       },
     ],
     stats: (scenes: number, roles: number, langs: number) =>
@@ -344,6 +345,16 @@ export const ja = {
     commentReportBody: '通報は匿名です。5件の通報でコメントは削除され、投稿者に警告が送られます。警告が3回になると、アクセスが停止されます。',
     commentReportedThanks: 'ありがとうございます。通報しました。',
     commentRemovedAfterReports: 'ありがとうございます。複数のメンバーから通報されたため、このコメントは削除されました。',
+    linkLabel: '元動画のリンク',
+    linkHelp: 'YouTube でもほかのサイトでも構いません。プレビューに使われ、ほかの人がシーンを遊ぶための動画の入手先になります。',
+    linkInvalid: 'このリンクは無効のようです。https:// で始まる必要があります。',
+    publishAskTitle: 'このパックをコミュニティで共有しますか？',
+    publishAskBody: 'あなたの準備データはほかのグループの役に立ちます。各グループが自分の動画でシーンを遊べます。共有されるのはリンクと準備データだけで、声は共有されません。',
+    publishAskYes: '公開する',
+    publishAskNo: '今回はしない',
+    publishLater: 'このシーンは共有しません。気が変わったら、この画面からいつでも公開できます。',
+    linkPlaceholder: 'https://www.youtube.com/watch?v=…',
+    editedByCreator: (date: string) => `${date} に作成者が編集`,
   },
 
   terms: {
@@ -537,9 +548,14 @@ export const ja = {
     adminBadge: '管理者',
     shareLater: 'レンダリング後、言語・ジャンル・タグを付けてシーンをコミュニティに公開できます。',
     communityTitle: 'コミュニティ用のパックを作成',
-    communityBody: 'いつも通り動画を読み込み、シーンを準備してください。レンダリングが終わったら、ワンクリックで公開できます。',
+    communityBody: 'まず情報と動画、次に準備データの確認。パックを公開したら、グループで遊べます。',
     langLabel: '動画で話されている言語',
     langHelp: '文字起こしの精度を高め、コミュニティに公開したときの絞り込みにも使われます。',
+    packFicheTitle: 'パックの情報',
+    packVideoTitle: '分割する動画',
+    packSubmit: '読み込んでパックを準備',
+    packYoutubeNeeded: 'YouTube から読み込むには、情報のリンクが YouTube 動画である必要があります。',
+    packNeedsVideo: '続けるにはシーンの動画を追加してください。',
   },
 
   ingest: {
@@ -617,6 +633,14 @@ export const ja = {
     undo: '取り消す',
     splitBody: (n: number) => `${n} 件のセリフを新しいキャラクターに移動します。`,
     defaultCharacterName: (n: number) => `キャラクター ${n}`,
+    packPublish: 'パックを公開',
+    packPublishBody: '最後にもう一度情報を確認してください。コミュニティに表示される内容です。準備データは画面のとおりに公開されます。',
+    packPublishedTitle: 'パックを公開しました',
+    packPublishedBody: 'パックはコミュニティにあります。ほかのグループが見つけて、コメントし、自分の動画で遊べます。次はあなたの番です。',
+    packPlay: 'このパックで今すぐ遊ぶ',
+    packPlayHint: 'このシーンでロビーが開きます。コードをグループに共有しましょう。',
+    packSeeFiche: 'パックの情報を見る',
+    packAnother: '別のパックを作成',
   },
 
   lobby: {
@@ -759,6 +783,17 @@ export const ja = {
     waitSomeAway: (names: string) => `全員が録り終えました。まだこの画面にいない人：${names}。待つことも、待たずに開始することもできます。`,
     launchAnyway: '待たずに開始',
     clipsNav: 'クリップへ移動',
+    devicesTitle: 'マイクとヘッドホン',
+    devicesLocked: 'マイクを許可すると機器を選べます。許可するまでブラウザは機器名を表示しません。',
+    devicesAllow: 'マイクを許可',
+    deviceMic: 'マイク',
+    deviceOutput: '出力（ヘッドホン）',
+    deviceDefault: 'システムの既定',
+    deviceOutputUnsupported: 'お使いのブラウザはシステムの出力に音を送ります。端末の設定でヘッドホンを選んでください。',
+    devicesHelp: 'すべてのテイクに適用され、次回も記憶されます。',
+    devicesDuringTake: '機器はテイクの合間に変更できます。',
+    deviceMicN: (n: number) => `マイク ${n}`,
+    deviceOutputN: (n: number) => `出力 ${n}`,
   },
 
   progress: {
@@ -1074,11 +1109,11 @@ export const ja = {
       steps: [
         {
           title: 'シーンを完成させる',
-          body: '公開はレンダリング後、結果画面から行います。公開するのはホストです。',
+          body: 'レンダリング後の結果画面から、またはコミュニティの「パックを作成」から始めた場合は準備画面から公開できます。公開するのはホストです。',
         },
         {
           title: '情報を入力する',
-          body: 'タイトル、話されている言語、ジャンルは必須です。カタログの絞り込みに使われます。#starwars のようなタグを付けると検索で見つかります。',
+          body: 'タイトル、元動画のリンク、言語、ジャンルは必須です。リンクはプレビューになり、ほかの人が動画を入手する手がかりになります。#starwars のようなタグを付けると検索で見つかります。',
         },
         {
           title: 'コミュニティで確認する',
@@ -1206,5 +1241,8 @@ export const ja = {
     tooLong: 'シーンが長すぎます。10 分までです。',
     youtubeFailed:
       'YouTube からの取得に失敗しました。動画ファイルを直接取り込んでください。',
+    pageNotFoundTitle: 'このページは存在しません',
+    pageNotFoundBody: 'リンクが不完全か、ページが移動した可能性があります。ホームから探してみてください。',
+    backHome: 'ホームに戻る',
   },
 } satisfies Dictionary;

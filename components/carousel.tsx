@@ -97,7 +97,7 @@ export function Carousel({ slides }: { slides: Slide[] }) {
         mouvement lateral qu'on attend d'un carrousel : un fondu sur
         place ne se lit pas comme un defilement.
       */}
-      <div className="carrousel-scene overflow-hidden rounded-card border-2 border-bezel-dark bg-stage">
+      <div className="carrousel-scene overflow-hidden rounded-card bg-stage">
         <div
           className={cn(
             'flex',

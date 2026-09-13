@@ -9,7 +9,7 @@ import { AUTH_COOKIE_MAX_AGE } from '@/lib/supabase/cookies';
 
 export const metadata = {
   robots: { index: true, follow: true },
-  title: `Cookies · ${APP_NAME}`,
+  title: 'Cookies',
 };
 
 const JOURS_CONNEXION = Math.round(AUTH_COOKIE_MAX_AGE / 86_400);

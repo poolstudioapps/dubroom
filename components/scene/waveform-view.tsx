@@ -81,7 +81,7 @@ export function WaveformView({
     const charColor = resolveCharacterColor(characterColor);
     const takeColor = resolveCssColor('var(--color-stage-text)', '#f2f2f5');
     const zoneColor = resolveCssColor('var(--color-stage-raised)', '#2a2a35');
-    const playheadColor = resolveCssColor('var(--color-accent)', '#ff8159');
+    const playheadColor = resolveCssColor('var(--color-accent)', '#e9c46a');
 
     let frame = 0;
 
@@ -182,7 +182,7 @@ export function WaveformView({
       <canvas
         ref={canvasRef}
         style={{ height }}
-        className="block w-full min-w-0 max-w-full rounded-md border-2 border-bezel-dark bg-stage"
+        className="block w-full min-w-0 max-w-full rounded-xl border border-border bg-stage"
         aria-hidden
       />
       <div className="flex justify-between text-[10px] text-text-faint">

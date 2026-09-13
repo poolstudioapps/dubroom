@@ -45,8 +45,8 @@ export function TagInput({
   return (
     <div
       className={cn(
-        'ui-input flex min-h-10 w-full flex-wrap items-center gap-1.5 rounded-sm border-2 border-border-strong bg-screen px-2 py-1.5 text-sm text-text',
-        'shadow-[inset_0_2px_4px_0_rgb(0_0_0/0.18)] focus-within:border-bezel',
+        'ui-input flex min-h-10 w-full flex-wrap items-center gap-1.5 px-2 py-1.5 text-sm text-text',
+        'focus-within:border-accent/60',
         className,
       )}
     >

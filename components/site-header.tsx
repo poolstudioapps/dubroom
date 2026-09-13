@@ -43,7 +43,7 @@ export function SiteHeader({
       */}
       <Link
         href="/"
-        className="signage site-logo order-1 rounded-sm text-xl text-[oklch(0.85_0.12_200)] sm:text-3xl"
+        className="signage site-logo order-1 rounded-sm text-xl sm:text-3xl"
       >
         {APP_NAME}
       </Link>
@@ -61,7 +61,7 @@ export function SiteHeader({
         {right ?? (
           <Link
             href="/login"
-            className="btn-3d btn-primary inline-flex h-11 items-center gap-2 bg-accent px-5 text-sm font-semibold uppercase tracking-wide text-accent-ink [--btn-lip:var(--color-accent-ink)] hover:bg-accent-hover"
+            className="btn-3d btn-primary inline-flex h-11 items-center gap-2 bg-accent px-5 text-sm font-semibold text-accent-ink"
           >
             {t.auth.signIn}
           </Link>

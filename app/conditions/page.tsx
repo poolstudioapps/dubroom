@@ -6,7 +6,7 @@ import { LegalShell, LegalSection } from '@/components/legal-shell';
 
 export const metadata = {
   robots: { index: true, follow: true },
-  title: `Conditions générales d’utilisation · ${APP_NAME}`,
+  title: 'Conditions générales d’utilisation',
   description: `Les règles d’usage de ${APP_NAME} : accès sur invitation, cadre strictement privé, et responsabilité de chacun sur les extraits qu’il importe.`,
 };
 
