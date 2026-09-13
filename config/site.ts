@@ -88,3 +88,16 @@ export const SEO_TERMS = [
   'séparer les voix et la musique',
   'fandub',
 ] as const;
+
+/**
+ * Les reseaux sociaux du pied de page.
+ *
+ * Vides tant que les comptes n'existent pas : l'icone s'affiche quand
+ * meme, marquee « bientot », et devient un lien des qu'une adresse est
+ * renseignee ici.
+ */
+export const SOCIAL_LINKS = {
+  instagram: '',
+  tiktok: '',
+  youtube: '',
+} as const;

@@ -129,7 +129,7 @@ export const config = {
   demucsJobs: str('DEMUCS_JOBS', '2'),
   demucsSegment: str('DEMUCS_SEGMENT', '7'),
 
-  maxVideoDurationMs: int('MAX_VIDEO_DURATION_MS', 600_000),
+  maxVideoDurationMs: int('MAX_VIDEO_DURATION_MS', 300_000),
   maxUploadBytes: int('MAX_UPLOAD_BYTES', 2_147_483_648),
   pollIntervalMs: int('JOB_POLL_INTERVAL_MS', 2_000),
 

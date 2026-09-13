@@ -14,7 +14,7 @@ import { PackSourcePicker } from '@/components/pack-source-picker';
 import { PhaseProgress } from '@/components/scene/phase-progress';
 import { SelectMenu } from '@/components/select-menu';
 import { videoId } from '@/components/url-preview';
-import { Alert, Badge, Button, Card, Input, Label, Toggle } from '@/components/ui';
+import { Alert, Badge, Button, Card, Input, Label } from '@/components/ui';
 import { GUIDE_VIDEO_HREF } from '@/config/constants';
 import { formatBytes } from '@/config/strings';
 import { createSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
@@ -73,7 +73,6 @@ export function NewSessionForm({
    * revient si on en colle un autre.
    */
   const [ecarte, setEcarte] = useState('');
-  const [isSong, setIsSong] = useState(false);
   // La langue de l'interface par defaut : c'est le cas de la plupart des
   // scenes. Le champ reste la, bien visible, pour la changer.
   const langueParDefaut = (PACK_LANGS as readonly string[]).includes(locale) ? locale : '';
@@ -130,7 +129,6 @@ export function NewSessionForm({
         sourceType: youtube ? 'youtube' : 'upload',
         sourceRef: youtube ? lienYoutube : undefined,
         displayName,
-        isSong,
         sourceLang: packMode ? fiche.sourceLang : langue,
       });
 
@@ -409,19 +407,6 @@ export function NewSessionForm({
               {guide}
             </div>
           )}
-
-          {/*
-            Une reprise ne se prepare pas comme une scene de film : il n'y
-            a rien a transcrire, et le decoupage suit la voix du morceau.
-            La question se pose ici, avant le traitement.
-          */}
-          <div className="panel flex items-start gap-3 p-3">
-            <Toggle checked={isSong} onChange={setIsSong} label={t.create.songLabel} />
-            <div className="space-y-0.5">
-              <p className="text-sm font-bold">{t.create.songLabel}</p>
-              <p className="text-xs text-text-faint">{t.create.songHelp}</p>
-            </div>
-          </div>
 
           {packMode ? null : <p className="text-xs text-text-faint">{t.create.shareLater}</p>}
 

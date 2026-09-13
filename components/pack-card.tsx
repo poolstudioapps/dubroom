@@ -1,20 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { Clapperboard, MessageSquare, Trash2 } from 'lucide-react';
+import { Clapperboard, MessageSquare, Pencil, Trash2, Users } from 'lucide-react';
 
 import { CertifiedBadge } from '@/components/certified-badge';
 import { PackVote } from '@/components/pack-vote';
 import { UrlPreview } from '@/components/url-preview';
 import { Button } from '@/components/ui';
-import { characterColorVar } from '@/config/constants';
 import { formatBytes, formatDuration } from '@/config/strings';
 import { profileHref } from '@/lib/creators';
 import { useT } from '@/lib/i18n';
 import { packHref, type Pack } from '@/lib/packs';
 
-/** Au-dela, les personnages se resument en « +3 ». */
-const PASTILLES_MAX = 4;
 /** Les etiquettes au-dela restent sur la page de la scene. */
 const TAGS_MAX = 3;
 
@@ -34,14 +31,15 @@ export function packGridClass(count: number): string {
 /**
  * Une scene du catalogue.
  *
- * La meme carte sert le catalogue et l'ecran de creation : deux dessins
- * separes avaient deja diverge, l'un en grille d'affiches, l'autre en
- * liste serree ou le bouton changeait de place d'une ligne a l'autre.
+ * La meme carte sert le catalogue, le profil et l'ecran de creation : deux
+ * dessins separes avaient deja diverge.
  *
  * Tout ce qui se lit d'un coup d'oeil est sur l'image — la duree, et si
  * la scene est la sienne — comme sur n'importe quel catalogue de videos.
- * Le corps ne garde que le titre, une ligne de details et la
- * distribution.
+ * Le corps garde le titre, une ligne de details, et deux chiffres : les
+ * roles a doubler et les commentaires. La liste des personnages, elle,
+ * est sur la page de la scene : sur la carte elle poussait les boutons et
+ * ne disait rien qu'un nombre ne dise mieux.
  *
  * Le bouton reste en retrait et ne prend la couleur d'action qu'au
  * survol : douze boutons pleins dans une grille criaient ensemble, et
@@ -51,6 +49,7 @@ export function PackCard({
   pack,
   onPlay,
   onDelete,
+  onEdit,
   starting = false,
   locked = false,
   showMine = true,
@@ -59,8 +58,10 @@ export function PackCard({
 }: {
   pack: Pack;
   onPlay: () => void;
-  /** Absent : pas de corbeille. Seul « Mes packs » la propose. */
+  /** Absent : pas de corbeille. */
   onDelete?: () => void;
+  /** Absent : pas de crayon. Le createur, sur son profil. */
+  onEdit?: () => void;
   /** Cette scene est en train de demarrer. */
   starting?: boolean;
   /** Une autre scene demarre : on ne lance pas deux parties a la fois. */
@@ -94,9 +95,6 @@ export function PackCard({
     </>
   );
 
-  const visibles = pack.characters.slice(0, PASTILLES_MAX);
-  const reste = pack.characters.length - visibles.length;
-
   return (
     <li className="panel carte-pack flex flex-col overflow-hidden">
       {pack.kind === 'url' && pack.source_url ? (
@@ -113,7 +111,7 @@ export function PackCard({
       {/*
         Le corps entier mene a la page de la scene : le lien du titre
         s'etire sur toute la carte sous le texte. Ce qui s'actionne sur
-        place — vote, etiquettes, bouton pour doubler — passe au-dessus.
+        place — vote, etiquettes, boutons — passe au-dessus.
       */}
       <div className="relative flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-start justify-between gap-2">
@@ -126,18 +124,7 @@ export function PackCard({
                 {pack.title}
               </Link>
             </h3>
-            <p className="mt-1 flex flex-wrap items-center gap-x-1 text-xs leading-relaxed text-text-faint">
-              {details}
-              {pack.comment_count > 0 ? (
-                <span className="inline-flex items-center gap-1">
-                  {' · '}
-                  <MessageSquare className="h-3 w-3" aria-hidden />
-                  <span aria-label={t.community.commentsCount(pack.comment_count)}>
-                    {pack.comment_count}
-                  </span>
-                </span>
-              ) : null}
-            </p>
+            <p className="mt-1 text-xs leading-relaxed text-text-faint">{details}</p>
             {/* Le createur, au-dessus du lien de la carte : son nom mene a
                 son profil, pas a la scene. */}
             {showAuthor ? (
@@ -173,26 +160,20 @@ export function PackCard({
           </ul>
         ) : null}
 
-        <ul className="flex flex-wrap gap-1.5" aria-label={t.community.characterCount(pack.character_count)}>
-          {visibles.map((character) => (
-            <li
-              key={character.name}
-              className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-semibold"
-            >
-              <span
-                className="h-2 w-2 shrink-0 rounded-full"
-                style={{ backgroundColor: characterColorVar(character.color) }}
-                aria-hidden
-              />
-              <span className="truncate">{character.name}</span>
-            </li>
-          ))}
-          {reste > 0 ? (
-            <li className="inline-flex items-center rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-semibold text-text-faint">
-              +{reste}
-            </li>
-          ) : null}
-        </ul>
+        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-semibold text-text-muted">
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 text-text-faint" aria-hidden />
+            {t.community.charactersToDub(pack.character_count)}
+          </span>
+          <span
+            className="inline-flex items-center gap-1.5"
+            aria-label={t.community.commentsCount(pack.comment_count)}
+            title={t.community.commentsCount(pack.comment_count)}
+          >
+            <MessageSquare className="h-3.5 w-3.5 text-text-faint" aria-hidden />
+            {pack.comment_count}
+          </span>
+        </p>
 
         <div className="relative z-10 mt-auto flex items-center gap-2 pt-1">
           <Button
@@ -205,11 +186,23 @@ export function PackCard({
             {starting ? null : <Clapperboard className="h-4 w-4" aria-hidden />}
             {t.community.play}
           </Button>
+          {onEdit ? (
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`${t.community.detailEdit} : ${pack.title}`}
+              title={t.community.detailEdit}
+              onClick={onEdit}
+            >
+              <Pencil className="h-4 w-4" aria-hidden />
+            </Button>
+          ) : null}
           {onDelete ? (
             <Button
               size="icon"
               variant="ghost"
               aria-label={`${t.community.remove} : ${pack.title}`}
+              title={t.community.remove}
               onClick={onDelete}
             >
               <Trash2 className="h-4 w-4" aria-hidden />

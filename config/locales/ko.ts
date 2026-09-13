@@ -239,7 +239,6 @@ export const ko = {
       science_fiction: 'SF',
       horreur: '공포',
       jeu_video: '게임',
-      chanson: '노래',
       documentaire: '다큐멘터리',
       autre: '기타',
     } as Record<string, string>,
@@ -364,6 +363,36 @@ export const ko = {
     previewMoreTitle: '더빙할 장면이 아직 많아요',
     previewMoreBody: (n: number) => (n > 0 ? `계정을 만들면 카탈로그의 장면 ${n}개를 둘러보고, 친구와 플레이하고, 내 장면을 공개할 수 있어요.` : '계정을 만들면 카탈로그를 둘러보고, 친구와 플레이하고, 내 장면을 공개할 수 있어요.'),
     previewCta: '장면 더 보기',
+    charactersToDub: (n: number) => `더빙할 캐릭터 ${n}명`,
+    faqTitle: '커뮤니티 질문',
+    faq: [
+      {
+        q: '팩이란?',
+        a: '다른 플레이어가 미리 준비한 장면이에요. 캐릭터, 대본, 구간, 원래 소리가 모두 있어요. 부족한 건 여러분이 가져올 영상과 목소리뿐이에요.',
+      },
+      {
+        q: '왜 영상을 직접 가져와야 하나요?',
+        a: 'Dubblers는 영상을 저장하지 않아요. 소개에 있는 링크 등에서 영상을 준비하세요. 처음부터 끝까지 같은 영상이면 돼요.',
+      },
+      {
+        q: '내 장면은 어떻게 공개하나요?',
+        a: '커뮤니티에서 팩을 만들거나 완성한 장면을 결과 화면에서 공개하세요. 제목, 원본 링크, 언어, 장르만 있으면 돼요.',
+      },
+      {
+        q: '투표는 무엇을 위한 건가요?',
+        a: '영화가 아니라 구간 정보의 품질을 평가해요. 평가가 좋은 장면은 카탈로그 위쪽에 올라가고, 만든 사람은 인증을 받을 수 있어요.',
+      },
+      {
+        q: '내 팩은 어디서 수정하거나 삭제하나요?',
+        a: '공개 프로필에서요. 모든 팩이 그곳에 있고, 언제든 수정하거나 삭제할 수 있어요.',
+      },
+    ],
+    pagination: {
+      label: '카탈로그 페이지',
+      previous: '이전 페이지',
+      next: '다음 페이지',
+      page: (n: number) => `${n}페이지`,
+    },
   },
 
   terms: {
@@ -390,6 +419,12 @@ export const ko = {
     contactEmail: 'ienders.pro@gmail.com',
     cookies: '쿠키',
     footerNav: '바닥글 링크',
+    footerTagline: '친구와 함께하는 영화 더빙 게임. 대사는 각자, 놀라움은 마지막에 다 함께.',
+    footerExplore: '둘러보기',
+    footerHelp: '도움말',
+    footerLegal: '법적 고지',
+    footerFollow: '팔로우하기',
+    socialSoon: '곧 공개',
   },
 
   status: {
@@ -518,9 +553,6 @@ export const ko = {
     title: '새 장면',
     tabUpload: '영상 가져오기',
     tabYoutube: 'YouTube 링크 붙여넣기',
-    songLabel: '노래입니다',
-    songHelp:
-      '가사는 이미 알 테니 받아쓰기는 건너뜁니다. 구간은 곡의 보컬을 따라가며 들어갈 타이밍만 알려줍니다.',
     matchTitle: '이 장면은 이미 있습니다',
     matchBody:
       '누군가 이미 준비해 두었습니다. 구간, 배역, 대사가 모두 있습니다. 그대로 쓰면 같은 결과를 몇 분씩 기다릴 필요 없이 바로 시작합니다.',
@@ -533,7 +565,7 @@ export const ko = {
     titleLabel: '장면 제목',
     titlePlaceholder: '다리 위의 결투',
     dropzone: '영상을 여기에 놓거나 클릭해서 선택하세요',
-    fileTooLarge: '파일이 너무 큽니다. 최대 50 MB입니다.',
+    fileTooLarge: '파일이 너무 큽니다. 최대 40 MB입니다.',
     wrongType: '이 파일은 영상이 아닙니다. MP4, MOV, MKV, AVI, WebM 등 모든 영상 형식을 지원합니다.',
     youtubeLabel: '영상 링크',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -541,7 +573,7 @@ export const ko = {
       'YouTube에서 받아오는 건 편의 기능이지 보장이 아닙니다. 자주 실패합니다. 안 되면 파일을 직접 가져오세요.',
     multiTrackWarning:
       '소스에 오디오 트랙이 여러 개면(더빙, 원어, 코멘터리 등) 첫 번째가 더빙 대상입니다.',
-    durationWarning: '장면은 10분 미만이어야 합니다.',
+    durationWarning: '장면은 5분 미만이어야 합니다.',
     submitUpload: '가져와서 준비',
     submitYoutube: '받아와서 준비',
     uploading: '파일 보내는 중…',
@@ -549,7 +581,7 @@ export const ko = {
     introUpload: '내 영상으로 처음부터 준비하는 새 장면. 영화, 드라마, 유튜브나 틱톡 클립, 화면 녹화 등 출처는 상관없습니다.',
     introPack: '캐릭터, 대사, 소리가 모두 준비돼 있어요. 영상을 가져오면 약 1분 안에 로비가 열려요.',
     introYoutube: '관리자 전용: 영상은 호스트의 컴퓨터가 내려받으며, 컴퓨터가 켜져 있어야 해요.',
-    limits: '모든 영상 형식 · 최대 50MB, 10분',
+    limits: '모든 영상 형식 · 최대 50MB, 5분',
     uploadStepsTitle: '진행 방식',
     uploadSteps: [
       '영상을 고르고 제목을 붙입니다.',
@@ -799,6 +831,7 @@ export const ko = {
     expiredTitle: '세션 만료',
     expiredBody: '20분 동안 녹음된 테이크가 없어 세션이 자동으로 종료됐어요. 언제든 새로 시작할 수 있어요.',
     expiredOk: '확인',
+    takeDragHelp: '테이크가 배치됐어요. 위치를 옮기려면 파형 위에서 트랙을 끌어 주세요.',
   },
 
   progress: {
@@ -920,7 +953,7 @@ export const ko = {
       '팩의 장면과 같은 구간, 편집 없이',
       '어떤 영상 형식이든 가능',
       '최대 50MB: 720p나 480p면 충분',
-      '최대 10분',
+      '최대 5분',
     ],
     whyTitle: '왜 이 단계가 필요한가요?',
     whyBody: 'Dubblers는 영상을 저장하지 않아요. 카탈로그에는 구간 정보와 소리만 있고 화면은 없어요. 게다가 대부분의 플랫폼은 서버에서 오는 다운로드를 거부해요. 그래서 파일은 직접 가져오고, 나머지는 모두 온라인에서 진행돼요.',
@@ -958,7 +991,7 @@ export const ko = {
     homeBannerBody: '유튜브, 틱톡, 디스크의 영화, 화면 녹화. 형식에 상관없이 모든 영상 파일을 불러올 수 있습니다. 가이드에서 5분 만에 구하고 준비하는 방법을 알려 드립니다.',
     homeBannerAction: '불러오기 가이드 읽기',
     midLink: '아직 영상이 없나요? 가이드에서 구하는 방법을 설명합니다.',
-    trajetFile: '형식 무관 · 최대 50 MB',
+    trajetFile: '형식 무관 · 최대 40 MB',
   },
 
   guideHub: {
@@ -1246,7 +1279,7 @@ export const ko = {
     hostOnly: '호스트만 할 수 있습니다.',
     noAudioTrack: '이 파일에는 오디오 트랙이 없습니다.',
     noVideoTrack: '이 파일에는 영상이 없습니다.',
-    tooLong: '장면이 너무 깁니다. 최대 10분입니다.',
+    tooLong: '장면이 너무 깁니다. 최대 5분입니다.',
     youtubeFailed: 'YouTube에서 받아오지 못했습니다. 영상 파일을 직접 가져오세요.',
     pageNotFoundTitle: '존재하지 않는 페이지입니다',
     pageNotFoundBody: '링크가 불완전하거나 페이지가 옮겨졌을 수 있어요. 홈에서 다시 찾아보세요.',
@@ -1264,5 +1297,8 @@ export const ko = {
     packComment: (who: string, others: number, title: string) => (others === 0 ? `${who}님이 「${title}」에 댓글을 남겼어요` : `${who}님 외 ${others}명이 「${title}」에 댓글을 남겼어요`),
     profileComment: (who: string, others: number) => (others === 0 ? `${who}님이 내 프로필에 글을 남겼어요` : `${who}님 외 ${others}명이 내 프로필에 글을 남겼어요`),
     reply: (who: string, others: number) => (others === 0 ? `${who}님이 내 댓글에 답글을 남겼어요` : `${who}님 외 ${others}명이 내 댓글에 답글을 남겼어요`),
+    recent: '새 알림',
+    earlier: '이전',
+    newCount: (n: number) => `새 알림 ${n}개`,
   },
 } satisfies Dictionary;

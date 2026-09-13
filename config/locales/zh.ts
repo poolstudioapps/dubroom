@@ -236,7 +236,6 @@ export const zh = {
       science_fiction: '科幻',
       horreur: '恐怖',
       jeu_video: '游戏',
-      chanson: '歌曲',
       documentaire: '纪录片',
       autre: '其他',
     } as Record<string, string>,
@@ -361,6 +360,36 @@ export const zh = {
     previewMoreTitle: '还有很多场景等你来配',
     previewMoreBody: (n: number) => (n > 0 ? `创建账号即可浏览目录中的全部 ${n} 个场景，和朋友一起玩，并发布你自己的场景。` : '创建账号即可浏览目录，和朋友一起玩，并发布你自己的场景。'),
     previewCta: '查看更多场景',
+    charactersToDub: (n: number) => `${n} 个待配音角色`,
+    faqTitle: '社区常见问题',
+    faq: [
+      {
+        q: '什么是素材包？',
+        a: '由其他玩家准备好的场景：角色、台词、分段和原始声音都已就绪。只差你带来的视频，以及你们的声音。',
+      },
+      {
+        q: '为什么需要我自己提供视频？',
+        a: 'Dubblers 不存放视频。你可以通过介绍中的链接或其他途径获取视频：只要从头到尾是同一个视频就行。',
+      },
+      {
+        q: '如何发布我自己的场景？',
+        a: '在社区中创建素材包，或在结果页面发布已完成的场景。只需填写标题、原始链接、语言和类型。',
+      },
+      {
+        q: '投票有什么用？',
+        a: '投票评价的是分段质量，而不是电影本身。评分最高的场景会排在目录前列，创作者还有机会获得认证。',
+      },
+      {
+        q: '在哪里编辑或删除我的素材包？',
+        a: '在你的公开主页：所有素材包都在那里，你可以随时编辑或删除。',
+      },
+    ],
+    pagination: {
+      label: '目录分页',
+      previous: '上一页',
+      next: '下一页',
+      page: (n: number) => `第 ${n} 页`,
+    },
   },
 
   terms: {
@@ -386,6 +415,12 @@ export const zh = {
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookie',
     footerNav: '页脚链接',
+    footerTagline: '和朋友一起玩的电影配音游戏：每人一句台词，最后一起揭晓惊喜。',
+    footerExplore: '探索',
+    footerHelp: '帮助',
+    footerLegal: '法律信息',
+    footerFollow: '关注我们',
+    socialSoon: '即将上线',
   },
 
   status: {
@@ -512,8 +547,6 @@ export const zh = {
     title: '新片段',
     tabUpload: '导入视频',
     tabYoutube: '粘贴 YouTube 链接',
-    songLabel: '这是一首歌',
-    songHelp: '不做转写，歌词你本来就会。断句跟着歌里的人声走，只告诉你什么时候进。',
     matchTitle: '这个片段已经有了',
     matchBody:
       '有人已经准备好了：断句、角色和台词都在。直接用就能马上开始，不用为同样的结果再等几分钟。',
@@ -525,14 +558,14 @@ export const zh = {
     titleLabel: '片段标题',
     titlePlaceholder: '桥上的决斗',
     dropzone: '把视频拖到这里，或点击选择',
-    fileTooLarge: '文件太大：最多 50 MB。',
+    fileTooLarge: '文件太大：最多 40 MB。',
     wrongType: '这个文件不是视频。支持所有视频格式：MP4、MOV、MKV、AVI、WebM…',
     youtubeLabel: '视频链接',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
     youtubeWarning:
       '从 YouTube 下载只是图方便，不保证成功，经常会挂。不行的话就直接导入文件。',
     multiTrackWarning: '如果源里有多条音轨（配音、原声、评论），会拿第一条来配。',
-    durationWarning: '片段要短于 10 分钟。',
+    durationWarning: '片段要短于 5 分钟。',
     submitUpload: '导入并准备',
     submitYoutube: '下载并准备',
     uploading: '正在上传文件…',
@@ -540,7 +573,7 @@ export const zh = {
     introUpload: '用你的视频从零开始准备一个新场景，来源不限：电影、剧集、YouTube 或 TikTok 片段、屏幕录像……',
     introPack: '角色、台词和声音都已就绪：带上视频，大约一分钟后大厅就会打开。',
     introYoutube: '仅限管理员：视频由主持人的电脑下载，电脑需要保持开机。',
-    limits: '任意视频格式 · 最大 50 MB、10 分钟',
+    limits: '任意视频格式 · 最大 40 MB、5 分钟',
     uploadStepsTitle: '流程',
     uploadSteps: [
       '选择视频并起个标题。',
@@ -785,6 +818,7 @@ export const zh = {
     expiredTitle: '会话已过期',
     expiredBody: '二十分钟内没有录制任何片段，会话已自动关闭。你可以随时重新开始。',
     expiredOk: '知道了',
+    takeDragHelp: '录音已放好。要移动它，请在波形上拖动音轨。',
   },
 
   progress: {
@@ -860,9 +894,9 @@ export const zh = {
     openSource: '查看原始视频',
     howTo: '如何获取文件？',
     drop: '把视频拖到这里，或点击选择',
-    expected: (d: string) => `预期时长：${d} · 任意视频格式，最大 50 MB`,
+    expected: (d: string) => `预期时长：${d} · 任意视频格式，最大 40 MB`,
     mismatch: (expected: string, got: string) => `这个文件时长 ${got}，素材包的场景时长 ${expected}。如果不是完全相同的视频，台词会对不上。`,
-    tooLarge: '文件太大：最大 50 MB。请以 720p 或 480p 重新导出视频。',
+    tooLarge: '文件太大：最大 40 MB。请以 720p 或 480p 重新导出视频。',
     or: '或',
     autoTitle: '自动下载',
     autoBody: '由主持人的电脑从 YouTube 下载视频：电脑需要保持开机。',
@@ -888,7 +922,7 @@ export const zh = {
       },
       {
         title: '获取文件',
-        body: '用你喜欢的工具保存视频，或使用已有的文件。任何格式都可以。建议 720p，文件超过 50 MB 时用 480p。',
+        body: '用你喜欢的工具保存视频，或使用已有的文件。任何格式都可以。建议 720p，文件超过 40 MB 时用 480p。',
       },
       {
         title: '检查时长',
@@ -903,8 +937,8 @@ export const zh = {
     checklist: [
       '与素材包场景相同的片段，没有剪切',
       '任意视频格式',
-      '最大 50 MB：720p 或 480p 就够了',
-      '最长 10 分钟',
+      '最大 40 MB：720p 或 480p 就够了',
+      '最长 5 分钟',
     ],
     whyTitle: '为什么需要这一步？',
     whyBody: 'Dubblers 不存放视频：目录只保存分段和声音，从不保存画面。而且大多数平台会拒绝来自服务器的下载。所以文件由你提供，其余一切都在线完成。',
@@ -921,7 +955,7 @@ export const zh = {
         a: '任何能把视频保存为文件的工具都可以，网站不限。避免要求安装陌生扩展或软件的工具，并且只获取你有权私人使用的视频。',
       },
       {
-        q: '我的文件超过 50 MB',
+        q: '我的文件超过 40 MB',
         a: '用更低的画质重新导出：720p，长场景用 480p。在工作室里画面依然清晰，声音也不受影响。',
       },
       {
@@ -942,7 +976,7 @@ export const zh = {
     homeBannerBody: 'YouTube、TikTok、硬盘里的电影、屏幕录像：任何视频文件都能导入，格式不限。指南会教你在五分钟内获取并准备好。',
     homeBannerAction: '阅读导入指南',
     midLink: '手头还没有视频？指南会告诉你如何获取。',
-    trajetFile: '任意格式 · 最大 50 MB',
+    trajetFile: '任意格式 · 最大 40 MB',
   },
 
   guideHub: {
@@ -1230,7 +1264,7 @@ export const zh = {
     hostOnly: '只有房主能这么做。',
     noAudioTrack: '这个文件没有音轨。',
     noVideoTrack: '这个文件没有视频。',
-    tooLong: '片段太长了：最多 10 分钟。',
+    tooLong: '片段太长了：最多 5 分钟。',
     youtubeFailed: '从 YouTube 下载失败了。直接导入视频文件吧。',
     pageNotFoundTitle: '页面不存在',
     pageNotFoundBody: '链接可能不完整，或页面已移动。请从首页重新开始。',
@@ -1248,5 +1282,8 @@ export const zh = {
     packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} 评论了“${title}”` : `${who} 等 ${others + 1} 人评论了“${title}”`),
     profileComment: (who: string, others: number) => (others === 0 ? `${who} 在你的主页留言` : `${who} 等 ${others + 1} 人在你的主页留言`),
     reply: (who: string, others: number) => (others === 0 ? `${who} 回复了你的评论` : `${who} 等 ${others + 1} 人回复了你的评论`),
+    recent: '最新',
+    earlier: '更早',
+    newCount: (n: number) => `${n} 条新消息`,
   },
 } satisfies Dictionary;

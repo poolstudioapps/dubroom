@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { ArrowLeft, Clapperboard, Pencil, ThumbsDown, ThumbsUp } from 'lucide-react';
@@ -12,11 +12,13 @@ import { CertifiedBadge } from '@/components/certified-badge';
 import { CommentThread } from '@/components/comment-thread';
 import { LinkButton } from '@/components/link-button';
 import { PackCard, packGridClass } from '@/components/pack-card';
+import { PackFacetsDialog } from '@/components/pack-facets-dialog';
 import { PackStartDialog } from '@/components/pack-start-dialog';
-import { Card, Spinner } from '@/components/ui';
+import { Alert, Button, Card, Dialog, Spinner } from '@/components/ui';
 import { useCreatorProfile } from '@/lib/creators';
+import { humanizeError } from '@/lib/errors';
 import { useLocale, useT } from '@/lib/i18n';
-import { PACKS_QUERY, type Pack } from '@/lib/packs';
+import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
 import { cn } from '@/lib/utils';
 
 /**
@@ -40,6 +42,20 @@ export function CreatorProfileClient({
   const profil = useCreatorProfile(userId);
   const packs = useQuery(PACKS_QUERY);
   const [doubler, setDoubler] = useState<Pack | null>(null);
+  // Sur son propre profil, ses packs se modifient et se retirent ici.
+  const [retouche, setRetouche] = useState<Pack | null>(null);
+  const [aRetirer, setARetirer] = useState<Pack | null>(null);
+  const [erreur, setErreur] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const retirer = useMutation({
+    mutationFn: (pack: Pack) => deletePack(pack),
+    onSuccess: () => {
+      setARetirer(null);
+      void qc.invalidateQueries({ queryKey: ['packs'] });
+      void qc.invalidateQueries({ queryKey: ['creator', userId] });
+    },
+    onError: (e) => setErreur(humanizeError(e)),
+  });
 
   const sesPacks = useMemo(
     () =>
@@ -170,7 +186,11 @@ export function CreatorProfileClient({
                 key={pack.id}
                 pack={pack}
                 showAuthor={false}
+                // « La tienne » ne dit rien sur une page ou tout est a lui.
+                showMine={false}
                 onPlay={() => setDoubler(pack)}
+                onEdit={p.is_me && pack.can_edit ? () => setRetouche(pack) : undefined}
+                onDelete={p.is_me && pack.can_edit ? () => setARetirer(pack) : undefined}
               />
             ))}
           </ul>
@@ -184,6 +204,35 @@ export function CreatorProfileClient({
       />
 
       <PackStartDialog pack={doubler} displayName={displayName} onClose={() => setDoubler(null)} />
+
+      {retouche ? (
+        <PackFacetsDialog pack={retouche} open onClose={() => setRetouche(null)} />
+      ) : null}
+
+      <Dialog
+        open={!!aRetirer}
+        onClose={() => setARetirer(null)}
+        title={t.community.removeTitle}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setARetirer(null)}>
+              {t.common.cancel}
+            </Button>
+            <Button
+              variant="danger"
+              loading={retirer.isPending}
+              onClick={() => aRetirer && retirer.mutate(aRetirer)}
+            >
+              {t.common.delete}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-sm leading-relaxed text-text-muted">{t.community.removeBody}</p>
+          {erreur ? <Alert tone="danger">{erreur}</Alert> : null}
+        </div>
+      </Dialog>
     </AppShell>
   );
 }

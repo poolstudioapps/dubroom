@@ -243,7 +243,6 @@ export const it = {
       science_fiction: 'Fantascienza',
       horreur: 'Horror',
       jeu_video: 'Videogioco',
-      chanson: 'Canzone',
       documentaire: 'Documentario',
       autre: 'Altro',
     } as Record<string, string>,
@@ -369,6 +368,36 @@ export const it = {
     previewMoreTitle: 'E tante altre scene da doppiare',
     previewMoreBody: (n: number) => (n > 0 ? `Crea il tuo account per esplorare tutte le ${n} scene del catalogo, giocarle con gli amici e pubblicare le tue.` : 'Crea il tuo account per esplorare il catalogo, giocare le scene con gli amici e pubblicare le tue.'),
     previewCta: 'Vedi altre scene',
+    charactersToDub: (n: number) => (n === 1 ? '1 personaggio da doppiare' : `${n} personaggi da doppiare`),
+    faqTitle: 'Domande sulla community',
+    faq: [
+      {
+        q: 'Cos’è un pack?',
+        a: 'Una scena già preparata da un altro giocatore: personaggi, testo, tagli e audio originale. Mancano solo il video, che porti tu, e le vostre voci.',
+      },
+      {
+        q: 'Perché devo portare il video?',
+        a: 'Dubblers non ospita video. Recuperalo dal link della scheda, o da dove vuoi: deve solo essere lo stesso, dall’inizio alla fine.',
+      },
+      {
+        q: 'Come pubblico la mia scena?',
+        a: 'Crea un pack dalla community oppure pubblica una scena finita dalla schermata del risultato. Bastano un titolo, il link originale, la lingua e il genere.',
+      },
+      {
+        q: 'A cosa servono i voti?',
+        a: 'Giudicano la qualità dei tagli, non il film. Le scene più votate salgono in cima al catalogo e i loro creatori possono ottenere la certificazione.',
+      },
+      {
+        q: 'Dove modifico o rimuovo i miei pack?',
+        a: 'Sul tuo profilo pubblico: lì trovi tutti i tuoi pack, e puoi modificarli o rimuoverli quando vuoi.',
+      },
+    ],
+    pagination: {
+      label: 'Pagine del catalogo',
+      previous: 'Pagina precedente',
+      next: 'Pagina successiva',
+      page: (n: number) => `Pagina ${n}`,
+    },
   },
 
   terms: {
@@ -395,6 +424,12 @@ export const it = {
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookie',
     footerNav: 'Link a piè di pagina',
+    footerTagline: 'Il gioco di doppiaggio di film tra amici: a ognuno la sua battuta, e la sorpresa tutti insieme alla fine.',
+    footerExplore: 'Esplora',
+    footerHelp: 'Aiuto',
+    footerLegal: 'Note legali',
+    footerFollow: 'Seguici',
+    socialSoon: 'Presto disponibile',
   },
 
   status: {
@@ -524,9 +559,6 @@ export const it = {
     title: 'Nuova scena',
     tabUpload: 'Importa un video',
     tabYoutube: 'Incolla un link YouTube',
-    songLabel: 'È una canzone',
-    songHelp:
-      'Saltiamo la trascrizione: il testo lo sai. Il taglio segue la voce del brano e ti dice quando entrare.',
     matchTitle: 'Questa scena esiste già',
     matchBody:
       'Qualcuno l’ha già preparata: taglio, personaggi e testo sono pronti. Riprenderla parte subito, invece di aspettare qualche minuto per lo stesso risultato.',
@@ -539,7 +571,7 @@ export const it = {
     titleLabel: 'Titolo della scena',
     titlePlaceholder: 'Il duello sul ponte',
     dropzone: 'Trascina qui il tuo video, o clicca per sceglierlo',
-    fileTooLarge: 'File troppo pesante: 50 MB al massimo.',
+    fileTooLarge: 'File troppo pesante: 40 MB al massimo.',
     wrongType: 'Questo file non è un video. Sono accettati tutti i formati video: MP4, MOV, MKV, AVI, WebM…',
     youtubeLabel: 'Link del video',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -547,7 +579,7 @@ export const it = {
       'Il download da YouTube è una comodità, non una garanzia: si guasta di frequente. Se non funziona, importa direttamente il file.',
     multiTrackWarning:
       'Se la tua fonte ha più tracce audio (doppiata, originale, commenti), viene doppiata la prima.',
-    durationWarning: 'La scena deve durare meno di 10 minuti.',
+    durationWarning: 'La scena deve durare meno di 5 minuti.',
     submitUpload: 'Importa e prepara',
     submitYoutube: 'Scarica e prepara',
     uploading: 'Invio del file…',
@@ -555,7 +587,7 @@ export const it = {
     introUpload: 'Una scena nuova, preparata da zero dal tuo video, da qualunque fonte arrivi: un film, una serie, una clip di YouTube o TikTok, una registrazione dello schermo…',
     introPack: 'Personaggi, battute e audio sono già pronti: porti il video e la lobby si apre in circa un minuto.',
     introYoutube: 'Solo per gli amministratori: il video viene scaricato dal computer dell’host, che deve essere acceso.',
-    limits: 'Qualsiasi formato video · al massimo 50 MB e 10 minuti',
+    limits: 'Qualsiasi formato video · al massimo 40 MB e 5 minuti',
     uploadStepsTitle: 'Come funziona',
     uploadSteps: [
       'Scegli il tuo video e gli dai un titolo.',
@@ -812,6 +844,7 @@ export const it = {
     expiredTitle: 'Sessione scaduta',
     expiredBody: 'Nessuna ripresa registrata per venti minuti: la sessione si è chiusa automaticamente. Puoi avviarne un’altra quando vuoi.',
     expiredOk: 'Ho capito',
+    takeDragHelp: 'La tua ripresa è al suo posto. Per spostarla, trascina la traccia sulla forma d’onda.',
   },
 
   progress: {
@@ -890,9 +923,9 @@ export const it = {
     openSource: 'Vedi il video originale',
     howTo: 'Come recupero il file?',
     drop: 'Trascina qui il video o clicca per sceglierlo',
-    expected: (d: string) => `Durata attesa: ${d} · qualsiasi formato video, max 50 MB`,
+    expected: (d: string) => `Durata attesa: ${d} · qualsiasi formato video, max 40 MB`,
     mismatch: (prevista: string, ricevuta: string) => `Questo file dura ${ricevuta}, la scena del pack ${prevista}. Se non è esattamente lo stesso video, le battute cadranno fuori tempo.`,
-    tooLarge: 'File troppo pesante: max 50 MB. Esporta di nuovo il video in 720p o 480p.',
+    tooLarge: 'File troppo pesante: max 40 MB. Esporta di nuovo il video in 720p o 480p.',
     or: 'oppure',
     autoTitle: 'Download automatico',
     autoBody: 'Il computer dell’host scarica il video da YouTube: deve essere acceso.',
@@ -918,7 +951,7 @@ export const it = {
       },
       {
         title: 'Recupera il file',
-        body: 'Salva il video con lo strumento che preferisci, o usa un file che hai già. Va bene qualsiasi formato. Punta a 720p, o 480p se il file supera i 50 MB.',
+        body: 'Salva il video con lo strumento che preferisci, o usa un file che hai già. Va bene qualsiasi formato. Punta a 720p, o 480p se il file supera i 40 MB.',
       },
       {
         title: 'Controlla la durata',
@@ -933,8 +966,8 @@ export const it = {
     checklist: [
       'Lo stesso spezzone della scena del pack, senza tagli',
       'Qualsiasi formato video',
-      'Al massimo 50 MB: bastano 720p o 480p',
-      'Al massimo 10 minuti',
+      'Al massimo 40 MB: bastano 720p o 480p',
+      'Al massimo 5 minuti',
     ],
     whyTitle: 'Perché questo passaggio?',
     whyBody: 'Dubblers non ospita video: il catalogo conserva i tagli e l’audio, mai l’immagine. E la maggior parte delle piattaforme rifiuta i download che provengono dai server. Porti quindi tu il file, e tutto il resto avviene online.',
@@ -951,7 +984,7 @@ export const it = {
         a: 'Qualsiasi strumento che salvi il video in un file, da qualunque sito. Evita quelli che chiedono di installare un’estensione o un programma sconosciuto, e recupera solo video che hai il diritto di usare privatamente.',
       },
       {
-        q: 'Il mio file supera i 50 MB',
+        q: 'Il mio file supera i 40 MB',
         a: 'Esportalo di nuovo con una qualità più bassa: 720p, o 480p per una scena lunga. L’immagine resta nitida nello studio e il suono non ne risente.',
       },
       {
@@ -972,7 +1005,7 @@ export const it = {
     homeBannerBody: 'YouTube, TikTok, un film sul tuo disco, una registrazione dello schermo: qualsiasi file video si può importare, di qualunque formato. La guida mostra come recuperarlo e prepararlo in cinque minuti.',
     homeBannerAction: 'Leggi la guida all’importazione',
     midLink: 'Non hai ancora un video a portata di mano? La guida spiega come recuperarne uno.',
-    trajetFile: 'Qualsiasi formato · max 50 MB',
+    trajetFile: 'Qualsiasi formato · max 40 MB',
   },
 
   guideHub: {
@@ -1260,7 +1293,7 @@ export const it = {
     hostOnly: 'Può farlo solo l’ospite.',
     noAudioTrack: 'Questo file non ha traccia audio.',
     noVideoTrack: 'Questo file non ha video.',
-    tooLong: 'Scena troppo lunga: 10 minuti al massimo.',
+    tooLong: 'Scena troppo lunga: 5 minuti al massimo.',
     youtubeFailed:
       'Il download da YouTube è fallito. Importa direttamente il file video.',
     pageNotFoundTitle: 'Questa pagina non esiste',
@@ -1279,5 +1312,8 @@ export const it = {
     packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} ha commentato «${title}»` : `${who} e altri ${others} hanno commentato «${title}»`),
     profileComment: (who: string, others: number) => (others === 0 ? `${who} ha scritto sul tuo profilo` : `${who} e altri ${others} hanno scritto sul tuo profilo`),
     reply: (who: string, others: number) => (others === 0 ? `${who} ha risposto al tuo commento` : `${who} e altri ${others} hanno risposto al tuo commento`),
+    recent: 'Nuove',
+    earlier: 'Precedenti',
+    newCount: (n: number) => (n === 1 ? '1 nuova' : `${n} nuove`),
   },
 } satisfies Dictionary;

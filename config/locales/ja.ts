@@ -241,7 +241,6 @@ export const ja = {
       science_fiction: 'SF',
       horreur: 'ホラー',
       jeu_video: 'ゲーム',
-      chanson: '歌',
       documentaire: 'ドキュメンタリー',
       autre: 'その他',
     } as Record<string, string>,
@@ -366,6 +365,36 @@ export const ja = {
     previewMoreTitle: 'まだまだ吹き替えられるシーンがあります',
     previewMoreBody: (n: number) => (n > 0 ? `アカウントを作成すると、カタログの${n}本のシーンを見て、友だちと遊び、自分のシーンを公開できます。` : 'アカウントを作成すると、カタログを見て、友だちと遊び、自分のシーンを公開できます。'),
     previewCta: 'もっと見る',
+    charactersToDub: (n: number) => `吹き替えるキャラクター ${n}人`,
+    faqTitle: 'コミュニティについての質問',
+    faq: [
+      {
+        q: 'パックとは？',
+        a: 'ほかのプレイヤーが準備したシーンです。キャラクター、台本、区切り、元の音声がそろっています。足りないのは、あなたが持ち込む動画とみんなの声だけです。',
+      },
+      {
+        q: 'なぜ動画を持ち込む必要があるの？',
+        a: 'Dubblersは動画を保存しません。紹介ページのリンクなど好きな場所から用意してください。最初から最後まで同じ動画であれば大丈夫です。',
+      },
+      {
+        q: '自分のシーンを公開するには？',
+        a: 'コミュニティからパックを作るか、完成したシーンを結果画面から公開します。必要なのはタイトル、元のリンク、言語、ジャンルだけです。',
+      },
+      {
+        q: '投票は何のため？',
+        a: '評価するのは映画ではなく区切りの質です。評価の高いシーンはカタログの上位に表示され、作成者は認定を受けられます。',
+      },
+      {
+        q: '自分のパックを編集・削除するには？',
+        a: '公開プロフィールから。すべてのパックがそこにあり、いつでも編集や削除ができます。',
+      },
+    ],
+    pagination: {
+      label: 'カタログのページ',
+      previous: '前のページ',
+      next: '次のページ',
+      page: (n: number) => `${n}ページ`,
+    },
   },
 
   terms: {
@@ -392,6 +421,12 @@ export const ja = {
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookie',
     footerNav: 'フッターのリンク',
+    footerTagline: '友だちと遊ぶ映画の吹き替えゲーム。セリフは一人ずつ、驚きは最後にみんなで。',
+    footerExplore: '見つける',
+    footerHelp: 'ヘルプ',
+    footerLegal: '法的情報',
+    footerFollow: 'フォローする',
+    socialSoon: '近日公開',
   },
 
   status: {
@@ -520,9 +555,6 @@ export const ja = {
     title: '新しいシーン',
     tabUpload: '動画をインポート',
     tabYoutube: 'YouTube のリンクを貼る',
-    songLabel: 'これは曲です',
-    songHelp:
-      '歌詞は知っているはずなので、文字起こしは省きます。区切りは曲のボーカルに合わせ、入るタイミングだけ知らせます。',
     matchTitle: 'このシーンはすでにあります',
     matchBody:
       '誰かがもう用意しています。区切りも役も台詞もそろっているので、同じ結果を数分待つ代わりにすぐ始められます。',
@@ -535,7 +567,7 @@ export const ja = {
     titleLabel: 'シーンの題名',
     titlePlaceholder: '橋の上の決闘',
     dropzone: '動画をここにドロップするか、クリックして選択',
-    fileTooLarge: 'ファイルが大きすぎます。50 MB までです。',
+    fileTooLarge: 'ファイルが大きすぎます。40 MB までです。',
     wrongType: 'このファイルは動画ではありません。MP4、MOV、MKV、AVI、WebM など、すべての動画形式に対応しています。',
     youtubeLabel: '動画のリンク',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -551,7 +583,7 @@ export const ja = {
     introUpload: 'あなたの動画から一から準備する新しいシーン。映画、ドラマ、YouTube や TikTok のクリップ、画面録画など、入手元は問いません。',
     introPack: 'キャラクター、セリフ、音声は準備済みです。動画を持ち込めば、約1分でロビーが開きます。',
     introYoutube: '管理者専用：動画はホストのパソコンがダウンロードします。電源を入れておいてください。',
-    limits: 'すべての動画形式 · 最大50MB・10分',
+    limits: 'すべての動画形式 · 最大50MB・5分',
     uploadStepsTitle: '流れ',
     uploadSteps: [
       '動画を選んでタイトルを付けます。',
@@ -804,6 +836,7 @@ export const ja = {
     expiredTitle: 'セッションの期限切れ',
     expiredBody: '20分間テイクが録音されなかったため、セッションは自動的に終了しました。いつでも新しく始められます。',
     expiredOk: 'OK',
+    takeDragHelp: 'テイクを配置しました。ずらすには、波形の上でトラックをドラッグしてください。',
   },
 
   progress: {
@@ -926,7 +959,7 @@ export const ja = {
       'パックのシーンと同じ部分で、カットなし',
       'どんな動画形式でもOK',
       '最大50MB：720p か 480p で十分',
-      '最大10分',
+      '最大5分',
     ],
     whyTitle: 'なぜこの手順が必要？',
     whyBody: 'Dubblersは動画を保存しません。カタログにあるのは区切りと音声だけで、映像はありません。また多くのプラットフォームはサーバーからのダウンロードを拒否します。そのためファイルはあなたが持ち込み、あとはすべてオンラインで進みます。',
@@ -964,7 +997,7 @@ export const ja = {
     homeBannerBody: 'YouTube、TikTok、ディスク上の映画、画面録画。形式を問わず、どんな動画ファイルでも読み込めます。入手と準備の方法を、ガイドで5分で紹介します。',
     homeBannerAction: '読み込みガイドを読む',
     midLink: 'まだ動画がない？入手方法はガイドで説明しています。',
-    trajetFile: '形式自由・最大50 MB',
+    trajetFile: '形式自由・最大40 MB',
   },
 
   guideHub: {
@@ -1271,5 +1304,8 @@ export const ja = {
     packComment: (who: string, others: number, title: string) => (others === 0 ? `${who}さんが「${title}」にコメントしました` : `${who}さんほか${others}人が「${title}」にコメントしました`),
     profileComment: (who: string, others: number) => (others === 0 ? `${who}さんがあなたのプロフィールに書き込みました` : `${who}さんほか${others}人があなたのプロフィールに書き込みました`),
     reply: (who: string, others: number) => (others === 0 ? `${who}さんがあなたのコメントに返信しました` : `${who}さんほか${others}人があなたのコメントに返信しました`),
+    recent: '新着',
+    earlier: 'それ以前',
+    newCount: (n: number) => `新着 ${n}件`,
   },
 } satisfies Dictionary;

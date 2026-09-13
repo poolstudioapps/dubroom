@@ -100,7 +100,6 @@ export const PACK_GENRES = [
   'science_fiction',
   'horreur',
   'jeu_video',
-  'chanson',
   'documentaire',
   'autre',
 ] as const;

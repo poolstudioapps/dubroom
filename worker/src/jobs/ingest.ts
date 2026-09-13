@@ -11,7 +11,6 @@ import {
 } from '../../../config/constants.ts';
 import {
   groupWordsIntoLines,
-  spansFromEnvelope,
   speakersInOrder,
 } from '../../../lib/segmentation.ts';
 import { config } from '../config.ts';
@@ -225,82 +224,6 @@ export async function runIngest(
       });
     }
     await terminerDepuisPack(job, session, logger);
-    return;
-  }
-
-  // ── Mode chanson ────────────────────────────────────────────────────
-  //
-  // On ne transcrit pas une reprise : la reconnaissance rend des
-  // syllabes etirees pour un cout par minute sans contrepartie, et celui
-  // qui reprend une chanson en connait les paroles. Ce qu'il faut
-  // savoir, c'est quand entrer — et l'enveloppe qu'on vient de calculer
-  // le dit deja. Une seule voix est creee ; l'hote la scindera sur
-  // l'ecran de preparation s'ils sont deux a chanter.
-  if (session.is_song) {
-    await setJobStep(job.id, 'transcribe', 100);
-    await setJobStep(job.id, 'segment', 0);
-
-    const spans = spansFromEnvelope(
-      new Uint8Array(Buffer.from(envelope.peaks, 'base64')),
-      envelope.hz,
-    );
-
-    await db.from('characters').delete().eq('session_id', session.id);
-    const { data: voix, error: voixError } = await db
-      .from('characters')
-      .insert({
-        session_id: session.id,
-        speaker_key: 'song_0',
-        name: 'Voix',
-        color: characterColorToken(0),
-        sort_order: 0,
-      })
-      .select('id')
-      .single();
-    if (voixError || !voix) {
-      throw new SystemError(`Création de la voix impossible : ${voixError?.message}`);
-    }
-
-    if (spans.length > 0) {
-      const { error: lineError } = await db.from('lines').insert(
-        spans.map((span) => ({
-          session_id: session.id,
-          character_id: voix.id as string,
-          start_ms: span.startMs,
-          end_ms: span.endMs,
-          text: '',
-          words: [],
-        })),
-      );
-      if (lineError) {
-        throw new SystemError(
-          `Insertion des entrées impossible : ${lineError.message}`,
-        );
-      }
-    }
-
-    const { error: songClipError } = await db.rpc('recompute_clips', {
-      p_session_id: session.id,
-      p_gap_ms: CLIP_MERGE_GAP_MS,
-      p_margin_ms: CLIP_MARGIN_MS,
-      p_max_ms: CLIP_MAX_MS,
-    });
-    if (songClipError) {
-      throw new SystemError(`Découpage en clips impossible : ${songClipError.message}`);
-    }
-
-    await setJobStep(job.id, 'segment', 100);
-    await updateSession(session.id, { status: 'prepping' });
-    logger.info('reprise découpée à l’enveloppe', {
-      step: 'segment',
-      entrees: spans.length,
-    });
-
-    if (session.upload_path) {
-      await db.storage.from(BUCKET_SOURCES).remove([session.upload_path]);
-      await updateSession(session.id, { upload_path: null });
-    }
-    await fs.rm(path.join(workDir, 'voice-raw'), { force: true });
     return;
   }
 

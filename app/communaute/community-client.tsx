@@ -1,11 +1,12 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { FolderHeart, Library, Plus, Search, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, FolderHeart, Library, Plus, Search, X } from 'lucide-react';
 
 import { useT } from '@/lib/i18n';
 import { AppShell } from '@/components/app-shell';
+import { FaqList } from '@/components/faq-list';
 import { HeroBackdrop } from '@/components/hero-backdrop';
 import { LinkButton } from '@/components/link-button';
 import { PackCard, packGridClass } from '@/components/pack-card';
@@ -22,11 +23,31 @@ import {
 import { PackStartDialog } from '@/components/pack-start-dialog';
 import { Alert, Button, Card, Dialog, Input, Spinner } from '@/components/ui';
 import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
+import { profileHref } from '@/lib/creators';
 import { humanizeError } from '@/lib/errors';
+import { useMyProfile } from '@/lib/profile';
 import { cn } from '@/lib/utils';
 import { CommunityHero } from './community-hero';
 
 const CREER_UN_PACK = '/sessions/new?pour=communaute';
+/** Quatre rangees de scenes par page, quel que soit le nombre de colonnes. */
+const RANGEES_PAR_PAGE = 4;
+
+/** Le nombre de colonnes de la grille, lu sur les memes paliers qu'elle. */
+function useColonnes(): number {
+  const [colonnes, setColonnes] = useState(3);
+  useEffect(() => {
+    const paliers = ['(min-width: 1536px)', '(min-width: 1024px)', '(min-width: 640px)'].map((q) =>
+      window.matchMedia(q),
+    );
+    const lire = () =>
+      setColonnes(paliers[0]!.matches ? 4 : paliers[1]!.matches ? 3 : paliers[2]!.matches ? 2 : 1);
+    lire();
+    paliers.forEach((p) => p.addEventListener('change', lire));
+    return () => paliers.forEach((p) => p.removeEventListener('change', lire));
+  }, []);
+  return colonnes;
+}
 
 /**
  * Le catalogue des scenes preparees.
@@ -67,6 +88,12 @@ export function CommunityClient({
   useEffect(() => setRecherche(initialQuery), [initialQuery]);
 
   const packs = useQuery(PACKS_QUERY);
+  // « Mes packs » mene au profil public : c'est la qu'on les gere.
+  const profil = useMyProfile();
+  const monProfil = profil.data?.user_id ? profileHref(profil.data.user_id) : '/mes-packs';
+  const colonnes = useColonnes();
+  const [page, setPage] = useState(0);
+  const haut = useRef<HTMLElement>(null);
 
   function chercher(texte: string) {
     setRecherche(texte);
@@ -104,6 +131,18 @@ export function CommunityClient({
   );
   const strings = scope === 'mine' ? t.myPacks : t.community;
 
+  // La pagination : quatre rangees, et retour a la premiere page des que
+  // les criteres changent.
+  const parPage = colonnes * RANGEES_PAR_PAGE;
+  const pages = Math.max(1, Math.ceil(visible.length / parPage));
+  const pageCourante = Math.min(page, pages - 1);
+  const affiches = visible.slice(pageCourante * parPage, (pageCourante + 1) * parPage);
+  useEffect(() => setPage(0), [recherche, filter, sort, scope]);
+  const allerA = (suivante: number) => {
+    setPage(suivante);
+    haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const roles = mine.reduce((somme, pack) => somme + pack.character_count, 0);
   const langues = new Set(mine.map((pack) => pack.source_lang).filter(Boolean)).size;
 
@@ -136,7 +175,7 @@ export function CommunityClient({
               {t.community.createPack}
             </LinkButton>
             {scope === 'all' ? (
-              <LinkButton href="/mes-packs" variant="secondary" size="lg">
+              <LinkButton href={monProfil} variant="secondary" size="lg">
                 <FolderHeart className="h-5 w-5" aria-hidden />
                 {t.community.myPacksCta}
                 {mesPacks.length > 0 ? (
@@ -164,7 +203,7 @@ export function CommunityClient({
         </div>
       ) : null}
 
-      <section className="space-y-5">
+      <section ref={haut} className="scroll-mt-6 space-y-5">
         {/* ── La recherche et les criteres, d'un seul tenant ───────── */}
         {mine.length > 0 ? (
           <div className="panel space-y-3 p-3 sm:p-4">
@@ -241,8 +280,8 @@ export function CommunityClient({
         ) : null}
 
         {/* Une grille de catalogue, pas une pile de fiches. */}
-        <ul className={cn('grid gap-4 sm:gap-5', packGridClass(visible.length))}>
-          {visible.map((pack) => (
+        <ul className={cn('grid gap-4 sm:gap-5', packGridClass(affiches.length))}>
+          {affiches.map((pack) => (
             <PackCard
               key={pack.id}
               pack={pack}
@@ -252,6 +291,8 @@ export function CommunityClient({
             />
           ))}
         </ul>
+
+        <Pagination page={pageCourante} pages={pages} onChange={allerA} />
       </section>
 
       {visible.length > 0 ? (
@@ -259,6 +300,16 @@ export function CommunityClient({
           <p>{t.community.voteHelp}</p>
           <p>{t.community.recipeHelp}</p>
         </div>
+      ) : null}
+
+      {/* Les questions qu'on se pose en decouvrant le catalogue, tout en bas. */}
+      {scope === 'all' ? (
+        <section className="mx-auto w-full max-w-3xl space-y-5">
+          <h2 className="titre titre-section text-center text-2xl sm:text-3xl">
+            {t.community.faqTitle}
+          </h2>
+          <FaqList items={t.community.faq} />
+        </section>
       ) : null}
 
       <Dialog
@@ -285,5 +336,81 @@ export function CommunityClient({
 
       <PackStartDialog pack={aDoubler} displayName={displayName} onClose={() => setADoubler(null)} />
     </AppShell>
+  );
+}
+
+/**
+ * Le choix de la page, sous la grille.
+ *
+ * Toutes les pages quand il y en a peu ; au-dela, la premiere, la derniere
+ * et les voisines de la page courante, pour que la rangee ne deborde
+ * jamais sur telephone.
+ */
+function Pagination({
+  page,
+  pages,
+  onChange,
+}: {
+  page: number;
+  pages: number;
+  onChange: (page: number) => void;
+}) {
+  const t = useT();
+  if (pages <= 1) return null;
+
+  const numeros: (number | null)[] = [];
+  for (let i = 0; i < pages; i += 1) {
+    const proche = Math.abs(i - page) <= 1;
+    if (pages <= 7 || i === 0 || i === pages - 1 || proche) numeros.push(i);
+    else if (numeros[numeros.length - 1] !== null) numeros.push(null);
+  }
+
+  const bouton =
+    'flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm font-bold tabular-nums transition-colors disabled:pointer-events-none disabled:opacity-40';
+
+  return (
+    <nav aria-label={t.community.pagination.label} className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
+      <button
+        type="button"
+        className={cn(bouton, 'border border-border-strong text-text-muted hover:bg-surface hover:text-text')}
+        disabled={page === 0}
+        aria-label={t.community.pagination.previous}
+        onClick={() => onChange(page - 1)}
+      >
+        <ChevronLeft className="h-4 w-4" aria-hidden />
+      </button>
+      {numeros.map((numero, rang) =>
+        numero === null ? (
+          <span key={`ellipse-${rang}`} className="px-1 text-text-faint" aria-hidden>
+            …
+          </span>
+        ) : (
+          <button
+            key={numero}
+            type="button"
+            aria-label={t.community.pagination.page(numero + 1)}
+            aria-current={numero === page ? 'page' : undefined}
+            onClick={() => onChange(numero)}
+            className={cn(
+              bouton,
+              numero === page
+                ? 'bg-accent text-accent-ink'
+                : 'text-text-muted hover:bg-surface hover:text-text',
+            )}
+          >
+            {numero + 1}
+          </button>
+        ),
+      )}
+      <button
+        type="button"
+        className={cn(bouton, 'border border-border-strong text-text-muted hover:bg-surface hover:text-text')}
+        disabled={page >= pages - 1}
+        aria-label={t.community.pagination.next}
+        onClick={() => onChange(page + 1)}
+      >
+        <ChevronRight className="h-4 w-4" aria-hidden />
+      </button>
+    </nav>
   );
 }

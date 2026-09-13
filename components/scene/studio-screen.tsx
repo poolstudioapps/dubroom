@@ -49,8 +49,6 @@ import { useNarrowViewport, useShortViewport } from '@/lib/viewport';
 
 type Mode = 'idle' | 'original' | 'recording' | 'playback';
 
-/** La case « partout » du decalage, retenue d'une scene a l'autre. */
-const OFFSET_PARTOUT_KEY = 'dubup.micOffsetEverywhere' as const;
 /** La case « garder ces effets pour la prise suivante ». */
 const GARDER_EFFETS_KEY = 'dubup.keepFx' as const;
 
@@ -145,7 +143,6 @@ export function StudioScreen() {
   });
   const reglagesRef = useRef(reglages);
   const [ecoute, setEcoute] = useState<TakeSettings>(reglages);
-  const [offsetPartout, setOffsetPartout] = useState(false);
   const [consoleErreur, setConsoleErreur] = useState<string | null>(null);
   const [gainPartout, setGainPartout] = useState<'idle' | 'pending' | 'done'>('idle');
   const [calcul, setCalcul] = useState(false);
@@ -202,7 +199,6 @@ export function StudioScreen() {
 
   // Une preference : relue seulement si on a accepte d'en garder.
   useEffect(() => {
-    setOffsetPartout(recallPreference(OFFSET_PARTOUT_KEY) === '1');
     setGarderEffets(recallPreference(GARDER_EFFETS_KEY) === '1');
   }, []);
 
@@ -230,7 +226,8 @@ export function StudioScreen() {
     ? `${cleReglages(reglagesDe(currentTake))}|${currentTake.mic_offset_ms}`
     : null;
   const defautGain = Number(me?.gain_db ?? 0);
-  const defautOffset = me?.mic_offset_ms ?? 0;
+  // Le decalage est propre a chaque prise : une replique neuve part de zero.
+  const defautOffset = 0;
 
   useEffect(() => {
     const precedents = reglagesRef.current;
@@ -859,23 +856,15 @@ export function StudioScreen() {
     const decalage = 'micOffsetMs' in partiel;
 
     try {
-      if (decalage && offsetPartout) {
-        await setTakeMix(
-          session.id,
-          currentTake?.id ?? null,
-          { micOffsetMs: suivants.micOffsetMs },
-          true,
-        );
-        refetch();
-      }
       // Sans prise, les reglages attendent l'enregistrement.
       if (!currentTake) return;
 
       if (effets) await setTakeFx(currentTake.id, suivants);
-      if (gain || (decalage && !offsetPartout)) {
+      // Le decalage ne vaut que pour cette prise, jamais pour toute la scene.
+      if (gain || decalage) {
         await setTakeMix(session.id, currentTake.id, {
           gainDb: gain ? suivants.gainDb : undefined,
-          micOffsetMs: decalage && !offsetPartout ? suivants.micOffsetMs : undefined,
+          micOffsetMs: decalage ? suivants.micOffsetMs : undefined,
         });
       }
       void takesQuery.refetch();
@@ -887,27 +876,6 @@ export function StudioScreen() {
   function choisirGarderEffets(next: boolean) {
     setGarderEffets(next);
     rememberPreference(GARDER_EFFETS_KEY, next ? '1' : '0');
-  }
-
-  function choisirOffsetPartout(next: boolean) {
-    setOffsetPartout(next);
-    rememberPreference(OFFSET_PARTOUT_KEY, next ? '1' : '0');
-    if (!next) return;
-    // Cocher la case applique tout de suite la valeur affichee.
-    void (async () => {
-      try {
-        await setTakeMix(
-          session.id,
-          currentTake?.id ?? null,
-          { micOffsetMs: reglagesRef.current.micOffsetMs },
-          true,
-        );
-        refetch();
-        void takesQuery.refetch();
-      } catch (e) {
-        setConsoleErreur(humanizeError(e));
-      }
-    })();
   }
 
   async function appliquerGainPartout() {
@@ -1045,7 +1013,9 @@ export function StudioScreen() {
         : allDone
           ? { tone: 'ok', text: t.studio.allTakesSaved }
           : currentTake
-            ? { tone: 'ok', text: t.studio.takeSaved }
+            ? // Pas de « prise enregistrée » : la forme d'onde le montre deja.
+              // On dit plutot ce qu'on peut en faire.
+              { tone: 'muted', text: t.studio.takeDragHelp }
             : !micReady
               ? { tone: 'muted', text: t.studio.headphonesRequired }
               : { tone: 'muted', text: t.studio.micWindow };
@@ -1062,8 +1032,6 @@ export function StudioScreen() {
         setReglages(suivants);
       }}
       onCommit={(partiel) => void appliquer(partiel)}
-      offsetEverywhere={offsetPartout}
-      onOffsetEverywhere={choisirOffsetPartout}
       onGainEverywhere={() => void appliquerGainPartout()}
       gainEverywhere={gainPartout}
       keepFx={garderEffets}
@@ -1095,7 +1063,6 @@ export function StudioScreen() {
               aria-hidden
             />
             <h1 className="font-semibold">{character.name}</h1>
-            {currentTake ? <Badge tone="ok">{t.studio.validated}</Badge> : null}
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-text-faint">

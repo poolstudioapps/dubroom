@@ -13,6 +13,7 @@ import {
   Trash2,
 } from 'lucide-react';
 
+import { GuideIcon } from '@/components/guide-icon';
 import { profileHref } from '@/lib/creators';
 import { useLocale, useT } from '@/lib/i18n';
 import {
@@ -51,9 +52,13 @@ function depuis(date: string, locale: string): string {
 /**
  * La cloche, a droite du compte.
  *
- * Une pastille compte ce qui n'a pas ete vu. Ouvrir la liste marque tout
- * comme lu, mais les nouvelles restent soulignees tant qu'elle est
- * ouverte : sinon on ne saurait plus lesquelles venaient d'arriver.
+ * Le panneau reprend le dessin du menu de compte et des cartes du site :
+ * une surface sombre bordee, un titre dans la police des titres, des
+ * rangees aerees. Les nouvelles et les anciennes sont separees, parce
+ * que c'est la seule question qu'on se pose en l'ouvrant.
+ *
+ * Ouvrir la liste marque tout comme lu, mais ce qui venait d'arriver reste
+ * range sous « Nouvelles » tant qu'elle est ouverte.
  */
 export function NotificationsBell({ userId }: { userId: string | null }) {
   const t = useT();
@@ -84,10 +89,9 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
    * Un son quand une notification arrive.
    *
    * On compare aux non lues deja connues, compte compris : un like de
-   * plus sur une ligne regroupee sonne aussi. Rien au premier chargement —
-   * ouvrir une page ne doit pas tinter pour des nouvelles d'hier — ni quand
-   * elles passent a « lues ». Un navigateur qui refuse la lecture avant
-   * tout geste sur la page reste muet, sans erreur.
+   * plus sur une ligne regroupee sonne aussi. Rien au premier chargement,
+   * ni quand elles passent a « lues ». Un navigateur qui refuse la lecture
+   * avant tout geste sur la page reste muet, sans erreur.
    */
   const connues = useRef<Set<string> | null>(null);
   const son = useRef<HTMLAudioElement | null>(null);
@@ -107,6 +111,9 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
 
   const items = liste.data ?? [];
   const nonLues = items.filter((n) => !n.read_at);
+  const estNouvelle = (n: NotificationItem) => fraiches.has(n.id) || !n.read_at;
+  const nouvelles = items.filter(estNouvelle);
+  const anciennes = items.filter((n) => !estNouvelle(n));
 
   function basculer() {
     const suivant = !open;
@@ -117,12 +124,12 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
         .then(() => invalidateNotifications(qc, userId))
         .catch(() => undefined);
     }
+    if (!suivant) setFraiches(new Set());
   }
 
   function texte(n: NotificationItem): string {
     const titre = n.data.title?.trim() || t.common.untitled;
     const qui = n.actors[0] ?? '?';
-    const autres = Math.max(0, n.count - 1);
     switch (n.kind) {
       case 'render_started':
         return t.notifications.renderStarted(titre);
@@ -133,12 +140,14 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
       case 'render_deleted':
         return t.notifications.renderDeleted(titre);
       case 'pack_like':
-        return t.notifications.packLike(qui, autres, titre);
-      case 'comment':
+        return t.notifications.packLike(qui, Math.max(0, n.count - 1), titre);
+      case 'comment': {
+        const autres = Math.max(0, n.actors.length - 1);
         if (n.data.reply) return t.notifications.reply(qui, autres);
         return n.pack_id
           ? t.notifications.packComment(qui, autres, titre)
           : t.notifications.profileComment(qui, autres);
+      }
     }
   }
 
@@ -149,6 +158,57 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
     return '/';
   }
 
+  const rangee = (n: NotificationItem) => {
+    const Icone = ICONES[n.kind];
+    const neuve = estNouvelle(n);
+    const alerte = n.kind === 'render_expiring' || n.kind === 'render_deleted';
+    return (
+      <li key={n.id}>
+        <Link
+          href={lien(n)}
+          role="menuitem"
+          onClick={() => setOpen(false)}
+          className="group flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-surface focus-visible:bg-surface focus-visible:outline-none"
+        >
+          <span
+            className={cn(
+              'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border',
+              alerte
+                ? 'border-warn/40 bg-warn/10 text-warn-ink'
+                : neuve
+                  ? 'border-accent/40 bg-accent/10 text-accent'
+                  : 'border-border bg-surface-sunken text-text-faint',
+            )}
+          >
+            <Icone className="h-4 w-4" aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span
+              className={cn(
+                'block text-sm leading-snug',
+                neuve ? 'font-semibold text-text' : 'text-text-muted',
+              )}
+            >
+              {texte(n)}
+            </span>
+            <span className="mt-0.5 block text-xs text-text-faint">{depuis(n.created_at, locale)}</span>
+          </span>
+          {neuve ? <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden /> : null}
+        </Link>
+      </li>
+    );
+  };
+
+  const section = (titre: string, liste: NotificationItem[]) =>
+    liste.length > 0 ? (
+      <div>
+        <p className="px-5 pb-1 pt-3 text-[11px] font-bold uppercase tracking-widest text-text-faint">
+          {titre}
+        </p>
+        <ul className="px-2">{liste.map(rangee)}</ul>
+      </div>
+    ) : null;
+
   return (
     <div ref={root} className="relative">
       <button
@@ -157,14 +217,17 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
         aria-expanded={open}
         aria-label={t.notifications.label(nonLues.length)}
         onClick={basculer}
-        className="btn-3d btn-secondary flex h-11 w-11 items-center justify-center"
+        className={cn(
+          'btn-3d btn-secondary flex h-11 w-11 items-center justify-center',
+          open && 'ring-2 ring-accent/60',
+        )}
       >
         <Bell className="h-5 w-5" aria-hidden />
       </button>
       {/*
         La pastille est posee a cote du bouton, pas dedans : les boutons
-        rognent ce qui depasse de leur arrondi, et elle etait coupee sous
-        le bord. Ici elle passe par-dessus le coin.
+        rognent ce qui depasse de leur arrondi. Ici elle passe par-dessus
+        le coin.
       */}
       {nonLues.length > 0 ? (
         <span
@@ -178,55 +241,30 @@ export function NotificationsBell({ userId }: { userId: string | null }) {
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 z-40 mt-2 w-[min(22rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-[0_24px_48px_-16px_rgb(0_0_0/0.8)]"
+          aria-label={t.notifications.title}
+          className="absolute right-0 z-40 mt-3 w-[min(24rem,calc(100vw-1.5rem))] overflow-hidden rounded-card border border-border bg-surface-raised shadow-[0_24px_60px_-18px_rgb(0_0_0/0.85)]"
         >
-          <p className="border-b-2 border-border px-4 py-2.5 text-sm font-bold">
-            {t.notifications.title}
-          </p>
+          <div className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-4">
+            <h2 className="titre text-xl">{t.notifications.title}</h2>
+            {nouvelles.length > 0 ? (
+              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-bold tabular-nums text-accent">
+                {t.notifications.newCount(nouvelles.length)}
+              </span>
+            ) : null}
+          </div>
+
           {items.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-text-faint">
-              {liste.isLoading ? t.common.loading : t.notifications.empty}
-            </p>
+            <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
+              <GuideIcon nom="clap" className="h-14 w-14 opacity-90" />
+              <p className="text-sm text-text-muted">
+                {liste.isLoading ? t.common.loading : t.notifications.empty}
+              </p>
+            </div>
           ) : (
-            <ul className="max-h-[min(28rem,70vh)] overflow-y-auto">
-              {items.map((n) => {
-                const Icone = ICONES[n.kind];
-                const neuve = fraiches.has(n.id) || !n.read_at;
-                return (
-                  <li key={n.id}>
-                    <Link
-                      href={lien(n)}
-                      role="menuitem"
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        'flex gap-3 border-b border-border px-4 py-3 text-sm last:border-b-0 hover:bg-surface',
-                        neuve && 'bg-accent/10',
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-                          n.kind === 'render_expiring' || n.kind === 'render_deleted'
-                            ? 'bg-warn/15 text-warn-ink'
-                            : 'bg-accent/15 text-accent',
-                        )}
-                      >
-                        <Icone className="h-4 w-4" aria-hidden />
-                      </span>
-                      <span className="min-w-0 flex-1 space-y-0.5">
-                        <span className={cn('block leading-snug', neuve ? 'font-bold' : 'text-text-muted')}>
-                          {texte(n)}
-                        </span>
-                        <span className="block text-xs text-text-faint">{depuis(n.created_at, locale)}</span>
-                      </span>
-                      {neuve ? (
-                        <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden />
-                      ) : null}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <div className="max-h-[min(30rem,70vh)] overflow-y-auto pb-2">
+              {section(t.notifications.recent, nouvelles)}
+              {section(t.notifications.earlier, anciennes)}
+            </div>
           )}
         </div>
       ) : null}

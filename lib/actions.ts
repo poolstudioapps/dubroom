@@ -45,7 +45,6 @@ export async function createSession(input: {
   sourceRef?: string;
   displayName: string;
   keepAsPack?: boolean;
-  isSong?: boolean;
   /** Langue parlee (ISO 639-1) : elle guide la transcription, puis le filtre du catalogue. */
   sourceLang?: string;
 }): Promise<SessionRow> {
@@ -60,7 +59,8 @@ export async function createSession(input: {
         p_source_ref: input.sourceRef ?? null,
         p_display_name: input.displayName,
         p_keep_as_pack: input.keepAsPack ?? false,
-        p_is_song: input.isSong ?? false,
+        // Le mode chanson n'existe plus : la colonne reste, toujours fausse.
+        p_is_song: false,
         p_source_lang: input.sourceLang ?? null,
       });
     } catch (error) {

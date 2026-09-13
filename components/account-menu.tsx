@@ -98,7 +98,11 @@ export function AccountMenu() {
           ) : null}
 
           {(packs.data ?? 0) > 0 ? (
-            <MenuItem href="/mes-packs" onSelect={() => setOpen(false)}>
+            // Ses packs vivent sur son profil public : c'est la qu'on les modifie.
+            <MenuItem
+              href={profile.data?.user_id ? profileHref(profile.data.user_id) : '/mes-packs'}
+              onSelect={() => setOpen(false)}
+            >
               <Package className="h-4 w-4" aria-hidden />
               {t.nav.myPacks}
             </MenuItem>

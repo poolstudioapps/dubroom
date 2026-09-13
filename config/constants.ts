@@ -22,7 +22,7 @@ export const CLIP_MARGIN_MS = 2_000;
 export const CLIP_MAX_MS = 15_000;
 
 // ── Garde-fous d'ingestion (PRD §6.2) ──────────────────────────────────
-export const MAX_VIDEO_DURATION_MS = 600_000; // 10 min
+export const MAX_VIDEO_DURATION_MS = 300_000; // 5 min
 export const MAX_UPLOAD_BYTES = 2_147_483_648; // 2 Go
 
 /**
@@ -32,7 +32,9 @@ export const MAX_UPLOAD_BYTES = 2_147_483_648; // 2 Go
  * import plus lourd partait, puis echouait a la fin de l'envoi avec un
  * message technique. On le dit avant d'envoyer, et on dit quoi faire.
  */
-export const MAX_SOURCE_FILE_BYTES = 50 * 1024 * 1024;
+// 40 Mo et non 50, la limite du stockage : de la marge pour les en-tetes
+// d'envoi et les fichiers dont le poids annonce est approximatif.
+export const MAX_SOURCE_FILE_BYTES = 40 * 1024 * 1024;
 
 /** Le guide pour doubler une scene du catalogue avec sa propre video. */
 export const GUIDE_VIDEO_HREF = '/guide/video-youtube';

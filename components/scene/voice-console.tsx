@@ -63,8 +63,6 @@ export function VoiceConsole({
   error,
   onInput,
   onCommit,
-  offsetEverywhere,
-  onOffsetEverywhere,
   onGainEverywhere,
   gainEverywhere,
   keepFx,
@@ -81,8 +79,6 @@ export function VoiceConsole({
   onInput: (partial: Partial<TakeSettings>) => void;
   /** Le curseur est lache : on enregistre, et l'ecoute suit. */
   onCommit: (partial: Partial<TakeSettings>) => void;
-  offsetEverywhere: boolean;
-  onOffsetEverywhere: (next: boolean) => void;
   onGainEverywhere: () => void;
   gainEverywhere: 'idle' | 'pending' | 'done';
   /** Les effets passent a la replique suivante. */
@@ -232,15 +228,6 @@ export function VoiceConsole({
           onKeyUp={(e) => decalage.maintenant(Number(e.currentTarget.value))}
           className="w-full touch-none"
         />
-        <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-text-muted">
-          <input
-            type="checkbox"
-            checked={offsetEverywhere}
-            onChange={(e) => onOffsetEverywhere(e.target.checked)}
-            className="h-4 w-4 accent-[var(--color-accent)]"
-          />
-          {t.studio.micOffsetEverywhere}
-        </label>
         <p className="text-xs leading-relaxed text-text-faint">{t.studio.micOffsetHelp}</p>
       </div>
 

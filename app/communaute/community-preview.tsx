@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Clapperboard, Library, ThumbsUp } from 'lucide-react';
+import { ArrowRight, Clapperboard, Library, ThumbsUp, Users } from 'lucide-react';
 
 import { Footer } from '@/components/footer';
 import { GuideIcon } from '@/components/guide-icon';
@@ -8,7 +8,6 @@ import { SiteHeader } from '@/components/site-header';
 import { TvSet } from '@/components/tv-set';
 import { UrlPreview } from '@/components/url-preview';
 import type { Dictionary } from '@/config/i18n';
-import { characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
 import { getDictionary } from '@/lib/i18n-server';
 import { supabaseServer } from '@/lib/supabase/server';
@@ -164,8 +163,6 @@ function Carte({ pack, t, href }: { pack: PackPublic; t: Dictionary; href?: stri
       {formatDuration(pack.duration_ms)}
     </span>
   );
-  const visibles = pack.characters.slice(0, 4);
-  const reste = pack.characters.length - visibles.length;
 
   return (
     <li className="panel carte-pack relative flex flex-col overflow-hidden">
@@ -207,26 +204,10 @@ function Carte({ pack, t, href }: { pack: PackPublic; t: Dictionary; href?: stri
           </span>
         </div>
 
-        <ul className="flex flex-wrap gap-1.5" aria-label={t.community.characterCount(pack.character_count)}>
-          {visibles.map((character) => (
-            <li
-              key={character.name}
-              className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-semibold"
-            >
-              <span
-                className="h-2 w-2 shrink-0 rounded-full"
-                style={{ backgroundColor: characterColorVar(character.color) }}
-                aria-hidden
-              />
-              <span className="truncate">{character.name}</span>
-            </li>
-          ))}
-          {reste > 0 ? (
-            <li className="inline-flex items-center rounded-full bg-surface-sunken px-2.5 py-1 text-xs font-semibold text-text-faint">
-              +{reste}
-            </li>
-          ) : null}
-        </ul>
+        <p className="flex items-center gap-1.5 text-xs font-semibold text-text-muted">
+          <Users className="h-3.5 w-3.5 text-text-faint" aria-hidden />
+          {t.community.charactersToDub(pack.character_count)}
+        </p>
       </div>
     </li>
   );

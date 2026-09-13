@@ -243,7 +243,6 @@ export const de = {
       science_fiction: 'Science-Fiction',
       horreur: 'Horror',
       jeu_video: 'Videospiel',
-      chanson: 'Lied',
       documentaire: 'Dokumentation',
       autre: 'Sonstiges',
     } as Record<string, string>,
@@ -369,6 +368,36 @@ export const de = {
     previewMoreTitle: 'Und noch viele weitere Szenen',
     previewMoreBody: (n: number) => (n > 0 ? `Erstelle ein Konto, um alle ${n} Szenen des Katalogs zu entdecken, sie mit Freunden zu spielen und eigene zu veröffentlichen.` : 'Erstelle ein Konto, um den Katalog zu entdecken, Szenen mit Freunden zu spielen und eigene zu veröffentlichen.'),
     previewCta: 'Mehr Szenen ansehen',
+    charactersToDub: (n: number) => (n === 1 ? '1 Figur zu synchronisieren' : `${n} Figuren zu synchronisieren`),
+    faqTitle: 'Fragen zur Community',
+    faq: [
+      {
+        q: 'Was ist ein Pack?',
+        a: 'Eine Szene, die ein anderer Spieler schon vorbereitet hat: Figuren, Text, Timing und Originalton. Es fehlen nur das Video, das du mitbringst, und eure Stimmen.',
+      },
+      {
+        q: 'Warum muss ich das Video mitbringen?',
+        a: 'Dubblers speichert keine Videos. Hol es dir über den Link im Steckbrief oder woher du willst: Es muss nur von Anfang bis Ende dasselbe sein.',
+      },
+      {
+        q: 'Wie veröffentliche ich meine eigene Szene?',
+        a: 'Erstelle ein Pack über die Community oder veröffentliche eine fertige Szene über den Ergebnisbildschirm. Es braucht nur Titel, Originallink, Sprache und Genre.',
+      },
+      {
+        q: 'Wofür sind die Bewertungen?',
+        a: 'Sie bewerten die Qualität des Timings, nicht den Film. Die bestbewerteten Szenen stehen oben im Katalog, und ihre Ersteller können zertifiziert werden.',
+      },
+      {
+        q: 'Wo bearbeite oder entferne ich meine Packs?',
+        a: 'In deinem öffentlichen Profil: Dort findest du alle deine Packs und kannst sie jederzeit bearbeiten oder entfernen.',
+      },
+    ],
+    pagination: {
+      label: 'Katalogseiten',
+      previous: 'Vorherige Seite',
+      next: 'Nächste Seite',
+      page: (n: number) => `Seite ${n}`,
+    },
   },
 
   terms: {
@@ -395,6 +424,12 @@ export const de = {
     contactEmail: 'ienders.pro@gmail.com',
     cookies: 'Cookies',
     footerNav: 'Links in der Fußzeile',
+    footerTagline: 'Das Filmsynchron-Spiel für Freunde: Jeder übernimmt einen Satz, und die Überraschung gibt es am Ende für alle.',
+    footerExplore: 'Entdecken',
+    footerHelp: 'Hilfe',
+    footerLegal: 'Rechtliches',
+    footerFollow: 'Folge uns',
+    socialSoon: 'Demnächst',
   },
 
   status: {
@@ -527,9 +562,6 @@ export const de = {
     title: 'Neue Szene',
     tabUpload: 'Video importieren',
     tabYoutube: 'YouTube-Link einfügen',
-    songLabel: 'Das ist ein Lied',
-    songHelp:
-      'Wir überspringen die Transkription: den Text kennst du. Der Schnitt folgt der Gesangsspur und sagt dir, wann du einsetzt.',
     matchTitle: 'Diese Szene gibt es schon',
     matchBody:
       'Jemand hat sie bereits vorbereitet: Schnitt, Rollen und Text sind fertig. Sie zu übernehmen geht sofort, statt mehrere Minuten auf dasselbe Ergebnis zu warten.',
@@ -542,7 +574,7 @@ export const de = {
     titleLabel: 'Titel der Szene',
     titlePlaceholder: 'Das Duell auf der Brücke',
     dropzone: 'Leg dein Video hier ab oder klick, um es auszuwählen',
-    fileTooLarge: 'Datei zu groß: höchstens 50 MB.',
+    fileTooLarge: 'Datei zu groß: höchstens 40 MB.',
     wrongType: 'Diese Datei ist kein Video. Alle Videoformate werden akzeptiert: MP4, MOV, MKV, AVI, WebM…',
     youtubeLabel: 'Link zum Video',
     youtubePlaceholder: 'https://www.youtube.com/watch?v=…',
@@ -550,7 +582,7 @@ export const de = {
       'Der YouTube-Download ist eine Bequemlichkeit, keine Garantie: er fällt regelmäßig aus. Wenn es nicht klappt, importiere die Datei direkt.',
     multiTrackWarning:
       'Hat deine Quelle mehrere Tonspuren (synchronisiert, Original, Kommentar), wird die erste synchronisiert.',
-    durationWarning: 'Die Szene muss unter 10 Minuten bleiben.',
+    durationWarning: 'Die Szene muss unter 5 Minuten bleiben.',
     submitUpload: 'Importieren und vorbereiten',
     submitYoutube: 'Herunterladen und vorbereiten',
     uploading: 'Datei wird hochgeladen…',
@@ -558,7 +590,7 @@ export const de = {
     introUpload: 'Eine neue Szene, von Grund auf aus deinem Video vorbereitet, egal woher es stammt: ein Film, eine Serie, ein YouTube- oder TikTok-Clip, eine Bildschirmaufnahme…',
     introPack: 'Figuren, Sätze und Ton sind schon fertig: Du bringst das Video mit, und die Lobby öffnet sich in etwa einer Minute.',
     introYoutube: 'Nur für Administratoren: Das Video lädt der Computer des Gastgebers herunter, der eingeschaltet sein muss.',
-    limits: 'Jedes Videoformat · höchstens 50 MB und 10 Minuten',
+    limits: 'Jedes Videoformat · höchstens 40 MB und 5 Minuten',
     uploadStepsTitle: 'So läuft es ab',
     uploadSteps: [
       'Du wählst dein Video aus und gibst ihm einen Titel.',
@@ -816,6 +848,7 @@ export const de = {
     expiredTitle: 'Sitzung abgelaufen',
     expiredBody: 'Zwanzig Minuten lang wurde keine Aufnahme gemacht: Die Sitzung wurde automatisch geschlossen. Du kannst jederzeit eine neue starten.',
     expiredOk: 'Verstanden',
+    takeDragHelp: 'Deine Aufnahme sitzt. Um sie zu verschieben, zieh ihre Spur auf der Wellenform.',
   },
 
   progress: {
@@ -894,9 +927,9 @@ export const de = {
     openSource: 'Originalvideo ansehen',
     howTo: 'Wie komme ich an die Datei?',
     drop: 'Video hier ablegen oder zum Auswählen klicken',
-    expected: (d: string) => `Erwartete Dauer: ${d} · jedes Videoformat, max. 50 MB`,
+    expected: (d: string) => `Erwartete Dauer: ${d} · jedes Videoformat, max. 40 MB`,
     mismatch: (erwartet: string, erhalten: string) => `Diese Datei dauert ${erhalten}, die Szene des Packs ${erwartet}. Ist es nicht genau dasselbe Video, landen die Sätze an der falschen Stelle.`,
-    tooLarge: 'Datei zu groß: max. 50 MB. Exportiere das Video neu in 720p oder 480p.',
+    tooLarge: 'Datei zu groß: max. 40 MB. Exportiere das Video neu in 720p oder 480p.',
     or: 'oder',
     autoTitle: 'Automatischer Download',
     autoBody: 'Der Computer des Gastgebers lädt das Video von YouTube: Er muss eingeschaltet sein.',
@@ -922,7 +955,7 @@ export const de = {
       },
       {
         title: 'Hol dir die Datei',
-        body: 'Speichere das Video mit einem Werkzeug deiner Wahl oder nimm eine Datei, die du schon hast. Jedes Format geht. Ziel: 720p, oder 480p, wenn die Datei über 50 MB liegt.',
+        body: 'Speichere das Video mit einem Werkzeug deiner Wahl oder nimm eine Datei, die du schon hast. Jedes Format geht. Ziel: 720p, oder 480p, wenn die Datei über 40 MB liegt.',
       },
       {
         title: 'Prüf die Dauer',
@@ -937,8 +970,8 @@ export const de = {
     checklist: [
       'Derselbe Ausschnitt wie die Szene im Pack, ungeschnitten',
       'Jedes Videoformat',
-      'Höchstens 50 MB: 720p oder 480p reichen',
-      'Höchstens 10 Minuten',
+      'Höchstens 40 MB: 720p oder 480p reichen',
+      'Höchstens 5 Minuten',
     ],
     whyTitle: 'Warum dieser Schritt?',
     whyBody: 'Dubblers speichert keine Videos: Der Katalog behält Timing und Ton, nie das Bild. Und die meisten Plattformen lehnen Downloads von Servern ab. Du bringst also die Datei mit, und alles andere passiert online.',
@@ -955,7 +988,7 @@ export const de = {
         a: 'Mit jedem Werkzeug, das das Video als Datei speichert, egal von welcher Seite. Meide solche, die eine unbekannte Erweiterung oder Software installieren wollen, und hol dir nur Videos, die du privat nutzen darfst.',
       },
       {
-        q: 'Meine Datei ist größer als 50 MB',
+        q: 'Meine Datei ist größer als 40 MB',
         a: 'Exportiere sie in niedrigerer Qualität: 720p, oder 480p für eine lange Szene. Das Bild bleibt im Studio scharf, und der Ton leidet nicht.',
       },
       {
@@ -976,7 +1009,7 @@ export const de = {
     homeBannerBody: 'YouTube, TikTok, ein Film auf deiner Festplatte, eine Bildschirmaufnahme: Jede Videodatei lässt sich importieren, egal in welchem Format. Die Anleitung zeigt, wie du sie in fünf Minuten besorgst und vorbereitest.',
     homeBannerAction: 'Import-Anleitung lesen',
     midLink: 'Noch kein Video zur Hand? Die Anleitung erklärt, wie du eins bekommst.',
-    trajetFile: 'Jedes Format · max. 50 MB',
+    trajetFile: 'Jedes Format · max. 40 MB',
   },
 
   guideHub: {
@@ -1264,7 +1297,7 @@ export const de = {
     hostOnly: 'Das kann nur der Gastgeber.',
     noAudioTrack: 'Diese Datei hat keine Tonspur.',
     noVideoTrack: 'Diese Datei hat kein Video.',
-    tooLong: 'Szene zu lang: höchstens 10 Minuten.',
+    tooLong: 'Szene zu lang: höchstens 5 Minuten.',
     youtubeFailed:
       'Der YouTube-Download ist fehlgeschlagen. Importiere die Videodatei stattdessen direkt.',
     pageNotFoundTitle: 'Diese Seite existiert nicht',
@@ -1283,5 +1316,8 @@ export const de = {
     packComment: (who: string, others: number, title: string) => (others === 0 ? `${who} hat „${title}“ kommentiert` : `${who} und ${others} weitere haben „${title}“ kommentiert`),
     profileComment: (who: string, others: number) => (others === 0 ? `${who} hat auf dein Profil geschrieben` : `${who} und ${others} weitere haben auf dein Profil geschrieben`),
     reply: (who: string, others: number) => (others === 0 ? `${who} hat auf deinen Kommentar geantwortet` : `${who} und ${others} weitere haben auf deinen Kommentar geantwortet`),
+    recent: 'Neu',
+    earlier: 'Früher',
+    newCount: (n: number) => `${n} neu`,
   },
 } satisfies Dictionary;
