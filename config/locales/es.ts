@@ -849,6 +849,11 @@ export const es = {
     expiredBody: 'No se grabó ninguna toma en veinte minutos: la sesión se cerró automáticamente. Puedes empezar otra cuando quieras.',
     expiredOk: 'Entendido',
     takeDragHelp: 'Tu toma está colocada. Para moverla, arrastra su pista sobre la forma de onda.',
+    allTakesSavedStay: 'Todas tus tomas están guardadas. Vuelve a escucharlas o repite alguna si quieres, y termina cuando estés listo.',
+    castTitle: 'El reparto',
+    waitingSubtitle: 'Tus tomas están a salvo. Aquí ves quién dobla a quién y cómo va cada uno.',
+    keptVo: 'Conservan su voz original',
+    noRole: 'Sin papel',
   },
 
   progress: {

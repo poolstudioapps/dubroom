@@ -847,6 +847,11 @@ export const en = {
     expiredBody: 'No take was recorded for twenty minutes, so the session closed automatically. You can start a new one whenever you like.',
     expiredOk: 'Got it',
     takeDragHelp: 'Your take is in place. To shift it, drag its track on the waveform.',
+    allTakesSavedStay: 'All your takes are saved. Listen back or redo one if you like, then finish when you are ready.',
+    castTitle: 'The cast',
+    waitingSubtitle: 'Your takes are safe. Here is who dubs whom, and where everyone is.',
+    keptVo: 'Keeping their original voice',
+    noRole: 'No role',
   },
 
   progress: {

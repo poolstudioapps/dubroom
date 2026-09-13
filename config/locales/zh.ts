@@ -822,6 +822,11 @@ export const zh = {
     expiredBody: '二十分钟内没有录制任何片段，会话已自动关闭。你可以随时重新开始。',
     expiredOk: '知道了',
     takeDragHelp: '录音已放好。要移动它，请在波形上拖动音轨。',
+    allTakesSavedStay: '你的所有录音都已保存。可以回听或重录，准备好后再点击完成。',
+    castTitle: '角色分配',
+    waitingSubtitle: '你的录音已安全保存。这里可以看到谁为谁配音，以及每个人的进度。',
+    keptVo: '保留原声',
+    noRole: '无角色',
   },
 
   progress: {

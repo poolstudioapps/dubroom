@@ -844,6 +844,11 @@ export const pt = {
     expiredBody: 'Nenhuma tomada foi gravada em vinte minutos: a sessão foi fechada automaticamente. Você pode começar outra quando quiser.',
     expiredOk: 'Entendi',
     takeDragHelp: 'Sua tomada está posicionada. Para deslocá-la, arraste a faixa na forma de onda.',
+    allTakesSavedStay: 'Todas as suas tomadas estão salvas. Ouça de novo ou refaça alguma se quiser, e finalize quando estiver pronto.',
+    castTitle: 'O elenco',
+    waitingSubtitle: 'Suas tomadas estão seguras. Veja quem dubla quem e em que ponto cada um está.',
+    keptVo: 'Mantêm a voz original',
+    noRole: 'Sem papel',
   },
 
   progress: {

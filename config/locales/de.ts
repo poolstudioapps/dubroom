@@ -852,6 +852,11 @@ export const de = {
     expiredBody: 'Zwanzig Minuten lang wurde keine Aufnahme gemacht: Die Sitzung wurde automatisch geschlossen. Du kannst jederzeit eine neue starten.',
     expiredOk: 'Verstanden',
     takeDragHelp: 'Deine Aufnahme sitzt. Um sie zu verschieben, zieh ihre Spur auf der Wellenform.',
+    allTakesSavedStay: 'Alle deine Aufnahmen sind gespeichert. Hör sie dir an oder nimm eine neu auf, und schließ ab, wenn du so weit bist.',
+    castTitle: 'Die Besetzung',
+    waitingSubtitle: 'Deine Aufnahmen sind sicher. Hier siehst du, wer wen spricht und wie weit alle sind.',
+    keptVo: 'Behalten ihre Originalstimme',
+    noRole: 'Keine Rolle',
   },
 
   progress: {

@@ -851,6 +851,11 @@ export const fr = {
     expiredBody: 'Aucune prise n’a été enregistrée pendant vingt minutes : la session s’est fermée automatiquement. Tu peux en relancer une quand tu veux.',
     expiredOk: 'J’ai compris',
     takeDragHelp: 'Ta prise est posée. Pour la décaler, fais glisser sa piste sur la forme d’onde.',
+    allTakesSavedStay: 'Toutes tes prises sont enregistrées. Réécoute-les ou refais-en une si besoin, puis clique sur « J’ai terminé ».',
+    castTitle: 'La distribution',
+    waitingSubtitle: 'Tes prises sont en sécurité. Voici qui double qui, et où en est chacun.',
+    keptVo: 'Gardent leur voix d’origine',
+    noRole: 'Aucun rôle',
   },
 
   progress: {

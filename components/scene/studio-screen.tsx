@@ -544,8 +544,6 @@ export function StudioScreen() {
       durationMs: number;
       offsetMs: number;
       clipId: string;
-      /** Cette prise est la derniere qui manquait. */
-      completes: boolean;
     }) => {
       if (!me) throw new Error('Clip introuvable');
       return uploadTake({
@@ -590,12 +588,10 @@ export function StudioScreen() {
       refetch();
       void takesQuery.refetch();
 
-      // La derniere replique qui manquait vient d'arriver : direction
-      // l'ecran d'attente, ou l'on voit ou en sont les autres.
-      if (input.completes) {
-        stopAll();
-        setAcknowledged(true);
-      }
+      // La derniere replique qui manquait vient d'arriver, mais on reste
+      // la : le joueur la reecoute, la decale ou la refait, puis passe a
+      // l'ecran d'attente par « J'ai terminé ». Y partir tout seul lui
+      // retirait la main sur la prise qu'il venait de faire.
     },
     onError: (e) => setError(humanizeError(e)),
   });
@@ -684,9 +680,7 @@ export function StudioScreen() {
     setHasTakeAudio(true);
     setPlacement(offsetMs);
 
-    const completes =
-      !allDone && myClips.every((c) => c.id === clip.id || selectedTakes.has(c.id));
-    upload.mutate({ blob, durationMs, offsetMs, clipId: clip.id, completes });
+    upload.mutate({ blob, durationMs, offsetMs, clipId: clip.id });
   }
 
   /**
@@ -975,8 +969,10 @@ export function StudioScreen() {
   const recording = mode === 'recording';
 
   if (acknowledged && allDone) {
+    // Seul au centre : la colonne de reglages repetait la progression de
+    // chacun et le bouton de rendu, et le micro ne sert plus a rien ici.
     return (
-      <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[1fr_22rem]">
+      <div className="mx-auto flex w-full max-w-3xl flex-col lg:min-h-0 lg:flex-1">
         <FinishedPanel
           sessionId={session.id}
           myParticipantId={me.id}
@@ -984,15 +980,6 @@ export function StudioScreen() {
           waiting={salle.waiting}
           onBack={() => setAcknowledged(false)}
         />
-        <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-          <StudioSidebar
-            backing={backing}
-            onBacking={setBacking}
-            done={doneCount}
-            total={myClips.length}
-            devices={<AudioDevicesCard devices={devices} recording={false} />}
-          />
-        </div>
       </div>
     );
   }
@@ -1011,7 +998,7 @@ export function StudioScreen() {
       : analysis?.truncated
         ? { tone: 'warn', text: t.studio.overflowWarning }
         : allDone
-          ? { tone: 'ok', text: t.studio.allTakesSaved }
+          ? { tone: 'ok', text: t.studio.allTakesSavedStay }
           : currentTake
             ? // Pas de « prise enregistrée » : la forme d'onde le montre deja.
               // On dit plutot ce qu'on peut en faire.

@@ -835,6 +835,11 @@ export const ko = {
     expiredBody: '20분 동안 녹음된 테이크가 없어 세션이 자동으로 종료됐어요. 언제든 새로 시작할 수 있어요.',
     expiredOk: '확인',
     takeDragHelp: '테이크가 배치됐어요. 위치를 옮기려면 파형 위에서 트랙을 끌어 주세요.',
+    allTakesSavedStay: '모든 테이크가 저장됐어요. 다시 듣거나 다시 녹음한 뒤, 준비되면 마무리하세요.',
+    castTitle: '캐스팅',
+    waitingSubtitle: '테이크는 안전하게 저장됐어요. 누가 누구를 더빙하는지, 각자 어디까지 했는지 볼 수 있어요.',
+    keptVo: '원래 목소리 유지',
+    noRole: '역할 없음',
   },
 
   progress: {

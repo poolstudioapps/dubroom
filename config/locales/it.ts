@@ -848,6 +848,11 @@ export const it = {
     expiredBody: 'Nessuna ripresa registrata per venti minuti: la sessione si è chiusa automaticamente. Puoi avviarne un’altra quando vuoi.',
     expiredOk: 'Ho capito',
     takeDragHelp: 'La tua ripresa è al suo posto. Per spostarla, trascina la traccia sulla forma d’onda.',
+    allTakesSavedStay: 'Tutte le tue riprese sono salvate. Riascoltale o rifanne una se vuoi, poi termina quando sei pronto.',
+    castTitle: 'Il cast',
+    waitingSubtitle: 'Le tue riprese sono al sicuro. Ecco chi doppia chi e a che punto è ognuno.',
+    keptVo: 'Mantengono la voce originale',
+    noRole: 'Nessun ruolo',
   },
 
   progress: {
