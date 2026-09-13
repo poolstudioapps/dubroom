@@ -47,7 +47,19 @@ export function RythmoBand({
     const guideColor = resolveCssColor('var(--color-stage-faint)', '#8a8a99');
     const playheadColor = resolveCssColor('var(--color-accent)', '#e9c46a');
 
-    const visible = lines.filter((line) => !line.is_deleted);
+    // Une replique a plusieurs voix existe en une copie par personnage :
+    // on n'en dessine qu'une, celle du joueur s'il la dit aussi, sinon le
+    // texte passerait deux fois sous la tete de lecture.
+    const parBornes = new Map<string, LineRow>();
+    for (const line of lines) {
+      if (line.is_deleted) continue;
+      const cle = `${line.start_ms}:${line.end_ms}`;
+      const deja = parBornes.get(cle);
+      if (!deja || (line.character_id === activeCharacterId && deja.character_id !== activeCharacterId)) {
+        parBornes.set(cle, line);
+      }
+    }
+    const visible = [...parBornes.values()];
     let frame = 0;
 
     const draw = () => {

@@ -684,6 +684,9 @@ export const ko = {
     packPlayHint: '이 장면으로 로비가 열립니다. 그룹에 코드를 공유하세요.',
     packSeeFiche: '팩 정보 보기',
     packAnother: '다른 팩 만들기',
+    addVoice: '이 대사에 목소리 추가',
+    addVoiceHint: '여럿이 함께 말하는 대사라면: 캐릭터마다 따로 더빙하고, 결과물에서 목소리가 겹쳐요.',
+    removeVoice: (nom: string) => `이 대사에서 ${nom} 빼기`,
   },
 
   lobby: {

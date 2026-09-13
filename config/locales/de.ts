@@ -697,6 +697,9 @@ export const de = {
     packPlayHint: 'Die Lobby öffnet sich mit dieser Szene: Teile den Code mit deiner Gruppe.',
     packSeeFiche: 'Karte des Packs ansehen',
     packAnother: 'Ein weiteres Pack erstellen',
+    addVoice: 'Diesem Satz eine Stimme hinzufügen',
+    addVoiceHint: 'Für einen Satz, den mehrere gemeinsam sagen: Jede Figur synchronisiert ihn für sich, und die Stimmen liegen im Ergebnis übereinander.',
+    removeVoice: (nom: string) => `${nom} von diesem Satz entfernen`,
   },
 
   lobby: {

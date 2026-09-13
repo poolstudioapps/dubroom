@@ -26,7 +26,7 @@ import { GUIDE_VIDEO_HREF, characterColorVar } from '@/config/constants';
 import { formatDuration } from '@/config/strings';
 import { profileHref } from '@/lib/creators';
 import { useLocale, useT } from '@/lib/i18n';
-import { PACKS_QUERY, listPackLines } from '@/lib/packs';
+import { PACKS_QUERY, fusionnerVoix, listPackLines } from '@/lib/packs';
 
 /** Les premieres repliques montrees ; le reste se decouvre en jouant. */
 const EXTRAIT = 6;
@@ -127,8 +127,10 @@ export function PackDetailClient({
     },
     { label: t.community.filterGenre, valeur: t.community.genreNames[pack.genre] ?? pack.genre },
   ];
-  const extrait = (lignes.data ?? []).slice(0, EXTRAIT);
-  const resteLignes = (lignes.data?.length ?? 0) - extrait.length;
+  // Une replique a plusieurs voix se lit une fois, avec tous ses noms.
+  const repliques = fusionnerVoix(lignes.data ?? []);
+  const extrait = repliques.slice(0, EXTRAIT);
+  const resteLignes = repliques.length - extrait.length;
 
   return (
     <AppShell className="space-y-6">

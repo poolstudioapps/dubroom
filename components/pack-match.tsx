@@ -9,7 +9,7 @@ import { Badge, Button, Card, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatDuration, formatTimecode } from '@/config/strings';
 import { useT } from '@/lib/i18n';
-import { PACKS_QUERY, listPackLines } from '@/lib/packs';
+import { PACKS_QUERY, fusionnerVoix, listPackLines } from '@/lib/packs';
 import { videoId } from '@/components/url-preview';
 
 /**
@@ -118,7 +118,7 @@ export function PackMatch({
           <Spinner />
         ) : (
           <ul className="max-h-56 space-y-0.5 overflow-y-auto rounded-card bg-surface-sunken p-2 text-sm">
-            {(lignes.data ?? []).map((ligne, i) => (
+            {fusionnerVoix(lignes.data ?? []).map((ligne, i) => (
               <li key={`${ligne.start_ms}-${i}`} className="flex gap-2 px-1 py-0.5">
                 <span className="w-12 shrink-0 font-mono text-xs text-text-faint">
                   {formatTimecode(ligne.start_ms)}

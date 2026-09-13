@@ -686,6 +686,9 @@ export const ja = {
     packPlayHint: 'このシーンでロビーが開きます。コードをグループに共有しましょう。',
     packSeeFiche: 'パックの情報を見る',
     packAnother: '別のパックを作成',
+    addVoice: 'このセリフに声を追加',
+    addVoiceHint: '複数人で同時に言うセリフに。キャラクターごとに吹き替え、仕上がりでは声が重なります。',
+    removeVoice: (nom: string) => `このセリフから${nom}を外す`,
   },
 
   lobby: {

@@ -695,6 +695,9 @@ export const es = {
     packPlayHint: 'El lobby se abre con esta escena: comparte el código con tu grupo.',
     packSeeFiche: 'Ver la ficha del pack',
     packAnother: 'Crear otro pack',
+    addVoice: 'Añadir una voz a esta frase',
+    addVoiceHint: 'Para una frase dicha a la vez: cada personaje la dobla por su lado y las voces se superponen en el resultado.',
+    removeVoice: (nom: string) => `Quitar a ${nom} de esta frase`,
   },
 
   lobby: {

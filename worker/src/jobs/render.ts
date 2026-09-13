@@ -236,10 +236,24 @@ export async function runRender(job: Job, workDir: string, logger: ScopedLog) {
   // VO a conserver : les repliques des personnages liberes, plus toutes
   // les repliques que l'hote a supprimees — dans les deux cas, la voix
   // d'origine doit rester audible a cet endroit (PRD §9.2, §12.3).
-  const voSegments: VoSegment[] = lineRows
-    .filter((line) => line.is_deleted || releasedCharacters.has(line.character_id))
-    .map((line) => ({ startMs: line.start_ms, endMs: line.end_ms }))
-    .sort((a, b) => a.startMs - b.startMs);
+  //
+  // Une replique a plusieurs voix existe en une copie par personnage, aux
+  // memes bornes. Sa VO ne revient que si plus personne ne la double : un
+  // personnage libere ne doit pas remettre la voix d'origine sous la prise
+  // de celui qui la dit avec lui.
+  const borne = (line: LineRow) => `${line.start_ms}:${line.end_ms}`;
+  const encoreDoublees = new Set(
+    lineRows
+      .filter((line) => !line.is_deleted && !releasedCharacters.has(line.character_id))
+      .map(borne),
+  );
+  const voParBorne = new Map<string, VoSegment>();
+  for (const line of lineRows) {
+    if (!line.is_deleted && !releasedCharacters.has(line.character_id)) continue;
+    if (encoreDoublees.has(borne(line))) continue;
+    voParBorne.set(borne(line), { startMs: line.start_ms, endMs: line.end_ms });
+  }
+  const voSegments: VoSegment[] = [...voParBorne.values()].sort((a, b) => a.startMs - b.startMs);
 
   /*
    * D'ou vient le son la ou personne ne double.

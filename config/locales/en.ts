@@ -694,6 +694,9 @@ export const en = {
     packPlayHint: 'The lobby opens with this scene: share the code with your group.',
     packSeeFiche: 'See the pack card',
     packAnother: 'Create another pack',
+    addVoice: 'Add a voice to this line',
+    addVoiceHint: 'For a line said together: each character dubs it on their side, and the voices overlap in the render.',
+    removeVoice: (nom: string) => `Remove ${nom} from this line`,
   },
 
   lobby: {

@@ -72,7 +72,11 @@ export async function buildPack(session: Session, logger: ScopedLog): Promise<vo
       voice_peaks: session.voice_peaks,
       voice_peaks_hz: session.voice_peaks_hz,
       character_count: (characters.data ?? []).length,
-      line_count: (lines.data ?? []).filter((l) => !l.is_deleted).length,
+      // Une replique a plusieurs voix a une copie par personnage : on la
+      // compte une fois.
+      line_count: new Set(
+        (lines.data ?? []).filter((l) => !l.is_deleted).map((l) => `${l.start_ms}:${l.end_ms}`),
+      ).size,
     })
     .select('id')
     .single();

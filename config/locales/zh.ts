@@ -674,6 +674,9 @@ export const zh = {
     packPlayHint: '将用这个场景开放房间：把代码分享给你的小组。',
     packSeeFiche: '查看素材包信息',
     packAnother: '再创建一个素材包',
+    addVoice: '为这句台词添加一个声音',
+    addVoiceHint: '适用于多人一起说的台词：每个角色各自配音，成片中声音会叠在一起。',
+    removeVoice: (nom: string) => `从这句台词中移除 ${nom}`,
   },
 
   lobby: {

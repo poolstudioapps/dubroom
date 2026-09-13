@@ -34,6 +34,8 @@ export function CharacterPicker({
   compact,
   placeholder,
   dropUp,
+  ariaLabel,
+  title,
 }: {
   value: Choice | undefined;
   choices: Choice[];
@@ -41,6 +43,9 @@ export function CharacterPicker({
   compact?: boolean;
   /** Ce qu'on lit quand rien n'est choisi : le libelle d'une action. */
   placeholder?: string;
+  /** Le nom de l'action quand le libelle visible n'est qu'un signe. */
+  ariaLabel?: string;
+  title?: string;
   /**
    * La liste s'ouvre vers le haut. Pour un bouton pose en bas de l'ecran,
    * comme la barre de selection : vers le bas, elle sortait de la fenetre.
@@ -77,10 +82,12 @@ export function CharacterPicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={
-          value
+          ariaLabel ??
+          (value
             ? `${t.prepare.assignedTo} ${value.name}. ${t.prepare.changeCharacter}`
-            : (placeholder ?? t.prepare.changeCharacter)
+            : (placeholder ?? t.prepare.changeCharacter))
         }
+        title={title}
         onClick={() => setOpen((v) => !v)}
         className={cn(
           // Largeur fixe, et non « au plus » : c'est elle qui aligne les

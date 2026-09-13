@@ -690,6 +690,9 @@ export const pt = {
     packPlayHint: 'O lobby abre com esta cena: compartilhe o código com seu grupo.',
     packSeeFiche: 'Ver a ficha do pack',
     packAnother: 'Criar outro pack',
+    addVoice: 'Adicionar uma voz a esta fala',
+    addVoiceHint: 'Para uma fala dita em conjunto: cada personagem a dubla do seu lado, e as vozes se sobrepõem no resultado.',
+    removeVoice: (nom: string) => `Remover ${nom} desta fala`,
   },
 
   lobby: {

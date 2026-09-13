@@ -697,6 +697,9 @@ export const fr = {
     packPlayHint: 'Le lobby s’ouvre avec cette scène : partage le code à ton groupe.',
     packSeeFiche: 'Voir la fiche du pack',
     packAnother: 'Créer un autre pack',
+    addVoice: 'Ajouter une voix à cette réplique',
+    addVoiceHint: 'Pour une réplique dite à plusieurs : chaque personnage la double de son côté, et les voix se superposent au rendu.',
+    removeVoice: (nom: string) => `Retirer ${nom} de cette réplique`,
   },
 
   lobby: {

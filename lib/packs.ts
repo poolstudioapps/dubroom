@@ -202,6 +202,25 @@ export async function listPackLines(packId: string): Promise<PackLine[]> {
 }
 
 /**
+ * Les repliques d'un pack telles qu'on les lit.
+ *
+ * Une replique dite a plusieurs voix existe en une ligne par personnage,
+ * aux memes bornes : on n'en garde qu'une, avec tous ses noms.
+ */
+export function fusionnerVoix(lines: PackLine[]): PackLine[] {
+  const parBornes = new Map<string, PackLine>();
+  for (const line of lines) {
+    const cle = `${line.start_ms}:${line.end_ms}`;
+    const deja = parBornes.get(cle);
+    if (!deja) parBornes.set(cle, { ...line });
+    else if (!deja.characterName.split(' · ').includes(line.characterName)) {
+      deja.characterName = `${deja.characterName} · ${line.characterName}`;
+    }
+  }
+  return [...parBornes.values()];
+}
+
+/**
  * Demarre une scene depuis un pack.
  *
  * Rien n'est copie dans Storage : la nouvelle scene pointe vers les

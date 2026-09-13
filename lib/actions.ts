@@ -163,6 +163,24 @@ export function splitLinesToNewCharacter(
   });
 }
 
+/**
+ * Une voix de plus sur une replique : la meme replique, aux memes bornes,
+ * recopiee pour ce personnage. Chacun la double de son cote et les deux
+ * prises passent ensemble au mixage.
+ */
+export function addLineCharacter(lineId: string, characterId: string) {
+  return rpc('prep_add_line_character', {
+    p_line_id: lineId,
+    p_character_id: characterId,
+    ...segmentation,
+  });
+}
+
+/** Retire une voix d'une replique partagee ; la derniere ne se retire pas. */
+export function removeLineCharacter(lineId: string) {
+  return rpc<number>('prep_remove_line_character', { p_line_id: lineId, ...segmentation });
+}
+
 export function deleteLines(lineIds: string[]) {
   return rpc<number>('prep_delete_lines', { p_line_ids: lineIds, ...segmentation });
 }

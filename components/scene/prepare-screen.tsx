@@ -27,9 +27,11 @@ import { Alert, Badge, Button, Dialog, Input, Spinner } from '@/components/ui';
 import { characterColorVar } from '@/config/constants';
 import { formatDuration, formatTimecode } from '@/config/strings';
 import {
+  addLineCharacter,
   deleteLines,
   mergeCharacters,
   openLobby,
+  removeLineCharacter,
   renameCharacter,
   reassignLines,
   restoreLines,
@@ -40,7 +42,39 @@ import { useExcerpt } from '@/lib/audio/excerpt';
 import { useMediaUrls } from '@/lib/data';
 import { humanizeError } from '@/lib/errors';
 import { statsByCharacter } from '@/lib/scene-stats';
+import type { LineRow } from '@/lib/supabase/database.types';
 import { cn } from '@/lib/utils';
+
+/** Une replique telle qu'on la lit, avec toutes ses voix. */
+interface Replique {
+  /** La plus ancienne copie : son texte et son etat valent pour toutes. */
+  principale: LineRow;
+  copies: LineRow[];
+}
+
+/**
+ * Les repliques a plusieurs voix, regroupees.
+ *
+ * Une replique dite par plusieurs personnages existe en une copie par
+ * personnage, aux memes bornes : c'est ce qui laisse les clips, le studio
+ * et le rendu ne connaitre qu'un personnage par ligne. Ici, on les relit
+ * comme une seule replique.
+ */
+function grouperRepliques(lines: LineRow[]): Replique[] {
+  const parBornes = new Map<string, LineRow[]>();
+  for (const line of lines) {
+    const cle = `${line.start_ms}:${line.end_ms}`;
+    const groupe = parBornes.get(cle);
+    if (groupe) groupe.push(line);
+    else parBornes.set(cle, [line]);
+  }
+  return [...parBornes.values()]
+    .map((copies) => {
+      copies.sort((a, b) => a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id));
+      return { principale: copies[0]!, copies };
+    })
+    .sort((a, b) => a.principale.start_ms - b.principale.start_ms);
+}
 
 /**
  * L'editeur, juste apres la transcription.
@@ -115,8 +149,17 @@ export function PrepareScreen() {
     }
     return parPerso;
   }, [lines]);
-  const nbSupprimees = lines.filter((l) => l.is_deleted).length;
-  const nbActives = lines.length - nbSupprimees;
+  /** Une ligne par replique, avec toutes ses voix. */
+  const repliques = useMemo(() => grouperRepliques(lines), [lines]);
+  const repliqueParId = useMemo(
+    () => new Map(repliques.map((r) => [r.principale.id, r])),
+    [repliques],
+  );
+  /** On coche des repliques ; les actions portent sur toutes leurs voix. */
+  const toutesLesVoix = (ids: string[]) =>
+    ids.flatMap((id) => repliqueParId.get(id)?.copies.map((c) => c.id) ?? [id]);
+  const nbSupprimees = repliques.filter((r) => r.principale.is_deleted).length;
+  const nbActives = repliques.length - nbSupprimees;
 
   const act = useMutation({
     mutationFn: (fn: () => Promise<unknown>) => fn(),
@@ -153,16 +196,24 @@ export function PrepareScreen() {
   }
 
   const q = recherche.trim().toLowerCase();
-  const lignesVisibles = lines.filter(
-    (l) =>
-      l.is_deleted === voirSupprimees &&
-      (!filtreChar || l.character_id === filtreChar) &&
-      (!q || l.text.toLowerCase().includes(q)),
+  const lignesVisibles = repliques.filter(
+    (r) =>
+      r.principale.is_deleted === voirSupprimees &&
+      (!filtreChar || r.copies.some((c) => c.character_id === filtreChar)) &&
+      (!q || r.principale.text.toLowerCase().includes(q)),
   );
 
   const selectedLineIds = [...selectedLines];
   const selectedCharIds = [...selectedChars];
-  const selectionSupprimees = selectedLineIds.filter((id) => lines.find((l) => l.id === id)?.is_deleted);
+  const selectionSupprimees = selectedLineIds.filter((id) => repliqueParId.get(id)?.principale.is_deleted);
+  /** Combien de repliques dans un lot d'identifiants de voix. */
+  const nbRepliques = (ids: string[]) =>
+    new Set(
+      ids.map((id) => {
+        const l = lines.find((x) => x.id === id);
+        return l ? `${l.start_ms}:${l.end_ms}` : id;
+      }),
+    ).size;
   const toutCoche = lignesVisibles.length > 0 && selectedLines.size === lignesVisibles.length;
   const nomFiltre = filtreChar ? (charById.get(filtreChar)?.name ?? '') : '';
 
@@ -394,7 +445,9 @@ export function PrepareScreen() {
                 variant="ghost"
                 disabled={lignesVisibles.length === 0}
                 onClick={() =>
-                  setSelectedLines(toutCoche ? new Set() : new Set(lignesVisibles.map((l) => l.id)))
+                  setSelectedLines(
+                    toutCoche ? new Set() : new Set(lignesVisibles.map((r) => r.principale.id)),
+                  )
                 }
               >
                 {toutCoche ? t.prepare.selectNone : t.prepare.selectAll}
@@ -419,7 +472,7 @@ export function PrepareScreen() {
           {dernierRetrait ? (
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-card border border-border bg-surface-sunken px-3 py-2 text-sm">
               <span className="text-text-muted">
-                {t.prepare.deletedToast(dernierRetrait.length)} {t.prepare.deleteLineHint}
+                {t.prepare.deletedToast(nbRepliques(dernierRetrait))} {t.prepare.deleteLineHint}
               </span>
               <span className="flex items-center gap-1">
                 <Button
@@ -451,14 +504,14 @@ export function PrepareScreen() {
             <p className="panel p-6 text-center text-sm text-text-faint">{t.prepare.noMatch}</p>
           ) : (
             <ul className="panel divide-y divide-border overflow-hidden">
-              {lignesVisibles.map((line) => {
-                const character = charById.get(line.character_id);
+              {lignesVisibles.map(({ principale: line, copies }) => {
                 const checked = selectedLines.has(line.id);
+                const idsDesVoix = copies.map((c) => c.id);
                 return (
                   <li
                     key={line.id}
                     className={cn(
-                      'flex items-start gap-2 px-2 py-2.5 transition-colors sm:px-3',
+                      'group flex items-start gap-2 px-2 py-2.5 transition-colors sm:px-3',
                       checked ? 'bg-select/12' : 'hover:bg-surface',
                     )}
                   >
@@ -487,15 +540,58 @@ export function PrepareScreen() {
                     </Button>
 
                     <div className="min-w-0 flex-1 space-y-1 sm:flex sm:items-start sm:gap-3 sm:space-y-0">
-                      <div className="flex items-center gap-2 sm:w-56 sm:shrink-0 sm:pt-0.5">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 sm:w-64 sm:shrink-0 sm:pt-0.5">
                         <span className="w-12 shrink-0 font-mono text-xs text-text-faint tabular-nums">
                           {formatTimecode(line.start_ms)}
                         </span>
-                        <CharacterPicker
-                          value={character}
-                          choices={characters}
-                          onPick={(target) => run(() => reassignLines([line.id], target))}
-                        />
+                        {/* Une pastille par voix : on change celle-ci sans
+                            toucher aux autres, et on la retire d'un clic. */}
+                        {copies.map((copie) => {
+                          const perso = charById.get(copie.character_id);
+                          const prises = new Set(
+                            copies.filter((c) => c.id !== copie.id).map((c) => c.character_id),
+                          );
+                          const retirerLabel = t.prepare.removeVoice(perso?.name ?? '');
+                          return (
+                            <span key={copie.id} className="inline-flex items-center gap-0.5">
+                              <CharacterPicker
+                                value={perso}
+                                choices={characters.filter((c) => !prises.has(c.id))}
+                                compact={copies.length > 1}
+                                onPick={(target) => run(() => reassignLines([copie.id], target))}
+                              />
+                              {copies.length > 1 ? (
+                                <button
+                                  type="button"
+                                  aria-label={retirerLabel}
+                                  title={retirerLabel}
+                                  onClick={() => run(() => removeLineCharacter(copie.id))}
+                                  className="flex h-6 w-6 items-center justify-center rounded-full text-text-faint transition-colors hover:bg-surface hover:text-danger"
+                                >
+                                  <X className="h-3 w-3" aria-hidden />
+                                </button>
+                              ) : null}
+                            </span>
+                          );
+                        })}
+                        {/* Une voix de plus, pour une replique dite a plusieurs.
+                            Sur ordinateur, elle n'apparait qu'au survol ou au
+                            clavier : sur chaque ligne a la fois, elle noyait la
+                            colonne des personnages. */}
+                        {!line.is_deleted && copies.length < characters.length ? (
+                          <span className="transition-opacity sm:opacity-0 sm:focus-within:opacity-100 sm:group-hover:opacity-100">
+                            <CharacterPicker
+                              value={undefined}
+                              placeholder="+"
+                              ariaLabel={t.prepare.addVoice}
+                              title={`${t.prepare.addVoice} · ${t.prepare.addVoiceHint}`}
+                              choices={characters.filter(
+                                (c) => !copies.some((x) => x.character_id === c.id),
+                              )}
+                              onPick={(target) => run(() => addLineCharacter(line.id, target))}
+                            />
+                          </span>
+                        ) : null}
                       </div>
 
                       <textarea
@@ -537,7 +633,7 @@ export function PrepareScreen() {
                           : `${t.prepare.deleteLine} · ${t.prepare.deleteLineHint}`
                       }
                       onClick={() =>
-                        line.is_deleted ? run(() => restoreLines([line.id])) : supprimer([line.id])
+                        line.is_deleted ? run(() => restoreLines(idsDesVoix)) : supprimer(idsDesVoix)
                       }
                     >
                       {line.is_deleted ? (
@@ -574,7 +670,7 @@ export function PrepareScreen() {
             choices={characters}
             placeholder={t.prepare.reassign}
             dropUp
-            onPick={(target) => run(() => reassignLines(selectedLineIds, target))}
+            onPick={(target) => run(() => reassignLines(toutesLesVoix(selectedLineIds), target))}
           />
 
           <Button size="sm" onClick={() => setSplitOpen(true)}>
@@ -587,7 +683,9 @@ export function PrepareScreen() {
               size="sm"
               variant="danger"
               onClick={() =>
-                supprimer(selectedLineIds.filter((id) => !selectionSupprimees.includes(id)))
+                supprimer(
+                  toutesLesVoix(selectedLineIds.filter((id) => !selectionSupprimees.includes(id))),
+                )
               }
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden />
@@ -596,7 +694,7 @@ export function PrepareScreen() {
           ) : null}
 
           {selectionSupprimees.length > 0 ? (
-            <Button size="sm" onClick={() => run(() => restoreLines(selectionSupprimees))}>
+            <Button size="sm" onClick={() => run(() => restoreLines(toutesLesVoix(selectionSupprimees)))}>
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
               {t.prepare.restoreShort}
             </Button>
@@ -638,7 +736,9 @@ export function PrepareScreen() {
                   splitName.trim() || t.prepare.defaultCharacterName(characters.length + 1);
                 setSplitOpen(false);
                 setSplitName('');
-                run(() => splitLinesToNewCharacter(selectedLineIds, name, characters.length));
+                run(() =>
+                  splitLinesToNewCharacter(toutesLesVoix(selectedLineIds), name, characters.length),
+                );
               }}
             >
               {t.common.confirm}
