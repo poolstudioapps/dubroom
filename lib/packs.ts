@@ -6,11 +6,12 @@ import {
   CLIP_MAX_MS,
   CLIP_MERGE_GAP_MS,
 } from '@/config/constants';
-import { deleteSession, uploadSourceAndEnqueue } from '@/lib/actions';
+import { deleteSession, enqueueIngest, uploadSourceAndEnqueue } from '@/lib/actions';
 import { AppError, humanizeError } from '@/lib/errors';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import type { SessionRow } from '@/lib/supabase/database.types';
 import { generateSessionCode } from '@/lib/utils';
+import { lisibleTelleQuelle, probeDurationMs } from '@/lib/video-file';
 
 export interface PackCharacter {
   name: string;
@@ -252,10 +253,10 @@ export async function startFromPack(
  *
  * Une recette ne garde que le lien : il faut retrouver la video. Le
  * telechargement automatique passe par le PC de l'hote, parce que YouTube
- * refuse les serveurs. Ici, le joueur apporte le fichier : la scene part
- * en import ordinaire, que le worker en ligne traite sans attendre
- * personne, et la preparation du pack — personnages, repliques corrigees
- * — est reprise telle quelle.
+ * refuse les serveurs. Ici, le joueur apporte le fichier, et la
+ * preparation du pack — personnages, repliques corrigees, pistes — est
+ * reprise telle quelle : sans worker quand le fichier se lit tel quel
+ * (voir `envoyerVideoDuPack`), par un import ordinaire sinon.
  *
  * La scene nait en brouillon, sans tache : la tache n'entre en file
  * qu'une fois le fichier arrive, sinon le worker partirait chercher un
@@ -286,12 +287,89 @@ export async function startFromPackWithFile(
   if (!session) throw new AppError('CODE_COLLISION', 'Impossible de générer un code libre.');
 
   try {
-    await uploadSourceAndEnqueue(session, file, onProgress);
+    await envoyerVideoDuPack(session, pack, file, onProgress);
   } catch (error) {
     await deleteSession(session).catch(() => undefined);
     throw error;
   }
   return session;
+}
+
+/**
+ * La video du joueur, et le pack repart sans attendre le worker quand il
+ * le peut.
+ *
+ * Le pack a deja tout ce que le worker fabriquerait : les deux pistes, le
+ * decoupage, l'enveloppe de la voix. Si le fichier se lit tel quel dans
+ * tous les navigateurs et que le pack a ses pistes, on envoie le fichier,
+ * le stockage recopie les pistes dans le dossier de la scene pendant ce
+ * temps, et le lobby s'ouvre des la fin de l'envoi.
+ *
+ * Sinon, ou si quoi que ce soit refuse en chemin, c'est l'import
+ * ordinaire : le worker convertit la video et reprend les pistes. Le
+ * fichier deja envoye lui sert tel quel, rien n'est renvoye.
+ */
+async function envoyerVideoDuPack(
+  session: SessionRow,
+  pack: Pack,
+  file: File,
+  onProgress?: (pct: number) => void,
+): Promise<void> {
+  const db = supabaseBrowser();
+
+  const [lisible, duree, sons] = await Promise.all([
+    lisibleTelleQuelle(file),
+    probeDurationMs(file),
+    db
+      .from('packs')
+      .select('stem_voice_path, stem_music_path, stem_music_preview_path')
+      .eq('id', pack.id)
+      .maybeSingle(),
+  ]);
+  const pistes = sons.data as {
+    stem_voice_path: string | null;
+    stem_music_path: string | null;
+    stem_music_preview_path: string | null;
+  } | null;
+
+  if (!lisible || duree === null || !pistes?.stem_voice_path || !pistes.stem_music_path) {
+    await uploadSourceAndEnqueue(session, file, onProgress);
+    return;
+  }
+
+  const extension = /\.m4v$/i.test(file.name) ? 'm4v' : 'mp4';
+  const chemin = `${session.id}/video.${extension}`;
+  const sources = [pistes.stem_voice_path, pistes.stem_music_path, pistes.stem_music_preview_path].filter(
+    (p): p is string => !!p,
+  );
+
+  onProgress?.(0);
+  const [envoi, copies] = await Promise.all([
+    db.storage.from(BUCKET_SOURCES).upload(chemin, file, { upsert: true, contentType: 'video/mp4' }),
+    Promise.all(
+      sources.map(async (source) => {
+        const destination = `${session.id}/${source.split('/').pop()}`;
+        await db.storage.from(BUCKET_SOURCES).remove([destination]);
+        const { error } = await db.storage.from(BUCKET_SOURCES).copy(source, destination);
+        return !error;
+      }),
+    ),
+  ]);
+  if (envoi.error) throw new AppError('UPLOAD_FAILED', humanizeError(envoi.error));
+  onProgress?.(100);
+
+  if (copies.every(Boolean)) {
+    try {
+      await rpc<SessionRow>('demarrer_pack_direct', {
+        p_session_id: session.id,
+        p_video_path: chemin,
+      });
+      return;
+    } catch {
+      // Refuse : le worker prend le relais ci-dessous.
+    }
+  }
+  await enqueueIngest(session.id, chemin);
 }
 
 /** Retire un pack : les fichiers d'abord, la fiche ensuite. */
