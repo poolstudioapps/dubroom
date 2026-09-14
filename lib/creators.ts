@@ -30,6 +30,11 @@ export interface CreatorProfile {
   cert_min_up: number;
   cert_votes_goal: number;
   comment_count: number;
+  /** Scenes terminees ou la personne doublait au moins un personnage. */
+  scenes_played: number;
+  characters_dubbed: number;
+  /** Le nom le plus double, noms identiques reunis, et son temps de parole cumule. */
+  top_character: { name: string; ms: number; scenes: number } | null;
 }
 
 export const profileHref = (userId: string) => `/u/${userId}`;

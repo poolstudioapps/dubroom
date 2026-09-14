@@ -9,23 +9,23 @@ import { MAX_SOURCE_FILE_BYTES, MAX_VIDEO_DURATION_MS } from '@/config/constants
  */
 
 /**
- * Les extensions video qu'on reconnait, meme sans type declare.
+ * Le seul format accepte : le MP4.
  *
- * Le worker convertit tout ce que ffmpeg sait lire : le format d'origine
- * n'a pas d'importance. Mais un navigateur ne donne pas de type a un
- * `.mkv`, un `.mts` ou un `.flv`, et les refuser sur ce seul critere
- * faisait croire qu'il fallait un MP4.
+ * Le worker savait tout convertir, et on acceptait donc tout. Mais un
+ * pack rejoue avec un MP4 ouvre son lobby des l'envoi termine, quand un
+ * MKV ou un MOV fait demarrer un GPU pour une conversion d'une minute ou
+ * deux. Une seule regle, dite partout : MP4. Le `.mov` n'en fait pas
+ * partie — c'est un autre conteneur, que Firefox ne lit pas, et celui des
+ * iPhone contient le plus souvent du HEVC que Chrome ne lit pas non plus.
  */
-const EXTENSIONS_VIDEO =
-  /\.(mp4|m4v|mkv|mov|webm|avi|wmv|asf|flv|f4v|mpe?g|mpe|m2v|ts|mts|m2ts|3gp|3g2|ogv|vob|mxf|dv|divx|rm|rmvb)$/i;
+const EXTENSIONS_MP4 = /\.(mp4|m4v)$/i;
 
 /** Ce que propose le selecteur de fichiers. */
-export const VIDEO_ACCEPT =
-  'video/*,.mkv,.avi,.wmv,.asf,.flv,.f4v,.mts,.m2ts,.ts,.3gp,.3g2,.ogv,.vob,.mxf,.dv,.divx,.rm,.rmvb';
+export const VIDEO_ACCEPT = 'video/mp4,.mp4,.m4v';
 
-/** Une video, a son type ou a son extension. */
+/** Un MP4, a son extension ou a son type. */
 export function isVideoFile(file: File): boolean {
-  return file.type.startsWith('video/') || EXTENSIONS_VIDEO.test(file.name);
+  return EXTENSIONS_MP4.test(file.name) || file.type === 'video/mp4';
 }
 
 /**

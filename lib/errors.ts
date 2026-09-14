@@ -44,6 +44,8 @@ const MESSAGES: Record<string, string> = {
   COMMENT_EMPTY: 'Le commentaire est vide.',
   COMMENT_TOO_LONG: 'Le commentaire dépasse 1 000 caractères.',
   COMMENT_TOO_FAST: 'Doucement : attends quelques secondes avant de republier.',
+  COMMENT_COOLDOWN:
+    'Anti-spam : un seul commentaire toutes les 5 minutes sous une même publication. Réessaie un peu plus tard.',
   COMMENT_NOT_FOUND: 'Ce commentaire a été supprimé.',
   LOBBY_CLOSED:
     'Ce salon est fermé : il est resté trente minutes sans activité. L’hôte peut le rouvrir.',

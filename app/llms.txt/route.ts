@@ -60,7 +60,7 @@ export async function GET() {
     '',
     [
       'Accès sur invitation : seules les adresses ajoutées à la liste des invités peuvent entrer.',
-      'Scènes de dix minutes et 50 Mo au maximum, dans n’importe quel format vidéo.',
+      'Vidéos MP4 de dix minutes et 50 Mo au maximum.',
       'Tout se prépare en ligne, dans le navigateur : rien à installer.',
       'Un salon ou un studio sans activité pendant trente minutes se ferme tout seul.',
       'La communauté partage le découpage des scènes (personnages, texte, repères) et leur son d’origine séparé, jamais les vidéos ni les voix des joueurs.',

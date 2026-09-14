@@ -3,7 +3,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { ArrowLeft, Clapperboard, Pencil, ThumbsDown, ThumbsUp } from 'lucide-react';
+import {
+  ArrowLeft,
+  Clapperboard,
+  Film,
+  Mic,
+  Pencil,
+  ThumbsDown,
+  ThumbsUp,
+  VenetianMask,
+} from 'lucide-react';
 
 import { AppShell } from '@/components/app-shell';
 import { Avatar } from '@/components/avatar';
@@ -20,6 +29,7 @@ import { humanizeError } from '@/lib/errors';
 import { useLocale, useT } from '@/lib/i18n';
 import { PACKS_QUERY, deletePack, type Pack } from '@/lib/packs';
 import { cn } from '@/lib/utils';
+import { formatDuration } from '@/config/strings';
 
 /**
  * Le profil public d'un createur.
@@ -105,11 +115,17 @@ export function CreatorProfileClient({
   });
   const nombre = (n: number) => n.toLocaleString(locale);
 
+  // Ce qu'il a joue, puis ce qu'il a cree et ce que la communaute en pense.
+  const tuilesJeu = [
+    { label: t.creators.statScenes, valeur: p.scenes_played ?? 0, icone: Film, ton: 'text-link' },
+    { label: t.creators.statCharacters, valeur: p.characters_dubbed ?? 0, icone: VenetianMask, ton: 'text-select' },
+  ];
   const tuiles = [
     { label: t.creators.statPacks, valeur: p.pack_count, icone: Clapperboard, ton: 'text-accent' },
     { label: t.creators.statUp, valeur: p.up_total, icone: ThumbsUp, ton: 'text-ok-ink' },
     { label: t.creators.statDown, valeur: p.down_total, icone: ThumbsDown, ton: 'text-danger-ink' },
   ];
+  const fetiche = p.top_character ?? null;
 
   return (
     <AppShell className="space-y-8">
@@ -138,7 +154,43 @@ export function CreatorProfileClient({
         ) : null}
       </header>
 
-      {/* ── Ce que la communaute en pense ──────────────────────────── */}
+      {/* ── Ce qu'il a joue ────────────────────────────────────────── */}
+      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {tuilesJeu.map((tuile) => {
+          const Icone = tuile.icone;
+          return (
+            <div key={tuile.label} className="panel flex flex-col gap-1 p-4 sm:flex-row sm:items-center sm:gap-4">
+              <Icone className={cn('h-5 w-5 shrink-0 sm:h-7 sm:w-7', tuile.ton)} aria-hidden />
+              <div className="min-w-0">
+                <dd className="text-2xl font-bold tabular-nums sm:text-3xl">{nombre(tuile.valeur)}</dd>
+                <dt className="text-xs font-bold uppercase tracking-wide text-text-faint">{tuile.label}</dt>
+              </div>
+            </div>
+          );
+        })}
+        {/* Le personnage le plus double : les memes noms reunis d'une scene
+            a l'autre, classes par temps de parole cumule. */}
+        <div className="panel col-span-2 flex items-center gap-4 p-4">
+          <Mic className="h-7 w-7 shrink-0 text-accent" aria-hidden />
+          <div className="min-w-0">
+            <dt className="text-xs font-bold uppercase tracking-wide text-text-faint">
+              {t.creators.topCharacterTitle}
+            </dt>
+            {fetiche ? (
+              <>
+                <dd className="titre truncate text-2xl sm:text-3xl">{fetiche.name}</dd>
+                <dd className="text-sm text-text-muted">
+                  {t.creators.topCharacterBody(formatDuration(fetiche.ms), fetiche.scenes)}
+                </dd>
+              </>
+            ) : (
+              <dd className="text-sm text-text-muted">{t.creators.topCharacterNone}</dd>
+            )}
+          </div>
+        </div>
+      </dl>
+
+      {/* ── Ce qu'il a cree, et ce que la communaute en pense ──────── */}
       <dl className="grid grid-cols-3 gap-3">
         {tuiles.map((tuile) => {
           const Icone = tuile.icone;

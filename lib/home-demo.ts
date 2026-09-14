@@ -15,12 +15,14 @@ import type { HomeDemo } from '@/lib/home-demo-types';
  * c'est remplacer ces deux fichiers.
  *
  * La video et la preparation viennent de la meme source, a la milliseconde
- * pres : 80,18 secondes, telechargees depuis le lien qui a servi a
- * preparer le pack. Le texte tombe donc exactement sur l'image.
+ * pres : la scene « Norbert », telechargee depuis le lien qui a servi a
+ * preparer le pack, dont on garde la decouverte du dragon, de 110 s a la
+ * fin (43,7 s). Les repliques du pack sont decalees d'autant : le texte
+ * tombe exactement sur l'image.
  */
 const HOME_DEMO: HomeDemo = {
-  videoSrc: '/video/demo-accueil.mp4',
-  posterSrc: '/video/demo-accueil.jpg',
+  videoSrc: '/video/demo-norbert.mp4',
+  posterSrc: '/video/demo-norbert.jpg',
   ...donnees,
 };
 

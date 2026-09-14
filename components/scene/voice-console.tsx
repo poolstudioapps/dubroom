@@ -103,20 +103,27 @@ export function VoiceConsole({
 
   return (
     <Card className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
+      {/*
+        Le bouton de remise a zero est toujours la, rendu invisible quand il
+        n'y a rien a remettre. Il apparaissait au premier curseur bouge, et
+        sa hauteur, plus grande que celle du titre, repoussait toutes les
+        jauges vers le bas sous le doigt.
+      */}
+      <div className="flex h-8 items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-bold">
           <SlidersHorizontal className="h-4 w-4 text-accent" aria-hidden />
           {t.studio.fxTitle}
         </h2>
-        {actif ? (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onCommit({ ...FX_NEUTRE, gainDb: 0 })}
-          >
-            {t.studio.fxReset}
-          </Button>
-        ) : null}
+        <Button
+          size="sm"
+          variant="ghost"
+          className={cn('h-8', !actif && 'invisible')}
+          aria-hidden={!actif}
+          tabIndex={actif ? 0 : -1}
+          onClick={() => onCommit({ ...FX_NEUTRE, gainDb: 0 })}
+        >
+          {t.studio.fxReset}
+        </Button>
       </div>
 
       {/* Une ligne d'etat de hauteur fixe : rien ne saute quand elle change. */}
